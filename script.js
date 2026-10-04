@@ -113,22 +113,24 @@
     { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
   ];
 
-  // Where an island sits relative to the active one (offset = index - current).
-  // Odd islands (1st, 3rd, …) always stay on the right, even ones on the left;
-  // the further away an island is, the smaller, higher and nearer the centre
-  // line it sits. x is the distance of the island centre from the stage centre,
-  // y the centre height on the 1920x1080 stage, s the scale, o the opacity.
+  // Only the active island and the next one are visible. Every island lives at
+  // the same height on its own side (odd islands — 1st, 3rd, … — on the right,
+  // even ones on the left) and changes only by scale and opacity: the next
+  // island waits small and locked, then grows into place; the island after it
+  // fades in from nothing; the one being left grows a little more and fades out.
+  // x is the distance of the island centre from the stage centre, y its centre
+  // height on the 1920x1080 stage, s the scale, o the opacity.
   const SLOTS = {
-    passed: { x: 760, y: 1250, s: 2.1, o: 0 }, // flies past the viewer and out
-    0: { x: 380, y: 560, s: 1.15, o: 1 }, // active: large, in front
-    1: { x: 330, y: 330, s: 0.44, o: 1 },
-    2: { x: 260, y: 270, s: 0.3, o: 1 },
-    3: { x: 200, y: 228, s: 0.21, o: 0.95 },
-    4: { x: 150, y: 203, s: 0.15, o: 0.8 },
-    far: { x: 110, y: 190, s: 0.06, o: 0 }, // beyond the horizon
+    passed: { x: 380, y: 560, s: 1.5, o: 0 },
+    active: { x: 380, y: 560, s: 1.15, o: 1 },
+    next: { x: 380, y: 560, s: 0.45, o: 1 },
+    later: { x: 380, y: 560, s: 0.2, o: 0 },
   };
   const slotFor = (offset, index) => {
-    const slot = offset < 0 ? SLOTS.passed : offset > 4 ? SLOTS.far : SLOTS[offset];
+    const slot = offset < 0 ? SLOTS.passed
+      : offset === 0 ? SLOTS.active
+      : offset === 1 ? SLOTS.next
+      : SLOTS.later;
     const side = index % 2 === 0 ? 1 : -1; // index 0 = island 1 (odd) → right
     return { ...slot, x: W / 2 + side * slot.x };
   };
@@ -181,10 +183,8 @@
       const slot = slotFor(offset, i);
       el.style.transform = `translate(${slot.x - 278}px, ${slot.y - 248}px) scale(${slot.s})`;
       el.style.opacity = slot.o;
-      el.style.zIndex = offset < 0 ? 200 : 100 - offset;
-      // Distant islands get a touch of haze
-      el.style.filter = offset > 1 ? `blur(${Math.min(offset - 1, 3) * 0.6}px)` : 'none';
-      el.dataset.slot = offset < -1 || offset > 4 ? 'hidden' : String(offset);
+      el.style.zIndex = offset === 0 ? 100 : 50;
+      el.dataset.slot = offset === 0 ? 'active' : offset === 1 ? 'next' : 'hidden';
       el.dataset.state = offset < 0 ? 'done' : offset === 0 ? 'current' : 'locked';
       el.setAttribute('aria-disabled', offset > 0 ? 'true' : 'false');
       el.tabIndex = offset === 0 ? 0 : -1;

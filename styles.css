@@ -290,7 +290,8 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
     filter 1.1s ease;
   will-change: transform, opacity;
 }
-.island[data-slot="hidden"] { pointer-events: none; visibility: hidden; }
+/* Hidden islands are only transparent (not visibility:hidden) so they can fade */
+.island[data-slot="hidden"] { pointer-events: none; }
 .island__img {
   position: absolute;
   top: 0;
