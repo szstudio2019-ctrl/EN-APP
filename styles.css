@@ -69,7 +69,7 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   align-items: center;
   justify-content: space-between;
   direction: ltr;
-  z-index: 10;
+  z-index: 300;
 }
 
 .topbar__stats {
@@ -268,14 +268,29 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .menu-btn:hover { transform: scale(1.08); }
 .menu-btn img { width: 19px; height: 11px; }
 
-/* ---------- Islands ---------- */
+/* ---------- Island journey ---------- */
+/* Every island is a 556x497 box (the design size) placed at the stage origin and
+   moved into its slot by script.js with translate + scale. Slots: the active
+   island sits front-centre; the next ones shrink toward the horizon; passed
+   ones fly past the viewer and fade out. */
+.journey {
+  position: absolute;
+  inset: 0;
+}
 .island {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 556px;
   height: 497px;
-  transform-origin: 0 0;
-  transition: filter .2s ease;
+  transform-origin: 278px 248px;
+  transition:
+    transform 1.1s cubic-bezier(.65, 0, .25, 1),
+    opacity 1.1s cubic-bezier(.65, 0, .25, 1),
+    filter 1.1s ease;
+  will-change: transform, opacity;
 }
+.island[data-slot="hidden"] { pointer-events: none; visibility: hidden; }
 .island__img {
   position: absolute;
   top: 0;
@@ -284,17 +299,70 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   height: 478px;
   object-fit: cover;
   pointer-events: none;
-  transition: transform .25s ease;
 }
-.island:hover .island__img { transform: translateY(-8px); }
+.island__img--flip { transform: scaleX(-1); }
 
-.island--doctor { left: 351px; top: 303px; }
-.island--abc { left: 1300px; top: 330px; }
-.island--abc .island__img { width: 568px; height: 476.6px; }
+/* Gentle idle float on the active island */
+.island__float { position: absolute; inset: 0; }
+.island[data-state="current"] .island__float { animation: island-float 5s ease-in-out infinite; }
+@keyframes island-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -14px; }
+}
 
-/* Small far island: same layout at 0.435 scale (242x216 in the design) */
-.island--smiles { left: 930px; top: 200px; transform: scale(0.435); }
-.island--smiles .island__img { top: 27px; left: 21px; width: 529px; height: 423px; }
+/* Stand-in for islands that don't have artwork yet */
+.island__placeholder {
+  position: absolute;
+  left: 78px;
+  top: 150px;
+  width: 400px;
+  height: 190px;
+  border-radius: 50% 50% 46% 46% / 40% 40% 60% 60%;
+  background: linear-gradient(#7bc96f 0 32%, #8a6a45 32% 100%);
+  box-shadow: inset 0 -30px 40px rgba(0, 0, 0, .25);
+  display: flex;
+  justify-content: center;
+  padding-top: 18px;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, .35);
+}
+
+/* Prev / next controls under the active island */
+.journey-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 14px;
+  border-radius: 40px;
+  background: var(--panel);
+  color: var(--white);
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  z-index: 300;
+}
+.journey-nav__count { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; direction: ltr; }
+.journey-nav__btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--pink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s ease, opacity .2s ease;
+}
+.journey-nav__btn:hover { transform: scale(1.1); }
+.journey-nav__btn:disabled { opacity: .35; cursor: default; transform: none; }
+.journey-nav__btn img { width: 9px; height: 15px; }
+/* RTL: "next" points left */
+.journey-nav__btn--next img { transform: rotate(180deg); }
 
 .island__card {
   position: absolute;
@@ -368,14 +436,15 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .island[data-state="done"] .island__progress span { background: #4caf50; }
 .island[data-state="locked"] { cursor: not-allowed; }
 .island[data-state="locked"] .island__img,
+.island[data-state="locked"] .island__placeholder,
 .island[data-state="locked"] .island__card { filter: grayscale(.55) brightness(.92); }
-.island[data-state="locked"]:hover .island__img { transform: none; }
+.island:not([data-state="locked"]) .island__lock { display: none; }
 .island__lock {
   position: absolute;
-  top: 120px;
-  left: 238px;
-  width: 80px;
-  height: 80px;
+  top: 110px;
+  left: 223px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
   background: rgba(36, 34, 117, .85);
   display: flex;
@@ -384,8 +453,8 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   z-index: 2;
 }
 .island__lock svg {
-  width: 44px;
-  height: 44px;
+  width: 60px;
+  height: 60px;
   fill: none;
   stroke: var(--white);
   stroke-width: 2;
@@ -493,3 +562,6 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   transition: transform .15s ease;
 }
 .help-btn:hover { transform: scale(1.08); }
+
+/* Keep the fixed UI above the islands, which stack with z-index up to 200 */
+.trophy, .cart, .hint, .help-btn { z-index: 300; }
