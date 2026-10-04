@@ -114,17 +114,24 @@
   ];
 
   // Where an island sits relative to the active one (offset = index - current).
-  // x/y are the island centre on the 1920x1080 stage; s is its scale; o opacity.
+  // Odd islands (1st, 3rd, …) always stay on the right, even ones on the left;
+  // the further away an island is, the smaller, higher and nearer the centre
+  // line it sits. x is the distance of the island centre from the stage centre,
+  // y the centre height on the 1920x1080 stage, s the scale, o the opacity.
   const SLOTS = {
-    passed: { x: 420, y: 1250, s: 2.1, o: 0 }, // flies past the viewer and out
-    0: { x: 960, y: 560, s: 1.2, o: 1 }, // active: front and centre
-    1: { x: 1420, y: 340, s: 0.44, o: 1 },
-    2: { x: 560, y: 280, s: 0.3, o: 1 },
-    3: { x: 1200, y: 232, s: 0.21, o: 0.95 },
-    4: { x: 800, y: 205, s: 0.15, o: 0.8 },
-    far: { x: 1000, y: 190, s: 0.06, o: 0 }, // beyond the horizon
+    passed: { x: 760, y: 1250, s: 2.1, o: 0 }, // flies past the viewer and out
+    0: { x: 380, y: 560, s: 1.15, o: 1 }, // active: large, in front
+    1: { x: 330, y: 330, s: 0.44, o: 1 },
+    2: { x: 260, y: 270, s: 0.3, o: 1 },
+    3: { x: 200, y: 228, s: 0.21, o: 0.95 },
+    4: { x: 150, y: 203, s: 0.15, o: 0.8 },
+    far: { x: 110, y: 190, s: 0.06, o: 0 }, // beyond the horizon
   };
-  const slotFor = (offset) => (offset < 0 ? SLOTS.passed : offset > 4 ? SLOTS.far : SLOTS[offset]);
+  const slotFor = (offset, index) => {
+    const slot = offset < 0 ? SLOTS.passed : offset > 4 ? SLOTS.far : SLOTS[offset];
+    const side = index % 2 === 0 ? 1 : -1; // index 0 = island 1 (odd) → right
+    return { ...slot, x: W / 2 + side * slot.x };
+  };
 
   const journey = document.getElementById('journey');
   const count = document.getElementById('journey-count');
@@ -171,7 +178,7 @@
   function render() {
     els.forEach((el, i) => {
       const offset = i - current;
-      const slot = slotFor(offset);
+      const slot = slotFor(offset, i);
       el.style.transform = `translate(${slot.x - 278}px, ${slot.y - 248}px) scale(${slot.s})`;
       el.style.opacity = slot.o;
       el.style.zIndex = offset < 0 ? 200 : 100 - offset;
