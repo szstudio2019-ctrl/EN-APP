@@ -14,11 +14,21 @@
   window.addEventListener('resize', fit);
   fit();
 
-  // Respect reduced-motion: keep the still poster instead of the moving background
+  // Background video moves only while the user scrolls (wheel / touch swipe), in slow motion.
+  // Reduced-motion users keep the still poster.
   const bgVideo = document.querySelector('video.bg');
-  if (bgVideo && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    bgVideo.removeAttribute('autoplay');
-    bgVideo.pause();
+  const SPEED = 0.4; // playback rate while scrolling (1 = normal speed)
+  const IDLE_MS = 250; // pause this long after the last scroll event
+  if (bgVideo && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let idleTimer;
+    const nudge = () => {
+      bgVideo.playbackRate = SPEED;
+      if (bgVideo.paused) bgVideo.play().catch(() => {});
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => bgVideo.pause(), IDLE_MS);
+    };
+    window.addEventListener('wheel', nudge, { passive: true });
+    window.addEventListener('touchmove', nudge, { passive: true });
   }
 
   document.querySelectorAll('.island[data-state="locked"]').forEach((el) => {

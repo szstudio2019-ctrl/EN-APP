@@ -41,6 +41,8 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   height: 1080px;
   transform-origin: 0 0;
   overflow: hidden;
+  /* Shown until the background video's first frame is ready */
+  background: url("assets/bg-clouds.webp") center / cover no-repeat;
 }
 
 .bg {
