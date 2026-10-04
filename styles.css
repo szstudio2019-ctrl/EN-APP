@@ -764,10 +764,17 @@ video.bg {
   backdrop-filter: blur(10px);
   font-family: 'Assistant', 'Rubik', sans-serif;
   direction: rtl;
-  transform: translateX(calc(100% + 80px));
-  transition: transform .7s cubic-bezier(.76, 0, .24, 1);
+  /* Opens as a circle growing out of the menu button (its centre sits at
+     114px, 36px relative to the panel) and closes by shrinking back into it */
+  clip-path: circle(0 at 114px 36px);
+  visibility: hidden;
+  transition: clip-path .75s cubic-bezier(.76, 0, .24, 1), visibility 0s linear .75s;
 }
-.menu-open .sidebar { transform: none; }
+.menu-open .sidebar {
+  clip-path: circle(1300px at 114px 36px);
+  visibility: visible;
+  transition: clip-path .75s cubic-bezier(.76, 0, .24, 1), visibility 0s;
+}
 .menu-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
 
 /* Items cascade in after the panel */
