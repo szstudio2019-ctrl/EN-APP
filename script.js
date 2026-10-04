@@ -14,10 +14,10 @@
   window.addEventListener('resize', fit);
   fit();
 
-  // Background video moves only while the user scrolls (wheel / touch swipe), in slow motion.
+  // Background video moves only while the user scrolls (wheel / touch swipe).
   // Reduced-motion users keep the still poster.
   const bgVideo = document.querySelector('video.bg');
-  const SPEED = 0.4; // playback rate while scrolling (1 = normal speed)
+  const SPEED = 1; // playback rate while scrolling (1 = normal speed)
   const IDLE_MS = 250; // pause this long after the last scroll event
   if (bgVideo && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     let idleTimer;
