@@ -19,6 +19,9 @@ html, body {
 }
 
 p { margin: 0; }
+/* Stage images are sized exactly from the design; some are wider than their box
+   (e.g. the logo text image is cropped to hide a check mark), so never shrink them. */
+.stage img { max-width: none; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer; }
 
