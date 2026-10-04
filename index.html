@@ -10,6 +10,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Loader: shown until the islands, background and fonts are ready -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <div class="loader__tiles" aria-hidden="true">
+        <span class="loader__tile loader__tile--a">a</span>
+        <span class="loader__tile loader__tile--b">b</span>
+        <span class="loader__tile loader__tile--c">c</span>
+      </div>
+      <p class="loader__title">מדקדקים באנגלית</p>
+      <div class="loader__bar"><span id="loader-bar"></span></div>
+      <p class="loader__pct"><span id="loader-pct">0</span>%</p>
+    </div>
+  </div>
+
   <div class="viewport">
     <!-- Full-window background (outside the scaled stage so it covers the side bars too) -->
     <video class="bg" src="assets/bg-video.webm" muted loop playsinline preload="auto" aria-hidden="true"></video>
@@ -54,7 +68,7 @@
               <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
             </a>
           </div>
-          <button class="menu-btn" type="button" aria-label="תפריט">
+          <button class="menu-btn" id="menu-open" type="button" aria-label="פתיחת התפריט" aria-controls="sidebar" aria-expanded="false">
             <img src="assets/menu.svg" alt="">
           </button>
         </div>
@@ -85,6 +99,79 @@
         </a>
       </div>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
+
+      <!-- Side menu (Figma "Sidebar - Open"); the island lists are filled by script.js -->
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+      <aside class="sidebar" id="sidebar" aria-label="תפריט" aria-hidden="true">
+        <button class="sidebar__close" id="menu-close" type="button" aria-label="סגירת התפריט">
+          <img src="assets/icons/chevron-btn.svg" alt="">
+        </button>
+
+        <div class="sidebar__profile sb-item">
+          <div class="sidebar__who">
+            <span class="sidebar__hello">בוקר טוב</span>
+            <span class="sidebar__name">שירה כהן</span>
+          </div>
+          <span class="user__avatar sidebar__avatar">
+            <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+            <img class="user__photo" src="assets/avatar.webp" alt="">
+            <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+          </span>
+        </div>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="#">
+            <span>ראשי</span><img src="assets/icons/home.svg" alt="">
+          </a>
+
+          <div class="sb-group is-open sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="true">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>עולמות המשחק</span><img src="assets/icons/reports.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-worlds"></div>
+          </div>
+
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>חזרות</span><img src="assets/icons/reports.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-reviews"></div>
+          </div>
+
+          <a class="sb-link sb-item" href="#profile">
+            <img class="sb-chevron sb-chevron--side" src="assets/icons/chevron-side.svg" alt="">
+            <span>פרופיל אישי</span><img src="assets/icons/user.svg" alt="">
+          </a>
+          <a class="sb-link sb-link--bright sb-item" href="#shop">
+            <span>חנות האותיות</span><img src="assets/icons/page.svg" alt="">
+          </a>
+          <a class="sb-link sb-item" href="#coins">
+            <span>מטבעות</span><img src="assets/icons/calendar.svg" alt="">
+          </a>
+        </nav>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="#settings">
+            <img class="sb-chevron sb-chevron--side" src="assets/icons/chevron-side.svg" alt="">
+            <span>הגדרות</span><img src="assets/icons/settings.svg" alt="">
+          </a>
+        </nav>
+
+        <nav class="sidebar__nav sidebar__nav--bottom">
+          <a class="sb-link sb-item" href="#help">
+            <span>עזרה</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-link--danger sb-item" href="#logout">
+            <span>התנתקות/ התחברות</span><img src="assets/icons/logout.svg" alt="">
+          </a>
+        </nav>
+      </aside>
     </main>
   </div>
 

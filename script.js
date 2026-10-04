@@ -26,6 +26,8 @@
   const FADE = 1; // seconds of video time spent cross-fading at the loop point
   let rate = SPEED;
   const bgVideos = [];
+  // Opacity drives the loop cross-fade; transform follows the mouse (see CSS)
+  const bgTransition = () => `opacity ${FADE / SPEED}s linear, transform .8s cubic-bezier(.22, 1, .36, 1)`;
   const bgA = document.querySelector('video.bg');
   if (bgA && !reducedMotion) {
     const bgB = bgA.cloneNode();
@@ -34,7 +36,7 @@
     for (const v of bgVideos) {
       v.loop = false;
       v.playbackRate = SPEED;
-      v.style.transition = `opacity ${FADE / SPEED}s linear`;
+      v.style.transition = bgTransition();
     }
     bgB.style.opacity = '0';
 
@@ -68,10 +70,10 @@
         back.style.opacity = '1';
         setTimeout(() => {
           front.pause();
-          front.style.transition = 'none';
+          front.style.transition = 'transform .8s cubic-bezier(.22, 1, .36, 1)';
           front.style.opacity = '0';
           front.offsetWidth; // apply the instant hide before restoring the transition
-          front.style.transition = `opacity ${FADE / SPEED}s linear`;
+          front.style.transition = bgTransition();
           [front, back] = [back, front];
           fading = false;
         }, (FADE / SPEED) * 1000);
@@ -99,9 +101,12 @@
   // Course order from Figma ("Group 1261154890"). `box` is where the artwork sits
   // inside the 556x497 island frame (left, top, width, height), as in the design.
   // Islands without artwork (img: null) get a simple placeholder island.
+  // `status` is the learner's progress (demo values): 'done', 'progress' (with
+  // `progress` %), or locked when omitted. Locked islands stay locked even while
+  // the learner scrolls past them to look.
   const ISLANDS = [
-    { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6] },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor' },
+    { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor', status: 'progress', progress: 50 },
     { name: 'אי האותיות המחייכות', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', img: 'island-single', box: [49, 0, 493, 493] },
@@ -168,6 +173,10 @@
             </div>
           </div>
           <div class="island__progress"><span></span></div>
+          <div class="island__done">
+            <span class="island__done-label">הושלם</span>
+            <img class="island__done-icon" src="assets/icons/done-check.svg" alt="">
+          </div>
         </div>
       </div>`;
     a.addEventListener('click', (e) => {
@@ -210,21 +219,25 @@
       el.style.opacity = slot.o;
       el.style.zIndex = offset === 0 ? 100 : 50;
       el.dataset.slot = offset === 0 ? 'active' : offset === 1 ? 'next' : 'hidden';
-      el.dataset.state = offset < 0 ? 'done' : offset === 0 ? 'current' : 'locked';
-      el.setAttribute('aria-disabled', offset > 0 ? 'true' : 'false');
+      const status = ISLANDS[i].status || 'locked';
+      el.dataset.state = status;
+      el.setAttribute('aria-disabled', status === 'locked' ? 'true' : 'false');
       el.tabIndex = offset === 0 ? 0 : -1;
-      el.querySelector('.island__progress span').style.width = offset < 0 ? '100%' : '0%';
+      // The bar fills when the island arrives in front
+      el.querySelector('.island__progress span').style.width =
+        offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
     });
+    syncMenu();
     count.textContent = `${current + 1} / ${ISLANDS.length}`;
     prevBtn.disabled = current === 0;
     nextBtn.disabled = current === ISLANDS.length - 1;
   }
 
-  // One step per gesture: ignore further input until the flight has finished.
+  // One move per gesture: ignore further input until the flight has finished.
   const TRAVEL_MS = 1100;
   let busy = false;
-  function go(step) {
-    const target = Math.max(0, Math.min(ISLANDS.length - 1, current + step));
+  function goTo(target) {
+    target = Math.max(0, Math.min(ISLANDS.length - 1, target));
     if (busy || target === current) return;
     busy = true;
     current = target;
@@ -235,11 +248,13 @@
       setBackgroundRate(SPEED);
     }, TRAVEL_MS);
   }
+  const go = (step) => goTo(current + step);
 
   // Mouse wheel / trackpad: forward (down) = next island, back (up) = previous
   let wheelSum = 0;
   let wheelTimer;
   window.addEventListener('wheel', (e) => {
+    if (menuOpen) return; // let the menu scroll
     e.preventDefault();
     wheelSum += e.deltaY;
     clearTimeout(wheelTimer);
@@ -256,7 +271,7 @@
     touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, { passive: true });
   window.addEventListener('touchend', (e) => {
-    if (!touchStart) return;
+    if (!touchStart || menuOpen) return;
     const dx = e.changedTouches[0].clientX - touchStart.x;
     const dy = e.changedTouches[0].clientY - touchStart.y;
     touchStart = null;
@@ -266,6 +281,8 @@
 
   // Keyboard
   window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuOpen) { setMenu(false); return; }
+    if (menuOpen) return;
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); go(1); }
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(e.key)) { e.preventDefault(); go(-1); }
   });
@@ -273,9 +290,147 @@
   prevBtn.addEventListener('click', () => go(-1));
   nextBtn.addEventListener('click', () => go(1));
 
-  // First paint without animation, then enable transitions
+  /* ------------------------------------------------------------------ */
+  /* Side menu                                                           */
+  /* ------------------------------------------------------------------ */
+  const viewport = document.querySelector('.viewport');
+  const sidebar = document.getElementById('sidebar');
+  const menuOpenBtn = document.getElementById('menu-open');
+  let menuOpen = false;
+
+  function setMenu(open) {
+    menuOpen = open;
+    viewport.classList.toggle('menu-open', open);
+    sidebar.setAttribute('aria-hidden', String(!open));
+    menuOpenBtn.setAttribute('aria-expanded', String(open));
+    if (open) sidebar.querySelector('.sidebar__close').focus();
+    else menuOpenBtn.focus();
+  }
+  menuOpenBtn.addEventListener('click', () => setMenu(true));
+  document.getElementById('menu-close').addEventListener('click', () => setMenu(false));
+  document.getElementById('sidebar-backdrop').addEventListener('click', () => setMenu(false));
+
+  // Stagger the cascade-in of the menu rows
+  sidebar.querySelectorAll('.sb-item').forEach((el, i) => el.style.setProperty('--i', i));
+
+  // Collapsible groups
+  sidebar.querySelectorAll('.sb-link--group').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.sb-group');
+      const open = !group.classList.contains('is-open');
+      group.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+
+  // Island lists: game worlds and review islands, each jumping to its island
+  const menuLinks = [];
+  const fillList = (containerId, filter, label) => {
+    const inner = document.createElement('div');
+    inner.className = 'sb-sub__inner';
+    let n = 0;
+    ISLANDS.forEach((island, i) => {
+      if (!filter(island)) return;
+      n += 1;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sb-sublink';
+      const status = island.status === 'done' ? '<span class="sb-sublink__status sb-sublink__status--done">✓ הושלם</span>'
+        : island.status === 'progress' ? `<span class="sb-sublink__status">${island.progress || 0}%</span>`
+        : '<span class="sb-sublink__status" aria-label="נעול">🔒</span>';
+      b.innerHTML = `<span>${label(island, n)}</span>${status}`;
+      b.addEventListener('click', () => {
+        setMenu(false);
+        setTimeout(() => goTo(i), 400);
+      });
+      inner.appendChild(b);
+      menuLinks.push([b, i]);
+    });
+    document.getElementById(containerId).appendChild(inner);
+  };
+  const isReview = (island) => island.name === 'אי החזרות';
+  const short = (island) => island.name.replace(/^אי (ה)?/, '');
+  fillList('sb-worlds', (island) => !isReview(island),
+    (island) => (island.lessons ? `${short(island)} (שיעור ${island.lessons})` : short(island)));
+  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n}`);
+
+  function syncMenu() {
+    menuLinks.forEach(([b, i]) => b.classList.toggle('is-current', i === current));
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Mouse depth                                                         */
+  /* ------------------------------------------------------------------ */
+  if (!reducedMotion && window.matchMedia('(pointer: fine)').matches) {
+    let raf = 0;
+    window.addEventListener('mousemove', (e) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        viewport.style.setProperty('--mx', ((e.clientX / window.innerWidth) * 2 - 1).toFixed(3));
+        viewport.style.setProperty('--my', ((e.clientY / window.innerHeight) * 2 - 1).toFixed(3));
+      });
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Loader and entrance                                                 */
+  /* ------------------------------------------------------------------ */
+  // First paint of the islands without animation, then enable transitions
   els.forEach((el) => { el.style.transition = 'none'; });
   render();
   journey.offsetWidth;
   els.forEach((el) => { el.style.transition = ''; });
+
+  const loader = document.getElementById('loader');
+  const bar = document.getElementById('loader-bar');
+  const pct = document.getElementById('loader-pct');
+  document.body.classList.add('is-loading');
+
+  // Count what the first view needs: the visible images, the background video
+  // and the fonts. Anything slow is given up on after MAX_WAIT.
+  const MIN_SHOW = 1200;
+  const MAX_WAIT = 8000;
+  const started = performance.now();
+  const tasks = [
+    ...[...document.images].map((img) => (img.complete ? Promise.resolve()
+      : new Promise((r) => { img.addEventListener('load', r, { once: true }); img.addEventListener('error', r, { once: true }); }))),
+    document.fonts ? document.fonts.ready : Promise.resolve(),
+  ];
+  if (bgA) {
+    tasks.push(bgA.readyState >= 3 ? Promise.resolve()
+      : new Promise((r) => { bgA.addEventListener('canplay', r, { once: true }); bgA.addEventListener('error', r, { once: true }); }));
+  }
+  let done = 0;
+  let shown = 0;
+  tasks.forEach((t) => t.then(() => { done += 1; }));
+  // Ease the number toward the real progress so it counts up smoothly
+  const counter = () => {
+    const target = (done / tasks.length) * 100;
+    shown += (target - shown) * 0.12;
+    if (target - shown < 0.5) shown = target;
+    bar.style.width = `${shown}%`;
+    pct.textContent = Math.round(shown);
+    if (!finished) requestAnimationFrame(counter);
+  };
+  let finished = false;
+  requestAnimationFrame(counter);
+
+  const allLoaded = Promise.all(tasks);
+  const timeout = new Promise((r) => setTimeout(r, MAX_WAIT));
+  Promise.race([allLoaded, timeout]).then(() => {
+    const wait = Math.max(0, MIN_SHOW - (performance.now() - started));
+    setTimeout(() => {
+      finished = true;
+      bar.style.width = '100%';
+      pct.textContent = '100';
+      setTimeout(() => {
+        loader.classList.add('is-done');
+        document.body.classList.remove('is-loading');
+        setTimeout(() => {
+          document.body.classList.add('is-ready');
+          loader.remove();
+        }, 1800);
+      }, 250);
+    }, wait);
+  });
 })();
