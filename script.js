@@ -101,7 +101,7 @@
   // Islands without artwork (img: null) get a simple placeholder island.
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6] },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478] },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor' },
     { name: 'אי האותיות המחייכות', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', img: 'island-single', box: [49, 0, 493, 493] },
@@ -141,6 +141,8 @@
   const nextBtn = document.getElementById('journey-next');
   const lockSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
 
+  const supportsAlphaVideo = !!navigator.userAgentData; // Chromium (Chrome, Edge, Opera)
+
   const els = ISLANDS.map((island, i) => {
     const a = document.createElement('a');
     a.className = 'island';
@@ -171,6 +173,29 @@
     a.addEventListener('click', (e) => {
       if (a.dataset.state === 'locked') e.preventDefault();
     });
+    // Stagger the hover-float so the islands don't bob in sync
+    a.querySelector('.island__float').style.animationDelay = `${-i * 1.3}s`;
+
+    // Island video on mouse-over. Transparent WebM only plays correctly in
+    // Chromium browsers; elsewhere the still image stays.
+    if (island.video && supportsAlphaVideo && !reducedMotion) {
+      const video = document.createElement('video');
+      video.className = 'island__video';
+      video.src = `assets/${island.video}.webm`;
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = 'auto';
+      a.querySelector('.island__img').after(video);
+      a.addEventListener('mouseenter', () => {
+        if (a.dataset.state === 'locked') return;
+        video.play().then(() => a.classList.add('is-playing')).catch(() => {});
+      });
+      a.addEventListener('mouseleave', () => {
+        a.classList.remove('is-playing');
+        video.pause();
+      });
+    }
     journey.appendChild(a);
     return a;
   });

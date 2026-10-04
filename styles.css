@@ -303,9 +303,24 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 }
 .island__img--flip { transform: scaleX(-1); }
 
-/* Gentle idle float on the active island */
-.island__float { position: absolute; inset: 0; }
-.island[data-state="current"] .island__float { animation: island-float 5s ease-in-out infinite; }
+/* Every island always hovers gently; script.js staggers the phase per island */
+.island__float { position: absolute; inset: 0; animation: island-float 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .island__float { animation: none; } }
+
+/* Animated artwork: the video sits exactly over the still image and is shown
+   only while it plays (on hover); the image stays as the fallback */
+.island__video {
+  position: absolute;
+  left: -0.5px;
+  top: 1px;
+  width: 564px;
+  height: 477px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.island.is-playing .island__video { opacity: 1; }
+.island.is-playing .island__img { opacity: 0; }
 @keyframes island-float {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -14px; }
