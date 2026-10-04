@@ -6,13 +6,13 @@
   <title>מדקדקים באנגלית</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;600;700&family=Playpen+Sans+Hebrew:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="viewport">
     <main class="stage" id="stage">
-      <img class="bg" src="assets/bg-clouds.webp" alt="">
+      <video class="bg" src="assets/bg-video.webm" poster="assets/bg-clouds.webp" autoplay muted loop playsinline aria-hidden="true"></video>
 
       <!-- Header -->
       <header class="topbar">
@@ -32,7 +32,10 @@
         </div>
 
         <a class="logo" href="#" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית">
-          <span class="logo__text"><img src="assets/logo-text.webp" alt=""></span>
+          <span class="logo__text">
+            <span class="logo__title">מדקדקים באנגלית</span>
+            <span class="logo__subtitle">קורס דיגיטלי באנגלית</span>
+          </span>
           <span class="logo__mark">
             <img class="logo__ring" src="assets/logo-ring.svg" alt="">
             <span class="logo__tile logo__tile--a">a</span>
@@ -107,14 +110,14 @@
 
       <!-- Bottom-left helper -->
       <img class="trophy" src="assets/trophy.svg" alt="">
-      <div class="hint">
+      <a class="cart" href="#shop" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
+      <div class="hint" id="shop-hint" role="tooltip">
         <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>
         <a class="btn-pill hint__cta" href="#shop">
           <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
           <span>לחנות האותיות</span>
         </a>
       </div>
-      <a class="cart" href="#shop" aria-label="חנות האותיות"><img src="assets/shop.webp" alt=""></a>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
     </main>
   </div>

@@ -14,6 +14,13 @@
   window.addEventListener('resize', fit);
   fit();
 
+  // Respect reduced-motion: keep the still poster instead of the moving background
+  const bgVideo = document.querySelector('video.bg');
+  if (bgVideo && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    bgVideo.removeAttribute('autoplay');
+    bgVideo.pause();
+  }
+
   document.querySelectorAll('.island[data-state="locked"]').forEach((el) => {
     el.addEventListener('click', (e) => e.preventDefault());
   });
