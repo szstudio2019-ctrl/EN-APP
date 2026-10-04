@@ -1,0 +1,8 @@
+# Full-size Figma source images (25MB each); compressed WebP versions live in assets/
+assets/original/
+
+# Local Claude Code settings
+.claude/
+
+.DS_Store
+Thumbs.db
