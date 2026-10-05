@@ -323,30 +323,8 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   transition: opacity .25s ease;
 }
 .island.is-playing .island__video { opacity: 1; }
-/* The source video is framed tighter than the still image (notes, island edges
-   and the bottom fall outside it). So the video only covers the centre, fading
-   out toward its edges, and the still image keeps showing around it. The two
-   masks are complements of each other so nothing doubles up. */
-.island__video {
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 34px, #000 74px, #000 490px, transparent 530px),
-    linear-gradient(to bottom, transparent 24px, #000 64px, #000 422px, transparent 462px);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right, transparent 34px, #000 74px, #000 490px, transparent 530px),
-    linear-gradient(to bottom, transparent 24px, #000 64px, #000 422px, transparent 462px);
-  mask-composite: intersect;
-}
-.island.is-playing .island__img {
-  -webkit-mask-image:
-    linear-gradient(to right, #000 34px, transparent 74px, transparent 490px, #000 530px),
-    linear-gradient(to bottom, #000 24px, transparent 64px, transparent 422px, #000 462px);
-  -webkit-mask-composite: source-over;
-  mask-image:
-    linear-gradient(to right, #000 34px, transparent 74px, transparent 490px, #000 530px),
-    linear-gradient(to bottom, #000 24px, transparent 64px, transparent 422px, #000 462px);
-  mask-composite: add;
-}
+/* The video is framed exactly like the still image, so it simply replaces it */
+.island.is-playing .island__img { opacity: 0; transition: opacity .25s ease; }
 @keyframes island-float {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -14px; }
@@ -362,14 +340,17 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
   pointer-events: none;
   overflow: visible;
 }
+/* Shown only while travelling between islands; fades away once they settle */
+.journey__path { opacity: 0; transition: opacity .8s ease; }
+.journey__path.is-travelling { opacity: 1; transition-duration: .3s; }
 .journey__seg path { fill: none; stroke-linecap: round; }
-.journey__glow { stroke: #ffd45c; stroke-width: 22; opacity: .55; }
-.journey__core { stroke: url(#light); stroke-width: 4; }
+.journey__glow { stroke: url(#glow-color); stroke-width: 24; opacity: .7; }
+.journey__core { stroke: #fff; stroke-width: 4; }
 .journey__spark {
   stroke: #fff;
   stroke-width: 6;
   stroke-dasharray: 2 220;
-  filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px #ffd45c);
+  filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 14px #ff5fa8);
   animation: spark 2.6s linear infinite;
 }
 @keyframes spark { to { stroke-dashoffset: -222; } }

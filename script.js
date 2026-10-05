@@ -106,7 +106,7 @@
   // the learner scrolls past them to look.
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor', status: 'progress', progress: 50 },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor-ahh', status: 'progress', progress: 50 },
     { name: 'אי האותיות המחייכות', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', img: 'island-single', box: [49, 0, 493, 493] },
@@ -194,14 +194,22 @@
       const video = document.createElement('video');
       video.className = 'island__video';
       video.src = `assets/${island.video}.webm`;
-      video.muted = true;
       video.loop = true;
       video.playsInline = true;
       video.preload = 'auto';
+      // The video covers exactly the same box as the still image
+      video.style.cssText = `left:${l}px;top:${t}px;width:${w}px;height:${h}px`;
       a.querySelector('.island__img').after(video);
       a.addEventListener('mouseenter', () => {
         if (a.dataset.state === 'locked') return;
-        video.play().then(() => a.classList.add('is-playing')).catch(() => {});
+        const show = () => a.classList.add('is-playing');
+        // With sound when the browser allows it (after the visitor has clicked
+        // or pressed a key on the page); otherwise silently
+        video.muted = false;
+        video.play().then(show).catch(() => {
+          video.muted = true;
+          video.play().then(show).catch(() => {});
+        });
       });
       a.addEventListener('mouseleave', () => {
         a.classList.remove('is-playing');
@@ -223,10 +231,10 @@
   path.setAttribute('viewBox', `0 0 ${W} ${H}`);
   path.innerHTML = `
     <defs>
-      <linearGradient id="light" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#fff6c8"/>
-        <stop offset=".5" stop-color="#ffd45c"/>
-        <stop offset="1" stop-color="#fff6c8"/>
+      <linearGradient id="glow-color" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#ff5fa8"/>
+        <stop offset=".5" stop-color="#b45cff"/>
+        <stop offset="1" stop-color="#ff5fa8"/>
       </linearGradient>
       <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
     </defs>`;
@@ -296,7 +304,9 @@
 
   // One move per gesture: ignore further input until the flight has finished.
   const TRAVEL_MS = 1100;
+  const LINE_VISIBLE_MS = 5000;
   let busy = false;
+  let lineTimer;
   function goTo(target) {
     target = Math.max(0, Math.min(ISLANDS.length - 1, target));
     if (busy || target === current) return;
@@ -304,6 +314,11 @@
     current = target;
     if (!reducedMotion) setBackgroundRate(TRAVEL_SPEED);
     render();
+    // The light line shows only while moving between islands: it draws in as
+    // they arrive, then fades away a moment after the last one has landed
+    path.classList.add('is-travelling');
+    clearTimeout(lineTimer);
+    lineTimer = setTimeout(() => path.classList.remove('is-travelling'), LINE_VISIBLE_MS);
     setTimeout(() => {
       busy = false;
       setBackgroundRate(SPEED);
