@@ -114,7 +114,7 @@
     { name: 'אי צירוף האותיות', lessons: '20-27', img: 'island-blending', box: [0, 48, 557, 371] },
     { name: 'אי האותיות השורקות', lessons: '28-31', img: 'island-whistling', box: [7, 17, 528, 434], flip: true },
     { name: 'אי הקסמים', lessons: '32-39', img: 'island-magic', box: [43, 22, 526, 433] },
-    { name: 'אי הצלילים המתקדמים', lessons: '42-45', img: 'island-review', box: [32, -14, 504, 504] },
+    { name: 'אי הצלילים המתקדמים', lessons: '42-45', coins: 40, img: 'island-sounds', box: [5, 51, 571, 381] },
     { name: 'אי החזרות', review: '1-45', img: 'island-review', box: [32, -14, 504, 504] },
   ];
 
@@ -165,7 +165,7 @@
         : '<span></span>';
     const reward = island.review
       ? { icon: 'chest.webp', label: 'תרגולים', value: 800 }
-      : { icon: 'coin.webp', label: 'מטבעות', value: 350 };
+      : { icon: 'coin.webp', label: 'מטבעות', value: island.coins ?? 350 };
     a.innerHTML = `
       <div class="island__float">
         ${art}
