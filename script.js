@@ -118,27 +118,30 @@
     { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
   ];
 
-  // Only the active island and the next one are visible. Every island lives at
-  // the same height on its own side (odd islands — 1st, 3rd, … — on the right,
-  // even ones on the left) and changes only by scale and opacity: the next
-  // island waits small and locked, then grows into place; the island after it
-  // fades in from nothing; the one being left grows a little more and fades out.
+  // Three islands are visible: the active one, the next one, and the one after
+  // it, small near the horizon. Odd islands (1st, 3rd, …) sit on the right and
+  // even ones on the left. They arrive one after another: the active island
+  // first, the next one `delay` seconds later, then the one on the horizon.
   // x is the distance of the island centre from the stage centre, y its centre
   // height on the 1920x1080 stage, s the scale, o the opacity.
   const SLOTS = {
-    passed: { x: 380, y: 560, s: 1.5, o: 0 },
-    active: { x: 380, y: 560, s: 1.15, o: 1 },
-    next: { x: 380, y: 560, s: 0.45, o: 1 },
-    later: { x: 380, y: 560, s: 0.2, o: 0 },
+    passed: { x: 380, y: 560, s: 1.5, o: 0, delay: 0 },
+    active: { x: 380, y: 560, s: 1.15, o: 1, delay: 0 },
+    next: { x: 380, y: 560, s: 0.45, o: 1, delay: 1 },
+    horizon: { x: 110, y: 255, s: 0.2, o: 0.9, delay: 2 },
+    later: { x: 60, y: 230, s: 0.06, o: 0, delay: 0 },
   };
   const slotFor = (offset, index) => {
     const slot = offset < 0 ? SLOTS.passed
       : offset === 0 ? SLOTS.active
       : offset === 1 ? SLOTS.next
+      : offset === 2 ? SLOTS.horizon
       : SLOTS.later;
     const side = index % 2 === 0 ? 1 : -1; // index 0 = island 1 (odd) → right
     return { ...slot, x: W / 2 + side * slot.x };
   };
+  // Where the light line touches an island: a little above the card
+  const anchor = (slot) => ({ x: slot.x, y: slot.y + 40 * slot.s });
 
   const journey = document.getElementById('journey');
   const count = document.getElementById('journey-count');
@@ -211,14 +214,71 @@
 
   let current = 0;
 
+  /* Glowing line of light that links the visible islands. Two segments
+     (active → next → horizon), each a soft wide glow, a bright core and a
+     travelling sparkle; they draw themselves once the islands have arrived. */
+  const NS = 'http://www.w3.org/2000/svg';
+  const path = document.createElementNS(NS, 'svg');
+  path.setAttribute('class', 'journey__path');
+  path.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  path.innerHTML = `
+    <defs>
+      <linearGradient id="light" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff6c8"/>
+        <stop offset=".5" stop-color="#ffd45c"/>
+        <stop offset="1" stop-color="#fff6c8"/>
+      </linearGradient>
+      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
+    </defs>`;
+  const segments = [0, 1].map(() => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'journey__seg');
+    g.innerHTML = `
+      <path class="journey__glow" filter="url(#glow)"/>
+      <path class="journey__core"/>
+      <path class="journey__spark"/>`;
+    path.appendChild(g);
+    return g;
+  });
+  journey.prepend(path);
+
+  function drawLine() {
+    const pts = [0, 1, 2]
+      .map((o) => current + o)
+      .filter((i) => i < ISLANDS.length)
+      .map((i) => anchor(slotFor(i - current, i)));
+    segments.forEach((g, k) => {
+      const a = pts[k];
+      const b = pts[k + 1];
+      if (!a || !b) { g.classList.remove('is-drawn'); g.style.opacity = '0'; return; }
+      // Curve that sags a little below the straight line, like a hanging rope of light
+      const cx = (a.x + b.x) / 2;
+      const cy = Math.max(a.y, b.y) + 70 - k * 40;
+      const d = `M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}`;
+      g.querySelectorAll('path').forEach((p) => p.setAttribute('d', d));
+      const len = Math.ceil(g.querySelector('.journey__core').getTotalLength());
+      g.style.setProperty('--len', len);
+      // Restart the draw-in: hide instantly, then draw after the islands land
+      g.classList.remove('is-drawn');
+      g.style.opacity = '';
+      g.querySelectorAll('path').forEach((p) => { p.style.transition = 'none'; });
+      g.getBoundingClientRect();
+      g.querySelectorAll('path').forEach((p) => { p.style.transition = ''; });
+      g.style.setProperty('--draw-delay', `${(k === 0 ? SLOTS.next.delay : SLOTS.horizon.delay) + 0.6}s`);
+      g.classList.add('is-drawn');
+    });
+  }
+
   function render() {
     els.forEach((el, i) => {
       const offset = i - current;
       const slot = slotFor(offset, i);
       el.style.transform = `translate(${slot.x - 278}px, ${slot.y - 248}px) scale(${slot.s})`;
       el.style.opacity = slot.o;
-      el.style.zIndex = offset === 0 ? 100 : 50;
-      el.dataset.slot = offset === 0 ? 'active' : offset === 1 ? 'next' : 'hidden';
+      // Arrive one after another; leaving and hiding happen at once
+      el.style.transitionDelay = reducedMotion ? '0s' : `${slot.delay}s`;
+      el.style.zIndex = offset === 0 ? 100 : offset === 1 ? 60 : 50;
+      el.dataset.slot = offset === 0 ? 'active' : offset === 1 ? 'next' : offset === 2 ? 'horizon' : 'hidden';
       const status = ISLANDS[i].status || 'locked';
       el.dataset.state = status;
       el.setAttribute('aria-disabled', status === 'locked' ? 'true' : 'false');
@@ -228,6 +288,7 @@
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
     });
     syncMenu();
+    drawLine();
     count.textContent = `${current + 1} / ${ISLANDS.length}`;
     prevBtn.disabled = current === 0;
     nextBtn.disabled = current === ISLANDS.length - 1;
@@ -375,11 +436,19 @@
   /* ------------------------------------------------------------------ */
   /* Loader and entrance                                                 */
   /* ------------------------------------------------------------------ */
-  // First paint of the islands without animation, then enable transitions
-  els.forEach((el) => { el.style.transition = 'none'; });
+  // First paint: every island waits invisible and tiny at the horizon, so that
+  // when the loader lifts they arrive in turn (see `arrive` below)
   render();
+  els.forEach((el, i) => {
+    const far = slotFor(3, i);
+    el.style.transition = 'none';
+    el.style.transform = `translate(${far.x - 278}px, ${far.y - 248}px) scale(${far.s})`;
+    el.style.opacity = 0;
+  });
   journey.offsetWidth;
   els.forEach((el) => { el.style.transition = ''; });
+  path.style.visibility = 'hidden'; // no light line until the islands arrive
+  const arrive = () => { path.style.visibility = ''; render(); };
 
   const loader = document.getElementById('loader');
   const bar = document.getElementById('loader-bar');
@@ -426,6 +495,7 @@
       setTimeout(() => {
         loader.classList.add('is-done');
         document.body.classList.remove('is-loading');
+        setTimeout(arrive, 500);
         setTimeout(() => {
           document.body.classList.add('is-ready');
           loader.remove();
