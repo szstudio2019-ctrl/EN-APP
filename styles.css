@@ -772,7 +772,7 @@ video.bg {
   top: 60px;
   right: 40px;
   z-index: 401;
-  width: 256px;
+  width: 330px;
   max-height: 960px;
   padding: 24px;
   display: flex;
@@ -785,13 +785,13 @@ video.bg {
   font-family: 'Assistant', 'Rubik', sans-serif;
   direction: rtl;
   /* Opens as a circle growing out of the menu button (its centre sits at
-     114px, 36px relative to the panel) and closes by shrinking back into it */
-  clip-path: circle(0 at 114px 36px);
+     188px, 36px relative to the 330px panel) and closes by shrinking back into it */
+  clip-path: circle(0 at 188px 36px);
   visibility: hidden;
   transition: clip-path .75s cubic-bezier(.76, 0, .24, 1), visibility 0s linear .75s;
 }
 .menu-open .sidebar {
-  clip-path: circle(1300px at 114px 36px);
+  clip-path: circle(1300px at 188px 36px);
   visibility: visible;
   transition: clip-path .75s cubic-bezier(.76, 0, .24, 1), visibility 0s;
 }
@@ -823,7 +823,7 @@ video.bg {
   transition: transform .2s ease;
 }
 .sidebar__close:hover { transform: scale(1.1); }
-.sidebar__close img { width: 16px; height: 16px; rotate: -90deg; }
+.sidebar__close svg { width: 14px; height: 14px; fill: none; stroke: var(--white); stroke-width: 2.4; stroke-linecap: round; }
 
 .sidebar__profile { display: flex; align-items: center; gap: 12px; }
 .sidebar__who { flex: 1; display: flex; flex-direction: column; gap: 4px; text-align: right; }
@@ -888,6 +888,7 @@ video.bg {
   text-align: right;
   transition: background .2s ease, color .2s ease;
 }
+.sb-sublink > span:first-child { white-space: nowrap; }
 .sb-sublink:hover { background: rgba(255, 255, 255, .08); color: var(--white); }
 .sb-sublink.is-current { background: var(--pink); color: var(--white); }
 .sb-sublink__status { margin-inline-start: auto; font-size: 12px; }
