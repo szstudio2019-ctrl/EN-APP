@@ -107,15 +107,15 @@
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
     { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor-ahh', status: 'progress', progress: 50 },
-    { name: 'אי האותיות המחייכות', img: 'island-smiles', box: [21, 27, 529, 423] },
-    { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
-    { name: 'אי האותיות הבודדות', img: 'island-single', box: [49, 0, 493, 493] },
-    { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
-    { name: 'אי צירוף האותיות', img: 'island-blending', box: [0, 48, 557, 371] },
-    { name: 'אי האותיות השורקות', img: 'island-whistling', box: [7, 17, 528, 434], flip: true },
-    { name: 'אי הקסמים', img: 'island-magic', box: [43, 22, 526, 433] },
-    { name: 'אי הצלילים המתקדמים', img: 'island-review', box: [32, -14, 504, 504] },
-    { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
+    { name: 'אי האותיות המחייכות', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423] },
+    { name: 'אי החזרות', review: '1-11', img: 'island-review', box: [32, -14, 504, 504] },
+    { name: 'אי האותיות הבודדות', lessons: '13-19', img: 'island-single', box: [49, 0, 493, 493] },
+    { name: 'אי החזרות', review: '1-19', img: 'island-review', box: [32, -14, 504, 504] },
+    { name: 'אי צירוף האותיות', lessons: '20-27', img: 'island-blending', box: [0, 48, 557, 371] },
+    { name: 'אי האותיות השורקות', lessons: '28-31', img: 'island-whistling', box: [7, 17, 528, 434], flip: true },
+    { name: 'אי הקסמים', lessons: '32-39', img: 'island-magic', box: [43, 22, 526, 433] },
+    { name: 'אי הצלילים המתקדמים', lessons: '42-45', img: 'island-review', box: [32, -14, 504, 504] },
+    { name: 'אי החזרות', review: '1-45', img: 'island-review', box: [32, -14, 504, 504] },
   ];
 
   // One island is visible at a time. Odd islands (1st, 3rd, …) sit on the
@@ -129,8 +129,8 @@
     passed: { x: 380, y: 560, s: 0.55, o: 0, delay: 0 },
     active: { x: 380, y: 560, s: 1.15, o: 1, delay: 0.45 },
     waiting: { x: 380, y: 560, s: 0.55, o: 0, delay: 0 },
-    // the island being left grows toward the viewer as it fades out
-    leaving: { x: 380, y: 560, s: 1.7, o: 0, delay: 0 },
+    // the island being left grows and drifts out past its own side as it fades
+    leaving: { x: 640, y: 560, s: 1.7, o: 0, delay: 0 },
   };
   const slotFor = (offset, index) => {
     const slot = offset < 0 ? SLOTS.passed : offset === 0 ? SLOTS.active : SLOTS.waiting;
@@ -156,9 +156,16 @@
     const art = island.img
       ? `<img class="island__img${island.flip ? ' island__img--flip' : ''}" src="assets/${island.img}.webp" alt="" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">`
       : `<div class="island__placeholder">${island.name}</div>`;
-    const lessons = island.lessons
-      ? `<p class="island__stat"><span>שיעורים</span><b>${island.lessons}</b></p>`
-      : '<span></span>';
+    // Review islands (Figma): "חזרות" range and "תרגולים 800" with a treasure chest;
+    // lesson islands: "שיעורים" range and "מטבעות 350" with a coin
+    const range = island.review
+      ? `<p class="island__stat"><span>חזרות</span><b>${island.review}</b></p>`
+      : island.lessons
+        ? `<p class="island__stat"><span>שיעורים</span><b>${island.lessons}</b></p>`
+        : '<span></span>';
+    const reward = island.review
+      ? { icon: 'chest.webp', label: 'תרגולים', value: 800 }
+      : { icon: 'coin.webp', label: 'מטבעות', value: 350 };
     a.innerHTML = `
       <div class="island__float">
         ${art}
@@ -166,10 +173,10 @@
         <div class="island__card">
           <p class="island__title">${island.name}</p>
           <div class="island__stats">
-            ${lessons}
+            ${range}
             <div class="island__coins">
-              <img src="assets/coin.webp" alt="">
-              <p class="island__stat"><span>מטבעות</span><b>350</b></p>
+              <img src="assets/${reward.icon}" alt="">
+              <p class="island__stat"><span>${reward.label}</span><b>${reward.value}</b></p>
             </div>
           </div>
           <div class="island__progress"><span></span></div>
@@ -277,9 +284,18 @@
     const dx = B.x - A.x;
     const dy = B.y - A.y;
     const dist = Math.hypot(dx, dy);
-    // A smooth half arc rising from one island and coming down onto the other
-    const rise = Math.max(220, dist * 0.42);
-    const point = (u) => [A.x + dx * u, A.y + dy * u - Math.sin(Math.PI * u) * rise];
+    // A half arc that rises out of the island being left and comes in to the
+    // new island from its side (level, heading outward), not from above.
+    const sideIn = toIndex % 2 === 0 ? 1 : -1; // +1: new island is on the right
+    const end = { x: B.x - sideIn * 250, y: B.y - 30 }; // its inner flank
+    const lift = Math.max(260, dist * 0.45);
+    const p1 = { x: A.x, y: A.y - lift }; // leave going straight up
+    const p2 = { x: end.x - sideIn * dist * 0.35, y: end.y }; // arrive level
+    const point = (u) => {
+      const v = 1 - u;
+      const a = v * v * v, b = 3 * v * v * u, c = 3 * v * u * u, d = u * u * u;
+      return [a * A.x + b * p1.x + c * p2.x + d * end.x, a * A.y + b * p1.y + c * p2.y + d * end.y];
+    };
     const start = performance.now();
     path.classList.add('is-travelling');
     const frame = (now) => {
@@ -337,7 +353,8 @@
     render();
     // The island being left grows and fades out (in either direction)…
     const leaving = els[from];
-    const big = { ...SLOTS.leaving, x: slotFor(0, from).x };
+    const side = from % 2 === 0 ? 1 : -1; // right-hand islands leave to the right
+    const big = { ...SLOTS.leaving, x: W / 2 + side * SLOTS.leaving.x };
     leaving.style.transitionDelay = '0s';
     leaving.style.transform = `translate(${big.x - 278}px, ${big.y - 248}px) scale(${big.s})`;
     snake(from, target);
