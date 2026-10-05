@@ -118,25 +118,20 @@
     { name: 'אי החזרות', img: 'island-review', box: [32, -14, 504, 504] },
   ];
 
-  // Three islands are visible: the active one, the next one, and the one after
-  // it, small near the horizon. Odd islands (1st, 3rd, …) sit on the right and
-  // even ones on the left. They arrive one after another: the active island
-  // first, the next one `delay` seconds later, then the one on the horizon.
+  // One island is visible at a time. Odd islands (1st, 3rd, …) sit on the
+  // right and even ones on the left. On scroll the current island shrinks away
+  // and fades while a snake of light slithers across to the other side, and the
+  // new island grows in where it lands. Hidden islands wait small and
+  // transparent on their own side, at the same height.
   // x is the distance of the island centre from the stage centre, y its centre
-  // height on the 1920x1080 stage, s the scale, o the opacity.
+  // height on the 1920x1080 stage, s the scale, o the opacity, delay in seconds.
   const SLOTS = {
-    passed: { x: 380, y: 560, s: 1.5, o: 0, delay: 0 },
-    active: { x: 380, y: 560, s: 1.15, o: 1, delay: 0 },
-    next: { x: 380, y: 560, s: 0.45, o: 1, delay: 1 },
-    horizon: { x: 110, y: 255, s: 0.2, o: 0.9, delay: 2 },
-    later: { x: 60, y: 230, s: 0.06, o: 0, delay: 0 },
+    passed: { x: 380, y: 560, s: 0.55, o: 0, delay: 0 },
+    active: { x: 380, y: 560, s: 1.15, o: 1, delay: 0.45 },
+    waiting: { x: 380, y: 560, s: 0.55, o: 0, delay: 0 },
   };
   const slotFor = (offset, index) => {
-    const slot = offset < 0 ? SLOTS.passed
-      : offset === 0 ? SLOTS.active
-      : offset === 1 ? SLOTS.next
-      : offset === 2 ? SLOTS.horizon
-      : SLOTS.later;
+    const slot = offset < 0 ? SLOTS.passed : offset === 0 ? SLOTS.active : SLOTS.waiting;
     const side = index % 2 === 0 ? 1 : -1; // index 0 = island 1 (odd) → right
     return { ...slot, x: W / 2 + side * slot.x };
   };
@@ -191,29 +186,51 @@
     // Island video on mouse-over. Transparent WebM only plays correctly in
     // Chromium browsers; elsewhere the still image stays.
     if (island.video && supportsAlphaVideo && !reducedMotion) {
-      const video = document.createElement('video');
-      video.className = 'island__video';
-      video.src = `assets/${island.video}.webm`;
-      video.loop = true;
-      video.playsInline = true;
-      video.preload = 'auto';
-      // The video covers exactly the same box as the still image
-      video.style.cssText = `left:${l}px;top:${t}px;width:${w}px;height:${h}px`;
-      a.querySelector('.island__img').after(video);
+      // Two copies of the clip take turns: while one plays, the other waits
+      // decoded on its first frame, so the loop restarts without a seek hitch.
+      const makeVideo = () => {
+        const v = document.createElement('video');
+        v.className = 'island__video';
+        v.src = `assets/${island.video}.webm`;
+        v.playsInline = true;
+        v.preload = 'auto';
+        // The video covers exactly the same box as the still image
+        v.style.cssText = `left:${l}px;top:${t}px;width:${w}px;height:${h}px`;
+        return v;
+      };
+      let front = makeVideo();
+      let back = makeVideo();
+      back.classList.add('is-standby');
+      a.querySelector('.island__img').after(front, back);
+      let hovering = false;
+
+      // With sound when the browser allows it (after the visitor has clicked or
+      // pressed a key on the page); otherwise silently
+      const playWithSound = (v) => {
+        v.muted = false;
+        return v.play().catch(() => { v.muted = true; return v.play(); });
+      };
+      const swap = () => {
+        if (!hovering) return;
+        playWithSound(back).catch(() => {});
+        back.classList.remove('is-standby');
+        front.classList.add('is-standby');
+        front.pause();
+        front.currentTime = 0;
+        [front, back] = [back, front];
+      };
+      front.addEventListener('ended', swap);
+      back.addEventListener('ended', swap);
+
       a.addEventListener('mouseenter', () => {
         if (a.dataset.state === 'locked') return;
-        const show = () => a.classList.add('is-playing');
-        // With sound when the browser allows it (after the visitor has clicked
-        // or pressed a key on the page); otherwise silently
-        video.muted = false;
-        video.play().then(show).catch(() => {
-          video.muted = true;
-          video.play().then(show).catch(() => {});
-        });
+        hovering = true;
+        playWithSound(front).then(() => a.classList.add('is-playing')).catch(() => {});
       });
       a.addEventListener('mouseleave', () => {
+        hovering = false;
         a.classList.remove('is-playing');
-        video.pause();
+        for (const v of [front, back]) { v.pause(); v.currentTime = 0; }
       });
     }
     journey.appendChild(a);
@@ -222,9 +239,9 @@
 
   let current = 0;
 
-  /* Glowing line of light that links the visible islands. Two segments
-     (active → next → horizon), each a soft wide glow, a bright core and a
-     travelling sparkle; they draw themselves once the islands have arrived. */
+  /* Snake of light: while moving between islands, a glowing wavy line
+     slithers from the island being left to the one arriving, then slides into
+     it and disappears. White core, pink-purple glow, drawn every frame. */
   const NS = 'http://www.w3.org/2000/svg';
   const path = document.createElementNS(NS, 'svg');
   path.setAttribute('class', 'journey__path');
@@ -236,45 +253,55 @@
         <stop offset=".5" stop-color="#b45cff"/>
         <stop offset="1" stop-color="#ff5fa8"/>
       </linearGradient>
-      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter>
-    </defs>`;
-  const segments = [0, 1].map(() => {
-    const g = document.createElementNS(NS, 'g');
-    g.setAttribute('class', 'journey__seg');
-    g.innerHTML = `
+      <filter id="glow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="9"/></filter>
+    </defs>
+    <g class="journey__seg">
       <path class="journey__glow" filter="url(#glow)"/>
       <path class="journey__core"/>
-      <path class="journey__spark"/>`;
-    path.appendChild(g);
-    return g;
-  });
+    </g>`;
+  const snakeParts = path.querySelectorAll('.journey__seg path');
   journey.prepend(path);
 
-  function drawLine() {
-    const pts = [0, 1, 2]
-      .map((o) => current + o)
-      .filter((i) => i < ISLANDS.length)
-      .map((i) => anchor(slotFor(i - current, i)));
-    segments.forEach((g, k) => {
-      const a = pts[k];
-      const b = pts[k + 1];
-      if (!a || !b) { g.classList.remove('is-drawn'); g.style.opacity = '0'; return; }
-      // Curve that sags a little below the straight line, like a hanging rope of light
-      const cx = (a.x + b.x) / 2;
-      const cy = Math.max(a.y, b.y) + 70 - k * 40;
-      const d = `M${a.x},${a.y} Q${cx},${cy} ${b.x},${b.y}`;
-      g.querySelectorAll('path').forEach((p) => p.setAttribute('d', d));
-      const len = Math.ceil(g.querySelector('.journey__core').getTotalLength());
-      g.style.setProperty('--len', len);
-      // Restart the draw-in: hide instantly, then draw after the islands land
-      g.classList.remove('is-drawn');
-      g.style.opacity = '';
-      g.querySelectorAll('path').forEach((p) => { p.style.transition = 'none'; });
-      g.getBoundingClientRect();
-      g.querySelectorAll('path').forEach((p) => { p.style.transition = ''; });
-      g.style.setProperty('--draw-delay', `${(k === 0 ? SLOTS.next.delay : SLOTS.horizon.delay) + 0.6}s`);
-      g.classList.add('is-drawn');
-    });
+  const SNAKE_MS = 1500; // head travels from start to end, then the tail follows
+  const SNAKE_LEN = 0.55; // visible body length as a share of the whole route
+  let snakeRaf = 0;
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+  function snake(fromIndex, toIndex) {
+    cancelAnimationFrame(snakeRaf);
+    if (reducedMotion) return;
+    const A = anchor(slotFor(0, fromIndex));
+    const B = anchor(slotFor(0, toIndex));
+    const dx = B.x - A.x;
+    const dy = B.y - A.y;
+    const dist = Math.hypot(dx, dy);
+    const nx = -dy / dist; // unit normal, for the side-to-side wave
+    const ny = dx / dist;
+    // The route bows upward a little so it reads as a journey, not a bridge
+    const point = (u, phase) => {
+      const bow = -Math.sin(Math.PI * u) * 120;
+      const wave = Math.sin(u * Math.PI * 5 - phase) * 34 * Math.sin(Math.PI * u);
+      return [A.x + dx * u + nx * wave, A.y + dy * u + bow + ny * wave];
+    };
+    const start = performance.now();
+    path.classList.add('is-travelling');
+    const frame = (now) => {
+      const t = Math.min(1, (now - start) / SNAKE_MS);
+      const head = ease(Math.min(1, t * 1.25)); // head arrives a little before the end
+      const tail = Math.max(0, head - SNAKE_LEN) + (t > 0.8 ? (t - 0.8) / 0.2 * (1 - Math.max(0, head - SNAKE_LEN)) : 0);
+      const phase = (now - start) / 90; // the wave travels along the body
+      let d = '';
+      const steps = 60;
+      for (let k = 0; k <= steps; k++) {
+        const u = tail + (head - tail) * (k / steps);
+        const [x, y] = point(u, phase);
+        d += `${k ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
+      }
+      snakeParts.forEach((p) => p.setAttribute('d', head - tail > 0.002 ? d : ''));
+      if (t < 1) snakeRaf = requestAnimationFrame(frame);
+      else path.classList.remove('is-travelling');
+    };
+    snakeRaf = requestAnimationFrame(frame);
   }
 
   function render() {
@@ -285,8 +312,8 @@
       el.style.opacity = slot.o;
       // Arrive one after another; leaving and hiding happen at once
       el.style.transitionDelay = reducedMotion ? '0s' : `${slot.delay}s`;
-      el.style.zIndex = offset === 0 ? 100 : offset === 1 ? 60 : 50;
-      el.dataset.slot = offset === 0 ? 'active' : offset === 1 ? 'next' : offset === 2 ? 'horizon' : 'hidden';
+      el.style.zIndex = offset === 0 ? 100 : 50;
+      el.dataset.slot = offset === 0 ? 'active' : 'hidden';
       const status = ISLANDS[i].status || 'locked';
       el.dataset.state = status;
       el.setAttribute('aria-disabled', status === 'locked' ? 'true' : 'false');
@@ -296,29 +323,23 @@
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
     });
     syncMenu();
-    drawLine();
     count.textContent = `${current + 1} / ${ISLANDS.length}`;
     prevBtn.disabled = current === 0;
     nextBtn.disabled = current === ISLANDS.length - 1;
   }
 
   // One move per gesture: ignore further input until the flight has finished.
-  const TRAVEL_MS = 1100;
-  const LINE_VISIBLE_MS = 5000;
+  const TRAVEL_MS = 1600;
   let busy = false;
-  let lineTimer;
   function goTo(target) {
     target = Math.max(0, Math.min(ISLANDS.length - 1, target));
     if (busy || target === current) return;
     busy = true;
+    const from = current;
     current = target;
     if (!reducedMotion) setBackgroundRate(TRAVEL_SPEED);
     render();
-    // The light line shows only while moving between islands: it draws in as
-    // they arrive, then fades away a moment after the last one has landed
-    path.classList.add('is-travelling');
-    clearTimeout(lineTimer);
-    lineTimer = setTimeout(() => path.classList.remove('is-travelling'), LINE_VISIBLE_MS);
+    snake(from, target);
     setTimeout(() => {
       busy = false;
       setBackgroundRate(SPEED);
@@ -462,8 +483,7 @@
   });
   journey.offsetWidth;
   els.forEach((el) => { el.style.transition = ''; });
-  path.style.visibility = 'hidden'; // no light line until the islands arrive
-  const arrive = () => { path.style.visibility = ''; render(); };
+  const arrive = () => render();
 
   const loader = document.getElementById('loader');
   const bar = document.getElementById('loader-bar');
