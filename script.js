@@ -129,6 +129,8 @@
     passed: { x: 380, y: 560, s: 0.55, o: 0, delay: 0 },
     active: { x: 380, y: 560, s: 1.15, o: 1, delay: 0.45 },
     waiting: { x: 380, y: 560, s: 0.55, o: 0, delay: 0 },
+    // the island being left grows toward the viewer as it fades out
+    leaving: { x: 380, y: 560, s: 1.7, o: 0, delay: 0 },
   };
   const slotFor = (offset, index) => {
     const slot = offset < 0 ? SLOTS.passed : offset === 0 ? SLOTS.active : SLOTS.waiting;
@@ -239,7 +241,7 @@
 
   let current = 0;
 
-  /* Snake of light: while moving between islands, a glowing wavy line
+  /* Trail of light: while moving between islands, a glowing half arc
      slithers from the island being left to the one arriving, then slides into
      it and disappears. White core, pink-purple glow, drawn every frame. */
   const NS = 'http://www.w3.org/2000/svg';
@@ -275,26 +277,20 @@
     const dx = B.x - A.x;
     const dy = B.y - A.y;
     const dist = Math.hypot(dx, dy);
-    const nx = -dy / dist; // unit normal, for the side-to-side wave
-    const ny = dx / dist;
-    // The route bows upward a little so it reads as a journey, not a bridge
-    const point = (u, phase) => {
-      const bow = -Math.sin(Math.PI * u) * 120;
-      const wave = Math.sin(u * Math.PI * 5 - phase) * 34 * Math.sin(Math.PI * u);
-      return [A.x + dx * u + nx * wave, A.y + dy * u + bow + ny * wave];
-    };
+    // A smooth half arc rising from one island and coming down onto the other
+    const rise = Math.max(220, dist * 0.42);
+    const point = (u) => [A.x + dx * u, A.y + dy * u - Math.sin(Math.PI * u) * rise];
     const start = performance.now();
     path.classList.add('is-travelling');
     const frame = (now) => {
       const t = Math.min(1, (now - start) / SNAKE_MS);
       const head = ease(Math.min(1, t * 1.25)); // head arrives a little before the end
       const tail = Math.max(0, head - SNAKE_LEN) + (t > 0.8 ? (t - 0.8) / 0.2 * (1 - Math.max(0, head - SNAKE_LEN)) : 0);
-      const phase = (now - start) / 90; // the wave travels along the body
       let d = '';
       const steps = 60;
       for (let k = 0; k <= steps; k++) {
         const u = tail + (head - tail) * (k / steps);
-        const [x, y] = point(u, phase);
+        const [x, y] = point(u);
         d += `${k ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`;
       }
       snakeParts.forEach((p) => p.setAttribute('d', head - tail > 0.002 ? d : ''));
@@ -339,10 +335,21 @@
     current = target;
     if (!reducedMotion) setBackgroundRate(TRAVEL_SPEED);
     render();
+    // The island being left grows and fades out (in either direction)…
+    const leaving = els[from];
+    const big = { ...SLOTS.leaving, x: slotFor(0, from).x };
+    leaving.style.transitionDelay = '0s';
+    leaving.style.transform = `translate(${big.x - 278}px, ${big.y - 248}px) scale(${big.s})`;
     snake(from, target);
     setTimeout(() => {
       busy = false;
       setBackgroundRate(SPEED);
+      // …then quietly returns, invisible, to its resting slot
+      const rest = slotFor(from - current, from);
+      leaving.style.transition = 'none';
+      leaving.style.transform = `translate(${rest.x - 278}px, ${rest.y - 248}px) scale(${rest.s})`;
+      leaving.offsetWidth;
+      leaving.style.transition = '';
     }, TRAVEL_MS);
   }
   const go = (step) => goTo(current + step);
