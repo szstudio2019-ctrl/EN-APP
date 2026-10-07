@@ -74,7 +74,7 @@
   };
   const isReview = (island) => island.name === 'אי החזרות';
   const short = (island) => island.name.replace(/^אי (ה)?/, '');
-  fillList('sb-worlds', (island) => !isReview(island),
+  fillList('sb-worlds', (island) => !isReview(island) && !island.finale,
     (island) => (island.lessons ? `${short(island)} (שיעור ${island.lessons})` : short(island)));
   fillList('sb-reviews', isReview, (island, n) => `חזרה ${n}`);
 

@@ -139,7 +139,12 @@
     a.className = 'island';
     a.href = island.page || `#island-${i + 1}`;
     const [l, t, w, h] = island.box || [0, 0, 564, 478];
-    const art = island.img
+    // Finale: the learner's first name comes from the header
+    const firstName = (document.querySelector('.user__name')?.textContent || '').trim().split(/\s+/)[0];
+    const confetti = Array.from({ length: 18 }, (_, k) => `<i style="--k:${k}"></i>`).join('');
+    const art = island.finale
+      ? `<div class="finale"><span class="finale__confetti" aria-hidden="true">${confetti}</span><img class="finale__trophy" src="assets/trophy.svg" alt=""><p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p><p class="finale__en" lang="en" dir="ltr">Very Good!</p></div>`
+      : island.img
       ? `<img class="island__img${island.flip ? ' island__img--flip' : ''}" src="assets/${island.img}.webp" alt="" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">`
       : `<div class="island__placeholder">${island.name}</div>`;
     // Review islands (Figma): "חזרות" range and "תרגולים 800" with a treasure chest;

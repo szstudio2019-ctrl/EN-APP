@@ -36,5 +36,7 @@
       about: { title: 'צלילים מתקדמים', text: 'צירופים מיוחדים של אותיות ליודעי קריאה אמיצים. (טקסט דמו)' } },
     { name: 'אי החזרות', review: '1-38', img: 'island-review', box: [32, -14, 504, 504],
       about: { title: 'זמן לחזרה!', text: 'חוזרים על מה שלמדנו, צוברים תרגולים ומקבלים פרסים. (טקסט דמו)' } },
+    // End of the course: a white circle with confetti and a trophy
+    { name: 'סיימת את כל השיעורים', finale: true, status: 'finale' },
   ];
 })();

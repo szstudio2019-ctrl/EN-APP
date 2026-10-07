@@ -1275,3 +1275,67 @@ video.bg {
   background: #ffdbe6;
 }
 .island-about__review-no small { font-size: 16px; }
+
+/* ---------- Finale after the last review: white circle, confetti, trophy ---------- */
+.island[data-state="finale"] .island__card,
+.island[data-state="finale"] .island__lock { display: none; }
+.finale {
+  position: absolute;
+  left: 58px;
+  top: 8px;
+  width: 440px;
+  height: 440px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(36, 34, 117, .25), inset 0 0 0 6px rgba(227, 53, 99, .12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+.finale__trophy { position: relative; width: 150px; height: 150px; margin-bottom: 6px; animation: finale-bob 2.4s ease-in-out infinite; }
+.finale__text {
+  position: relative;
+  max-width: 330px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.2;
+  color: var(--menu-strong);
+}
+.finale__en {
+  position: relative;
+  margin-top: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 800;
+  font-size: 46px;
+  line-height: 1;
+  color: var(--pink);
+}
+/* confetti pieces falling inside the circle */
+.finale__confetti { position: absolute; inset: 0; }
+.finale__confetti i {
+  position: absolute;
+  top: -20px;
+  left: calc(6% + var(--k) * 5.1%);
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--pink);
+  animation: confetti-fall calc(3.2s + mod(var(--k), 4) * .5s) linear infinite;
+  animation-delay: calc(var(--k) * -.37s);
+}
+.finale__confetti i:nth-child(4n+1) { background: var(--sky); }
+.finale__confetti i:nth-child(4n+2) { background: var(--gold); width: 8px; height: 8px; border-radius: 50%; }
+.finale__confetti i:nth-child(4n+3) { background: var(--green); }
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(480px) rotate(540deg); opacity: .9; }
+}
+@keyframes finale-bob { 50% { transform: translateY(-8px) rotate(-3deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .finale__confetti i, .finale__trophy { animation: none; }
+}
