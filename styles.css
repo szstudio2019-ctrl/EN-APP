@@ -1020,8 +1020,9 @@ video.bg {
   backdrop-filter: inherit;
 }
 .island-about.is-left::before { left: auto; right: -14px; border: 0; border-top: inherit; border-right: inherit; }
-.island-about__island { margin: 0 0 6px; font-size: 22px; font-weight: 700; color: var(--white); line-height: 1.2; opacity: .95; }
-.island-about__title { margin: 0 0 10px; font-size: 30px; font-weight: 700; color: var(--pink); line-height: 1.15; }
+/* island name: the main heading, large and pink; the subtitle under it in white */
+.island-about__island { margin: 0 0 8px; font-size: 36px; font-weight: 700; color: var(--pink); line-height: 1.1; }
+.island-about__title { margin: 0 0 10px; font-size: 24px; font-weight: 700; color: var(--white); line-height: 1.2; }
 .island-about__text { margin: 0 0 18px; font-size: 19px; line-height: 1.5; }
 .island-about__label { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
 .island-about__list { margin: 0 0 18px; padding: 0 22px 0 0; font-size: 18px; line-height: 1.55; }
