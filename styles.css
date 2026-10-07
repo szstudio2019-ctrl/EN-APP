@@ -1343,3 +1343,36 @@ video.bg {
 /* Header and island cards: the same navy as the island counter pill below */
 .topbar,
 .island__card { background: var(--panel); }
+
+/* Review bubble: white body over a navy strip (same navy as the header) */
+.island-about.has-strip {
+  padding: 0;
+  background: var(--panel);
+  border-color: rgba(255, 255, 255, .35);
+}
+.island-about__body {
+  padding: 26px 30px 24px;
+  border-radius: 27px;
+  background: #fff;
+}
+.island-about__strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 26px 14px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+}
+.island-about__strip-no { display: flex; align-items: center; gap: 10px; }
+.island-about__strip-no b {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pink);
+  font-size: 22px;
+  font-weight: 800;
+}
+.island-about__strip-range bdi { color: #ff8fb0; font-weight: 800; }

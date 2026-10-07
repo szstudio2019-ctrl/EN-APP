@@ -417,12 +417,22 @@
       const about = island.about;
       if (!about) { aboutEl.innerHTML = ''; return; }
       aboutEl.classList.toggle('is-left', index % 2 === 0); // island on the right → bubble on its left
-      aboutEl.innerHTML = `
-        ${island.review ? `<span class="island-about__review-no"><b>${ISLANDS.slice(0, index + 1).filter((x) => x.review).length}</b><small>חזרה</small></span>` : ''}
+      // Review islands: a navy strip under the white bubble with the lessons
+      // range on the left and "חזרה מספר N" (N in a pink circle) on the right
+      const reviewNo = island.review ? ISLANDS.slice(0, index + 1).filter((x) => x.review).length : 0;
+      aboutEl.classList.toggle('has-strip', !!reviewNo);
+      const body = `
         <p class="island-about__island">${island.name}</p>
-        <h2 class="island-about__title">${about.title}${island.review ? ` <span class="island-about__range">שלבים <bdi>${island.review}</bdi></span>` : ''}</h2>
+        <h2 class="island-about__title">${about.title}</h2>
         <p class="island-about__text">${about.text}</p>
         ${aboutAction(island)}`;
+      aboutEl.innerHTML = reviewNo
+        ? `<div class="island-about__body">${body}</div>
+          <div class="island-about__strip">
+            <span class="island-about__strip-no">חזרה מספר <b>${reviewNo}</b></span>
+            <span class="island-about__strip-range">שיעורים <bdi>${island.review}</bdi></span>
+          </div>`
+        : body;
       showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 450);
     }, wasShown ? 300 : 0);
   }
