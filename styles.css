@@ -540,8 +540,9 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .island[data-slot="active"]:is(:hover, .is-hot) .island__video,
 .island[data-slot="active"]:is(:hover, .is-hot) .island__placeholder {
   filter:
-    drop-shadow(0 0 10px rgba(255, 255, 255, .9))
-    drop-shadow(0 0 26px rgba(255, 255, 255, .5));
+    drop-shadow(0 0 6px #fff)
+    drop-shadow(0 0 18px rgba(255, 255, 255, .95))
+    drop-shadow(0 0 42px rgba(255, 255, 255, .8));
 }
 /* Hover in is quick; hover out fades softly: the glow dims over .6s, the
    animation cross-fades back to the still, and the island settles back */
