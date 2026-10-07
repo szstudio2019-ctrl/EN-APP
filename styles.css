@@ -496,30 +496,21 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .island[data-state="done"] .island__card { outline-color: var(--green); }
 /* Completed card (Figma "Variant3"): the progress bar becomes a "הושלם" row with a green check */
 .island[data-state="done"] .island__progress { display: none; }
+/* "הושלם" with its check, centred on the card */
 .island__done {
   position: absolute;
   top: 92.77px;
-  left: 72px;
-  width: 84px;
-  height: 26px;
-}
-.island__done-label {
-  position: absolute;
   left: 0;
-  top: 0;
-  width: 50px;
-  text-align: right;
-  font-size: 14.23px;
-  line-height: 20.09px;
-}
-.island__done-icon {
-  position: absolute;
-  left: 54px;
-  top: 0;
-  width: 34px;
+  width: 100%;
   height: 34px;
-  max-width: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  direction: ltr;
 }
+.island__done-label { font-size: 14.23px; line-height: 20.09px; }
+.island__done-icon { width: 34px; height: 34px; max-width: none; margin-top: 8px; }
 .island:not([data-state="done"]) .island__done { display: none; }
 .island[data-slot="active"][data-state="done"] .island__done-icon { animation: pop-in .6s cubic-bezier(.34, 1.56, .64, 1) .4s both; }
 @keyframes pop-in { from { transform: scale(0); } to { transform: scale(1); } }
@@ -1019,7 +1010,34 @@ video.bg {
 .island-about__label { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
 .island-about__list { margin: 0 0 18px; padding: 0 22px 0 0; font-size: 18px; line-height: 1.55; }
 .island-about__list li::marker { color: var(--pink); }
-.island-about__go { position: static; }
+/* Bubble actions by progress: continue (pink), completed (green), not ready (lock) */
+.about-btn { position: static; }
+.about-btn--done {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 8px 16px;
+  border-radius: 47px;
+  background: var(--green);
+  color: var(--white);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  filter: drop-shadow(0 12px 10px rgba(145, 177, 33, .25));
+}
+.about-btn--done svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.about-locked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--navy);
+  opacity: .7;
+}
+.about-locked svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Map cards no longer repeat the name (the bubble beside the island names the world):
    stats move up and the card gets shorter */

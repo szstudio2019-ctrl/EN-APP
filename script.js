@@ -377,6 +377,20 @@
   const cool = () => { clearTimeout(coolTimer); coolTimer = setTimeout(() => setHot(false), 150); };
 
   // Called whenever the island in front changes
+  // The bubble's action depends on the learner's progress on that island
+  const lockIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  const checkIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  function aboutAction(island) {
+    const status = island.status || 'locked';
+    if (status === 'done') {
+      return `<span class="about-btn about-btn--done">${checkIcon}<span>המשימה הושלמה</span></span>`;
+    }
+    if (status === 'progress') {
+      return `<a class="btn-pill about-btn" href="${island.page || '#'}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>אני רוצה להמשיך ללמוד</span></a>`;
+    }
+    return `<p class="about-locked">${lockIcon}<span>האי עדיין לא מוכן</span></p>`;
+  }
+
   function showAbout() {
     if (!aboutEl) return;
     clearTimeout(showAbout.swap);
@@ -399,7 +413,7 @@
         <p class="island-about__island">${island.name}</p>
         <h2 class="island-about__title">${about.title}</h2>
         <p class="island-about__text">${about.text}</p>
-        ${island.page ? `<a class="btn-pill island-about__go" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
+        ${aboutAction(island)}`;
       showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 450);
     }, wasShown ? 300 : 0);
   }
