@@ -923,14 +923,14 @@ video.bg {
   top: 724px;
   left: 213px;
   width: 477px;
-  height: 163px;
   border-radius: 20px 20px 20px 0;
-  background: rgba(255, 255, 255, .75);
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 14px 30px rgba(36, 34, 117, .18);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  padding: 23px 19px 0;
+  gap: 16px;
+  padding: 23px 19px 20px;
   z-index: 300;
   opacity: 0;
   visibility: hidden;
@@ -1120,3 +1120,24 @@ video.bg {
 .journey-tick:hover { transform: scaleX(1.4); background: #fff; }
 .journey-tick.is-done { background: rgba(145, 177, 33, .85); }
 .journey-tick.is-current { height: 54px; background: var(--pink); }
+
+/* "Draw another sentence" button in the trophy bubble */
+.trophy-hint__redraw {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 40px;
+  background: var(--pink);
+  color: var(--white);
+  font-family: 'Rubik', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  transition: transform .15s ease;
+}
+.trophy-hint__redraw:hover { transform: translateY(-2px); }
+.trophy-hint__redraw svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: rotate .5s ease; }
+.trophy-hint__redraw:hover svg { rotate: 180deg; }
+.sentence.is-drawing .tile { animation: tile-flip .5s ease both; }
+.sentence.is-drawing .tile:nth-child(2n) { animation-delay: .05s; }
+@keyframes tile-flip { 0% { transform: rotateY(0); } 50% { transform: rotateY(90deg); } 100% { transform: rotateY(0); } }
