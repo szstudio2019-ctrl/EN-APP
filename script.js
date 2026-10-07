@@ -544,62 +544,41 @@
   const go = (step) => goTo(current + step);
   window.journeyGoTo = goTo; // used by the side menu
 
-  /* Finale buttons: back to the first island, or a popup listing every review */
-  const stageEl = document.getElementById('stage');
-  const pop = document.createElement('div');
-  pop.className = 'reviews-pop';
-  pop.setAttribute('role', 'dialog');
-  pop.setAttribute('aria-modal', 'true');
-  pop.setAttribute('aria-label', 'כל החזרות');
-  let n = 0;
-  const rows = ISLANDS.map((island, i) => {
-    if (!island.review) return '';
-    n += 1;
-    return `<button class="reviews-pop__row" type="button" data-go="${i}">
-        <img class="reviews-pop__img" src="assets/${island.img}.webp" alt="">
-        <span class="reviews-pop__no">${n}</span>
-        <span class="reviews-pop__name">חזרה מספר ${n}</span>
-        <span class="reviews-pop__range">שיעורים <bdi>${island.review}</bdi></span>
-      </button>`;
-  }).join('');
-  pop.innerHTML = `
-    <div class="reviews-pop__card">
-      <button class="reviews-pop__close" type="button" aria-label="סגירה">✕</button>
-      <h2 class="reviews-pop__title">כל החזרות</h2>
-      <div class="reviews-pop__list">${rows}</div>
-    </div>`;
-  stageEl.appendChild(pop);
-  const setPop = (open) => {
-    pop.classList.toggle('is-open', open);
-    if (open) pop.querySelector('.reviews-pop__close').focus();
-  };
-  pop.addEventListener('click', (e) => {
-    const row = e.target.closest('[data-go]');
-    if (row) { setPop(false); setTimeout(() => goTo(Number(row.dataset.go)), 250); return; }
-    if (e.target === pop || e.target.closest('.reviews-pop__close')) setPop(false);
-  });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pop.classList.contains('is-open')) setPop(false); });
+  /* Finale buttons: back to the first island, or the reviews popup (menu.js) */
   journey.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-finale]');
     if (!btn) return;
     e.preventDefault();
     e.stopPropagation();
     if (btn.dataset.finale === 'start') goTo(0);
-    else setPop(true);
+    else window.SiteMenu.openReviews();
   }, true);
 
   // Mouse wheel / trackpad: forward (down) = next island, back (up) = previous
+  // One scroll gesture moves one island: after a move the wheel stays locked
+  // until the gesture (including a trackpad's or mouse's inertia) has stopped
+  // for a moment and the island has arrived.
   let wheelSum = 0;
   let wheelTimer;
+  let wheelLocked = false;
+  let lockedAt = 0;
   window.addEventListener('wheel', (e) => {
-    if (window.SiteMenu.isOpen()) return; // let the menu scroll
+    if (window.SiteMenu.isOpen() || document.querySelector('.reviews-pop.is-open')) return; // let the menu scroll
     e.preventDefault();
-    wheelSum += e.deltaY;
     clearTimeout(wheelTimer);
-    wheelTimer = setTimeout(() => { wheelSum = 0; }, 200);
+    wheelTimer = setTimeout(() => {
+      wheelSum = 0;
+      // release only once the wheel is quiet and the move has played out
+      const wait = Math.max(0, TRAVEL_MS - (performance.now() - lockedAt));
+      setTimeout(() => { wheelLocked = false; }, wait);
+    }, 220);
+    if (wheelLocked) return;
+    wheelSum += e.deltaY;
     if (Math.abs(wheelSum) > 40) {
       go(wheelSum > 0 ? 1 : -1);
       wheelSum = 0;
+      wheelLocked = true;
+      lockedAt = performance.now();
     }
   }, { passive: false });
 

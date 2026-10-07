@@ -10,7 +10,7 @@
   const openBtn = document.getElementById('menu-open');
   let open = false;
 
-  window.SiteMenu = { isOpen: () => open, sync: () => {} };
+  window.SiteMenu = { isOpen: () => open, sync: () => {}, openReviews: () => {} };
   if (!sidebar || !openBtn) return;
 
   function setMenu(state) {
@@ -29,9 +29,59 @@
   // Stagger the cascade-in of the menu rows
   sidebar.querySelectorAll('.sb-item').forEach((el, i) => el.style.setProperty('--i', i));
 
-  // Collapsible groups
+  /* Popup with every review island (from the menu's "חזרות" and the map's
+     finale). On the map a review moves the map to it; elsewhere it opens the
+     map at that island. */
+  const pop = document.createElement('div');
+  pop.className = 'reviews-pop';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-modal', 'true');
+  pop.setAttribute('aria-label', 'כל החזרות');
+  let reviewNo = 0;
+  const cards = ISLANDS.map((island, i) => {
+    if (!island.review) return '';
+    reviewNo += 1;
+    return `<button class="reviews-pop__row" type="button" data-go="${i}">
+        <img class="reviews-pop__img" src="assets/${island.img}.webp" alt="">
+        <span class="reviews-pop__no">${reviewNo}</span>
+        <span class="reviews-pop__name">חזרה מספר ${reviewNo}</span>
+        <span class="reviews-pop__range">שיעורים <bdi>${island.review}</bdi></span>
+      </button>`;
+  }).join('');
+  pop.innerHTML = `
+    <div class="reviews-pop__card">
+      <button class="reviews-pop__close" type="button" aria-label="סגירה">✕</button>
+      <h2 class="reviews-pop__title">כל החזרות</h2>
+      <div class="reviews-pop__list">${cards}</div>
+    </div>`;
+  document.getElementById('stage').appendChild(pop);
+  const setPop = (state) => {
+    pop.classList.toggle('is-open', state);
+    if (state) pop.querySelector('.reviews-pop__close').focus();
+  };
+  window.SiteMenu.openReviews = () => setPop(true);
+  pop.addEventListener('click', (e) => {
+    const card = e.target.closest('[data-go]');
+    if (card) {
+      const i = Number(card.dataset.go);
+      setPop(false);
+      if (window.journeyGoTo) setTimeout(() => window.journeyGoTo(i), 250);
+      else location.href = `index.html#island-${i + 1}`;
+      return;
+    }
+    if (e.target === pop || e.target.closest('.reviews-pop__close')) setPop(false);
+  });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pop.classList.contains('is-open')) setPop(false); });
+
+  // Collapsible groups. "חזרות" itself opens the reviews popup; its arrow
+  // still opens and closes the list.
   sidebar.querySelectorAll('.sb-link--group').forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      if (btn.nextElementSibling && btn.nextElementSibling.id === 'sb-reviews' && !e.target.closest('.sb-chevron')) {
+        setMenu(false);
+        setTimeout(() => setPop(true), 300);
+        return;
+      }
       const group = btn.closest('.sb-group');
       const isOpen = !group.classList.contains('is-open');
       group.classList.toggle('is-open', isOpen);
