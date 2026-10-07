@@ -1731,3 +1731,5 @@ video.bg {
   .drawer-handle__icon { animation: none; }
   .drawer, .drawer__item { transition-duration: .01s; }
 }
+/* review strip number: a little smaller */
+.island-about__strip-no b { width: 42px; height: 42px; font-size: 21px; }
