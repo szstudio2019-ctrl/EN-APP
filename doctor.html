@@ -14,6 +14,20 @@
   <!-- Island template page (Figma "האותיות של הרופא עולם 2-4").
        To make another island page: copy this file and change the WORLD settings
        in the <script> at the bottom (background, lessons, island artwork). -->
+  <!-- Loader: shown until the islands, background and fonts are ready -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <div class="loader__tiles" aria-hidden="true">
+        <span class="loader__tile loader__tile--a">a</span>
+        <span class="loader__tile loader__tile--b">b</span>
+        <span class="loader__tile loader__tile--c">c</span>
+      </div>
+      <p class="loader__title">מדקדקים באנגלית</p>
+      <div class="loader__bar"><span id="loader-bar"></span></div>
+      <p class="loader__pct"><span id="loader-pct">0</span>%</p>
+    </div>
+  </div>
+
   <div class="viewport world">
     <main class="stage" id="stage">
       <!-- Background scene with the big lessons island. Exported from Figma
@@ -212,6 +226,7 @@
       ],
     };
   </script>
+  <script src="transition.js"></script>
   <script src="islands.js"></script>
   <script src="menu.js"></script>
   <script src="world.js"></script>

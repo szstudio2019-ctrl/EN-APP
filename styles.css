@@ -524,10 +524,10 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .island[data-state="locked"] .island__placeholder,
 .island[data-state="locked"] .island__card { filter: grayscale(.55) brightness(.92); transition: filter .35s ease; }
 /* Hovering a locked island reveals its true colours and turns the lock pink */
-.island[data-state="locked"]:hover .island__img,
-.island[data-state="locked"]:hover .island__placeholder,
-.island[data-state="locked"]:hover .island__card { filter: none; }
-.island[data-state="locked"]:hover .island__lock { background: var(--pink); transform: scale(1.08); }
+.island[data-state="locked"]:is(:hover, .is-hot) .island__img,
+.island[data-state="locked"]:is(:hover, .is-hot) .island__placeholder,
+.island[data-state="locked"]:is(:hover, .is-hot) .island__card { filter: none; }
+.island[data-state="locked"]:is(:hover, .is-hot) .island__lock { background: var(--pink); transform: scale(1.08); }
 
 /* Hover: a white glow that hugs the island's own silhouette (drop-shadow
    follows the artwork's transparency, not its rectangle) and a slight lift
@@ -690,21 +690,22 @@ video.bg {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(120% 90% at 50% 30%, #4a4796 0%, #242275 60%, #17154d 100%);
+  background: radial-gradient(120% 90% at 50% 30%, #2b2870 0%, #14124a 55%, #08072a 100%);
   color: var(--white);
   font-family: 'Rubik', sans-serif;
-  clip-path: circle(150% at 50% 50%);
-  transition: clip-path 1s cubic-bezier(.76, 0, .24, 1);
+  transition: opacity .9s ease .25s;
 }
-.loader.is-done { clip-path: circle(0% at 50% 50%); pointer-events: none; }
+/* Exit: "fly into the world" – the tiles rush toward the viewer and blur away
+   while the dark veil fades, and the world zooms in behind it (see .is-loading) */
+.loader.is-done { opacity: 0; pointer-events: none; }
 .loader__inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  transition: transform .6s cubic-bezier(.76, 0, .24, 1), opacity .4s ease;
+  transition: transform .9s cubic-bezier(.55, 0, .1, 1), opacity .6s ease .2s, filter .7s ease;
 }
-.loader.is-done .loader__inner { transform: scale(.85); opacity: 0; }
+.loader.is-done .loader__inner { transform: scale(3.2); opacity: 0; filter: blur(8px); }
 .loader__tiles { display: flex; gap: 10px; direction: ltr; }
 .loader__tile {
   width: 64px;
@@ -1000,7 +1001,7 @@ video.bg {
   pointer-events: none;
   transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1);
 }
-.island-about.is-left { left: 555px; translate: 24px 0; }
+.island-about.is-left { left: 605px; translate: 24px 0; }
 .island-about.is-shown { opacity: 1; translate: 0 0; pointer-events: auto; }
 /* tail toward the island */
 .island-about::before {
@@ -1032,3 +1033,22 @@ video.bg {
 .journey .island__stats { top: 16px; }
 .journey .island__progress { top: 76px; }
 .journey .island__done { top: 60px; }
+
+/* ---------- Page transition (map ⇄ worlds) ---------- */
+/* Leaving a page: the dark veil closes in with the abc tiles; the next page
+   opens with its loader flying out the same way */
+.page-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 90% at 50% 30%, #2b2870 0%, #14124a 55%, #08072a 100%);
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.page-cover.is-on { opacity: 1; }
+.page-cover .loader__tiles { transform: scale(2.4); opacity: 0; filter: blur(8px); transition: transform .55s cubic-bezier(.16, 1, .3, 1), opacity .4s ease, filter .5s ease; }
+.page-cover.is-on .loader__tiles { transform: none; opacity: 1; filter: none; }
+.page-cover .loader__tile { animation: none; }

@@ -178,6 +178,14 @@
     new Promise((r) => setTimeout(r, 3000)),
   ]);
   ready.then(() => requestAnimationFrame(() => {
+    // Loader flies out (same as the map), then the world plays its entrance
+    const loader = document.getElementById('loader');
+    if (loader) {
+      document.getElementById('loader-bar').style.width = '100%';
+      document.getElementById('loader-pct').textContent = '100';
+      loader.classList.add('is-done');
+      setTimeout(() => loader.remove(), 1400);
+    }
     document.body.classList.remove('is-loading');
     setTimeout(() => { bar.style.width = `${WORLD.progress}%`; }, 600);
   }));
