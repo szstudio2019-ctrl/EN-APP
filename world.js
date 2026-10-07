@@ -32,6 +32,18 @@
   bg.addEventListener('error', () => bg.classList.add('is-missing'));
   bg.src = WORLD.background;
 
+  /* Island name on the clearing */
+  const heading = document.getElementById('world-heading');
+  if (heading && WORLD.heading) {
+    heading.style.left = `${WORLD.heading.x}px`;
+    heading.style.top = `${WORLD.heading.y}px`;
+    WORLD.heading.lines.forEach((line) => {
+      const span = document.createElement('span');
+      span.textContent = line;
+      heading.appendChild(span);
+    });
+  }
+
   /* Card */
   document.getElementById('world-title').textContent = WORLD.title;
   document.getElementById('world-lessons').textContent = WORLD.lessonsRange;

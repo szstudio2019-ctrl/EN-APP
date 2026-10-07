@@ -23,6 +23,37 @@
   transition: transform .8s cubic-bezier(.22, 1, .36, 1), opacity .6s ease;
 }
 .lessons { transform-origin: 960px 540px; transform: scale(var(--scene-k, 1)); }
+
+/* Island name on the clearing: two centred lines with a soft shadow. It sits
+   in a layer that scales with the background (like the pins); world.js puts
+   its centre at WORLD.heading x/y. */
+.world__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform-origin: 960px 540px;
+  transform: scale(var(--scene-k, 1));
+}
+.world__title {
+  position: absolute;
+  margin: 0;
+  width: max-content;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 58px;
+  line-height: 1.05;
+  color: var(--white);
+  text-shadow:
+    0 3px 0 rgba(36, 34, 117, .45),
+    0 8px 18px rgba(36, 34, 117, .45),
+    0 2px 30px rgba(0, 0, 0, .25);
+  white-space: nowrap;
+}
 .world__bg:not([src]), .world__bg.is-missing { opacity: 0; }
 
 .world__back {
