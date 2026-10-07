@@ -1099,7 +1099,7 @@ video.bg {
   transition: height .45s cubic-bezier(.16, 1, .3, 1), background .3s ease, transform .2s ease;
 }
 .journey-tick:hover { transform: scaleX(1.4); background: var(--menu-strong); }
-.journey-tick.is-done { background: rgba(145, 177, 33, .85); }
+.journey-tick.is-done { background: var(--yellow); }
 .journey-tick.is-current { height: 54px; background: var(--pink); }
 
 /* "Draw another sentence" button in the trophy bubble */
