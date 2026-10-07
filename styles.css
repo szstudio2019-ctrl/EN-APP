@@ -1262,3 +1262,16 @@ video.bg {
 }
 .island-about__review-no small { font-size: 15px; font-weight: 600; }
 .island-about__review-no b { font-size: 30px; font-weight: 800; margin-top: 2px; }
+
+/* Number in the circle, the word "חזרה" under it */
+.island-about__review-no { width: auto; height: auto; background: none; border-radius: 0; gap: 4px; }
+.island-about__review-no b {
+  width: 60px;
+  height: 60px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffdbe6;
+}
+.island-about__review-no small { font-size: 16px; }

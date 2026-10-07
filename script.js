@@ -413,7 +413,7 @@
       if (!about) { aboutEl.innerHTML = ''; return; }
       aboutEl.classList.toggle('is-left', index % 2 === 0); // island on the right → bubble on its left
       aboutEl.innerHTML = `
-        ${island.review ? `<span class="island-about__review-no"><small>חזרה</small><b>${ISLANDS.slice(0, index + 1).filter((x) => x.review).length}</b></span>` : ''}
+        ${island.review ? `<span class="island-about__review-no"><b>${ISLANDS.slice(0, index + 1).filter((x) => x.review).length}</b><small>חזרה</small></span>` : ''}
         <p class="island-about__island">${island.name}</p>
         <h2 class="island-about__title">${about.title}${island.review ? ` <span class="island-about__range">שלבים <bdi>${island.review}</bdi></span>` : ''}</h2>
         <p class="island-about__text">${about.text}</p>
