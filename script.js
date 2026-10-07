@@ -423,6 +423,25 @@
     aboutEl.addEventListener('mouseleave', cool);
   }
 
+  // Progress lines on the right edge: one per island, click to jump to it
+  const ticksEl = document.getElementById('journey-ticks');
+  const ticks = ticksEl ? ISLANDS.map((island, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'journey-tick' + (island.status === 'done' ? ' is-done' : '');
+    b.setAttribute('aria-label', `${i + 1}: ${island.name}`);
+    b.title = island.name;
+    b.addEventListener('click', () => window.journeyGoTo && window.journeyGoTo(i));
+    ticksEl.appendChild(b);
+    return b;
+  }) : [];
+  function syncTicks() {
+    ticks.forEach((b, i) => {
+      b.classList.toggle('is-current', i === current);
+      b.setAttribute('aria-current', i === current ? 'step' : 'false');
+    });
+  }
+
   function render() {
     els.forEach((el, i) => {
       const offset = i - current;
@@ -448,6 +467,7 @@
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
     });
     window.SiteMenu.sync(current);
+    syncTicks();
     showAbout();
     count.textContent = `${current + 1} / ${ISLANDS.length}`;
     prevBtn.disabled = current === 0;
