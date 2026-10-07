@@ -1211,3 +1211,6 @@ video.bg {
 .world-page.is-loading .trophy,
 .world-page.is-loading .cart,
 .world-page.is-loading .help-btn { translate: -140px 0; }
+
+/* Review islands: the stage range after "זמן לחזרה!" */
+.island-about__range { color: var(--pink); white-space: nowrap; }

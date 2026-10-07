@@ -411,7 +411,7 @@
       aboutEl.classList.toggle('is-left', index % 2 === 0); // island on the right → bubble on its left
       aboutEl.innerHTML = `
         <p class="island-about__island">${island.name}</p>
-        <h2 class="island-about__title">${about.title}</h2>
+        <h2 class="island-about__title">${about.title}${island.review ? ` <span class="island-about__range">שלבים <bdi>${island.review}</bdi></span>` : ''}</h2>
         <p class="island-about__text">${about.text}</p>
         ${aboutAction(island)}`;
       showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 450);
