@@ -36,19 +36,22 @@
 <body>
 
   <!--
-    Plays by itself, silently, in a loop. Clicking the doctor restarts it once
-    with the "Ahhh" sound, then it carries on silently.
+    At rest it shows the first frame. Hovering plays the animation silently;
+    clicking restarts it once with the "Ahhh" sound.
     - Chrome / Edge / Firefox: transparent WebM (the sound is inside it)
     - Safari / iPhone: animated WebP + a separate WAV for the sound
-    Files: island-doctor-ahh.webm, island-doctor-ahh.webp, doctor-ahh.wav
+    Files: island-doctor-first.webp, island-doctor-ahh.webm,
+           island-doctor-ahh.webp, doctor-ahh.wav
   -->
   <button class="doctor" id="doctor" type="button" aria-label="הרופאה אומרת אהההה – לחצו לשמוע">
-    <video id="doctor-video" src="../assets/island-doctor-ahh.webm" autoplay muted loop playsinline></video>
+    <img id="doctor-still" src="../assets/island-doctor-first.webp" alt="">
+    <video id="doctor-video" src="../assets/island-doctor-ahh.webm" muted loop playsinline preload="auto" hidden></video>
   </button>
 
   <script>
     (function () {
       const box = document.getElementById('doctor');
+      const still = document.getElementById('doctor-still');
       const video = document.getElementById('doctor-video');
 
       // Transparent WebM works in Chromium and Firefox; Safari shows a black box,
@@ -56,38 +59,33 @@
       const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
 
       if (!isSafari) {
+        const show = () => { video.hidden = false; still.hidden = true; };
+        const rest = () => { video.pause(); video.currentTime = 0; video.muted = true; video.hidden = true; still.hidden = false; };
+        box.addEventListener('mouseenter', () => { video.muted = true; video.play().then(show); });
+        box.addEventListener('mouseleave', rest);
+        // the sound plays for one pass only: mute again when the loop wraps to the start
+        let underway = false;
+        video.addEventListener('timeupdate', () => {
+          if (video.muted) return;
+          if (video.currentTime > 1) underway = true;
+          else if (underway && video.currentTime < 0.5) { video.muted = true; underway = false; }
+        });
         box.addEventListener('click', () => {
+          underway = false;
           video.currentTime = 0;
           video.muted = false;
-          video.play();
-          // back to silent once the "Ahhh" pass has played through: wait until the
-          // clip is well under way, then mute when the loop jumps back to the start
-          let underway = false;
-          const remute = () => {
-            if (video.currentTime > 1) underway = true;
-            else if (underway && video.currentTime < 0.5) {
-              video.muted = true;
-              video.removeEventListener('timeupdate', remute);
-            }
-          };
-          video.removeEventListener('timeupdate', box._remute || (() => {}));
-          box._remute = remute;
-          video.addEventListener('timeupdate', remute);
+          video.play().then(show);
         });
         return;
       }
 
-      // Safari / iPhone fallback
-      const img = document.createElement('img');
-      img.alt = '';
-      img.src = '../assets/island-doctor-ahh.webp';
-      video.replaceWith(img);
+      // Safari / iPhone fallback: swap the still for the animated WebP while hovering
       const sound = new Audio('../assets/doctor-ahh.wav');
-      box.addEventListener('click', () => {
-        img.src = '../assets/island-doctor-ahh.webp?' + Date.now(); // restart the animation so the sound lines up
-        sound.currentTime = 0;
-        sound.play();
-      });
+      const play = () => { still.src = '../assets/island-doctor-ahh.webp?' + Date.now(); };
+      const rest = () => { still.src = '../assets/island-doctor-first.webp'; sound.pause(); };
+      box.addEventListener('mouseenter', play);
+      box.addEventListener('mouseleave', rest);
+      box.addEventListener('click', () => { play(); sound.currentTime = 0; sound.play(); });
     })();
   </script>
 </body>

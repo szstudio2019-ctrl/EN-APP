@@ -106,7 +106,7 @@
   // the learner scrolls past them to look.
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50 },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-first', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50 },
     { name: 'אי האותיות המחייכות', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', review: '1-11', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', lessons: '13-19', img: 'island-single', box: [49, 0, 493, 493] },
@@ -192,8 +192,8 @@
     // Stagger the hover-float so the islands don't bob in sync
     a.querySelector('.island__float').style.animationDelay = `${-i * 1.3}s`;
 
-    // Animated island: plays silently on its own while it is the active island;
-    // clicking the island restarts it once with its sound ("Ahhh").
+    // Animated island: the still shows the clip's first frame; hovering plays the
+    // animation silently, clicking restarts it once with its sound ("Ahhh").
     // Chromium gets the transparent WebM (sound inside it); Safari / iPhone,
     // which can't show transparent WebM, get an animated WebP plus a WAV.
     if (island.video && !reducedMotion) {
@@ -223,6 +223,8 @@
 
         const swap = () => {
           if (!running) return;
+          // the sound pass finished after the mouse had already left: rest on the still
+          if (soundPass && !a.matches(':hover')) { soundPass = false; island.stop(); return; }
           soundPass = false;
           back.muted = true;
           back.play().catch(() => {});
@@ -246,6 +248,8 @@
           a.classList.remove('is-playing');
           for (const v of [front, back]) { v.pause(); v.currentTime = 0; v.muted = true; }
         };
+        a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(); });
+        a.addEventListener('mouseleave', () => { if (!soundPass) island.stop(); });
         // Browsers pause silent video in a background tab; pick up again on return
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'visible' && running && front.paused) front.play().catch(() => {});
@@ -271,6 +275,8 @@
         const restart = () => { anim.src = `assets/${island.video}.webp?${Date.now()}`; };
         island.start = () => { restart(); a.classList.add('is-playing'); };
         island.stop = () => { a.classList.remove('is-playing'); anim.removeAttribute('src'); if (audio) audio.pause(); };
+        a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(); });
+        a.addEventListener('mouseleave', () => island.stop());
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
           e.preventDefault();
@@ -367,11 +373,8 @@
       el.dataset.state = status;
       el.setAttribute('aria-disabled', status === 'locked' ? 'true' : 'false');
       el.tabIndex = offset === 0 ? 0 : -1;
-      // Animated islands play only while they are the one in front
-      if (ISLANDS[i].start) {
-        if (offset === 0) setTimeout(() => { if (current === i) ISLANDS[i].start(); }, 900);
-        else ISLANDS[i].stop();
-      }
+      // Animated islands stop when they leave the front
+      if (ISLANDS[i].stop && offset !== 0) ISLANDS[i].stop();
       // The bar fills when the island arrives in front
       el.querySelector('.island__progress span').style.width =
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
