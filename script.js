@@ -311,7 +311,7 @@
   const SNAKE_MS = 1500; // head travels from start to end, then the tail follows
   const SNAKE_LEN = 0.55; // visible body length as a share of the whole route
   let snakeRaf = 0;
-  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const ease = (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)); // ease-out: quick start, slow settle
 
   function snake(fromIndex, toIndex) {
     cancelAnimationFrame(snakeRaf);
