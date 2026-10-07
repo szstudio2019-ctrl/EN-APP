@@ -1030,28 +1030,24 @@ video.bg {
    "about" bubble while the island is hovered. Part of the hover area. */
 .island-name {
   position: absolute;
-  top: 470px;
+  top: 350px;
   left: 935px;
   z-index: 150;
   margin: 0;
-  width: 560px;
+  width: 420px;
   font-family: 'Rubik', sans-serif;
   font-weight: 700;
-  font-size: 76px;
+  font-size: 46px;
   line-height: 1.05;
-  color: var(--white);
+  color: var(--pink);
   text-align: left; /* island on the left: hug it */
   direction: rtl;
-  text-shadow:
-    0 4px 0 rgba(36, 34, 117, .45),
-    0 10px 24px rgba(36, 34, 117, .45),
-    0 2px 40px rgba(0, 0, 0, .2);
   opacity: 0;
   translate: -24px 0;
   pointer-events: none;
   transition: opacity .45s ease, translate .6s cubic-bezier(.22, 1, .36, 1);
 }
-.island-name.is-left { left: 425px; text-align: right; translate: 24px 0; }
+.island-name.is-left { left: 565px; text-align: right; translate: 24px 0; }
 .island-name.is-shown { opacity: 1; translate: 0 0; pointer-events: auto; }
 
 /* Map cards no longer repeat the name (it is shown large beside the island):
