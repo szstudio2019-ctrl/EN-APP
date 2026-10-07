@@ -497,7 +497,7 @@
     window.SiteMenu.sync(current);
     syncTicks();
     showAbout();
-    syncDrawer();
+    window.SiteDrawer.sync(current);
     try { localStorage.setItem(SAVE_KEY, String(current)); } catch (err) { /* storage blocked */ }
   }
 
@@ -608,111 +608,6 @@
     if (window.SiteMenu.isOpen()) return;
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); go(1); }
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(e.key)) { e.preventDefault(); go(-1); }
-  });
-
-  /* ------------------------------------------------------------------ */
-  /* Islands drawer (bottom centre)                                      */
-  /* ------------------------------------------------------------------ */
-  // A small floating-island icon; hovering the bottom strip (or tapping the
-  // icon) slides up a row of every island, in ISLANDS order. A click jumps
-  // straight to that island in one flight.
-  const drawer = document.getElementById('drawer');
-  const drawerList = document.getElementById('drawer-list');
-  const drawerHandle = document.getElementById('drawer-handle');
-  const drawerZone = document.getElementById('drawer-zone');
-  const drawerLine = drawerList.querySelector('.drawer__line');
-  const drawerFill = drawerList.querySelector('.drawer__fill');
-  const doneIcon = '<img class="drawer__done" src="assets/icons/done-check.svg" alt="">';
-  const smallLock = `<span class="drawer__lock">${lockSvg}</span>`;
-  const drawerItems = ISLANDS.map((island, i) => {
-    const li = document.createElement('li');
-    li.className = 'drawer__item';
-    if (island.review) li.classList.add('drawer__item--review');
-    if (island.finale) li.classList.add('drawer__item--finale');
-    li.style.setProperty('--i', i);
-    const status = island.status || 'locked';
-    li.dataset.state = status;
-    const pic = island.finale ? 'assets/trophy.svg'
-        : island.img ? `assets/${island.img}.webp` : '';
-    const range = island.review ? `חזרות ${island.review}`
-      : island.lessons ? `שיעורים ${island.lessons}` : '';
-    const pct = island.progress || 0;
-    const ring = status === 'progress'
-      ? `<svg class="drawer__ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/><circle class="drawer__ring-fill" cx="50" cy="50" r="46" pathLength="100" style="stroke-dasharray:${pct} 100"/></svg><span class="drawer__pct">${pct}%</span>`
-      : '';
-    const state = status === 'done' ? 'הושלם' : status === 'progress' ? `${pct}%` : status === 'locked' ? 'נעול' : '';
-    li.innerHTML = `
-      <button class="drawer__btn" type="button" aria-label="${island.name}${range ? `, ${range}` : ''}${state ? `, ${state}` : ''}">
-        <span class="drawer__pic">${pic ? `<img src="${pic}" alt="">` : ''}</span>
-        ${ring}
-        ${status === 'done' ? doneIcon : ''}
-        ${status === 'locked' ? smallLock : ''}
-        <span class="drawer__tip"><b>${island.name}</b>${range ? `<span>${range}</span>` : ''}</span>
-      </button>`;
-    li.querySelector('button').addEventListener('click', () => {
-      hoverBlocked = true; // stay closed until the mouse leaves the bottom strip
-      setDrawer(false);
-      goTo(i); // one flight, straight there; locked islands can be looked at
-    });
-    drawerList.appendChild(li);
-    return li;
-  });
-
-  // The line joins the centres of the first and last pictures; the pink part
-  // runs from the first island to the one in front (right to left: RTL)
-  function syncDrawer() {
-    drawerItems.forEach((li, i) => {
-      li.classList.toggle('is-current', i === current);
-      li.querySelector('button').setAttribute('aria-current', i === current ? 'true' : 'false');
-    });
-    const centre = (li) => li.offsetLeft + li.offsetWidth / 2;
-    const first = centre(drawerItems[0]);
-    const last = centre(drawerItems[drawerItems.length - 1]);
-    const here = centre(drawerItems[current]);
-    drawerLine.style.left = `${Math.min(first, last)}px`;
-    drawerLine.style.width = `${Math.abs(first - last)}px`;
-    drawerFill.style.width = `${Math.abs(first - here)}px`;
-  }
-
-  let drawerOpen = false;
-  let drawerTimer;
-  let hoverBlocked = false;
-  function setDrawer(open) {
-    clearTimeout(drawerTimer);
-    if (open === drawerOpen) return;
-    drawerOpen = open;
-    drawer.classList.toggle('is-open', open);
-    drawer.setAttribute('aria-hidden', String(!open));
-    drawerHandle.setAttribute('aria-expanded', String(open));
-    drawerHandle.classList.toggle('is-open', open);
-    if (open) {
-      // the half-circle button rides up on top of the drawer
-      drawerHandle.style.setProperty('--drawer-h', `${drawer.offsetHeight}px`);
-      syncDrawer();
-      // bring the island in front into view when the row scrolls (phones)
-      const li = drawerItems[current];
-      const sc = drawer.querySelector('.drawer__scroll');
-      sc.scrollLeft = li.offsetLeft - (sc.clientWidth - li.offsetWidth) / 2;
-    }
-  }
-  const closeSoon = () => { clearTimeout(drawerTimer); drawerTimer = setTimeout(() => setDrawer(false), 300); };
-  // Desktop: hover the bottom strip, the icon or the drawer itself
-  [drawerZone, drawerHandle, drawer].forEach((el) => {
-    el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' && !hoverBlocked) { clearTimeout(drawerTimer); setDrawer(true); } });
-    el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') closeSoon(); });
-  });
-  document.addEventListener('pointermove', (e) => {
-    if (hoverBlocked && !e.target.closest('#drawer, #drawer-handle, #drawer-zone')) hoverBlocked = false;
-  });
-  // Touch and keyboard: the icon toggles; a tap outside closes
-  drawerHandle.addEventListener('click', () => setDrawer(!drawerOpen));
-  // a click or tap anywhere along the bottom strip opens it too
-  drawerZone.addEventListener('click', () => setDrawer(true));
-  document.addEventListener('pointerdown', (e) => {
-    if (drawerOpen && !e.target.closest('#drawer, #drawer-handle, #drawer-zone')) setDrawer(false);
-  });
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawerOpen) { setDrawer(false); drawerHandle.focus(); }
   });
 
   const viewport = document.querySelector('.viewport');

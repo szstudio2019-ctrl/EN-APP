@@ -836,7 +836,7 @@ video.bg {
 .sidebar__profile { display: flex; align-items: center; gap: 12px; }
 .sidebar__who { flex: 1; display: flex; flex-direction: column; gap: 4px; text-align: right; }
 .sidebar__hello { font-size: 14px; letter-spacing: .4px; color: rgba(255, 255, 255, .5); }
-.sidebar__name { font-size: 19px; font-weight: 700; color: rgba(255, 255, 255, .85); }
+.sidebar__name { font-size: 19px; font-weight: 700; color: var(--pink); }
 .sidebar__avatar { position: relative; top: auto; left: auto; flex: none; }
 
 .sidebar__divider { width: 100%; height: 2px; margin: 0; border: 0; border-radius: 2px; background: var(--menu-strong); }

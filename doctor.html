@@ -134,6 +134,21 @@
       </div>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
 
+      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
+           button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
+      <div class="drawer-zone" id="drawer-zone" aria-hidden="true"></div>
+      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
+        <svg class="drawer-handle__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+        <span class="drawer-handle__label">כל העולמות</span>
+      </button>
+      <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer__scroll">
+          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
+            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
+          </ol>
+        </div>
+      </div>
+
       <!-- Side menu (Figma "Sidebar - Open"); the island lists are filled by script.js -->
       <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
       <aside class="sidebar" id="sidebar" aria-label="תפריט" aria-hidden="true">
@@ -234,6 +249,7 @@
   <script src="islands.js"></script>
   <script src="sentence.js"></script>
   <script src="menu.js"></script>
+  <script src="drawer.js"></script>
   <script src="world.js"></script>
 </body>
 </html>
