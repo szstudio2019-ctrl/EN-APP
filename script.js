@@ -706,6 +706,8 @@
   });
   // Touch and keyboard: the icon toggles; a tap outside closes
   drawerHandle.addEventListener('click', () => setDrawer(!drawerOpen));
+  // a click or tap anywhere along the bottom strip opens it too
+  drawerZone.addEventListener('click', () => setDrawer(true));
   document.addEventListener('pointerdown', (e) => {
     if (drawerOpen && !e.target.closest('#drawer, #drawer-handle, #drawer-zone')) setDrawer(false);
   });

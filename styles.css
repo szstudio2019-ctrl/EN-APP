@@ -1832,3 +1832,12 @@ video.bg {
 }
 .drawer-handle:hover { background: rgba(255, 255, 255, .45); }
 .drawer-handle.is-open { transform: translateY(calc(-1 * var(--drawer-h, 180px))); }
+
+/* the whole bottom strip of the window opens the drawer (hover, click or tap) */
+.drawer-zone {
+  left: var(--edge-shift, 0px);
+  right: var(--edge-shift, 0px);
+  width: auto;
+  height: 150px;
+  cursor: pointer;
+}
