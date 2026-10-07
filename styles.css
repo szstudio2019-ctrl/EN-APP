@@ -513,15 +513,15 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .island[data-state="locked"]:hover .island__card { filter: none; }
 .island[data-state="locked"]:hover .island__lock { background: var(--pink); transform: scale(1.08); }
 
-/* Hover: a soft peach glow, the warm tone of the clouds, that hugs the
-   island's own silhouette (drop-shadow follows the artwork's transparency,
-   not its rectangle) and a slight lift in size */
+/* Hover: a white glow that hugs the island's own silhouette (drop-shadow
+   follows the artwork's transparency, not its rectangle) and a slight lift
+   in size. Shared by the map and the island pages. */
 .island[data-slot="active"]:hover .island__img,
 .island[data-slot="active"]:hover .island__video,
 .island[data-slot="active"]:hover .island__placeholder {
   filter:
-    drop-shadow(0 0 10px rgba(255, 196, 160, .8))
-    drop-shadow(0 0 26px rgba(255, 176, 150, .45));
+    drop-shadow(0 0 10px rgba(255, 255, 255, .9))
+    drop-shadow(0 0 26px rgba(255, 255, 255, .5));
 }
 .island__video { transition: opacity .25s ease, filter .3s ease; }
 .island__img { transition: filter .3s ease; }
@@ -898,3 +898,66 @@ video.bg {
   .trophy, .cart, .help-btn, video.bg { transition-duration: .01s !important; transition-delay: 0s !important; }
   .loader__tile { animation: none; }
 }
+
+/* ---------- Trophy: the learner's hidden sentence ---------- */
+/* Hover / focus / tap on the trophy opens a bubble with the sentence tiles.
+   Found letters are pink; the rest wait as "?" until the learner earns them. */
+.trophy { padding: 0; border: 0; background: none; cursor: pointer; }
+.trophy img { width: 100%; height: 100%; transition: transform .2s ease; }
+.trophy:hover img, .trophy[aria-expanded="true"] img { transform: scale(1.06) rotate(3deg); }
+
+.trophy-hint {
+  position: absolute;
+  top: 724px;
+  left: 213px;
+  width: 477px;
+  height: 163px;
+  border-radius: 20px 20px 20px 0;
+  background: rgba(255, 255, 255, .75);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 23px 19px 0;
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-12px);
+  transition: opacity .2s ease, transform .2s ease, visibility 0s linear .2s;
+}
+.trophy:hover + .trophy-hint,
+.trophy:focus-visible + .trophy-hint,
+.trophy[aria-expanded="true"] + .trophy-hint,
+.trophy-hint:hover {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity .2s ease, transform .2s ease, visibility 0s;
+}
+.trophy-hint__text {
+  width: 439px;
+  text-align: center;
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  line-height: 25px;
+  color: #000;
+}
+.sentence { display: flex; align-items: center; gap: 16px; direction: ltr; }
+.sentence__word { display: flex; gap: 5px; }
+.tile {
+  display: grid;
+  place-items: center;
+  width: 26.5px;
+  height: 28.7px;
+  border: .3px solid #bebebe;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, .7);
+  color: var(--navy);
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+}
+.tile.is-found { background: var(--pink); color: var(--white); }
+.trophy[aria-expanded="true"] + .trophy-hint .tile.is-found,
+.trophy:hover + .trophy-hint .tile.is-found { animation: pop-in .45s cubic-bezier(.34, 1.56, .64, 1) both; }

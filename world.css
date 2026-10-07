@@ -1,0 +1,116 @@
+/* Island page ("world") – layout on top of the shared styles.css */
+
+/* Fallback behind the scene (only seen if the scene file is missing) */
+.world { background: #c9b6e6 url("assets/bg-clouds.webp") center / cover no-repeat; }
+
+/* The scene, placed exactly as in Figma (1920x1281, 86px above the stage).
+   It is a single layer that always covers the whole window: world.js sets
+   --scene-k, how much larger than the stage it must be drawn so no letterbox
+   bars show. The lesson pins scale with it so they stay on their stones. */
+.world__bg {
+  position: absolute;
+  left: 0;
+  top: -86px;
+  width: 1920px;
+  height: 1281px;
+  object-fit: cover;
+  pointer-events: none;
+  transform-origin: 960px 626px; /* the stage centre, in this element's box */
+  transform:
+    scale(var(--scene-k, 1))
+    translate(calc(var(--mx) * -10px), calc(var(--my) * -7px))
+    scale(1.02);
+  transition: transform .8s cubic-bezier(.22, 1, .36, 1), opacity .6s ease;
+}
+.lessons { transform-origin: 960px 540px; transform: scale(var(--scene-k, 1)); }
+.world__bg:not([src]), .world__bg.is-missing { opacity: 0; }
+
+.world__back {
+  position: absolute;
+  top: 170px;
+  right: 107px;
+  z-index: 300;
+}
+
+/* ---------- Doctor island (right) ---------- */
+.world__island {
+  transform: translate(1285px, 515px);
+  z-index: 100;
+  cursor: pointer;
+}
+.world__island .island__card { outline: 3px solid var(--pink); outline-offset: 3px; }
+.world__island .island__float { transition: scale .3s ease; }
+.world__island:hover .island__float { scale: 1.03; }
+
+/* ---------- Lesson pins ---------- */
+.lessons { position: absolute; inset: 0; pointer-events: none; }
+.lesson {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  margin: -40px 0 0 -40px; /* x/y are the pin centre */
+  pointer-events: auto;
+  filter: drop-shadow(0 10px 8px rgba(29, 43, 122, .3));
+  animation: pin-bob 2.6s ease-in-out infinite;
+}
+.lesson::before {
+  /* the teardrop: a rounded square turned so its sharp corner points down */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 0 50%;
+  transform: rotate(45deg);
+  background: linear-gradient(160deg, #ff6f95, var(--pink));
+  border: 4px solid #fff;
+  transition: transform .2s ease;
+}
+.lesson__n {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: #fff;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 1;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .15);
+}
+.lesson--done::before { background: linear-gradient(160deg, #b7d43a, var(--green)); }
+.lesson--current::after {
+  /* soft pulse ring on the lesson to play next */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 90px;
+  height: 26px;
+  margin: 12px 0 0 -45px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, .9);
+  animation: pin-ring 1.8s ease-out infinite;
+}
+.lesson--locked { cursor: not-allowed; }
+.lesson--locked::before { filter: grayscale(.35) brightness(.95); }
+.lesson:not(.lesson--locked):hover::before { transform: rotate(45deg) scale(1.1); }
+.lesson:nth-child(2) { animation-delay: -.8s; }
+.lesson:nth-child(3) { animation-delay: -1.6s; }
+@keyframes pin-bob { 50% { translate: 0 -8px; } }
+@keyframes pin-ring { from { opacity: 1; scale: .4; } to { opacity: 0; scale: 1.3; } }
+@media (prefers-reduced-motion: reduce) { .lesson, .lesson--current::after { animation: none; } }
+
+/* Entrance */
+.world-page .topbar, .world-page .world__island, .world-page .lesson,
+.world-page .trophy, .world-page .cart, .world-page .help-btn, .world-page .world__back {
+  transition-property: opacity, translate, transform, scale;
+  transition-duration: .9s;
+  transition-timing-function: cubic-bezier(.22, 1, .36, 1);
+}
+.world-page.is-loading .topbar { opacity: 0; translate: 0 -40px; }
+.world-page.is-loading .world__island { opacity: 0; translate: 80px 0; }
+.world-page.is-loading .lessons { opacity: 0; }
+.world-page.is-loading .trophy,
+.world-page.is-loading .cart,
+.world-page.is-loading .help-btn,
+.world-page.is-loading .world__back { opacity: 0; translate: 0 40px; }
+.lessons { transition: opacity .8s ease .5s; }

@@ -89,7 +89,17 @@
       </nav>
 
       <!-- Bottom-left helper -->
-      <img class="trophy" src="assets/trophy.svg" alt="">
+      <button class="trophy" type="button" aria-label="המשפט שלי" aria-describedby="trophy-hint" aria-expanded="false">
+        <img src="assets/trophy.svg" alt="">
+      </button>
+      <div class="trophy-hint" id="trophy-hint" role="tooltip">
+        <p class="trophy-hint__text">מופיע לכל מקומות של המשפט.<br>תצטרכו להשיג כרטיסיות של אותיות כדי למצוא את המשפט שקיבלתם</p>
+        <div class="sentence" aria-label="המשפט: b, n, y נמצאו">
+          <span class="sentence__word"><b class="tile is-found">b</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+          <span class="sentence__word"><b class="tile">?</b><b class="tile is-found">n</b></span>
+          <span class="sentence__word"><b class="tile is-found">y</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+        </div>
+      </div>
       <a class="cart" href="#shop" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
       <div class="hint" id="shop-hint" role="tooltip">
         <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>

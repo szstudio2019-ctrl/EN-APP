@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אי האותיות של רופא/ה – מדקדקים באנגלית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;600;700&family=Playpen+Sans+Hebrew:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="world.css">
+</head>
+<body class="world-page">
+  <!-- Island template page (Figma "האותיות של הרופא עולם 2-4").
+       To make another island page: copy this file and change the WORLD settings
+       in the <script> at the bottom (background, lessons, island artwork). -->
+  <div class="viewport world">
+    <main class="stage" id="stage">
+      <!-- Background scene with the big lessons island. Exported from Figma
+           ("רקע אותיות רופא 1"); until the file exists the clouds show instead. -->
+      <img class="world__bg" id="world-bg" alt="" aria-hidden="true">
+
+      <!-- Header -->
+      <header class="topbar">
+        <div class="topbar__stats">
+          <a class="stat stat--chest" href="#bonus">
+            <img src="assets/chest.webp" alt="" class="stat__icon stat__icon--chest">
+            <span class="stat__text"><span class="stat__label">חזרות</span><span class="stat__value">3</span></span>
+          </a>
+          <a class="stat stat--coins" href="#coins">
+            <img src="assets/coin.webp" alt="" class="stat__icon stat__icon--coin">
+            <span class="stat__text"><span class="stat__label">מטבעות</span><span class="stat__value">350</span></span>
+          </a>
+          <a class="stat stat--shop" href="#shop">
+            <img src="assets/shop.webp" alt="" class="stat__icon stat__icon--shop">
+            <span class="stat__text"><span class="stat__label">חנות</span><span class="stat__value">12</span></span>
+          </a>
+        </div>
+
+        <a class="logo" href="index.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית">
+          <span class="logo__text">
+            <span class="logo__title">מדקדקים באנגלית</span>
+            <span class="logo__subtitle">קורס דיגיטלי באנגלית</span>
+          </span>
+          <span class="logo__mark">
+            <img class="logo__ring" src="assets/logo-ring.svg" alt="">
+            <span class="logo__tile logo__tile--a">a</span>
+            <span class="logo__tile logo__tile--c">c</span>
+            <span class="logo__tile logo__tile--b">b</span>
+          </span>
+        </a>
+
+        <div class="topbar__user">
+          <div class="user">
+            <p class="user__greeting"><span class="user__hello">בקר טוב,</span><span class="user__name">שירה כהן</span></p>
+            <a class="user__avatar" href="#profile" aria-label="הפרופיל שלי">
+              <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+              <img class="user__photo" src="assets/avatar.webp" alt="">
+              <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+            </a>
+          </div>
+          <a class="menu-btn" href="index.html" aria-label="חזרה למפת האיים">
+            <img src="assets/menu.svg" alt="">
+          </a>
+        </div>
+      </header>
+
+      <a class="btn-pill world__back" href="index.html">
+        <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
+        <span>חזרה למפת האיים</span>
+      </a>
+
+      <!-- Lesson pins on the stepping stones -->
+      <nav class="lessons" id="lessons" aria-label="השיעורים באי"></nav>
+
+      <!-- Right side: the animated doctor island from the home page -->
+      <a class="island world__island" id="world-island" href="#" data-slot="active" data-state="progress">
+        <div class="island__float">
+          <img class="island__img" id="world-island-still" alt="">
+          <div class="island__card">
+            <p class="island__title" id="world-title"></p>
+            <div class="island__stats">
+              <p class="island__stat"><span>שיעורים</span><b id="world-lessons"></b></p>
+              <div class="island__coins">
+                <img src="assets/coin.webp" alt="">
+                <p class="island__stat"><span>מטבעות</span><b id="world-coins"></b></p>
+              </div>
+            </div>
+            <div class="island__progress"><span id="world-progress"></span></div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Bottom-left helper -->
+      <button class="trophy" type="button" aria-label="המשפט שלי" aria-describedby="trophy-hint" aria-expanded="false">
+        <img src="assets/trophy.svg" alt="">
+      </button>
+      <div class="trophy-hint" id="trophy-hint" role="tooltip">
+        <p class="trophy-hint__text">מופיע לכל מקומות של המשפט.<br>תצטרכו להשיג כרטיסיות של אותיות כדי למצוא את המשפט שקיבלתם</p>
+        <div class="sentence" aria-label="המשפט: b, n, y נמצאו">
+          <span class="sentence__word"><b class="tile is-found">b</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+          <span class="sentence__word"><b class="tile">?</b><b class="tile is-found">n</b></span>
+          <span class="sentence__word"><b class="tile is-found">y</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+        </div>
+      </div>
+      <a class="cart" href="#shop" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
+      <div class="hint" id="shop-hint" role="tooltip">
+        <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>
+        <a class="btn-pill hint__cta" href="#shop">
+          <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
+          <span>לחנות האותיות</span>
+        </a>
+      </div>
+      <button class="help-btn" type="button" aria-label="עזרה">?</button>
+    </main>
+  </div>
+
+  <script>
+    // Settings for this island page
+    window.WORLD = {
+      title: 'אי האותיות של רופא/ה',
+      lessonsRange: '2-4',
+      coins: 350,
+      progress: 50,
+      background: 'assets/doctor-world-bg.jpg',
+      // Island artwork: still image + transparent animation (WebM for Chrome/Edge/Firefox,
+      // animated WebP + WAV for Safari / iPhone). Click = "Ahhh" with sound.
+      island: { still: 'island-doctor-still', video: 'island-doctor-ahh', sound: 'doctor-ahh' },
+      // Lesson pins: x/y = pin centre on the 1920x1080 stage; status: done | current | locked
+      lessons: [
+        { n: 1, x: 1094, y: 470, status: 'done', href: '#lesson-2' },
+        { n: 2, x: 1213, y: 396, status: 'current', href: '#lesson-3' },
+        { n: 3, x: 1313, y: 330, status: 'locked', href: '#lesson-4' },
+      ],
+    };
+  </script>
+  <script src="world.js"></script>
+</body>
+</html>

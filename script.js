@@ -106,7 +106,7 @@
   // the learner scrolls past them to look.
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-still', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50 },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-still', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50, page: 'doctor.html' },
     { name: 'אי האותיות המחייכות', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', review: '1-11', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', lessons: '13-19', img: 'island-single', box: [49, 0, 493, 493] },
@@ -152,7 +152,7 @@
   const els = ISLANDS.map((island, i) => {
     const a = document.createElement('a');
     a.className = 'island';
-    a.href = `#island-${i + 1}`;
+    a.href = island.page || `#island-${i + 1}`;
     const [l, t, w, h] = island.box || [0, 0, 564, 478];
     const art = island.img
       ? `<img class="island__img${island.flip ? ' island__img--flip' : ''}" src="assets/${island.img}.webp" alt="" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">`
@@ -267,6 +267,7 @@
         });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
+          if (island.page && e.target.closest('.island__card')) return; // card → island page
           e.preventDefault(); // the sound belongs to hover only
         });
       } else {
@@ -283,6 +284,7 @@
         a.addEventListener('mouseleave', () => { if (!touchOnly) island.stop(); });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
+          if (island.page && e.target.closest('.island__card')) return; // card → island page
           e.preventDefault(); // the sound belongs to hover only
         });
       }
@@ -613,4 +615,19 @@
       }, 250);
     }, wait);
   });
+  /* ------------------------------------------------------------------ */
+  /* Trophy: the hidden sentence                                         */
+  /* ------------------------------------------------------------------ */
+  const trophy = document.querySelector('.trophy');
+  if (trophy) {
+    const setTrophy = (open) => trophy.setAttribute('aria-expanded', String(open));
+    trophy.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setTrophy(trophy.getAttribute('aria-expanded') !== 'true');
+    });
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.trophy-hint')) setTrophy(false);
+    });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setTrophy(false); });
+  }
 })();
