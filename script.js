@@ -353,22 +353,13 @@
     snakeRaf = requestAnimationFrame(frame);
   }
 
-  /* Beside the island in front, on the side facing the centre of the screen:
-     - at rest, the island's name in large type
-     - while hovering the island, its name or the bubble (one "hot" area), the
-       name gives way to the "about this world" bubble, and the island plays
-       its animation and glows */
+  /* "About this world" bubble beside the island in front, on the side facing
+     the centre of the screen. It is shown as soon as the island arrives, and it
+     is part of the island's hover area: hovering the island or the bubble
+     plays the island's animation and glow. */
   const aboutEl = document.getElementById('island-about');
-  const nameEl = document.getElementById('island-name');
   let hot = false;
   let coolTimer;
-
-  // Two lines for longer names: "אי האותיות / של רופא/ה"
-  const nameLines = (name) => {
-    const words = name.split(' ');
-    if (words.length <= 2) return name;
-    return `${words.slice(0, 2).join(' ')}<br>${words.slice(2).join(' ')}`;
-  };
 
   function setHot(on) {
     clearTimeout(coolTimer);
@@ -377,40 +368,31 @@
     const a = els[current];
     a.classList.toggle('is-hot', on);
     a.dispatchEvent(new Event(on ? 'island-hot' : 'island-cold'));
-    const hasAbout = !!ISLANDS[current].about;
-    aboutEl.classList.toggle('is-shown', on && hasAbout);
-    nameEl.classList.toggle('is-shown', !(on && hasAbout));
   }
   const cool = () => { clearTimeout(coolTimer); coolTimer = setTimeout(() => setHot(false), 150); };
 
   // Called whenever the island in front changes
   function showAbout() {
-    if (!aboutEl || !nameEl) return;
+    if (!aboutEl) return;
     clearTimeout(showAbout.t);
     clearTimeout(coolTimer);
     hot = false;
     els.forEach((el) => el.classList.remove('is-hot'));
     aboutEl.classList.remove('is-shown');
-    nameEl.classList.remove('is-shown');
     const island = ISLANDS[current];
-    const islandOnRight = current % 2 === 0;
-    aboutEl.classList.toggle('is-left', islandOnRight);
-    nameEl.classList.toggle('is-left', islandOnRight);
-    nameEl.innerHTML = nameLines(island.name);
     const about = island.about;
-    aboutEl.innerHTML = about ? `
+    if (!about) return;
+    aboutEl.classList.toggle('is-left', current % 2 === 0); // island on the right → bubble on its left
+    aboutEl.innerHTML = `
       <h2 class="island-about__title">${about.title}</h2>
       <p class="island-about__text">${about.text}</p>
-      ${island.page ? `<a class="btn-pill island-about__go" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}` : '';
-    showAbout.t = setTimeout(() => { if (!hot) nameEl.classList.add('is-shown'); }, 1200);
+      ${island.page ? `<a class="btn-pill island-about__go" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
+    showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 1200);
   }
 
-  // The hot area: the island in front, its name and its bubble
-  if (aboutEl && nameEl) {
-    for (const el of [aboutEl, nameEl]) {
-      el.addEventListener('mouseenter', () => setHot(true));
-      el.addEventListener('mouseleave', cool);
-    }
+  if (aboutEl) {
+    aboutEl.addEventListener('mouseenter', () => setHot(true));
+    aboutEl.addEventListener('mouseleave', cool);
   }
 
   function render() {

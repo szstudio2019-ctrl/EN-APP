@@ -1025,32 +1025,7 @@ video.bg {
 .island-about__list li::marker { color: var(--pink); }
 .island-about__go { position: static; }
 
-/* ---------- Island name beside the island (map) ---------- */
-/* Large name at rest, on the side facing the centre; it makes way for the
-   "about" bubble while the island is hovered. Part of the hover area. */
-.island-name {
-  position: absolute;
-  top: 350px;
-  left: 935px;
-  z-index: 150;
-  margin: 0;
-  width: 420px;
-  font-family: 'Rubik', sans-serif;
-  font-weight: 700;
-  font-size: 46px;
-  line-height: 1.05;
-  color: var(--pink);
-  text-align: left; /* island on the left: hug it */
-  direction: rtl;
-  opacity: 0;
-  translate: -24px 0;
-  pointer-events: none;
-  transition: opacity .45s ease, translate .6s cubic-bezier(.22, 1, .36, 1);
-}
-.island-name.is-left { left: 565px; text-align: right; translate: 24px 0; }
-.island-name.is-shown { opacity: 1; translate: 0 0; pointer-events: auto; }
-
-/* Map cards no longer repeat the name (it is shown large beside the island):
+/* Map cards no longer repeat the name (the bubble beside the island names the world):
    stats move up and the card gets shorter */
 .journey .island__title { display: none; }
 .journey .island__card { height: 96px; top: 380px; }
