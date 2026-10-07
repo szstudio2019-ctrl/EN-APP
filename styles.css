@@ -194,39 +194,53 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .topbar__user {
   width: 406px;
   display: flex;
-  gap: 43px;
+  gap: 22px;
   align-items: center;
   justify-content: flex-end;
 }
 .user {
-  position: relative;
-  width: 127px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   height: 46px;
 }
+/* Greeting and name use the same type as the header stats ("חנות" / "12") */
 .user__greeting {
-  position: absolute;
-  top: 4px;
-  left: 0;
-  width: 70px;
   display: flex;
   flex-direction: column;
   direction: rtl;
   text-align: right;
+  font-family: 'Rubik', sans-serif;
   font-weight: 700;
   color: var(--white);
-  line-height: 16.9px;
-  letter-spacing: .09px;
+  line-height: 20.3px;
+  white-space: nowrap;
 }
-.user__hello { font-size: 12px; }
-.user__name { font-size: 18px; color: var(--pink); white-space: nowrap; }
+.user__hello { font-size: 16px; }
+.user__name { font-size: 21.6px; color: var(--pink); }
 
 .user__avatar {
-  position: absolute;
-  top: 0;
-  left: 82px;
+  position: relative;
+  flex: none;
   width: 45px;
   height: 43.915px;
 }
+
+/* Home button between the user and the menu: white outline only */
+.home-btn {
+  flex: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition: background .2s ease, transform .15s ease;
+}
+.home-btn:hover { background: rgba(255, 255, 255, .15); transform: scale(1.08); }
+.home-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .user__ring {
   position: absolute;
   top: -3px;

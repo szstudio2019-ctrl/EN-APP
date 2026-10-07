@@ -56,13 +56,6 @@
 }
 .world__bg:not([src]), .world__bg.is-missing { opacity: 0; }
 
-.world__back {
-  position: absolute;
-  top: 170px;
-  right: 107px;
-  z-index: 300;
-}
-
 /* ---------- Doctor island (right) ---------- */
 .world__island {
   transform: translate(1285px, 515px);
@@ -132,7 +125,7 @@
 
 /* Entrance */
 .world-page .topbar, .world-page .world__island, .world-page .lesson,
-.world-page .trophy, .world-page .cart, .world-page .help-btn, .world-page .world__back {
+.world-page .trophy, .world-page .cart, .world-page .help-btn {
   transition-property: opacity, translate, transform, scale;
   transition-duration: .9s;
   transition-timing-function: cubic-bezier(.22, 1, .36, 1);
@@ -142,6 +135,5 @@
 .world-page.is-loading .lessons { opacity: 0; }
 .world-page.is-loading .trophy,
 .world-page.is-loading .cart,
-.world-page.is-loading .help-btn,
-.world-page.is-loading .world__back { opacity: 0; translate: 0 40px; }
+.world-page.is-loading .help-btn { opacity: 0; translate: 0 40px; }
 .lessons { transition: opacity .8s ease .5s; }
