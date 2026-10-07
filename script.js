@@ -379,21 +379,29 @@
   // Called whenever the island in front changes
   function showAbout() {
     if (!aboutEl) return;
+    clearTimeout(showAbout.swap);
     clearTimeout(showAbout.t);
     clearTimeout(coolTimer);
     hot = false;
     els.forEach((el) => el.classList.remove('is-hot'));
+    // 1) the old bubble fades out where it is, still showing its own island
+    const wasShown = aboutEl.classList.contains('is-shown');
     aboutEl.classList.remove('is-shown');
-    const island = ISLANDS[current];
-    const about = island.about;
-    if (!about) return;
-    aboutEl.classList.toggle('is-left', current % 2 === 0); // island on the right → bubble on its left
-    aboutEl.innerHTML = `
-      <p class="island-about__island">${island.name}</p>
-      <h2 class="island-about__title">${about.title}</h2>
-      <p class="island-about__text">${about.text}</p>
-      ${island.page ? `<a class="btn-pill island-about__go" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
-    showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 1200);
+    // 2) only once it is invisible does it move to the new island's side and
+    //    take the new text; 3) it fades in after the island has arrived
+    const index = current;
+    showAbout.swap = setTimeout(() => {
+      const island = ISLANDS[index];
+      const about = island.about;
+      if (!about) { aboutEl.innerHTML = ''; return; }
+      aboutEl.classList.toggle('is-left', index % 2 === 0); // island on the right → bubble on its left
+      aboutEl.innerHTML = `
+        <p class="island-about__island">${island.name}</p>
+        <h2 class="island-about__title">${about.title}</h2>
+        <p class="island-about__text">${about.text}</p>
+        ${island.page ? `<a class="btn-pill island-about__go" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
+      showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 650);
+    }, wasShown ? 550 : 0);
   }
 
   if (aboutEl) {
