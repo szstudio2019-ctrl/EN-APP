@@ -1733,3 +1733,5 @@ video.bg {
 }
 /* review strip number: a little smaller */
 .island-about__strip-no b { width: 42px; height: 42px; font-size: 21px; }
+/* about bubble sits lower, beside the middle of the island */
+.island-about { top: 410px; }
