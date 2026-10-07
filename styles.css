@@ -1064,28 +1064,11 @@ video.bg {
 .page-cover.is-on .loader__tiles { transform: none; opacity: 1; filter: none; }
 .page-cover .loader__tile { animation: none; }
 
-/* ---------- Bottom-left controls at the window edge, on a cloud ---------- */
-/* --edge-shift (set by the page script) moves the trophy, cart, help button
-   and their bubbles to the window's left edge, past the stage on wide screens;
-   a soft white cloud sits underneath them */
-.trophy, .cart, .help-btn, .hint, .trophy-hint, .footer-cloud {
-  margin-left: calc(var(--edge-shift, 0px) - 30px);
-}
-.footer-cloud {
-  position: absolute;
-  left: -90px;
-  top: 790px;
-  width: 480px;
-  height: 340px;
-  z-index: 290;
-  pointer-events: none;
-  /* overlapping soft puffs, each fading out well inside the box so no edge is cut */
-  background:
-    radial-gradient(closest-side, #fff 58%, rgba(255, 255, 255, 0)) 40px 120px / 210px 170px no-repeat,
-    radial-gradient(closest-side, #fff 58%, rgba(255, 255, 255, 0)) 150px 50px / 230px 210px no-repeat,
-    radial-gradient(closest-side, #fff 58%, rgba(255, 255, 255, 0)) 260px 110px / 200px 180px no-repeat,
-    radial-gradient(closest-side, #fff 60%, rgba(255, 255, 255, 0)) 60px 170px / 380px 170px no-repeat;
-  filter: drop-shadow(0 10px 18px rgba(120, 110, 200, .25));
+/* ---------- Left-edge tabs: trophy and letter shop ---------- */
+/* --edge-shift (set by the page script) keeps the tabs and their bubbles at the
+   window's left edge, past the stage on wide screens */
+.trophy, .cart, .help-btn, .hint, .trophy-hint {
+  margin-left: var(--edge-shift, 0px);
 }
 
 /* ---------- Island progress lines (right edge) ---------- */
@@ -1157,3 +1140,74 @@ video.bg {
   right: -17px;
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
+
+/* Two white tabs with a pink outline, flush with the window's left edge;
+   hovering one opens its bubble to the right */
+.trophy,
+.cart {
+  top: 360px;
+  left: 0;
+  width: 112px;
+  height: 112px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 3px solid var(--pink);
+  border-left: 0;
+  border-radius: 0 26px 26px 0;
+  box-shadow: 0 10px 24px rgba(36, 34, 117, .18);
+}
+.cart { top: 488px; }
+.trophy img { width: 76px; height: 76px; }
+.cart img { width: 92px; height: 84px; }
+.trophy:hover, .trophy[aria-expanded="true"], .cart:hover { background: #fff3f6; }
+
+/* "?" sits on the shop tab's corner */
+.help-btn {
+  top: 566px;
+  left: 92px;
+  width: 36px;
+  height: 36px;
+  font-size: 24px;
+  line-height: 36px;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(227, 53, 99, .35);
+}
+
+/* Bubbles open beside their tab, top-aligned, with a small pointer */
+.trophy-hint,
+.hint {
+  left: 128px;
+  border-radius: 20px;
+}
+.trophy-hint { top: 360px; }
+.hint { top: 488px; }
+.trophy-hint::before,
+.hint::before {
+  content: '';
+  position: absolute;
+  top: 40px;
+  left: -15px;
+  width: 16px;
+  height: 30px;
+  background: rgba(255, 255, 255, .96);
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+}
+/* invisible bridge over the gap so the pointer can travel from tab to bubble */
+.trophy-hint::after,
+.hint::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -20px;
+  width: 20px;
+  height: 112px;
+}
+
+/* Tabs slide in from the edge after the loader */
+.is-loading .trophy,
+.is-loading .cart,
+.is-loading .help-btn,
+.world-page.is-loading .trophy,
+.world-page.is-loading .cart,
+.world-page.is-loading .help-btn { translate: -140px 0; }
