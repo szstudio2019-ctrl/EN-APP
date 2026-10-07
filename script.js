@@ -633,7 +633,6 @@
     const status = island.status || 'locked';
     li.dataset.state = status;
     const pic = island.finale ? 'assets/trophy.svg'
-      : island.review ? 'assets/chest.webp'
         : island.img ? `assets/${island.img}.webp` : '';
     const range = island.review ? `חזרות ${island.review}`
       : island.lessons ? `שיעורים ${island.lessons}` : '';

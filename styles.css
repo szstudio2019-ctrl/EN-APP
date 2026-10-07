@@ -1810,3 +1810,25 @@ video.bg {
 .drawer-handle.is-open .drawer-handle__arrow { rotate: 180deg; animation: none; }
 @keyframes handle-nudge { 50% { transform: translateY(-4px); } }
 @media (prefers-reduced-motion: reduce) { .drawer-handle__arrow { animation: none; } }
+
+/* Drawer: frosted glass instead of the gradient; every circle the same size,
+   review islands show their island picture */
+.drawer {
+  background: rgba(255, 255, 255, .28);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .7), 0 -10px 30px rgba(36, 34, 117, .12);
+  border-top: 1px solid rgba(255, 255, 255, .55);
+  padding-top: 26px;
+}
+.drawer__item--review .drawer__btn { width: 92px; height: 92px; }
+.drawer__item--review .drawer__pic img { width: 72px; height: 72px; }
+.drawer__line { background: rgba(255, 255, 255, .7); }
+.drawer-handle {
+  background: rgba(255, 255, 255, .28);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow: inset 0 1.5px 0 rgba(255, 255, 255, .7);
+}
+.drawer-handle:hover { background: rgba(255, 255, 255, .45); }
+.drawer-handle.is-open { transform: translateY(calc(-1 * var(--drawer-h, 180px))); }
