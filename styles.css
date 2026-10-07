@@ -513,15 +513,15 @@ button { font: inherit; border: 0; padding: 0; background: none; cursor: pointer
 .island[data-state="locked"]:hover .island__card { filter: none; }
 .island[data-state="locked"]:hover .island__lock { background: var(--pink); transform: scale(1.08); }
 
-/* Hover: a glow in the site's pink (--pink, #e33563) that hugs the island's
-   own silhouette (drop-shadow follows the artwork's transparency, not its
-   rectangle) and a slight lift in size */
+/* Hover: a soft peach glow, the warm tone of the clouds, that hugs the
+   island's own silhouette (drop-shadow follows the artwork's transparency,
+   not its rectangle) and a slight lift in size */
 .island[data-slot="active"]:hover .island__img,
 .island[data-slot="active"]:hover .island__video,
 .island[data-slot="active"]:hover .island__placeholder {
   filter:
-    drop-shadow(0 0 12px rgba(227, 53, 99, .9))
-    drop-shadow(0 0 24px rgba(227, 53, 99, .5));
+    drop-shadow(0 0 10px rgba(255, 196, 160, .8))
+    drop-shadow(0 0 26px rgba(255, 176, 150, .45));
 }
 .island__video { transition: opacity .25s ease, filter .3s ease; }
 .island__img { transition: filter .3s ease; }

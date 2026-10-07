@@ -193,14 +193,22 @@
     // Stagger the hover-float so the islands don't bob in sync
     a.querySelector('.island__float').style.animationDelay = `${-i * 1.3}s`;
 
-    // Animated island: the still shows the clip's first frame; hovering plays the
-    // animation silently, clicking restarts it once with its sound ("Ahhh").
-    // Chromium gets the transparent WebM (sound inside it); Safari / iPhone,
-    // which can't show transparent WebM, get an animated WebP plus a WAV.
+    // Animated island: the still shows the clip's first frame. Hovering (or, on
+    // touch screens, being in front) plays the animation; each pass that starts
+    // from the beginning also plays its sound ("Ahhh") from a separate, louder
+    // WAV, and clicking restarts it with the sound. Browsers only allow sound
+    // once the visitor has clicked or tapped the page, so the very first hover
+    // after loading may be silent.
+    // Chromium gets the transparent WebM; Safari / iPhone, which can't show
+    // transparent WebM, get an animated WebP.
     if (island.video && !reducedMotion) {
       const [vl, vt, vw, vh] = island.videoBox || [l, t, w, h];
       const still = a.querySelector('.island__img');
       const boxCss = `left:${vl}px;top:${vt}px;width:${vw}px;height:${vh}px`;
+      const sfx = island.sound ? new Audio(`assets/${island.sound}.wav`) : null;
+      if (sfx) sfx.preload = 'auto';
+      const playSound = () => { if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); } };
+      const stopSound = () => { if (sfx) sfx.pause(); };
 
       if (supportsAlphaVideo) {
         // Two copies of the clip take turns: while one plays, the other waits
@@ -227,7 +235,6 @@
           // the sound pass finished after the mouse had already left: rest on the still
           if (soundPass && !touchOnly && !a.matches(':hover')) { soundPass = false; island.stop(); return; }
           soundPass = false;
-          back.muted = true;
           back.play().catch(() => {});
           back.classList.remove('is-standby');
           front.classList.add('is-standby');
@@ -241,13 +248,16 @@
         island.start = () => {
           if (running) return;
           running = true;
-          front.muted = true;
+          front.currentTime = 0;
           front.play().then(() => a.classList.add('is-playing')).catch(() => {});
+          playSound();
         };
         island.stop = () => {
           running = false;
+          soundPass = false;
           a.classList.remove('is-playing');
-          for (const v of [front, back]) { v.pause(); v.currentTime = 0; v.muted = true; }
+          for (const v of [front, back]) { v.pause(); v.currentTime = 0; }
+          stopSound();
         };
         a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(); });
         // touch screens fire mouseleave after a tap; there the island keeps playing
@@ -263,8 +273,8 @@
           soundPass = true;
           running = true;
           front.currentTime = 0;
-          front.muted = false;
           front.play().then(() => a.classList.add('is-playing')).catch(() => {});
+          playSound();
         });
       } else {
         // Safari / iPhone fallback
@@ -273,17 +283,16 @@
         anim.alt = '';
         anim.style.cssText = boxCss;
         still.after(anim);
-        const audio = island.sound ? new Audio(`assets/${island.sound}.wav`) : null;
         const restart = () => { anim.src = `assets/${island.video}.webp?${Date.now()}`; };
-        island.start = () => { restart(); a.classList.add('is-playing'); };
-        island.stop = () => { a.classList.remove('is-playing'); anim.removeAttribute('src'); if (audio) audio.pause(); };
+        island.start = () => { restart(); a.classList.add('is-playing'); playSound(); };
+        island.stop = () => { a.classList.remove('is-playing'); anim.removeAttribute('src'); stopSound(); };
         a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(); });
         a.addEventListener('mouseleave', () => { if (!touchOnly) island.stop(); });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
           e.preventDefault();
           restart(); // start the animation from the top so the sound lines up
-          if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+          playSound();
         });
       }
     }
