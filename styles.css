@@ -975,3 +975,53 @@ video.bg {
 .tile.is-found { background: var(--pink); color: var(--white); }
 .trophy[aria-expanded="true"] + .trophy-hint .tile.is-found,
 .trophy:hover + .trophy-hint .tile.is-found { animation: pop-in .45s cubic-bezier(.34, 1.56, .64, 1) both; }
+
+/* ---------- "About this world" bubble ---------- */
+/* Frosted white glass beside the island in front, with a tail pointing at it.
+   Island on the left → bubble on its right; .is-left flips it. */
+.island-about {
+  position: absolute;
+  top: 330px;
+  left: 935px;
+  z-index: 150;
+  width: 430px;
+  padding: 26px 30px 24px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, .5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1.5px solid rgba(255, 255, 255, .8);
+  box-shadow: 0 18px 40px rgba(36, 34, 117, .18), inset 0 1px 0 rgba(255, 255, 255, .9);
+  direction: rtl;
+  text-align: right;
+  font-family: 'Rubik', sans-serif;
+  color: var(--navy);
+  opacity: 0;
+  translate: -24px 0;
+  pointer-events: none;
+  transition: opacity .5s ease, translate .6s cubic-bezier(.22, 1, .36, 1);
+}
+.island-about.is-left { left: 555px; translate: 24px 0; }
+.island-about.is-shown { opacity: 1; translate: 0 0; pointer-events: auto; }
+/* tail toward the island */
+.island-about::before {
+  content: '';
+  position: absolute;
+  top: 70px;
+  left: -14px;
+  width: 26px;
+  height: 26px;
+  rotate: 45deg;
+  background: inherit;
+  border-left: inherit;
+  border-bottom: inherit;
+  -webkit-backdrop-filter: inherit;
+  backdrop-filter: inherit;
+}
+.island-about.is-left::before { left: auto; right: -14px; border: 0; border-top: inherit; border-right: inherit; }
+.island-about__title { margin: 0 0 10px; font-size: 30px; font-weight: 700; color: var(--pink); line-height: 1.15; }
+.island-about__text { margin: 0 0 14px; font-size: 19px; line-height: 1.5; }
+.island-about__label { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
+.island-about__list { margin: 0 0 18px; padding: 0 22px 0 0; font-size: 18px; line-height: 1.55; }
+.island-about__list li::marker { color: var(--pink); }
+.island-about__go { position: static; }

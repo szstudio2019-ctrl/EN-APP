@@ -106,7 +106,12 @@
   // the learner scrolls past them to look.
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-still', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50, page: 'doctor.html' },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-still', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50, page: 'doctor.html',
+      about: {
+        title: 'האות a היא הרופא/ה!',
+        text: 'כשכואב הגרון, הרופא/ה אומר/ת: "פתחו את הפה ואמרו אָהההה!". גם האות a עושה את זה – היא אומרת לאות שלפניה להגיד אַ.',
+        points: ['איך b ועוד a הופכים ל־ba (בָּ)', 'לקרוא עם קמץ מתחת לאות, כמו בעברית', 'לשמוע, לחזור ולתרגל את הצליל אַה'],
+      } },
     { name: 'אי האותיות המחייכות', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', review: '1-11', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', lessons: '13-19', img: 'island-single', box: [49, 0, 493, 493] },
@@ -267,7 +272,7 @@
         });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
-          if (island.page && e.target.closest('.island__card')) return; // card → island page
+          if (island.page) return; // the island opens its own page
           e.preventDefault(); // the sound belongs to hover only
         });
       } else {
@@ -284,7 +289,7 @@
         a.addEventListener('mouseleave', () => { if (!touchOnly) island.stop(); });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
-          if (island.page && e.target.closest('.island__card')) return; // card → island page
+          if (island.page) return; // the island opens its own page
           e.preventDefault(); // the sound belongs to hover only
         });
       }
@@ -363,6 +368,26 @@
     snakeRaf = requestAnimationFrame(frame);
   }
 
+  /* "About this world" bubble: shown beside the island in front when it has an
+     `about` entry, on the side facing the centre of the screen */
+  const aboutEl = document.getElementById('island-about');
+  function showAbout() {
+    if (!aboutEl) return;
+    const about = ISLANDS[current].about;
+    aboutEl.classList.remove('is-shown');
+    clearTimeout(showAbout.t);
+    if (!about) return;
+    const side = current % 2 === 0 ? 1 : -1; // where the island sits
+    aboutEl.classList.toggle('is-left', side === 1); // island on the right → bubble on its left
+    aboutEl.innerHTML = `
+      <h2 class="island-about__title">${about.title}</h2>
+      <p class="island-about__text">${about.text}</p>
+      <p class="island-about__label">מה נלמד בעולם הזה:</p>
+      <ul class="island-about__list">${about.points.map((p) => `<li>${p}</li>`).join('')}</ul>
+      ${ISLANDS[current].page ? `<a class="btn-pill island-about__go" href="${ISLANDS[current].page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
+    showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 1200);
+  }
+
   function render() {
     els.forEach((el, i) => {
       const offset = i - current;
@@ -388,6 +413,7 @@
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
     });
     syncMenu();
+    showAbout();
     count.textContent = `${current + 1} / ${ISLANDS.length}`;
     prevBtn.disabled = current === 0;
     nextBtn.disabled = current === ISLANDS.length - 1;
