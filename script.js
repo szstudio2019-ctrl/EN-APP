@@ -384,6 +384,7 @@
     if (!about) return;
     aboutEl.classList.toggle('is-left', current % 2 === 0); // island on the right → bubble on its left
     aboutEl.innerHTML = `
+      <p class="island-about__island">${island.name}</p>
       <h2 class="island-about__title">${about.title}</h2>
       <p class="island-about__text">${about.text}</p>
       ${island.page ? `<a class="btn-pill island-about__go" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
