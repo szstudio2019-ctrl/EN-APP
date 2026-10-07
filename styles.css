@@ -1339,3 +1339,7 @@ video.bg {
 @media (prefers-reduced-motion: reduce) {
   .finale__confetti i, .finale__trophy { animation: none; }
 }
+
+/* Header and island cards: the same navy as the island counter pill below */
+.topbar,
+.island__card { background: var(--panel); }
