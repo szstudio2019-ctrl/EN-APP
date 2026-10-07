@@ -240,7 +240,10 @@
           running = false;
           soundPass = false;
           a.classList.remove('is-playing');
-          for (const v of [front, back]) { v.pause(); v.currentTime = 0; }
+          for (const v of [front, back]) v.pause();
+          // rewind only once the clip has faded out, so it doesn't visibly jump
+          clearTimeout(island.rewind);
+          island.rewind = setTimeout(() => { if (!running) for (const v of [front, back]) v.currentTime = 0; }, 500);
           stopSound();
         };
         a.addEventListener('island-hot', () => island.start(true));
