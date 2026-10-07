@@ -12,6 +12,8 @@
   function fit() {
     const scale = Math.min(window.innerWidth / W, window.innerHeight / H);
     stage.style.transform = `translate(${(window.innerWidth - W * scale) / 2}px, ${(window.innerHeight - H * scale) / 2}px) scale(${scale})`;
+    // the bottom-left controls sit at the window's own left edge, even past the stage
+    stage.style.setProperty('--edge-shift', `${(-(window.innerWidth - W * scale) / 2 / scale).toFixed(1)}px`);
     // How much bigger the background scene must be drawn, around the stage
     // centre, to fill the whole window: its width is 1920 and it reaches 626px
     // above / 655px below the centre (1281px tall, 86px above the stage).

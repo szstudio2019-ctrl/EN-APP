@@ -10,6 +10,8 @@
     const x = (window.innerWidth - W * scale) / 2;
     const y = (window.innerHeight - H * scale) / 2;
     stage.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    // the bottom-left controls sit at the window's own left edge, even past the stage
+    stage.style.setProperty('--edge-shift', `${(-x / scale).toFixed(1)}px`);
   }
 
   window.addEventListener('resize', fit);
