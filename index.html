@@ -81,15 +81,24 @@
            (front, centre); the next ones wait small and locked toward the horizon.
            Scroll / swipe / arrow keys move along the path. -->
       <div class="journey" id="journey" aria-live="polite"></div>
-      <nav class="journey-nav" aria-label="ניווט בין האיים">
-        <button class="journey-nav__btn" id="journey-prev" type="button" aria-label="האי הקודם">
-          <img src="assets/chevron.svg" alt="">
-        </button>
-        <span class="journey-nav__count" id="journey-count"></span>
-        <button class="journey-nav__btn journey-nav__btn--next" id="journey-next" type="button" aria-label="האי הבא">
-          <img src="assets/chevron.svg" alt="">
-        </button>
-      </nav>
+      <!-- Islands drawer: hidden at the bottom centre behind a small floating-island
+           icon; opens on hover (desktop) or tap. Built by script.js from ISLANDS. -->
+      <div class="drawer-zone" id="drawer-zone" aria-hidden="true"></div>
+      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
+        <svg class="drawer-handle__icon" viewBox="0 0 64 52" aria-hidden="true">
+          <path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/>
+          <path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/>
+          <path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/>
+        </svg>
+        <span class="drawer-handle__label">כל העולמות</span>
+      </button>
+      <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer__scroll">
+          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
+            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
+          </ol>
+        </div>
+      </div>
 
       <!-- "About this world" bubble beside the island in front (filled by script.js);
            hovering it plays the island's animation like hovering the island -->
