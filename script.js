@@ -119,7 +119,8 @@
   };
   const slotFor = (offset, index) => {
     const slot = offset < 0 ? SLOTS.passed : offset === 0 ? SLOTS.active : SLOTS.waiting;
-    const side = index % 2 === 0 ? 1 : -1; // index 0 = island 1 (odd) → right
+    const side = ISLANDS[index] && ISLANDS[index].finale ? 0 // the finale: centre
+      : index % 2 === 0 ? 1 : -1; // index 0 = island 1 (odd) → right
     return { ...slot, x: W / 2 + side * slot.x };
   };
   // Where the light line touches an island: a little above the card
@@ -143,7 +144,7 @@
     const firstName = (document.querySelector('.user__name')?.textContent || '').trim().split(/\s+/)[0];
     const confetti = Array.from({ length: 18 }, (_, k) => `<i style="--k:${k}"></i>`).join('');
     const art = island.finale
-      ? `<div class="finale"><span class="finale__confetti" aria-hidden="true">${confetti}</span><img class="finale__trophy" src="assets/trophy.svg" alt=""><p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p><p class="finale__en" lang="en" dir="ltr">Very Good!</p></div>`
+      ? `<div class="finale"><span class="finale__confetti" aria-hidden="true">${confetti}</span><p class="finale__en" lang="en" dir="ltr">Very Good!</p><img class="finale__trophy" src="assets/trophy.svg" alt=""><p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p><span class="finale__actions"><button class="finale__btn" type="button" data-finale="start">להתחלה</button><button class="finale__btn finale__btn--alt" type="button" data-finale="reviews">למסך החזרות</button></span></div>`
       : island.img
       ? `<img class="island__img${island.flip ? ' island__img--flip' : ''}" src="assets/${island.img}.webp" alt="" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">`
       : `<div class="island__placeholder">${island.name}</div>`;
@@ -509,7 +510,7 @@
     current = target;
     if (!reducedMotion) setBackgroundRate(TRAVEL_SPEED);
     const place = (el, slot) => { el.style.transform = `translate(${slot.x - 278}px, ${slot.y - 248}px) scale(${slot.s})`; };
-    const sideOf = (i) => (i % 2 === 0 ? 1 : -1); // right-hand islands are on the right
+    const sideOf = (i) => (ISLANDS[i].finale ? 0 : i % 2 === 0 ? 1 : -1); // right-hand islands are on the right
     const big = (i) => ({ ...SLOTS.leaving, x: W / 2 + sideOf(i) * SLOTS.leaving.x });
     const incoming = els[target];
     if (!forward) {
@@ -542,6 +543,49 @@
   }
   const go = (step) => goTo(current + step);
   window.journeyGoTo = goTo; // used by the side menu
+
+  /* Finale buttons: back to the first island, or a popup listing every review */
+  const stageEl = document.getElementById('stage');
+  const pop = document.createElement('div');
+  pop.className = 'reviews-pop';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-modal', 'true');
+  pop.setAttribute('aria-label', 'כל החזרות');
+  let n = 0;
+  const rows = ISLANDS.map((island, i) => {
+    if (!island.review) return '';
+    n += 1;
+    return `<button class="reviews-pop__row" type="button" data-go="${i}">
+        <span class="reviews-pop__no">${n}</span>
+        <span class="reviews-pop__name">חזרה מספר ${n}</span>
+        <span class="reviews-pop__range">שיעורים <bdi>${island.review}</bdi></span>
+      </button>`;
+  }).join('');
+  pop.innerHTML = `
+    <div class="reviews-pop__card">
+      <button class="reviews-pop__close" type="button" aria-label="סגירה">✕</button>
+      <h2 class="reviews-pop__title">כל החזרות</h2>
+      <div class="reviews-pop__list">${rows}</div>
+    </div>`;
+  stageEl.appendChild(pop);
+  const setPop = (open) => {
+    pop.classList.toggle('is-open', open);
+    if (open) pop.querySelector('.reviews-pop__close').focus();
+  };
+  pop.addEventListener('click', (e) => {
+    const row = e.target.closest('[data-go]');
+    if (row) { setPop(false); setTimeout(() => goTo(Number(row.dataset.go)), 250); return; }
+    if (e.target === pop || e.target.closest('.reviews-pop__close')) setPop(false);
+  });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pop.classList.contains('is-open')) setPop(false); });
+  journey.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-finale]');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (btn.dataset.finale === 'start') goTo(0);
+    else setPop(true);
+  }, true);
 
   // Mouse wheel / trackpad: forward (down) = next island, back (up) = previous
   let wheelSum = 0;

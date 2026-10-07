@@ -1376,3 +1376,100 @@ video.bg {
   font-weight: 800;
 }
 .island-about__strip-range bdi { color: #ff8fb0; font-weight: 800; }
+
+/* Finale: "Very Good!" on top, then the trophy, the text and two buttons */
+.finale { gap: 6px; }
+.finale__en { margin: 0 0 2px; font-size: 44px; }
+.finale__trophy { width: 112px; height: 112px; margin: 0; }
+.finale__text { font-size: 26px; max-width: 310px; }
+.finale__actions { position: relative; display: flex; gap: 10px; margin-top: 10px; }
+.finale__btn {
+  height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 40px;
+  background: var(--pink);
+  color: #fff;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(227, 53, 99, .3);
+  transition: transform .15s ease;
+}
+.finale__btn--alt { background: var(--menu-strong); box-shadow: 0 8px 16px rgba(36, 34, 117, .3); }
+.finale__btn:hover { transform: translateY(-2px); }
+
+/* Popup with every review */
+.reviews-pop {
+  position: absolute;
+  inset: 0;
+  z-index: 450;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 18, 74, .45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .25s ease, visibility 0s linear .25s;
+}
+.reviews-pop.is-open { opacity: 1; visibility: visible; transition: opacity .25s ease, visibility 0s; }
+.reviews-pop__card {
+  position: relative;
+  width: 560px;
+  padding: 34px 34px 30px;
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 30px 70px rgba(20, 18, 74, .35);
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+  transform: scale(.94);
+  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+}
+.reviews-pop.is-open .reviews-pop__card { transform: none; }
+.reviews-pop__title { margin: 0 0 20px; font-size: 34px; font-weight: 700; color: var(--pink); }
+.reviews-pop__close {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f0fa;
+  color: var(--menu-strong);
+  font-size: 20px;
+  cursor: pointer;
+}
+.reviews-pop__list { display: flex; flex-direction: column; gap: 10px; }
+.reviews-pop__row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--panel);
+  color: #fff;
+  font-family: 'Rubik', sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  text-align: right;
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.reviews-pop__row:hover { transform: translateX(-4px); }
+.reviews-pop__no {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pink);
+  font-weight: 800;
+}
+.reviews-pop__name { flex: 1; }
+.reviews-pop__range bdi { color: #ff8fb0; font-weight: 800; }
+/* the dim backdrop reaches past the stage to the window edges */
+.reviews-pop { inset: -3000px; }
