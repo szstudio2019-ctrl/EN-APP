@@ -773,8 +773,8 @@ video.bg {
   position: absolute;
   inset: 0;
   z-index: 400;
-  background: rgba(23, 21, 77, .35);
-  backdrop-filter: blur(3px);
+  /* invisible: it only catches the click outside the menu that closes it */
+  background: transparent;
   opacity: 0;
   pointer-events: none;
   transition: opacity .4s ease;
@@ -784,7 +784,7 @@ video.bg {
   top: 60px;
   right: 40px;
   z-index: 401;
-  width: 330px;
+  width: 400px;
   max-height: 960px;
   padding: 24px;
   display: flex;
@@ -797,13 +797,13 @@ video.bg {
   font-family: 'Assistant', 'Rubik', sans-serif;
   direction: rtl;
   /* Opens as a circle growing out of the menu button (its centre sits at
-     188px, 36px relative to the 330px panel) and closes by shrinking back into it */
-  clip-path: circle(0 at 188px 36px);
+     258px, 36px relative to the 400px panel) and closes by shrinking back into it */
+  clip-path: circle(0 at 258px 36px);
   visibility: hidden;
   transition: clip-path .75s cubic-bezier(.76, 0, .24, 1), visibility 0s linear .75s;
 }
 .menu-open .sidebar {
-  clip-path: circle(1300px at 188px 36px);
+  clip-path: circle(1300px at 258px 36px);
   visibility: visible;
   transition: clip-path .75s cubic-bezier(.76, 0, .24, 1), visibility 0s;
 }
@@ -839,8 +839,8 @@ video.bg {
 
 .sidebar__profile { display: flex; align-items: center; gap: 12px; }
 .sidebar__who { flex: 1; display: flex; flex-direction: column; gap: 4px; text-align: right; }
-.sidebar__hello { font-size: 11px; letter-spacing: .4px; color: rgba(255, 255, 255, .5); }
-.sidebar__name { font-size: 15px; font-weight: 700; color: rgba(255, 255, 255, .85); }
+.sidebar__hello { font-size: 14px; letter-spacing: .4px; color: rgba(255, 255, 255, .5); }
+.sidebar__name { font-size: 19px; font-weight: 700; color: rgba(255, 255, 255, .85); }
 .sidebar__avatar { position: relative; top: auto; left: auto; flex: none; }
 
 .sidebar__divider { width: 100%; height: 2px; margin: 0; border: 0; border-radius: 2px; background: var(--menu-strong); }
@@ -856,14 +856,14 @@ video.bg {
   padding: 10px 12px;
   border-radius: 8px;
   font: inherit;
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 600;
   color: rgba(255, 255, 255, .55);
   text-align: right;
   transition: background .2s ease, color .2s ease;
 }
 .sb-link span { flex: 1; }
-.sb-link > img { width: 20px; height: 20px; flex: none; }
+.sb-link > img { width: 22px; height: 22px; flex: none; }
 .sb-link:hover { background: rgba(255, 255, 255, .08); color: var(--white); }
 .sb-link--bright { color: rgba(255, 255, 255, .85); }
 .sb-link--danger { color: var(--pink); }
@@ -894,7 +894,7 @@ video.bg {
   gap: 8px;
   padding: 8px 12px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: rgba(255, 255, 255, .5);
   text-align: right;
@@ -903,7 +903,7 @@ video.bg {
 .sb-sublink > span:first-child { white-space: nowrap; }
 .sb-sublink:hover { background: rgba(255, 255, 255, .08); color: var(--white); }
 .sb-sublink.is-current { background: var(--pink); color: var(--white); }
-.sb-sublink__status { margin-inline-start: auto; font-size: 12px; }
+.sb-sublink__status { margin-inline-start: auto; font-size: 14px; }
 .sb-sublink__status--done { color: #8fe08f; }
 .sb-sublink.is-current .sb-sublink__status--done { color: var(--white); }
 
@@ -984,7 +984,7 @@ video.bg {
   top: 330px;
   left: 935px;
   z-index: 150;
-  width: 430px;
+  width: 380px;
   padding: 26px 30px 24px;
   border-radius: 28px;
   background: rgba(255, 255, 255, .5);
@@ -1020,7 +1020,7 @@ video.bg {
 }
 .island-about.is-left::before { left: auto; right: -14px; border: 0; border-top: inherit; border-right: inherit; }
 .island-about__title { margin: 0 0 10px; font-size: 30px; font-weight: 700; color: var(--pink); line-height: 1.15; }
-.island-about__text { margin: 0 0 14px; font-size: 19px; line-height: 1.5; }
+.island-about__text { margin: 0 0 18px; font-size: 19px; line-height: 1.5; }
 .island-about__label { margin: 0 0 6px; font-size: 18px; font-weight: 700; }
 .island-about__list { margin: 0 0 18px; padding: 0 22px 0 0; font-size: 18px; line-height: 1.55; }
 .island-about__list li::marker { color: var(--pink); }

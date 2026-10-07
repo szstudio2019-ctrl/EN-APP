@@ -98,30 +98,8 @@
   /* ------------------------------------------------------------------ */
   /* Island journey                                                      */
   /* ------------------------------------------------------------------ */
-  // Course order from Figma ("Group 1261154890"). `box` is where the artwork sits
-  // inside the 556x497 island frame (left, top, width, height), as in the design.
-  // Islands without artwork (img: null) get a simple placeholder island.
-  // `status` is the learner's progress (demo values): 'done', 'progress' (with
-  // `progress` %), or locked when omitted. Locked islands stay locked even while
-  // the learner scrolls past them to look.
-  const ISLANDS = [
-    { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-still', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50, page: 'doctor.html',
-      about: {
-        title: 'האות a היא הרופא/ה!',
-        text: 'כשכואב הגרון, הרופא/ה אומר/ת: "פתחו את הפה ואמרו אָהההה!". גם האות a עושה את זה – היא אומרת לאות שלפניה להגיד אַ.',
-        points: ['איך b ועוד a הופכים ל־ba (בָּ)', 'לקרוא עם קמץ מתחת לאות, כמו בעברית', 'לשמוע, לחזור ולתרגל את הצליל אַה'],
-      } },
-    { name: 'אי האותיות המחייכות', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423] },
-    { name: 'אי החזרות', review: '1-11', img: 'island-review', box: [32, -14, 504, 504] },
-    { name: 'אי האותיות הבודדות', lessons: '13-19', img: 'island-single', box: [49, 0, 493, 493] },
-    { name: 'אי החזרות', review: '1-19', img: 'island-review', box: [32, -14, 504, 504] },
-    { name: 'אי צירוף האותיות', lessons: '20-27', img: 'island-blending', box: [0, 48, 557, 371] },
-    { name: 'אי האותיות השורקות', lessons: '28-31', img: 'island-whistling', box: [7, 17, 528, 434], flip: true },
-    { name: 'אי הקסמים', lessons: '32-39', img: 'island-magic', box: [43, 22, 526, 433] },
-    { name: 'אי הצלילים המתקדמים', lessons: '42-45', coins: 40, img: 'island-sounds', box: [5, 51, 571, 381] },
-    { name: 'אי החזרות', review: '1-45', img: 'island-review', box: [32, -14, 504, 504] },
-  ];
+  // The island list lives in islands.js (shared with the menu and island pages)
+  const ISLANDS = window.ISLANDS;
 
   // One island is visible at a time. Odd islands (1st, 3rd, …) sit on the
   // right and even ones on the left. On scroll the current island shrinks away
@@ -298,7 +276,12 @@
     return a;
   });
 
-  let current = 0;
+  // Start at the island named in the link (index.html#island-N), else the first
+  let current = (() => {
+    const m = /^#island-(\d+)$/.exec(location.hash);
+    const n = m ? Number(m[1]) - 1 : 0;
+    return n >= 0 && n < ISLANDS.length ? n : 0;
+  })();
 
   /* Trail of light: while moving between islands, a glowing half arc
      slithers from the island being left to the one arriving, then slides into
@@ -382,8 +365,6 @@
     aboutEl.innerHTML = `
       <h2 class="island-about__title">${about.title}</h2>
       <p class="island-about__text">${about.text}</p>
-      <p class="island-about__label">מה נלמד בעולם הזה:</p>
-      <ul class="island-about__list">${about.points.map((p) => `<li>${p}</li>`).join('')}</ul>
       ${ISLANDS[current].page ? `<a class="btn-pill island-about__go" href="${ISLANDS[current].page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לעולם הזה</span></a>` : ''}`;
     showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 1200);
   }
@@ -412,7 +393,7 @@
       el.querySelector('.island__progress span').style.width =
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';
     });
-    syncMenu();
+    window.SiteMenu.sync(current);
     showAbout();
     count.textContent = `${current + 1} / ${ISLANDS.length}`;
     prevBtn.disabled = current === 0;
@@ -449,12 +430,13 @@
     }, TRAVEL_MS);
   }
   const go = (step) => goTo(current + step);
+  window.journeyGoTo = goTo; // used by the side menu
 
   // Mouse wheel / trackpad: forward (down) = next island, back (up) = previous
   let wheelSum = 0;
   let wheelTimer;
   window.addEventListener('wheel', (e) => {
-    if (menuOpen) return; // let the menu scroll
+    if (window.SiteMenu.isOpen()) return; // let the menu scroll
     e.preventDefault();
     wheelSum += e.deltaY;
     clearTimeout(wheelTimer);
@@ -471,7 +453,7 @@
     touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   }, { passive: true });
   window.addEventListener('touchend', (e) => {
-    if (!touchStart || menuOpen) return;
+    if (!touchStart || window.SiteMenu.isOpen()) return;
     const dx = e.changedTouches[0].clientX - touchStart.x;
     const dy = e.changedTouches[0].clientY - touchStart.y;
     touchStart = null;
@@ -481,8 +463,7 @@
 
   // Keyboard
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menuOpen) { setMenu(false); return; }
-    if (menuOpen) return;
+    if (window.SiteMenu.isOpen()) return;
     if (['ArrowDown', 'PageDown', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); go(1); }
     if (['ArrowUp', 'PageUp', 'ArrowRight'].includes(e.key)) { e.preventDefault(); go(-1); }
   });
@@ -490,73 +471,7 @@
   prevBtn.addEventListener('click', () => go(-1));
   nextBtn.addEventListener('click', () => go(1));
 
-  /* ------------------------------------------------------------------ */
-  /* Side menu                                                           */
-  /* ------------------------------------------------------------------ */
   const viewport = document.querySelector('.viewport');
-  const sidebar = document.getElementById('sidebar');
-  const menuOpenBtn = document.getElementById('menu-open');
-  let menuOpen = false;
-
-  function setMenu(open) {
-    menuOpen = open;
-    viewport.classList.toggle('menu-open', open);
-    sidebar.setAttribute('aria-hidden', String(!open));
-    menuOpenBtn.setAttribute('aria-expanded', String(open));
-    if (open) sidebar.querySelector('.sidebar__close').focus();
-    else menuOpenBtn.focus();
-  }
-  menuOpenBtn.addEventListener('click', () => setMenu(true));
-  document.getElementById('menu-close').addEventListener('click', () => setMenu(false));
-  document.getElementById('sidebar-backdrop').addEventListener('click', () => setMenu(false));
-
-  // Stagger the cascade-in of the menu rows
-  sidebar.querySelectorAll('.sb-item').forEach((el, i) => el.style.setProperty('--i', i));
-
-  // Collapsible groups
-  sidebar.querySelectorAll('.sb-link--group').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const group = btn.closest('.sb-group');
-      const open = !group.classList.contains('is-open');
-      group.classList.toggle('is-open', open);
-      btn.setAttribute('aria-expanded', String(open));
-    });
-  });
-
-  // Island lists: game worlds and review islands, each jumping to its island
-  const menuLinks = [];
-  const fillList = (containerId, filter, label) => {
-    const inner = document.createElement('div');
-    inner.className = 'sb-sub__inner';
-    let n = 0;
-    ISLANDS.forEach((island, i) => {
-      if (!filter(island)) return;
-      n += 1;
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'sb-sublink';
-      const status = island.status === 'done' ? '<span class="sb-sublink__status sb-sublink__status--done">✓ הושלם</span>'
-        : island.status === 'progress' ? `<span class="sb-sublink__status">${island.progress || 0}%</span>`
-        : '<span class="sb-sublink__status" aria-label="נעול">🔒</span>';
-      b.innerHTML = `<span>${label(island, n)}</span>${status}`;
-      b.addEventListener('click', () => {
-        setMenu(false);
-        setTimeout(() => goTo(i), 400);
-      });
-      inner.appendChild(b);
-      menuLinks.push([b, i]);
-    });
-    document.getElementById(containerId).appendChild(inner);
-  };
-  const isReview = (island) => island.name === 'אי החזרות';
-  const short = (island) => island.name.replace(/^אי (ה)?/, '');
-  fillList('sb-worlds', (island) => !isReview(island),
-    (island) => (island.lessons ? `${short(island)} (שיעור ${island.lessons})` : short(island)));
-  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n}`);
-
-  function syncMenu() {
-    menuLinks.forEach(([b, i]) => b.classList.toggle('is-current', i === current));
-  }
 
   /* ------------------------------------------------------------------ */
   /* Mouse depth                                                         */
