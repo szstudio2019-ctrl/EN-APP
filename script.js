@@ -152,11 +152,14 @@
     const reward = island.review
       ? { icon: 'chest.webp', label: 'תרגולים', value: 800 }
       : { icon: 'coin.webp', label: 'מטבעות', value: island.coins ?? 350 };
+    // Review islands are numbered 1, 2, 3… in a pink circle on the card
+    const reviewNo = island.review ? ISLANDS.slice(0, i + 1).filter((x) => x.review).length : 0;
     a.innerHTML = `
       <div class="island__float">
         ${art}
         <span class="island__lock" aria-label="נעול">${lockSvg}</span>
         <div class="island__card">
+          ${reviewNo ? `<span class="island__review-no" aria-label="חזרה ${reviewNo}">${reviewNo}</span>` : ''}
           <p class="island__title">${island.name}</p>
           <div class="island__stats">
             ${range}
