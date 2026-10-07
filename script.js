@@ -556,6 +556,7 @@
     if (!island.review) return '';
     n += 1;
     return `<button class="reviews-pop__row" type="button" data-go="${i}">
+        <img class="reviews-pop__img" src="assets/${island.img}.webp" alt="">
         <span class="reviews-pop__no">${n}</span>
         <span class="reviews-pop__name">חזרה מספר ${n}</span>
         <span class="reviews-pop__range">שיעורים <bdi>${island.review}</bdi></span>

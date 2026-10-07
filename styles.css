@@ -1479,3 +1479,23 @@ video.bg {
 .island-about__strip-no b { width: 52px; height: 52px; font-size: 28px; }
 .island-about__strip-range bdi,
 .reviews-pop__range bdi { color: var(--pink); font-size: 24px; }
+
+/* Reviews popup: dark see-through backdrop, a wide card, each review with its island */
+.reviews-pop { background: rgba(0, 0, 0, .55); }
+.reviews-pop__card { width: 1360px; padding: 40px 44px 44px; }
+.reviews-pop__title { font-size: 42px; margin-bottom: 28px; text-align: center; }
+.reviews-pop__list { flex-direction: row; gap: 18px; }
+.reviews-pop__row {
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 12px 20px;
+  border-radius: 24px;
+  text-align: center;
+  position: relative;
+}
+.reviews-pop__row:hover { transform: translateY(-6px); }
+.reviews-pop__img { width: 200px; height: 200px; object-fit: contain; filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .25)); }
+.reviews-pop__no { position: absolute; top: 14px; right: 14px; width: 48px; height: 48px; font-size: 24px; }
+.reviews-pop__name { flex: none; font-size: 22px; font-weight: 700; }
+.reviews-pop__range { font-size: 20px; }
