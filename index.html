@@ -81,15 +81,11 @@
            (front, centre); the next ones wait small and locked toward the horizon.
            Scroll / swipe / arrow keys move along the path. -->
       <div class="journey" id="journey" aria-live="polite"></div>
-      <!-- Islands drawer: hidden at the bottom centre behind a small floating-island
-           icon; opens on hover (desktop) or tap. Built by script.js from ISLANDS. -->
+      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
+           button; opens on hover (desktop) or tap. Built by script.js from ISLANDS. -->
       <div class="drawer-zone" id="drawer-zone" aria-hidden="true"></div>
       <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
-        <svg class="drawer-handle__icon" viewBox="0 0 64 52" aria-hidden="true">
-          <path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/>
-          <path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/>
-          <path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/>
-        </svg>
+        <svg class="drawer-handle__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
         <span class="drawer-handle__label">כל העולמות</span>
       </button>
       <div class="drawer" id="drawer" aria-hidden="true">

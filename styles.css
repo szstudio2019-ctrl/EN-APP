@@ -1772,3 +1772,41 @@ video.bg {
 .drawer-handle { bottom: calc(26px + var(--edge-shift-y, 0px)); }
 .drawer-zone { bottom: var(--edge-shift-y, 0px); }
 .drawer__list { padding-bottom: 20px; }
+
+/* Half-circle tab with an arrow at the bottom centre; it rises with the drawer */
+.drawer-handle {
+  bottom: var(--edge-shift-y, 0px);
+  width: 96px;
+  height: 50px;
+  padding: 8px 0 0;
+  gap: 0;
+  justify-content: flex-start;
+  border-radius: 50px 50px 0 0;
+  background: #fff;
+  box-shadow: 0 -6px 16px rgba(36, 34, 117, .18);
+  z-index: 340;
+  transition: opacity .3s ease, translate .9s cubic-bezier(.22, 1, .36, 1), transform .35s cubic-bezier(.22, 1, .36, 1), background .2s ease;
+}
+.drawer-handle__arrow {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: var(--pink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: handle-nudge 1.8s ease-in-out infinite;
+  transition: rotate .35s ease;
+}
+.drawer-handle:hover { background: #fff3f6; }
+.drawer-handle__label { display: none; }
+/* open: sits on the drawer's top edge, arrow points down */
+.drawer-handle.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(calc(-1 * var(--drawer-h, 180px) + 34px));
+  box-shadow: none;
+}
+.drawer-handle.is-open .drawer-handle__arrow { rotate: 180deg; animation: none; }
+@keyframes handle-nudge { 50% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .drawer-handle__arrow { animation: none; } }

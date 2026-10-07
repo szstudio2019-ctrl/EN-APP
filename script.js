@@ -687,6 +687,8 @@
     drawerHandle.setAttribute('aria-expanded', String(open));
     drawerHandle.classList.toggle('is-open', open);
     if (open) {
+      // the half-circle button rides up on top of the drawer
+      drawerHandle.style.setProperty('--drawer-h', `${drawer.offsetHeight}px`);
       syncDrawer();
       // bring the island in front into view when the row scrolls (phones)
       const li = drawerItems[current];
