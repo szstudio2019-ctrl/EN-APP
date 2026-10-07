@@ -193,12 +193,11 @@
     // Stagger the hover-float so the islands don't bob in sync
     a.querySelector('.island__float').style.animationDelay = `${-i * 1.3}s`;
 
-    // Animated island: the still shows the clip's first frame. Hovering (or, on
-    // touch screens, being in front) plays the animation; each pass that starts
-    // from the beginning also plays its sound ("Ahhh") from a separate, louder
-    // WAV, and clicking restarts it with the sound. Browsers only allow sound
-    // once the visitor has clicked or tapped the page, so the very first hover
-    // after loading may be silent.
+    // Animated island: the still shows the clip's first frame. Hovering plays
+    // the animation with its sound ("Ahhh", from a separate, louder WAV); on
+    // touch screens it plays on its own while in front, silently. Browsers only
+    // allow sound once the visitor has clicked or tapped the page, so the very
+    // first hover after loading may be silent.
     // Chromium gets the transparent WebM; Safari / iPhone, which can't show
     // transparent WebM, get an animated WebP.
     if (island.video && !reducedMotion) {
@@ -245,12 +244,12 @@
         front.addEventListener('ended', swap);
         back.addEventListener('ended', swap);
 
-        island.start = () => {
+        island.start = (withSound) => {
           if (running) return;
           running = true;
           front.currentTime = 0;
           front.play().then(() => a.classList.add('is-playing')).catch(() => {});
-          playSound();
+          if (withSound) playSound();
         };
         island.stop = () => {
           running = false;
@@ -259,7 +258,7 @@
           for (const v of [front, back]) { v.pause(); v.currentTime = 0; }
           stopSound();
         };
-        a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(); });
+        a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(true); });
         // touch screens fire mouseleave after a tap; there the island keeps playing
         a.addEventListener('mouseleave', () => { if (!soundPass && !touchOnly) island.stop(); });
         // Browsers pause silent video in a background tab; pick up again on return
@@ -268,13 +267,7 @@
         });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
-          e.preventDefault();
-          if (soundPass) return;
-          soundPass = true;
-          running = true;
-          front.currentTime = 0;
-          front.play().then(() => a.classList.add('is-playing')).catch(() => {});
-          playSound();
+          e.preventDefault(); // the sound belongs to hover only
         });
       } else {
         // Safari / iPhone fallback
@@ -284,15 +277,13 @@
         anim.style.cssText = boxCss;
         still.after(anim);
         const restart = () => { anim.src = `assets/${island.video}.webp?${Date.now()}`; };
-        island.start = () => { restart(); a.classList.add('is-playing'); playSound(); };
+        island.start = (withSound) => { restart(); a.classList.add('is-playing'); if (withSound) playSound(); };
         island.stop = () => { a.classList.remove('is-playing'); anim.removeAttribute('src'); stopSound(); };
-        a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(); });
+        a.addEventListener('mouseenter', () => { if (a.dataset.slot === 'active') island.start(true); });
         a.addEventListener('mouseleave', () => { if (!touchOnly) island.stop(); });
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
-          e.preventDefault();
-          restart(); // start the animation from the top so the sound lines up
-          playSound();
+          e.preventDefault(); // the sound belongs to hover only
         });
       }
     }
