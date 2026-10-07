@@ -106,7 +106,7 @@
   // the learner scrolls past them to look.
   const ISLANDS = [
     { name: 'אי זיהוי אותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done' },
-    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor-ahh', status: 'progress', progress: 50 },
+    { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor', box: [0, 0, 564, 478], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50 },
     { name: 'אי האותיות המחייכות', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423] },
     { name: 'אי החזרות', review: '1-11', img: 'island-review', box: [32, -14, 504, 504] },
     { name: 'אי האותיות הבודדות', lessons: '13-19', img: 'island-single', box: [49, 0, 493, 493] },
@@ -192,55 +192,92 @@
     // Stagger the hover-float so the islands don't bob in sync
     a.querySelector('.island__float').style.animationDelay = `${-i * 1.3}s`;
 
-    // Island video on mouse-over. Transparent WebM only plays correctly in
-    // Chromium browsers; elsewhere the still image stays.
-    if (island.video && supportsAlphaVideo && !reducedMotion) {
-      // Two copies of the clip take turns: while one plays, the other waits
-      // decoded on its first frame, so the loop restarts without a seek hitch.
-      const makeVideo = () => {
-        const v = document.createElement('video');
-        v.className = 'island__video';
-        v.src = `assets/${island.video}.webm`;
-        v.playsInline = true;
-        v.preload = 'auto';
-        // The video covers exactly the same box as the still image
-        v.style.cssText = `left:${l}px;top:${t}px;width:${w}px;height:${h}px`;
-        return v;
-      };
-      let front = makeVideo();
-      let back = makeVideo();
-      back.classList.add('is-standby');
-      a.querySelector('.island__img').after(front, back);
-      let hovering = false;
+    // Animated island: plays silently on its own while it is the active island;
+    // clicking the island restarts it once with its sound ("Ahhh").
+    // Chromium gets the transparent WebM (sound inside it); Safari / iPhone,
+    // which can't show transparent WebM, get an animated WebP plus a WAV.
+    if (island.video && !reducedMotion) {
+      const [vl, vt, vw, vh] = island.videoBox || [l, t, w, h];
+      const still = a.querySelector('.island__img');
+      const boxCss = `left:${vl}px;top:${vt}px;width:${vw}px;height:${vh}px`;
 
-      // With sound when the browser allows it (after the visitor has clicked or
-      // pressed a key on the page); otherwise silently
-      const playWithSound = (v) => {
-        v.muted = false;
-        return v.play().catch(() => { v.muted = true; return v.play(); });
-      };
-      const swap = () => {
-        if (!hovering) return;
-        playWithSound(back).catch(() => {});
-        back.classList.remove('is-standby');
-        front.classList.add('is-standby');
-        front.pause();
-        front.currentTime = 0;
-        [front, back] = [back, front];
-      };
-      front.addEventListener('ended', swap);
-      back.addEventListener('ended', swap);
+      if (supportsAlphaVideo) {
+        // Two copies of the clip take turns: while one plays, the other waits
+        // decoded on its first frame, so the loop restarts without a seek hitch.
+        const makeVideo = () => {
+          const v = document.createElement('video');
+          v.className = 'island__video';
+          v.src = `assets/${island.video}.webm`;
+          v.muted = true;
+          v.playsInline = true;
+          v.preload = 'auto';
+          v.style.cssText = boxCss;
+          return v;
+        };
+        let front = makeVideo();
+        let back = makeVideo();
+        back.classList.add('is-standby');
+        still.after(front, back);
+        let running = false;
+        let soundPass = false; // the current pass was started by a click
 
-      a.addEventListener('mouseenter', () => {
-        if (a.dataset.state === 'locked') return;
-        hovering = true;
-        playWithSound(front).then(() => a.classList.add('is-playing')).catch(() => {});
-      });
-      a.addEventListener('mouseleave', () => {
-        hovering = false;
-        a.classList.remove('is-playing');
-        for (const v of [front, back]) { v.pause(); v.currentTime = 0; }
-      });
+        const swap = () => {
+          if (!running) return;
+          soundPass = false;
+          back.muted = true;
+          back.play().catch(() => {});
+          back.classList.remove('is-standby');
+          front.classList.add('is-standby');
+          front.pause();
+          front.currentTime = 0;
+          [front, back] = [back, front];
+        };
+        front.addEventListener('ended', swap);
+        back.addEventListener('ended', swap);
+
+        island.start = () => {
+          if (running) return;
+          running = true;
+          front.muted = true;
+          front.play().then(() => a.classList.add('is-playing')).catch(() => {});
+        };
+        island.stop = () => {
+          running = false;
+          a.classList.remove('is-playing');
+          for (const v of [front, back]) { v.pause(); v.currentTime = 0; v.muted = true; }
+        };
+        // Browsers pause silent video in a background tab; pick up again on return
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible' && running && front.paused) front.play().catch(() => {});
+        });
+        a.addEventListener('click', (e) => {
+          if (a.dataset.slot !== 'active') return;
+          e.preventDefault();
+          if (soundPass) return;
+          soundPass = true;
+          running = true;
+          front.currentTime = 0;
+          front.muted = false;
+          front.play().then(() => a.classList.add('is-playing')).catch(() => {});
+        });
+      } else {
+        // Safari / iPhone fallback
+        const anim = document.createElement('img');
+        anim.className = 'island__video';
+        anim.alt = '';
+        anim.style.cssText = boxCss;
+        still.after(anim);
+        const audio = island.sound ? new Audio(`assets/${island.sound}.wav`) : null;
+        const restart = () => { anim.src = `assets/${island.video}.webp?${Date.now()}`; };
+        island.start = () => { restart(); a.classList.add('is-playing'); };
+        island.stop = () => { a.classList.remove('is-playing'); anim.removeAttribute('src'); if (audio) audio.pause(); };
+        a.addEventListener('click', (e) => {
+          if (a.dataset.slot !== 'active') return;
+          e.preventDefault();
+          restart(); // start the animation from the top so the sound lines up
+          if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+        });
+      }
     }
     journey.appendChild(a);
     return a;
@@ -330,6 +367,11 @@
       el.dataset.state = status;
       el.setAttribute('aria-disabled', status === 'locked' ? 'true' : 'false');
       el.tabIndex = offset === 0 ? 0 : -1;
+      // Animated islands play only while they are the one in front
+      if (ISLANDS[i].start) {
+        if (offset === 0) setTimeout(() => { if (current === i) ISLANDS[i].start(); }, 900);
+        else ISLANDS[i].stop();
+      }
       // The bar fills when the island arrives in front
       el.querySelector('.island__progress span').style.width =
         offset === 0 && status === 'progress' ? `${ISLANDS[i].progress || 0}%` : '0%';

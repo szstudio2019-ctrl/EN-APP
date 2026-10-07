@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>אי הרופא/ה – אנימציה</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(160deg, #f8c3dd, #9cc7ff);
+    }
+
+    /* The animation box. Change the width; the height follows the clip's ratio. */
+    .doctor {
+      position: relative;
+      width: min(560px, 90vw);
+      aspect-ratio: 678 / 602;
+      border: 0;
+      padding: 0;
+      background: none;
+      cursor: pointer;
+    }
+    .doctor video,
+    .doctor img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .doctor:focus-visible { outline: 3px solid #e33563; outline-offset: 6px; border-radius: 12px; }
+  </style>
+</head>
+<body>
+
+  <!--
+    Plays by itself, silently, in a loop. Clicking the doctor restarts it once
+    with the "Ahhh" sound, then it carries on silently.
+    - Chrome / Edge / Firefox: transparent WebM (the sound is inside it)
+    - Safari / iPhone: animated WebP + a separate WAV for the sound
+    Files: island-doctor-ahh.webm, island-doctor-ahh.webp, doctor-ahh.wav
+  -->
+  <button class="doctor" id="doctor" type="button" aria-label="הרופאה אומרת אהההה – לחצו לשמוע">
+    <video id="doctor-video" src="../assets/island-doctor-ahh.webm" autoplay muted loop playsinline></video>
+  </button>
+
+  <script>
+    (function () {
+      const box = document.getElementById('doctor');
+      const video = document.getElementById('doctor-video');
+
+      // Transparent WebM works in Chromium and Firefox; Safari shows a black box,
+      // so it gets the animated WebP instead.
+      const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent);
+
+      if (!isSafari) {
+        box.addEventListener('click', () => {
+          video.currentTime = 0;
+          video.muted = false;
+          video.play();
+          // back to silent once the "Ahhh" pass has played through: wait until the
+          // clip is well under way, then mute when the loop jumps back to the start
+          let underway = false;
+          const remute = () => {
+            if (video.currentTime > 1) underway = true;
+            else if (underway && video.currentTime < 0.5) {
+              video.muted = true;
+              video.removeEventListener('timeupdate', remute);
+            }
+          };
+          video.removeEventListener('timeupdate', box._remute || (() => {}));
+          box._remute = remute;
+          video.addEventListener('timeupdate', remute);
+        });
+        return;
+      }
+
+      // Safari / iPhone fallback
+      const img = document.createElement('img');
+      img.alt = '';
+      img.src = '../assets/island-doctor-ahh.webp';
+      video.replaceWith(img);
+      const sound = new Audio('../assets/doctor-ahh.wav');
+      box.addEventListener('click', () => {
+        img.src = '../assets/island-doctor-ahh.webp?' + Date.now(); // restart the animation so the sound lines up
+        sound.currentTime = 0;
+        sound.play();
+      });
+    })();
+  </script>
+</body>
+</html>
