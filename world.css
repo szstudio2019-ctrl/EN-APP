@@ -138,22 +138,23 @@
 .world-page.is-loading .help-btn { opacity: 0; translate: 0 40px; }
 .lessons { transition: opacity .8s ease .5s; }
 
-/* Pins, white with a coloured outline: done = green check, next = the
-   number in a pink dot, locked = a pink lock */
-.lesson::before,
-.lesson--done::before { background: #fff; border: 5px solid var(--pink); }
-.lesson--done::before { border-color: var(--green); }
-.lesson--locked::before { filter: none; }
-.lesson__icon { position: relative; display: grid; place-items: center; height: 100%; }
-.lesson__icon svg { width: 40px; height: 40px; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.lesson--done .lesson__icon svg { stroke: var(--green); stroke-width: 3.6; }
-.lesson--locked .lesson__icon svg { width: 34px; height: 34px; stroke: var(--pink); stroke-width: 2.6; }
-.lesson--current .lesson__n {
-  width: 54px;
-  height: 54px;
-  margin: 13px;
+/* Small status badge on each pin's lower-left: done = green check,
+   next = pink dot, locked = pink lock (white circles with a coloured ring) */
+.lesson__badge {
+  position: absolute;
+  left: -8px;
+  bottom: -6px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
   border-radius: 50%;
-  background: var(--pink);
-  font-size: 32px;
-  text-shadow: none;
+  background: #fff;
+  border: 3px solid var(--pink);
+  box-shadow: 0 3px 6px rgba(29, 43, 122, .25);
 }
+.lesson__badge svg { width: 18px; height: 18px; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.lesson--done .lesson__badge { border-color: var(--green); }
+.lesson--done .lesson__badge svg { stroke: var(--green); stroke-width: 3.4; }
+.lesson--locked .lesson__badge svg { width: 16px; height: 16px; stroke: var(--pink); stroke-width: 2.6; }
+.lesson--current .lesson__badge i { width: 12px; height: 12px; border-radius: 50%; background: var(--pink); }

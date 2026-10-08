@@ -65,10 +65,9 @@
     a.style.left = `${l.x}px`;
     a.style.top = `${l.y}px`;
     a.setAttribute('aria-label', `שיעור ${l.n} – ${label[l.status]}`);
-    // done: a green check; next: the number in a pink dot; locked: a lock
-    a.innerHTML = l.status === 'done' ? `<span class="lesson__icon">${PIN_CHECK}</span>`
-      : l.status === 'locked' ? `<span class="lesson__icon">${PIN_LOCK}</span>`
-        : `<span class="lesson__n">${l.n}</span>`;
+    // the number, plus a small status badge: done ✓, next ●, locked 🔒
+    const badge = l.status === 'done' ? PIN_CHECK : l.status === 'locked' ? PIN_LOCK : '<i></i>';
+    a.innerHTML = `<span class="lesson__n">${l.n}</span><span class="lesson__badge">${badge}</span>`;
     if (l.status === 'locked') {
       a.setAttribute('aria-disabled', 'true');
       a.addEventListener('click', (e) => e.preventDefault());
