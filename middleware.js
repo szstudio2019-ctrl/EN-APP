@@ -21,7 +21,7 @@ export default function middleware(request) {
   return new Response('האתר בבנייה – הגישה מוגבלת', {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="SZ Studio – Preview", charset="UTF-8"',
+      'WWW-Authenticate': 'Basic realm="SZ Studio - Preview", charset="UTF-8"',
       'Content-Type': 'text/plain; charset=utf-8',
       'X-Robots-Tag': 'noindex, nofollow',
     },
