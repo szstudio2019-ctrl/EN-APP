@@ -74,7 +74,7 @@
   // under it: the + button and how many of that letter you have
   lettersEl.innerHTML = ALPHABET.map((l) => `
     <div class="letter-card" data-letter="${l}">
-      <span class="letter-card__art"><img class="letter-card__img" src="assets/cards/card-${l}.webp" alt="האות ${l}" loading="lazy"></span>
+      <span class="letter-card__art"><img class="letter-card__img" src="assets/cards/card-${l}.webp" alt="האות ${l}"></span>
       <div class="letter-card__bar">
         <button class="letter-card__buy" type="button" aria-label="קנייה של האות ${l} ב-${PRICE} מטבעות">+</button>
         <span class="letter-card__count" aria-label="יש לך"><span>×</span><b>0</b></span>

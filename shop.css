@@ -443,3 +443,33 @@
   padding-left: 0;
 }
 .letters { padding-right: 30px; }
+
+/* Hover v2: only the picture reacts (the + and the count stay still); the
+   light sweep moves a background, nothing is rotated or scaled */
+.letter-card:hover { transform: none; }
+.letter-card:hover .letter-card__img { transform: none; }
+.letter-card__img { transition: none; }
+.letter-card__art {
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s ease;
+}
+.letter-card__art:hover { transform: translateY(-6px); }
+.letter-card__art::after,
+.letter-card:hover .letter-card__art::after {
+  inset: 0;
+  left: 0;
+  width: auto;
+  top: 0;
+  bottom: 0;
+  transform: none;
+  opacity: 1;
+  animation: none;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, .7) 50%, transparent 65%) no-repeat;
+  background-size: 250% 100%;
+  background-position: 150% 0;
+}
+.letter-card__art:hover::after { animation: card-sheen-2 .8s ease-out; }
+@keyframes card-sheen-2 { from { background-position: 150% 0; } to { background-position: -60% 0; } }
+/* more room between the rows */
+.letters { row-gap: 46px; }
+/* the same hairline under the shop title row as under the sentences title */
+.shop-panel--letters .shop-panel__head { padding-bottom: 16px; border-bottom: 1px solid #ececf3; }
