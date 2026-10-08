@@ -50,17 +50,17 @@
     heading.setAttribute('aria-label', WORLD.heading.lines.join(' '));
     // both lines follow an upward arc (SVG text on a path)
     heading.innerHTML = `
-      <svg class="game-title__svg" viewBox="0 0 760 330" aria-hidden="true">
+      <svg class="game-title__svg" viewBox="0 0 760 300" aria-hidden="true">
         <defs>
           <linearGradient id="gt-gold" x1="0" y1="70" x2="0" y2="175" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#fff6b0"/><stop offset=".25" stop-color="#ffe347"/>
             <stop offset=".6" stop-color="#ffc21c"/><stop offset="1" stop-color="#ff9a0a"/>
           </linearGradient>
-          <linearGradient id="gt-blue" x1="0" y1="180" x2="0" y2="300" gradientUnits="userSpaceOnUse">
+          <linearGradient id="gt-blue" x1="0" y1="150" x2="0" y2="270" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#4a95ff"/><stop offset=".6" stop-color="#1f5fd6"/><stop offset="1" stop-color="#1748b0"/>
           </linearGradient>
           <path id="gt-arc-top" d="M40 205 Q380 40 720 205"/>
-          <path id="gt-arc-bottom" d="M150 300 Q380 185 610 300"/>
+          <path id="gt-arc-bottom" d="M150 268 Q380 153 610 268"/>
         </defs>
         ${bottom ? `
         <use href="#gt-arc-bottom" class="game-title__pill-edge"/>
@@ -71,14 +71,7 @@
     if (WORLD.heading.deco === 'doctor') {
       heading.insertAdjacentHTML('beforeend', `
         <svg class="game-title__plus game-title__plus--a" viewBox="0 0 80 80" aria-hidden="true"><path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="#fff" stroke="#ff4f93" stroke-width="9" stroke-linejoin="round" paint-order="stroke"/><path d="M33 12h6v20" fill="none" stroke="#ffd1e3" stroke-width="3" stroke-linecap="round"/></svg>
-        <svg class="game-title__plus game-title__plus--b" viewBox="0 0 80 80" aria-hidden="true"><path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="#fff" stroke="#ff4f93" stroke-width="9" stroke-linejoin="round" paint-order="stroke"/><path d="M33 12h6v20" fill="none" stroke="#ffd1e3" stroke-width="3" stroke-linecap="round"/></svg>
-        <svg class="game-title__scope" viewBox="0 0 120 70" aria-hidden="true">
-          <path d="M112 4c4 30-8 56-40 60-22 3-40-6-46-22" fill="none" stroke="#1d57c9" stroke-width="7" stroke-linecap="round"/>
-          <path d="M112 4c4 30-8 56-40 60-22 3-40-6-46-22" fill="none" stroke="#5f97ff" stroke-width="2.5" stroke-linecap="round" opacity=".7"/>
-          <circle cx="24" cy="36" r="15" fill="#c9ccd6" stroke="#6b6f7d" stroke-width="3"/>
-          <circle cx="24" cy="36" r="8" fill="#2f7cf2"/>
-          <circle cx="21" cy="33" r="3" fill="#fff" opacity=".85"/>
-        </svg>`);
+        <svg class="game-title__plus game-title__plus--b" viewBox="0 0 80 80" aria-hidden="true"><path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="#fff" stroke="#ff4f93" stroke-width="9" stroke-linejoin="round" paint-order="stroke"/><path d="M33 12h6v20" fill="none" stroke="#ffd1e3" stroke-width="3" stroke-linecap="round"/></svg>`);
     }
   }
 
