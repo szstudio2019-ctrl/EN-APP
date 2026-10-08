@@ -63,8 +63,8 @@
     return li;
   });
 
-  // The line joins the centres of the first and last pictures; the pink part
-  // runs from the first island to the one in front (right to left: RTL)
+  // The line joins the centres of the first and last pictures; it is grey, and
+  // green from the first island as far as the learner has got (RTL)
   function syncDrawer() {
     drawerItems.forEach((li, i) => {
       li.classList.toggle('is-current', i === current);
@@ -73,7 +73,9 @@
     const centre = (li) => li.offsetLeft + li.offsetWidth / 2;
     const first = centre(drawerItems[0]);
     const last = centre(drawerItems[drawerItems.length - 1]);
-    const here = centre(drawerItems[current]);
+    // green = the learner's real progress: up to the first island not yet done
+    const reached = ISLANDS.findIndex((island) => island.status !== 'done');
+    const here = centre(drawerItems[reached < 0 ? drawerItems.length - 1 : reached]);
     drawerLine.style.left = `${Math.min(first, last)}px`;
     drawerLine.style.width = `${Math.abs(first - last)}px`;
     drawerFill.style.width = `${Math.abs(first - here)}px`;
