@@ -2187,3 +2187,15 @@ video.bg {
 }
 /* the progress ring fills the whole white circle (not the lock icon's size) */
 .island__lock .island__ring { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; }
+
+/* "האי עדיין לא מוכן": a pill with a navy outline, like the other buttons */
+.about-locked {
+  display: inline-flex;
+  height: 40px;
+  padding: 8px 16px;
+  border-radius: 47px;
+  box-shadow: inset 0 0 0 2px var(--menu-strong);
+  color: var(--menu-strong);
+  font-weight: 500;
+  opacity: 1;
+}
