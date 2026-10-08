@@ -29,6 +29,8 @@
   // Stagger the cascade-in of the menu rows
   sidebar.querySelectorAll('.sb-item').forEach((el, i) => el.style.setProperty('--i', i));
 
+  const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
   /* Popup with every review island (from the menu's "חזרות" and the map's
      finale). On the map a review moves the map to it; elsewhere it opens the
      map at that island. */
@@ -41,11 +43,21 @@
   const cards = ISLANDS.map((island, i) => {
     if (!island.review) return '';
     reviewNo += 1;
-    return `<button class="reviews-pop__row" type="button" data-go="${i}">
+    // status circle: done ✓, in progress (pink ring + %), locked (lock)
+    const status = island.status || 'locked';
+    const pct = island.progress || 0;
+    const badge = status === 'done'
+      ? '<span class="reviews-pop__no reviews-pop__no--done"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>'
+      : status === 'progress'
+        ? `<span class="reviews-pop__no reviews-pop__no--progress"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" pathLength="100"/><circle class="fill" cx="50" cy="50" r="42" pathLength="100" style="stroke-dasharray:${pct} 100"/></svg><b>${pct}%</b></span>`
+        : `<span class="reviews-pop__no reviews-pop__no--locked">${LOCK}</span>`;
+    const label = status === 'done' ? 'הושלם' : status === 'progress' ? `בתהליך, ${pct}%` : 'נעול';
+    return `<button class="reviews-pop__row" type="button" data-go="${i}" data-state="${status}" aria-label="חזרה מספר ${reviewNo}, ${label}">
         <img class="reviews-pop__img" src="assets/${island.img}.webp" alt="">
-        <span class="reviews-pop__no">${reviewNo}</span>
+        ${badge}
         <span class="reviews-pop__name">חזרה מספר ${reviewNo}</span>
         <span class="reviews-pop__range">שיעורים <bdi>${island.review}</bdi></span>
+        <span class="reviews-pop__coins"><img src="assets/coin.webp" alt=""><span>צברת <b>${island.earned || 0}</b> מטבעות</span></span>
       </button>`;
   }).join('');
   pop.innerHTML = `
@@ -89,7 +101,6 @@
     });
   });
 
-  const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
 
   // "הגרלת המשפטים": closes the menu and opens the trophy's sentence bubble
   const sentenceLink = document.getElementById('sb-sentence');
