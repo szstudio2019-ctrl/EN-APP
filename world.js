@@ -50,13 +50,13 @@
     heading.setAttribute('aria-label', WORLD.heading.lines.join(' '));
     // both lines follow an upward arc (SVG text on a path)
     heading.innerHTML = `
-      <svg class="game-title__svg" viewBox="0 0 760 285" aria-hidden="true">
+      <svg class="game-title__svg" viewBox="0 0 760 265" aria-hidden="true">
         <defs>
           <linearGradient id="gt-gold" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#fffbd0"/><stop offset=".18" stop-color="#fff04a"/><stop offset=".45" stop-color="#ffd61f"/>
             <stop offset=".75" stop-color="#ffb112"/><stop offset="1" stop-color="#ff8a00"/>
           </linearGradient>
-          <linearGradient id="gt-blue" x1="0" y1="125" x2="0" y2="245" gradientUnits="userSpaceOnUse">
+          <linearGradient id="gt-blue" x1="0" y1="103" x2="0" y2="223" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#4a47b8"/><stop offset=".55" stop-color="#2f2c8f"/><stop offset="1" stop-color="#242275"/>
           </linearGradient>
           <!-- inner shadow: a darker band along the bottom of each letter and a
@@ -83,7 +83,7 @@
             <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/></feMerge>
           </filter>
           <path id="gt-arc-top" d="M40 205 Q380 40 720 205"/>
-          <path id="gt-arc-bottom" d="M150 240 Q380 125 610 240"/>
+          <path id="gt-arc-bottom" d="M150 218 Q380 103 610 218"/>
         </defs>
         ${bottom ? `
         <use href="#gt-arc-bottom" class="game-title__pill-edge"/>

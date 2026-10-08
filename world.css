@@ -318,3 +318,12 @@
 .game-title__pill-edge { stroke: #16144f; }
 .game-title__bottom-text { stroke: #16144f; stroke-width: 7px; }
 .game-title__plus { filter: drop-shadow(0 5px 0 #16144f); }
+
+/* the top line sits on the blue band; the pluses sit in the seam between
+   the lines, one out on each side */
+.game-title__plus { top: 78px; bottom: auto; width: 56px; height: 56px; }
+.game-title__plus--b { left: 4px; }
+.game-title__plus--a { right: 4px; }
+.game-title__plus { top: 84px; }
+.game-title__plus--b { left: 20px; }
+.game-title__plus--a { right: 20px; }
