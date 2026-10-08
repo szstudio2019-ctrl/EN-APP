@@ -427,3 +427,19 @@
 .s-item.is-active { margin: 10px 0; }
 .s-item:not(.is-active) .s-tile.is-found { background: #ffe1ea; color: var(--pink); }
 .s-item.is-done .s-tile.is-found { background: #e5f4c8; color: #5d8a0a; }
+
+/* price: "10" and a coin icon */
+.shop-panel__note { display: inline-flex; align-items: center; gap: 5px; }
+.shop-panel__coin { width: 24px; height: 24px; margin-inline-end: 4px; }
+
+/* cards span the full title row (from the price note to the title); the
+   scrollbar sits at the panel's own right edge */
+.letters {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 30px 34px;
+  margin-right: -40px;
+  margin-left: 0;
+  padding-right: 40px;
+  padding-left: 0;
+}
+.letters { padding-right: 30px; }
