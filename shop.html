@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>מדקדקים באנגלית</title>
+  <title>חנות האותיות – מדקדקים באנגלית</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="shop.css">
 </head>
-<body>
+<body class="shop-page">
+  <!-- Letter shop (Figma "חנות האותיות"): buy letters with coins; the left
+       panel keeps every sentence drawn so far. Built by shop.js. -->
   <!-- Loader: shown until the islands, background and fonts are ready -->
   <div class="loader" id="loader" role="status" aria-live="polite">
     <div class="loader__inner">
@@ -24,10 +27,9 @@
     </div>
   </div>
 
-  <div class="viewport">
-    <!-- Full-window background (outside the scaled stage so it covers the side bars too) -->
-    <video class="bg" src="assets/bg-video.webm" muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <div class="viewport shop">
     <main class="stage" id="stage">
+      <img class="shop__bg" src="assets/bg-clouds.webp" alt="" aria-hidden="true">
 
       <!-- Header -->
       <header class="topbar">
@@ -77,31 +79,26 @@
         </div>
       </header>
 
-      <!-- Island journey: built by script.js from the ISLANDS list. One island is active
-           (front, centre); the next ones wait small and locked toward the horizon.
-           Scroll / swipe / arrow keys move along the path. -->
-      <div class="journey" id="journey" aria-live="polite"></div>
-      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
-           button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
-      <div class="drawer-zone" id="drawer-zone" aria-hidden="true"></div>
-      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
-        <svg class="drawer-handle__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
-        <span class="drawer-handle__label">כל העולמות</span>
-      </button>
-      <div class="drawer" id="drawer" aria-hidden="true">
-        <div class="drawer__scroll">
-          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
-            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
-          </ol>
+      <!-- Right: the letters for sale -->
+      <section class="shop-panel shop-panel--letters" aria-labelledby="shop-title">
+        <h1 class="shop-panel__title" id="shop-title">חנות האותיות</h1>
+        <p class="shop-panel__note">כל אות עולה <b><span id="letter-price">10</span> מטבעות</b> · לחצו על + כדי לקנות</p>
+        <div class="letters" id="letters"></div>
+      </section>
+
+      <!-- Left: the sentences drawn so far -->
+      <section class="shop-panel shop-panel--sentences" aria-labelledby="sentences-title">
+        <h2 class="shop-panel__title shop-panel__title--pink" id="sentences-title">משפט המשימה</h2>
+        <div class="sentences-tools">
+          <button class="tool-btn" type="button" id="clear-done">מחיקת משפטים שהושלמו</button>
+          <button class="tool-btn" type="button" id="clear-old">מחיקת משפטים מלפני שבוע</button>
         </div>
-      </div>
-
-      <!-- "About this world" bubble beside the island in front (filled by script.js);
-           hovering it plays the island's animation like hovering the island -->
-      <aside class="island-about" id="island-about" aria-live="polite"></aside>
-
-      <!-- One line per island on the right edge; the current one is long and pink -->
-      <nav class="journey-ticks" id="journey-ticks" aria-label="מיקום במסלול האיים"></nav>
+        <ol class="sentences" id="sentences"></ol>
+        <button class="btn-pill new-sentence" type="button" id="new-sentence">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>
+          <span>אני רוצה משפט חדש</span>
+        </button>
+      </section>
 
       <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
       <button class="trophy" type="button" aria-label="המשפט שלי" aria-describedby="trophy-hint" aria-expanded="false">
@@ -129,44 +126,18 @@
       </div>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
 
-
-      <!-- Welcome popup (intro.js): four slides over the cloud video, before the map -->
-      <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="ברוכים הבאים" hidden>
-        <div class="intro__card">
-          <section class="intro__slide">
-            <h2 class="intro__title">ברוכים הבאים, <span class="intro__pink" data-first-name>!</span></h2>
-            <p class="intro__text">הגעתם למדקדקים באנגלית<br>תוכלו ללמוד אנגלית בכיף.</p>
-            <img class="intro__zebra" src="assets/zebra.webp" alt="">
-          </section>
-          <section class="intro__slide">
-            <h2 class="intro__title">שלבי המשחק</h2>
-            <p class="intro__text">במשחק יש <span data-island-count>7</span> איים בכל אי כמה שלבים +<br>איי חזרות</p>
-            <div class="intro__islands">
-              <img class="intro__island-img" src="" alt="">
-              <p class="intro__island-name"></p>
-              <button class="intro__arrow intro__arrow--prev" type="button" aria-label="האי הקודם"><img src="assets/chevron.svg" alt=""></button>
-              <button class="intro__arrow intro__arrow--next" type="button" aria-label="האי הבא"><img src="assets/chevron.svg" alt=""></button>
-            </div>
-          </section>
-          <section class="intro__slide">
-            <h2 class="intro__title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
-            <p class="intro__text">בכל משחק תוכלי להגריל משפט ולקנות<br>אותיות מחנות האותיות מהמטבעות שתצברי במשחק.</p>
-            <img class="intro__zebra" src="assets/zebra.webp" alt="">
-            <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
-            <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
-            <img class="intro__deco intro__shop" src="assets/shop.webp" alt="">
-          </section>
-          <section class="intro__slide">
-            <h2 class="intro__title">בונוסים מ<span class="intro__pink">החזרות והתמדה</span></h2>
-            <p class="intro__text">כל כמה שלבים שיהיו לך שלבי חזרה על החומר<br>בהם תוכלי לצבור כמות גדולה של מטבעות בתיבות</p>
-            <img class="intro__zebra intro__zebra--hoop" src="assets/zebra-hoop.webp" alt="">
-            <img class="intro__deco intro__chest" src="assets/chest-big.webp" alt="">
-          </section>
-          <div class="intro__foot">
-            <button class="btn-pill intro__next" type="button"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>הבא</span></button>
-            <div class="intro__dots" aria-hidden="true"></div>
-            <button class="intro__skip" type="button">דלגו</button>
-          </div>
+      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
+           button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
+      <div class="drawer-zone" id="drawer-zone" aria-hidden="true"></div>
+      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
+        <svg class="drawer-handle__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+        <span class="drawer-handle__label">כל העולמות</span>
+      </button>
+      <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer__scroll">
+          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
+            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
+          </ol>
         </div>
       </div>
 
@@ -259,7 +230,6 @@
   <script src="sentence.js"></script>
   <script src="menu.js"></script>
   <script src="drawer.js"></script>
-  <script src="script.js"></script>
-  <script src="intro.js"></script>
+  <script src="shop.js"></script>
 </body>
 </html>
