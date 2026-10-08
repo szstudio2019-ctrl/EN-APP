@@ -478,3 +478,11 @@
    across it (this selector outranks the older rule that switched it off) */
 .letter-card .letter-card__art:hover { transform: translateY(-6px) scale(1.06) rotate(-2.5deg); }
 .letter-card:hover .letter-card__art:hover::after { animation: card-sheen-2 .8s ease-out; }
+
+/* Card shadow: none at rest; on hover a soft, wide light-blue glow */
+.letter-card__img { filter: none; transition: filter .35s ease; }
+.letter-card__art { overflow: visible; }
+.letter-card__art::after { border-radius: 14px; overflow: hidden; }
+.letter-card .letter-card__art:hover .letter-card__img {
+  filter: drop-shadow(0 10px 14px rgba(84, 160, 255, .45)) drop-shadow(0 18px 32px rgba(120, 190, 255, .35));
+}
