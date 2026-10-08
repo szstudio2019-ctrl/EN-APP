@@ -256,10 +256,20 @@
     // Loader flies out (same as the map), then the world plays its entrance
     const loader = document.getElementById('loader');
     if (loader) {
-      document.getElementById('loader-bar').style.width = '100%';
-      document.getElementById('loader-pct').textContent = '100';
-      loader.classList.add('is-done');
-      setTimeout(() => loader.remove(), 1400);
+      // the number runs up to 100 with the bar, then the loader leaves
+      const pctEl = document.getElementById('loader-pct');
+      const barEl = document.getElementById('loader-bar');
+      const t0 = performance.now();
+      const run = (now) => {
+        const p = Math.min(1, (now - t0) / 700);
+        const v = Math.round(100 * (1 - Math.pow(1 - p, 3)));
+        pctEl.textContent = v;
+        barEl.style.width = `${v}%`;
+        if (p < 1) requestAnimationFrame(run);
+        else setTimeout(() => loader.classList.add('is-done'), 150);
+      };
+      requestAnimationFrame(run);
+      setTimeout(() => loader.remove(), 2200);
     }
     document.body.classList.remove('is-loading');
     setTimeout(() => { bar.style.width = `${WORLD.progress}%`; }, 600);

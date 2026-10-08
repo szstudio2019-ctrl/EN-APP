@@ -2316,3 +2316,27 @@ a:focus:not(:focus-visible) { outline: none; }
    window on every page (the drawer itself still spans the full width) */
 .drawer-handle { left: calc(var(--edge-shift, 0px) + 48px); translate: 0 0; }
 .is-loading .drawer-handle { translate: 0 40px; }
+
+/* Loader v2: no zoom on the way out — the tiles hop away one after another
+   and the veil fades; the percentage is a big running counter */
+.loader.is-done .loader__inner { transform: none; opacity: 0; filter: none; transition: opacity .5s ease .45s; }
+.loader.is-done .loader__tile { animation: tile-out .55s cubic-bezier(.55, 0, .45, 1) forwards; }
+.loader.is-done .loader__tile--b { animation-delay: .08s; }
+.loader.is-done .loader__tile--c { animation-delay: .16s; }
+@keyframes tile-out {
+  30% { translate: 0 -30px; }
+  100% { translate: 0 40px; opacity: 0; }
+}
+.loader__pct {
+  margin-top: 4px;
+  font-family: 'Varela Round', 'Rubik', sans-serif;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: linear-gradient(180deg, #fff 0%, var(--yellow) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.loader__pct::after { content: '%'; font-size: .5em; margin-inline-start: 2px; }
