@@ -1890,3 +1890,8 @@ video.bg {
 /* Drawer line: grey, green only for the part already completed */
 .drawer__line { background: rgba(120, 120, 140, .35); }
 .drawer__fill { background: var(--green); box-shadow: 0 0 8px rgba(145, 177, 33, .55); }
+
+/* Drawer: more opaque (80%) light glass; the half-circle tab tucks behind the
+   name bubbles so it never covers their text */
+.drawer { background: rgba(236, 243, 255, .8); }
+.drawer-handle { z-index: 325; }
