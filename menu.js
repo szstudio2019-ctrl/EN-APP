@@ -102,6 +102,18 @@
   });
 
 
+  // "הסבר על האתר": on the map it reopens the welcome popup; elsewhere the
+  // link opens the map with it (index.html?intro)
+  const introLink = document.getElementById('sb-intro');
+  if (introLink) {
+    introLink.addEventListener('click', (e) => {
+      if (!window.SiteIntro) return;
+      e.preventDefault();
+      setMenu(false);
+      setTimeout(() => window.SiteIntro.open(), 350);
+    });
+  }
+
   // "הגרלת המשפטים": closes the menu and opens the trophy's sentence bubble
   const sentenceLink = document.getElementById('sb-sentence');
   if (sentenceLink) {

@@ -1,7 +1,8 @@
 // Welcome popup before the map: four slides on a white card over the cloud
 // video. "הבא" moves on, "דלגו" and "בואו נתחיל" (last slide) close it.
-// Shown once per browser after the loader; add ?intro to the address to see it
-// again. Needs islands.js.
+// Shown by itself once per browser after the loader (?intro in the address
+// forces it); the menu's "הסבר על האתר" opens it again (SiteIntro.open).
+// Needs islands.js.
 (function () {
   const intro = document.getElementById('intro');
   if (!intro) return;
@@ -9,7 +10,8 @@
   const force = new URLSearchParams(location.search).has('intro');
   let done = false;
   try { done = localStorage.getItem(KEY) === '1'; } catch (err) { /* storage blocked */ }
-  if (done && !force) { intro.remove(); return; }
+  const auto = !done || force;
+  let isOpen = false;
 
   const ISLANDS = window.ISLANDS || [];
   const firstName = (document.querySelector('.user__name')?.textContent || '').trim().split(/\s+/)[0];
@@ -37,14 +39,16 @@
 
   function close() {
     try { localStorage.setItem(KEY, '1'); } catch (err) { /* storage blocked */ }
+    if (!isOpen) return;
+    isOpen = false;
     intro.classList.remove('is-open');
     document.body.classList.remove('intro-open');
-    setTimeout(() => intro.remove(), 450);
+    setTimeout(() => { if (!isOpen) intro.hidden = true; }, 450);
   }
 
   next.addEventListener('click', () => (index < slides.length - 1 ? show(index + 1) : close()));
   intro.querySelector('.intro__skip').addEventListener('click', close);
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && intro.isConnected) close(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) close(); });
 
   /* Slide 2: every island in a small slider (RTL: the left arrow goes on) */
   const pics = intro.querySelector('.intro__islands');
@@ -68,6 +72,8 @@
 
   // Open once the loader has gone
   const open = () => {
+    if (isOpen) return;
+    isOpen = true;
     // behind the popup the map moves to the first island, so closing it
     // (skip or start) lands at the beginning of the journey
     if (window.journeyGoTo) window.journeyGoTo(0);
@@ -77,6 +83,8 @@
     requestAnimationFrame(() => requestAnimationFrame(() => intro.classList.add('is-open')));
     next.focus();
   };
+  window.SiteIntro = { open };
+  if (!auto) return;
   if (!document.body.classList.contains('is-loading')) open();
   else {
     const watch = new MutationObserver(() => {
