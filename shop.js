@@ -74,7 +74,7 @@
   // under it: the + button and how many of that letter you have
   lettersEl.innerHTML = ALPHABET.map((l) => `
     <div class="letter-card" data-letter="${l}">
-      <img class="letter-card__img" src="assets/cards/card-${l}.webp" alt="האות ${l}" loading="lazy">
+      <span class="letter-card__art"><img class="letter-card__img" src="assets/cards/card-${l}.webp" alt="האות ${l}" loading="lazy"></span>
       <div class="letter-card__bar">
         <button class="letter-card__buy" type="button" aria-label="קנייה של האות ${l} ב-${PRICE} מטבעות">+</button>
         <span class="letter-card__count" aria-label="יש לך"><span>×</span><b>0</b></span>
@@ -135,7 +135,7 @@
     listEl.innerHTML = state.sentences.map((s, i) => {
       const left = leftIn(s).length;
       const status = left === 0
-        ? '<span class="s-status s-status--done">✓ הושלם</span>'
+        ? '<span class="s-status s-status--done"><i class="s-check">✓</i> הושלם</span>'
         : `<span class="s-status">נשארו ${left} אותיות</span>`;
       return `
         <li class="s-item${i === 0 ? ' is-active' : ''}${left === 0 ? ' is-done' : ''}">
@@ -160,14 +160,14 @@
     save();
     render();
   });
-  document.getElementById('clear-done').addEventListener('click', () => {
+  document.getElementById('clear-done')?.addEventListener('click', () => {
     const before = state.sentences.length;
     state.sentences = state.sentences.filter((s) => !isDone(s));
     toast(before === state.sentences.length ? 'אין משפטים שהושלמו' : `נמחקו ${before - state.sentences.length} משפטים שהושלמו`);
     save();
     render();
   });
-  document.getElementById('clear-old').addEventListener('click', () => {
+  document.getElementById('clear-old')?.addEventListener('click', () => {
     const before = state.sentences.length;
     const weekAgo = Date.now() - 7 * DAY;
     state.sentences = state.sentences.filter((s, i) => i === 0 || s.date >= weekAgo); // keep the current one

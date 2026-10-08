@@ -81,23 +81,23 @@
 
       <!-- Right: the letters for sale -->
       <section class="shop-panel shop-panel--letters" aria-labelledby="shop-title">
-        <h1 class="shop-panel__title" id="shop-title">חנות האותיות</h1>
-        <p class="shop-panel__note">כל אות עולה <b><span id="letter-price">10</span> מטבעות</b> · לחצו על + כדי לקנות</p>
+        <div class="shop-panel__head">
+          <h1 class="shop-panel__title" id="shop-title">חנות האותיות</h1>
+          <p class="shop-panel__note">כל אות עולה <b><span id="letter-price">10</span> מטבעות</b> · לחצו על + כדי לקנות</p>
+        </div>
         <div class="letters" id="letters"></div>
       </section>
 
       <!-- Left: the sentences drawn so far -->
       <section class="shop-panel shop-panel--sentences" aria-labelledby="sentences-title">
-        <h2 class="shop-panel__title shop-panel__title--pink" id="sentences-title">משפט המשימה</h2>
-        <div class="sentences-tools">
-          <button class="tool-btn" type="button" id="clear-done">מחיקת משפטים שהושלמו</button>
-          <button class="tool-btn" type="button" id="clear-old">מחיקת משפטים מלפני שבוע</button>
+        <div class="shop-panel__head shop-panel__head--sentences">
+          <h2 class="shop-panel__title shop-panel__title--sentences" id="sentences-title">משפט המשימה</h2>
+          <button class="new-sentence" type="button" id="new-sentence">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>
+            <span>אני רוצה משפט חדש</span>
+          </button>
         </div>
         <ol class="sentences" id="sentences"></ol>
-        <button class="btn-pill new-sentence" type="button" id="new-sentence">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>
-          <span>אני רוצה משפט חדש</span>
-        </button>
       </section>
 
       <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
