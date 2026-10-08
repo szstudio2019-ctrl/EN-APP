@@ -272,3 +272,11 @@
 .letter-card.is-needed::after { top: 12px; bottom: auto; right: auto; left: 12px; translate: none; white-space: nowrap; font-size: 12px; }
 /* the game is to guess the sentence, so the shop never hints which letters it needs */
 .letter-card.is-needed::after { content: none; }
+
+/* Panels from the header's left edge to its right edge; bigger letters area,
+   scrolling all the way down (the drawer tab is now at the bottom-left) */
+.shop-panel { padding-bottom: 28px; }
+.shop-panel--sentences { left: 107px; width: 528px; }
+.shop-panel--letters { left: 665px; width: 1142px; }
+.letters { grid-template-columns: repeat(5, 186px); gap: 32px 26px; }
+.letter-card { height: 226px; }
