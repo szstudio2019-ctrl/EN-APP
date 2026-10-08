@@ -1959,3 +1959,5 @@ video.bg {
   clip-path: circle(0 at 391px 50px);
 }
 .menu-open .sidebar { clip-path: circle(1400px at 391px 50px); }
+/* less space between the name and the first link */
+.sidebar__profile + .sidebar__divider { margin: -10px 0 -10px; }
