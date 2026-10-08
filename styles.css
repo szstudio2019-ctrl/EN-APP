@@ -1946,3 +1946,16 @@ video.bg {
 .sb-sublink__status--locked svg { width: 13px; height: 13px; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
 /* the menu scrolls when both lists are open */
 .sidebar { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent; }
+
+/* Menu: wider (no sideways scroll), its top-right corner on the header's
+   top-right corner; it still grows out of the menu button (391px, 50px in) */
+.sidebar {
+  top: 47px;
+  right: 113px;
+  width: 460px;
+  max-height: 1000px;
+  overflow-x: hidden;
+  border-radius: 51px 51px 24px 24px;
+  clip-path: circle(0 at 391px 50px);
+}
+.menu-open .sidebar { clip-path: circle(1400px at 391px 50px); }
