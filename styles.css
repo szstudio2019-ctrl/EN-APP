@@ -1841,3 +1841,7 @@ video.bg {
   height: 150px;
   cursor: pointer;
 }
+
+/* Drawer: a completed island gets a green ring */
+.drawer__item[data-state="done"] .drawer__btn { box-shadow: 0 0 0 3px var(--green), 0 6px 14px rgba(36, 34, 117, .16); }
+.drawer__item[data-state="done"].is-current .drawer__btn { box-shadow: 0 0 0 3px var(--green), 0 10px 22px rgba(145, 177, 33, .35); }
