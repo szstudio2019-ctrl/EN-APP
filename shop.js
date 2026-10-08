@@ -121,12 +121,9 @@
       <span class="letter-card__count" aria-label="יש לך"><span>×</span><b>0</b></span>
     </div>`).join('');
   const showLetters = () => {
-    const active = state.sentences[0];
     lettersEl.querySelectorAll('.letter-card').forEach((card) => {
       const l = card.dataset.letter;
       card.querySelector('.letter-card__count b').textContent = state.inv[l] || 0;
-      // letters the current sentence still needs are marked
-      card.classList.toggle('is-needed', !!active && leftIn(active).includes(l));
     });
   };
 

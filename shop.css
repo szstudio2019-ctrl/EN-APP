@@ -270,3 +270,5 @@
 .letter-card.is-needed::after { top: auto; bottom: 12px; right: 50%; translate: 50% 0; }
 .letters { padding-top: 32px; }
 .letter-card.is-needed::after { top: 12px; bottom: auto; right: auto; left: 12px; translate: none; white-space: nowrap; font-size: 12px; }
+/* the game is to guess the sentence, so the shop never hints which letters it needs */
+.letter-card.is-needed::after { content: none; }
