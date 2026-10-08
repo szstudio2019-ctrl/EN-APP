@@ -134,6 +134,18 @@
   const supportsAlphaVideo = !!navigator.userAgentData; // Chromium (Chrome, Edge, Opera)
   const touchOnly = window.matchMedia('(hover: none)').matches; // phones and tablets
 
+  // Status badge on the island's left side: done ✓ (green), in progress (pink
+  // ring with the %), locked (lock)
+  const statusBadge = (island) => {
+    const status = island.status || 'locked';
+    if (status === 'finale') return '';
+    if (status === 'done') return `<span class="island__lock island__lock--done" aria-label="הושלם"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>`;
+    if (status === 'progress') {
+      const pct = island.progress || 0;
+      return `<span class="island__lock island__lock--progress" aria-label="בתהליך, ${pct}%"><svg class="island__ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" pathLength="100"/><circle class="island__ring-fill" cx="50" cy="50" r="42" pathLength="100" style="stroke-dasharray:${pct} 100"/></svg><b>${pct}%</b></span>`;
+    }
+    return `<span class="island__lock" aria-label="נעול">${lockSvg}</span>`;
+  };
   const els = ISLANDS.map((island, i) => {
     const a = document.createElement('a');
     a.className = 'island';
@@ -162,7 +174,7 @@
     a.innerHTML = `
       <div class="island__float">
         ${art}
-        <span class="island__lock" aria-label="נעול">${lockSvg}</span>
+        ${statusBadge(island)}
         <div class="island__card">
           ${reviewNo ? `<span class="island__review-no" aria-label="חזרה ${reviewNo}">${reviewNo}</span>` : ''}
           <p class="island__title">${island.name}</p>
@@ -397,10 +409,12 @@
   // The bubble's action depends on the learner's progress on that island
   const lockIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   const checkIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const againIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>';
   function aboutAction(island) {
     const status = island.status || 'locked';
     if (status === 'done') {
-      return `<span class="about-btn about-btn--done">${checkIcon}<span>המשימה הושלמה</span></span>`;
+      // done: the badge, plus a way back in to play it again
+      return `<span class="about-actions"><span class="about-btn about-btn--done">${checkIcon}<span>המשימה הושלמה</span></span><a class="about-btn about-btn--again" href="${island.page || '#'}">${againIcon}<span>כניסה מחדש</span></a></span>`;
     }
     if (status === 'progress') {
       return `<a class="btn-pill about-btn" href="${island.page || '#'}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>אני רוצה להמשיך ללמוד</span></a>`;
