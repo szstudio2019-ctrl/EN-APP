@@ -262,3 +262,40 @@
 .game-title__plus--a { right: -58px; }
 .game-title__plus--b { left: -58px; }
 .game-title__scope { right: auto; left: 46%; bottom: -54px; width: 170px; height: 100px; }
+
+/* title v3: SVG, both lines on an arc, much smaller */
+.game-title { width: 470px; }
+.game-title__svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 8px 14px rgba(29, 18, 110, .35)); }
+.game-title__top-text {
+  font-family: 'Fredoka', 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 104px;
+  text-anchor: middle;
+  fill: url(#gt-gold);
+  stroke: #3b2bb0;
+  stroke-width: 22px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+.game-title__pill-edge { fill: none; stroke: #3b2bb0; stroke-width: 96px; stroke-linecap: round; }
+.game-title__pill { fill: none; stroke: url(#gt-blue); stroke-width: 80px; stroke-linecap: round; }
+.game-title__bottom-text {
+  font-family: 'Fredoka', 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 66px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: #fff;
+  stroke: #1a4ab8;
+  stroke-width: 6px;
+  paint-order: stroke;
+}
+/* ornaments follow the smaller size */
+.game-title__plus { width: 54px; height: 54px; bottom: 6px; }
+.game-title__plus--a { right: 8px; }
+.game-title__plus--b { left: 8px; }
+.game-title__scope { left: 44%; bottom: -26px; width: 110px; height: 64px; }
+.game-title__plus { bottom: 4px; }
+.game-title__plus--a { right: 62px; }
+.game-title__plus--b { left: 62px; }
+.game-title__top-text { font-size: 112px; }
