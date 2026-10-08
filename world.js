@@ -50,17 +50,17 @@
     heading.setAttribute('aria-label', WORLD.heading.lines.join(' '));
     // both lines follow an upward arc (SVG text on a path)
     heading.innerHTML = `
-      <svg class="game-title__svg" viewBox="0 0 760 300" aria-hidden="true">
+      <svg class="game-title__svg" viewBox="0 0 760 285" aria-hidden="true">
         <defs>
-          <linearGradient id="gt-gold" x1="0" y1="70" x2="0" y2="175" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#fff6b0"/><stop offset=".25" stop-color="#ffe347"/>
-            <stop offset=".6" stop-color="#ffc21c"/><stop offset="1" stop-color="#ff9a0a"/>
+          <linearGradient id="gt-gold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#fffbd0"/><stop offset=".18" stop-color="#fff04a"/><stop offset=".45" stop-color="#ffd61f"/>
+            <stop offset=".75" stop-color="#ffb112"/><stop offset="1" stop-color="#ff8a00"/>
           </linearGradient>
-          <linearGradient id="gt-blue" x1="0" y1="150" x2="0" y2="270" gradientUnits="userSpaceOnUse">
+          <linearGradient id="gt-blue" x1="0" y1="125" x2="0" y2="245" gradientUnits="userSpaceOnUse">
             <stop offset="0" stop-color="#4a95ff"/><stop offset=".6" stop-color="#1f5fd6"/><stop offset="1" stop-color="#1748b0"/>
           </linearGradient>
           <path id="gt-arc-top" d="M40 205 Q380 40 720 205"/>
-          <path id="gt-arc-bottom" d="M150 268 Q380 153 610 268"/>
+          <path id="gt-arc-bottom" d="M150 240 Q380 125 610 240"/>
         </defs>
         ${bottom ? `
         <use href="#gt-arc-bottom" class="game-title__pill-edge"/>
