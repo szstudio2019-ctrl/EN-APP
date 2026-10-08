@@ -327,3 +327,10 @@
 .game-title__plus { top: 84px; }
 .game-title__plus--b { left: 20px; }
 .game-title__plus--a { right: 20px; }
+/* pluses sit on the ends of the (shorter) blue band, in the seam */
+.game-title__plus { top: 92px; width: 46px; height: 46px; }
+.game-title__plus--b { left: 92px; }
+.game-title__plus--a { right: 92px; }
+.game-title__bottom-text { font-size: 56px; }
+.game-title__plus--b { left: 84px; }
+.game-title__plus--a { right: 84px; }

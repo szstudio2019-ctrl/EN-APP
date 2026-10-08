@@ -83,7 +83,7 @@
             <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/></feMerge>
           </filter>
           <path id="gt-arc-top" d="M40 205 Q380 40 720 205"/>
-          <path id="gt-arc-bottom" d="M150 218 Q380 103 610 218"/>
+          <path id="gt-arc-bottom" d="M190 210 Q380 115 570 210"/>
         </defs>
         ${bottom ? `
         <use href="#gt-arc-bottom" class="game-title__pill-edge"/>
@@ -108,7 +108,6 @@
           </defs>
           <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="none" stroke="#242275" stroke-width="12" stroke-linejoin="round"/>
           <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="url(#gt-pink-a)" filter="url(#gt-plus-a)" stroke="#ff4f93" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M34 13h5v19" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
         </svg>
         <svg class="game-title__plus game-title__plus--b" viewBox="0 0 80 80" aria-hidden="true">
           <defs>
@@ -124,7 +123,6 @@
           </defs>
           <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="none" stroke="#242275" stroke-width="12" stroke-linejoin="round"/>
           <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="url(#gt-pink-b)" filter="url(#gt-plus-b)" stroke="#ff4f93" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M34 13h5v19" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
         </svg>`);
     }
   }
