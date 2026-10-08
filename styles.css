@@ -2297,3 +2297,7 @@ video.bg {
 .reviews-pop__no { top: 150px; right: auto; left: 34px; width: 56px; height: 56px; }
 .reviews-pop__no svg { width: 26px; height: 26px; }
 .reviews-pop__no--progress b { font-size: 15px; }
+
+/* Review status: the ring wraps the whole white circle; the badge sits on the island */
+.reviews-pop__no.reviews-pop__no--progress svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.reviews-pop__no { left: 78px; top: 156px; }
