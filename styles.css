@@ -1895,3 +1895,30 @@ video.bg {
    name bubbles so it never covers their text */
 .drawer { background: rgba(236, 243, 255, .8); }
 .drawer-handle { z-index: 325; }
+
+/* Finale circle: bigger, with the bubbles' animated pink-yellow border */
+.finale {
+  left: -2px;
+  top: -32px;
+  width: 560px;
+  height: 560px;
+  border: 7px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, var(--pink), var(--yellow), var(--pink), var(--yellow), var(--pink)) border-box;
+  background-size: 100% 100%, 300% 100%;
+  animation: tip-border 2.4s linear infinite;
+  box-shadow: 0 24px 60px rgba(36, 34, 117, .25);
+  gap: 8px;
+}
+.finale__en { font-size: 54px; }
+.finale__trophy { width: 136px; height: 136px; }
+.finale__text { font-size: 31px; max-width: 400px; }
+.finale__btn { height: 50px; padding: 0 24px; font-size: 21px; }
+.finale__confetti i { animation-name: confetti-fall-big; }
+@keyframes confetti-fall-big {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  100% { transform: translateY(600px) rotate(540deg); opacity: .9; }
+}
+@media (prefers-reduced-motion: reduce) { .finale { animation: none; } }
