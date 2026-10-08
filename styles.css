@@ -2253,3 +2253,8 @@ video.bg {
 .reviews-pop__coins b { color: var(--gold); font-weight: 700; }
 /* blur the page behind so the glass cards read clearly */
 .reviews-pop { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+/* Review card title on top: "אי החזרות" and its number */
+.reviews-pop__name { align-self: stretch; padding: 4px 56px 0; text-align: center; font-size: 23px; font-weight: 700; line-height: 48px; }
+.reviews-pop__name b { color: var(--pink); }
+.reviews-pop__img { margin-top: -6px; }
