@@ -613,20 +613,6 @@
   const viewport = document.querySelector('.viewport');
 
   /* ------------------------------------------------------------------ */
-  /* Mouse depth                                                         */
-  /* ------------------------------------------------------------------ */
-  if (!reducedMotion && window.matchMedia('(pointer: fine)').matches) {
-    let raf = 0;
-    window.addEventListener('mousemove', (e) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        viewport.style.setProperty('--mx', ((e.clientX / window.innerWidth) * 2 - 1).toFixed(3));
-        viewport.style.setProperty('--my', ((e.clientY / window.innerHeight) * 2 - 1).toFixed(3));
-      });
-    });
-  }
-
-  /* ------------------------------------------------------------------ */
   /* Loader and entrance                                                 */
   /* ------------------------------------------------------------------ */
   // First paint: every island waits invisible and tiny at the horizon, so that
