@@ -1866,3 +1866,23 @@ video.bg {
    scaled back so their text matches the other islands */
 .drawer__item.is-current .drawer__tip { scale: .8333; transform-origin: 50% 100%; }
 .drawer__item.is-current .drawer__pct { scale: .8333; transform-origin: 50% 0; }
+
+/* Drawer name bubble: roomier white, with the loader's pink-yellow border
+   flowing around it */
+.drawer__tip {
+  padding: 12px 22px 13px;
+  gap: 4px;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, var(--pink), var(--yellow), var(--pink), var(--yellow), var(--pink)) border-box;
+  background-size: 100% 100%, 300% 100%;
+  animation: tip-border 2.4s linear infinite;
+}
+.drawer__tip b { font-size: 19px; }
+.drawer__tip span { font-size: 15px; }
+/* the pointer below picks up the border colour */
+.drawer__tip::after { margin-top: 3px; border-top-color: var(--pink); }
+@keyframes tip-border { to { background-position: 0 0, 150% 0; } }
+@media (prefers-reduced-motion: reduce) { .drawer__tip { animation: none; } }
