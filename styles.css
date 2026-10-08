@@ -1849,3 +1849,9 @@ video.bg {
 /* Drawer: room around the enlarged island in front so it doesn't touch its neighbours */
 .drawer__list { gap: 18px; }
 .drawer__item.is-current { margin: 0 14px; transition: margin .3s ease, opacity .3s ease, translate .35s cubic-bezier(.22, 1, .36, 1); }
+
+/* Half-circle tab: dark navy with a white arrow */
+.drawer-handle,
+.drawer-handle.is-open { background: var(--menu-strong); box-shadow: 0 -6px 16px rgba(20, 18, 74, .3); }
+.drawer-handle:hover { background: #2f2c8f; }
+.drawer-handle__arrow { stroke: #fff; }
