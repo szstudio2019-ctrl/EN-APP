@@ -473,3 +473,8 @@
 .letters { row-gap: 46px; }
 /* the same hairline under the shop title row as under the sentences title */
 .shop-panel--letters .shop-panel__head { padding-bottom: 16px; border-bottom: 1px solid #ececf3; }
+
+/* Hover v3: the picture grows and tilts a little, and the light sweeps
+   across it (this selector outranks the older rule that switched it off) */
+.letter-card .letter-card__art:hover { transform: translateY(-6px) scale(1.06) rotate(-2.5deg); }
+.letter-card:hover .letter-card__art:hover::after { animation: card-sheen-2 .8s ease-out; }
