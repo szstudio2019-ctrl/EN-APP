@@ -1855,3 +1855,14 @@ video.bg {
 .drawer-handle.is-open { background: var(--menu-strong); box-shadow: 0 -6px 16px rgba(20, 18, 74, .3); }
 .drawer-handle:hover { background: #2f2c8f; }
 .drawer-handle__arrow { stroke: #fff; }
+
+/* While the animation plays, its two video copies (and the still) swap in a
+   single frame: a cross-fade left both half transparent for a moment and the
+   bright sky flashed through the island */
+.island.is-playing .island__video,
+.island.is-playing .island__img { transition: filter .6s ease; }
+
+/* The island in front is drawn 1.2× bigger; its name bubble and % label are
+   scaled back so their text matches the other islands */
+.drawer__item.is-current .drawer__tip { scale: .8333; transform-origin: 50% 100%; }
+.drawer__item.is-current .drawer__pct { scale: .8333; transform-origin: 50% 0; }

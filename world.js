@@ -165,18 +165,6 @@
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setTrophy(false); });
   }
 
-  /* Mouse depth */
-  if (!reducedMotion && window.matchMedia('(pointer: fine)').matches) {
-    let raf = 0;
-    window.addEventListener('mousemove', (e) => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        viewport.style.setProperty('--mx', ((e.clientX / window.innerWidth) * 2 - 1).toFixed(3));
-        viewport.style.setProperty('--my', ((e.clientY / window.innerHeight) * 2 - 1).toFixed(3));
-      });
-    });
-  }
-
   /* Entrance once fonts and the scene are ready (max 3s) */
   const ready = Promise.race([
     Promise.all([
