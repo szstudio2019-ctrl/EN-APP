@@ -231,3 +231,8 @@
 .shop-page.is-loading .shop-panel { opacity: 0; translate: 0 60px; }
 .shop-page.is-loading .topbar { opacity: 0; translate: 0 -40px; }
 .shop-panel--sentences { transition-delay: .15s; }
+
+/* Here the islands drawer opens only from its arrow tab (not the whole
+   bottom strip), and the panels end above the tab so nothing is covered */
+.shop-page .drawer-zone { display: none; }
+.shop-panel { padding-bottom: 96px; }
