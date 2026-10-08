@@ -53,7 +53,7 @@
         : `<span class="reviews-pop__no reviews-pop__no--locked">${LOCK}</span>`;
     const label = status === 'done' ? 'הושלם' : status === 'progress' ? `בתהליך, ${pct}%` : 'נעול';
     return `<button class="reviews-pop__row" type="button" data-go="${i}" data-state="${status}" aria-label="חזרה מספר ${reviewNo}, ${label}">
-        <span class="reviews-pop__name">אי החזרות <b>${reviewNo}</b></span>
+        <span class="reviews-pop__name">אי החזרות <b class="reviews-pop__num">${reviewNo}</b></span>
         <img class="reviews-pop__img" src="assets/${island.img}.webp" alt="">
         ${badge}
         <span class="reviews-pop__range">שיעורים <bdi>${island.review}</bdi></span>
