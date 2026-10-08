@@ -2340,3 +2340,18 @@ a:focus:not(:focus-visible) { outline: none; }
   -webkit-text-fill-color: transparent;
 }
 .loader__pct::after { content: '%'; font-size: .5em; margin-inline-start: 2px; }
+
+/* Loader counter: big and pink at the bottom-left of the screen */
+.loader__pct {
+  position: fixed;
+  left: 48px;
+  bottom: 36px;
+  margin: 0;
+  font-size: 140px;
+  line-height: 1;
+  background: none;
+  -webkit-text-fill-color: var(--pink);
+  color: var(--pink);
+  text-shadow: 0 8px 30px rgba(227, 53, 99, .35);
+}
+.loader.is-done .loader__pct { opacity: 0; transition: opacity .4s ease; }
