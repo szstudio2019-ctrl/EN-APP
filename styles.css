@@ -1932,3 +1932,17 @@ video.bg {
 }
 .finale__btn--alt { background: var(--pink); box-shadow: 0 8px 16px rgba(227, 53, 99, .3); }
 .finale__chevron { width: 8px; height: 13px; transform: rotate(180deg); }
+
+/* Menu: pictures for the shop, coins and sentence game; locked = white lock on pink */
+.sb-link > img.sb-pic { width: 30px; height: 30px; object-fit: contain; margin: -4px; }
+.sb-sublink__status--locked {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pink);
+}
+.sb-sublink__status--locked svg { width: 13px; height: 13px; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
+/* the menu scrolls when both lists are open */
+.sidebar { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent; }

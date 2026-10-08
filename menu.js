@@ -89,6 +89,19 @@
     });
   });
 
+  const LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
+  // "הגרלת המשפטים": closes the menu and opens the trophy's sentence bubble
+  const sentenceLink = document.getElementById('sb-sentence');
+  if (sentenceLink) {
+    sentenceLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      setMenu(false);
+      const trophy = document.querySelector('.trophy');
+      if (trophy) setTimeout(() => { if (trophy.getAttribute('aria-expanded') !== 'true') trophy.click(); }, 350);
+    });
+  }
+
   // Island lists
   const onMap = typeof window.journeyGoTo === 'function' || !!document.getElementById('journey');
   const here = location.pathname.split('/').pop();
@@ -107,7 +120,7 @@
       link.href = island.page || `index.html#island-${i + 1}`;
       const status = island.status === 'done' ? '<span class="sb-sublink__status sb-sublink__status--done">✓ הושלם</span>'
         : island.status === 'progress' ? `<span class="sb-sublink__status">${island.progress || 0}%</span>`
-        : '<span class="sb-sublink__status" aria-label="נעול">🔒</span>';
+        : `<span class="sb-sublink__status sb-sublink__status--locked" aria-label="נעול">${LOCK}</span>`;
       link.innerHTML = `<span>${label(island, n)}</span>${status}`;
       if (!island.page && onMap) {
         // on the map: fly to the island instead of reloading the page
@@ -122,11 +135,11 @@
     });
     box.appendChild(inner);
   };
-  const isReview = (island) => island.name === 'אי החזרות';
+  const isReview = (island) => !!island.review;
   const short = (island) => island.name.replace(/^אי (ה)?/, '');
   fillList('sb-worlds', (island) => !isReview(island) && !island.finale,
     (island) => (island.lessons ? `${short(island)} (שיעור ${island.lessons})` : short(island)));
-  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n}`);
+  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n} (שיעורים ${island.review})`);
 
   // Highlight the island being viewed (on an island page: that page's island)
   const sync = (current) => links.forEach(([link, i]) => link.classList.toggle('is-current', i === current));
