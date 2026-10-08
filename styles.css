@@ -2185,3 +2185,5 @@ video.bg {
 @media (prefers-reduced-motion: reduce) {
   .intro__coin, .intro__islands.is-swapping * { animation: none; }
 }
+/* the progress ring fills the whole white circle (not the lock icon's size) */
+.island__lock .island__ring { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; }
