@@ -418,3 +418,12 @@
   padding-top: 30px;
   padding-bottom: 50px;
 }
+
+/* Sentences v5: more air between rows; no row background — the letters
+   carry the state: done = light green tiles with green letters, older
+   (unfinished) = light pink tiles with pink letters, current = solid pink */
+.s-item { padding: 22px 12px; }
+.s-item.is-done { background: none; }
+.s-item.is-active { margin: 10px 0; }
+.s-item:not(.is-active) .s-tile.is-found { background: #ffe1ea; color: var(--pink); }
+.s-item.is-done .s-tile.is-found { background: #e5f4c8; color: #5d8a0a; }
