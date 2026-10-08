@@ -70,55 +70,15 @@
   const lettersEl = document.getElementById('letters');
   document.getElementById('letter-price').textContent = PRICE;
   const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
-  // Each card has its own colour and a little 3D-looking monster (SVG with
-  // soft shading), varied by shape, eyes and horns so no two look alike.
-  const COLORS = [
-    ['#ff8fb1', '#e33563'], ['#7cc8ff', '#2f7cf2'], ['#ffd45c', '#f0a300'], ['#9fe07a', '#4fae2c'],
-    ['#c49bff', '#7d4ae8'], ['#ffab7a', '#f06a28'], ['#6fe3d6', '#16a99a'], ['#ff9ad9', '#d23fa6'],
-  ];
-  const BG = ['#fff0f5', '#eef6ff', '#fff8e3', '#f0faea', '#f5efff', '#fff2ea', '#eafbf9', '#fff0fa'];
-  function monster(i) {
-    const [light, dark] = COLORS[i % COLORS.length];
-    const id = `m${i}`;
-    const shape = i % 3; // 0 round, 1 tall, 2 wide
-    const eyes = [2, 1, 3, 2, 1][i % 5];
-    const extra = i % 4; // 0 horns, 1 antennae, 2 ears, 3 tuft
-    const body = shape === 0 ? '<circle cx="50" cy="56" r="32"/>'
-      : shape === 1 ? '<rect x="22" y="22" width="56" height="66" rx="28"/>'
-        : '<ellipse cx="50" cy="60" rx="38" ry="28"/>';
-    const top = shape === 1 ? 24 : shape === 0 ? 26 : 34;
-    const deco = extra === 0
-      ? `<path d="M32 ${top + 6} l-6 -16 l14 9z M68 ${top + 6} l6 -16 l-14 9z" fill="#fff6d6" stroke="#e8d9a8" stroke-width="1.5"/>`
-      : extra === 1
-        ? `<path d="M40 ${top + 4} q-6 -14 -12 -16 M60 ${top + 4} q6 -14 12 -16" stroke="${dark}" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="28" cy="${top - 12}" r="5" fill="url(#${id}b)"/><circle cx="72" cy="${top - 12}" r="5" fill="url(#${id}b)"/>`
-        : extra === 2
-          ? `<ellipse cx="22" cy="${top + 14}" rx="8" ry="11" fill="url(#${id}b)"/><ellipse cx="78" cy="${top + 14}" rx="8" ry="11" fill="url(#${id}b)"/>`
-          : `<path d="M42 ${top + 2} q8 -18 16 0 q-2 -10 -8 -12 q-6 2 -8 12z" fill="${dark}"/>`;
-    const eyeY = shape === 2 ? 54 : 50;
-    const eyeXs = eyes === 1 ? [50] : eyes === 2 ? [40, 60] : [35, 50, 65];
-    const r = eyes === 1 ? 11 : eyes === 2 ? 8 : 6.5;
-    const eyeSvg = eyeXs.map((x) => `<circle cx="${x}" cy="${eyeY}" r="${r}" fill="#fff"/><circle cx="${x + 1.5}" cy="${eyeY + 1.5}" r="${r * .52}" fill="#24224f"/><circle cx="${x + 3}" cy="${eyeY - 1}" r="${r * .2}" fill="#fff"/>`).join('');
-    const mouthY = eyeY + (eyes === 1 ? 18 : 15);
-    return `<svg class="letter-card__monster" viewBox="0 0 100 100" aria-hidden="true">
-      <defs>
-        <radialGradient id="${id}b" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".25" stop-color="${light}"/><stop offset="1" stop-color="${dark}"/></radialGradient>
-      </defs>
-      <ellipse cx="50" cy="92" rx="26" ry="5" fill="rgba(36,34,117,.15)"/>
-      ${deco}
-      <g fill="url(#${id}b)">${body}</g>
-      <ellipse cx="38" cy="88" rx="8" ry="5" fill="${dark}"/><ellipse cx="62" cy="88" rx="8" ry="5" fill="${dark}"/>
-      ${eyeSvg}
-      <path d="M38 ${mouthY} q12 10 24 0" fill="#7a1f3d" stroke="#5c1530" stroke-width="1.5"/>
-      <path d="M45 ${mouthY + 1.5} l3 4 l3 -4z" fill="#fff"/>
-      <ellipse cx="32" cy="${mouthY - 3}" rx="5" ry="3" fill="#ff7aa8" opacity=".55"/><ellipse cx="68" cy="${mouthY - 3}" rx="5" ry="3" fill="#ff7aa8" opacity=".55"/>
-    </svg>`;
-  }
-  lettersEl.innerHTML = ALPHABET.map((l, i) => `
-    <div class="letter-card" data-letter="${l}" style="--card-bg:${BG[i % BG.length]};--card-edge:${COLORS[i % COLORS.length][0]};--card-ink:${COLORS[i % COLORS.length][1]}">
-      ${monster(i)}
-      <span class="letter-card__char" lang="en">${l}</span>
-      <button class="letter-card__buy" type="button" aria-label="קנייה של האות ${l} ב-${PRICE} מטבעות">+</button>
-      <span class="letter-card__count" aria-label="יש לך"><span>×</span><b>0</b></span>
+  // Each letter is an illustrated card (assets/cards/card-<letter>.webp);
+  // under it: the + button and how many of that letter you have
+  lettersEl.innerHTML = ALPHABET.map((l) => `
+    <div class="letter-card" data-letter="${l}">
+      <img class="letter-card__img" src="assets/cards/card-${l}.webp" alt="האות ${l}" loading="lazy">
+      <div class="letter-card__bar">
+        <button class="letter-card__buy" type="button" aria-label="קנייה של האות ${l} ב-${PRICE} מטבעות">+</button>
+        <span class="letter-card__count" aria-label="יש לך"><span>×</span><b>0</b></span>
+      </div>
     </div>`).join('');
   const showLetters = () => {
     lettersEl.querySelectorAll('.letter-card').forEach((card) => {

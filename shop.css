@@ -282,3 +282,42 @@
 .letter-card { height: 226px; }
 /* no sideways scroll in the letters area (the monsters peek past the card edge) */
 .letters { overflow-x: hidden; grid-template-columns: repeat(5, 180px); padding-inline: 20px; }
+
+/* Letters v3: illustrated cards (cut from the art sheet), the + button and
+   the count in a bar underneath */
+.letter-card,
+.letter-card:hover {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  box-shadow: none;
+}
+.letter-card:hover { transform: translateY(-4px); }
+.letter-card__img {
+  width: 100%;
+  aspect-ratio: 179 / 235;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 16px rgba(36, 34, 117, .18));
+}
+.letter-card__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 6px;
+  direction: ltr;
+}
+.letter-card__bar .letter-card__buy { position: static; box-shadow: none; }
+.letter-card__bar .letter-card__count {
+  position: static;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: #f1f0fa;
+  color: var(--menu-strong);
+  font-size: 18px;
+}
+.letter-card__bar .letter-card__count b { color: var(--pink); }
+.letters { gap: 26px 26px; }
