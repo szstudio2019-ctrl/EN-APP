@@ -56,6 +56,8 @@
   /* Lesson pins */
   const lessons = document.getElementById('lessons');
   const label = { done: 'הושלם', current: 'השיעור הבא', locked: 'נעול' };
+  const PIN_CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const PIN_LOCK = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   for (const l of WORLD.lessons) {
     const a = document.createElement('a');
     a.className = `lesson lesson--${l.status}`;
@@ -63,7 +65,10 @@
     a.style.left = `${l.x}px`;
     a.style.top = `${l.y}px`;
     a.setAttribute('aria-label', `שיעור ${l.n} – ${label[l.status]}`);
-    a.innerHTML = `<span class="lesson__n">${l.n}</span>`;
+    // done: a green check; next: the number in a pink dot; locked: a lock
+    a.innerHTML = l.status === 'done' ? `<span class="lesson__icon">${PIN_CHECK}</span>`
+      : l.status === 'locked' ? `<span class="lesson__icon">${PIN_LOCK}</span>`
+        : `<span class="lesson__n">${l.n}</span>`;
     if (l.status === 'locked') {
       a.setAttribute('aria-disabled', 'true');
       a.addEventListener('click', (e) => e.preventDefault());
