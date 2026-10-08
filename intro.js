@@ -19,6 +19,8 @@
   const lessonIslands = ISLANDS.filter((island) => !island.review && !island.finale);
   intro.querySelectorAll('[data-island-count]').forEach((el) => { el.textContent = lessonIslands.length; });
 
+  const card = intro.querySelector('.intro__card');
+  card.tabIndex = -1;
   const slides = [...intro.querySelectorAll('.intro__slide')];
   const dots = intro.querySelector('.intro__dots');
   const next = intro.querySelector('.intro__next');
@@ -81,7 +83,8 @@
     document.body.classList.add('intro-open');
     intro.hidden = false;
     requestAnimationFrame(() => requestAnimationFrame(() => intro.classList.add('is-open')));
-    next.focus();
+    // focus the dialog itself (no ring on the button)
+    card.focus({ preventScroll: true });
   };
   window.SiteIntro = { open };
   if (!auto) return;

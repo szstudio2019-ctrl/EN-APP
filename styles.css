@@ -2301,3 +2301,13 @@ video.bg {
 /* Review status: the ring wraps the whole white circle; the badge sits on the island */
 .reviews-pop__no.reviews-pop__no--progress svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .reviews-pop__no { left: 78px; top: 156px; }
+
+/* Buttons: no dark focus ring after a click or when a popup focuses them;
+   keyboard users still get a clear pink ring */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) { outline: none; }
+.btn-pill:focus-visible,
+.finale__btn:focus-visible,
+.intro__skip:focus-visible,
+.intro__arrow:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
+.intro__card:focus { outline: none; }
