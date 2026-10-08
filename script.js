@@ -143,7 +143,7 @@
     const firstName = (document.querySelector('.user__name')?.textContent || '').trim().split(/\s+/)[0];
     const confetti = Array.from({ length: 18 }, (_, k) => `<i style="--k:${k}"></i>`).join('');
     const art = island.finale
-      ? `<div class="finale"><span class="finale__confetti" aria-hidden="true">${confetti}</span><p class="finale__en" lang="en" dir="ltr">Very Good!</p><img class="finale__trophy" src="assets/trophy.svg" alt=""><p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p><span class="finale__actions"><button class="finale__btn" type="button" data-finale="start">להתחלה</button><button class="finale__btn finale__btn--alt" type="button" data-finale="reviews">למסך החזרות</button></span></div>`
+      ? `<div class="finale"><span class="finale__confetti" aria-hidden="true">${confetti}</span><p class="finale__en" lang="en" dir="ltr">Very Good!</p><img class="finale__trophy" src="assets/trophy.svg" alt=""><p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p><span class="finale__actions"><button class="finale__btn" type="button" data-finale="start">להתחלה</button><button class="finale__btn finale__btn--alt" type="button" data-finale="reviews"><span>למסך החזרות</span><img src="assets/chevron.svg" alt="" class="finale__chevron"></button></span></div>`
       : island.img
       ? `<img class="island__img${island.flip ? ' island__img--flip' : ''}" src="assets/${island.img}.webp" alt="" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">`
       : `<div class="island__placeholder">${island.name}</div>`;
