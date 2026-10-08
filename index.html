@@ -129,6 +129,47 @@
       </div>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
 
+
+      <!-- Welcome popup (intro.js): four slides over the cloud video, before the map -->
+      <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="ברוכים הבאים" hidden>
+        <div class="intro__card">
+          <section class="intro__slide">
+            <h2 class="intro__title">ברוכים הבאים, <span class="intro__pink" data-first-name>!</span></h2>
+            <p class="intro__text">הגעתם למדקדקים באנגלית<br>תוכלו ללמוד אנגלית בכיף.</p>
+            <img class="intro__zebra" src="assets/zebra.webp" alt="">
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">שלבי המשחק</h2>
+            <p class="intro__text">במשחק יש <span data-island-count>7</span> איים בכל אי כמה שלבים +<br>איי חזרות</p>
+            <div class="intro__islands">
+              <img class="intro__island-img" src="" alt="">
+              <p class="intro__island-name"></p>
+              <button class="intro__arrow intro__arrow--prev" type="button" aria-label="האי הקודם"><img src="assets/chevron.svg" alt=""></button>
+              <button class="intro__arrow intro__arrow--next" type="button" aria-label="האי הבא"><img src="assets/chevron.svg" alt=""></button>
+            </div>
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
+            <p class="intro__text">בכל משחק תוכלי להגריל משפט ולקנות<br>אותיות מחנות האותיות מהמטבעות שתצברי במשחק.</p>
+            <img class="intro__zebra" src="assets/zebra.webp" alt="">
+            <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
+            <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
+            <img class="intro__deco intro__shop" src="assets/shop.webp" alt="">
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">בונוסים מ<span class="intro__pink">החזרות והתמדה</span></h2>
+            <p class="intro__text">כל כמה שלבים שיהיו לך שלבי חזרה על החומר<br>בהם תוכלי לצבור כמות גדולה של מטבעות בתיבות</p>
+            <img class="intro__zebra intro__zebra--hoop" src="assets/zebra-hoop.webp" alt="">
+            <img class="intro__deco intro__chest" src="assets/chest-big.webp" alt="">
+          </section>
+          <div class="intro__foot">
+            <button class="btn-pill intro__next" type="button"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>הבא</span></button>
+            <div class="intro__dots" aria-hidden="true"></div>
+            <button class="intro__skip" type="button">דלגו</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Side menu (Figma "Sidebar - Open"); the island lists are filled by script.js -->
       <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
       <aside class="sidebar" id="sidebar" aria-label="תפריט" aria-hidden="true">
@@ -213,5 +254,6 @@
   <script src="menu.js"></script>
   <script src="drawer.js"></script>
   <script src="script.js"></script>
+  <script src="intro.js"></script>
 </body>
 </html>
