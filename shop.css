@@ -490,3 +490,5 @@
 .letter-card .letter-card__art:hover .letter-card__img {
   filter: drop-shadow(0 10px 14px rgba(36, 34, 117, .28)) drop-shadow(0 20px 34px rgba(36, 34, 117, .22));
 }
+/* every card picture gets the same rounded corners, whatever its source size */
+.letter-card__img { border-radius: 14px; }
