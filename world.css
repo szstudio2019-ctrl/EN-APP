@@ -300,3 +300,21 @@
 .game-title__plus--b { left: 62px; }
 .game-title__top-text { font-size: 112px; }
 .game-title__plus { bottom: 10px; }
+
+/* title v4: the menu's dark navy for the outline and the pill, a deep shadow
+   under both lines, inner shading on the letters */
+.game-title__svg { filter: drop-shadow(0 7px 0 #16144f) drop-shadow(0 14px 18px rgba(20, 18, 74, .45)); }
+.game-title__top-stroke {
+  font-family: 'Fredoka', 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 112px;
+  text-anchor: middle;
+  fill: #242275;
+  stroke: #242275;
+  stroke-width: 24px;
+  stroke-linejoin: round;
+}
+.game-title__top-text { stroke: none; }
+.game-title__pill-edge { stroke: #16144f; }
+.game-title__bottom-text { stroke: #16144f; stroke-width: 7px; }
+.game-title__plus { filter: drop-shadow(0 5px 0 #16144f); }

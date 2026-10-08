@@ -57,21 +57,75 @@
             <stop offset=".75" stop-color="#ffb112"/><stop offset="1" stop-color="#ff8a00"/>
           </linearGradient>
           <linearGradient id="gt-blue" x1="0" y1="125" x2="0" y2="245" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#4a95ff"/><stop offset=".6" stop-color="#1f5fd6"/><stop offset="1" stop-color="#1748b0"/>
+            <stop offset="0" stop-color="#4a47b8"/><stop offset=".55" stop-color="#2f2c8f"/><stop offset="1" stop-color="#242275"/>
           </linearGradient>
+          <!-- inner shadow: a darker band along the bottom of each letter and a
+               light band along the top, so the letters look rounded -->
+          <filter id="gt-inner-gold" x="-5%" y="-10%" width="110%" height="130%">
+            <feOffset in="SourceAlpha" dy="-7" result="up"/>
+            <feComposite in="SourceAlpha" in2="up" operator="out" result="bottomBand"/>
+            <feGaussianBlur in="bottomBand" stdDeviation="2" result="bottomSoft"/>
+            <feFlood flood-color="#d45f00" flood-opacity=".85"/>
+            <feComposite in2="bottomSoft" operator="in" result="shade"/>
+            <feOffset in="SourceAlpha" dy="5" result="down"/>
+            <feComposite in="SourceAlpha" in2="down" operator="out" result="topBand"/>
+            <feGaussianBlur in="topBand" stdDeviation="1.5" result="topSoft"/>
+            <feFlood flood-color="#fff" flood-opacity=".8"/>
+            <feComposite in2="topSoft" operator="in" result="shine"/>
+            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/><feMergeNode in="shine"/></feMerge>
+          </filter>
+          <filter id="gt-inner-white" x="-5%" y="-10%" width="110%" height="130%">
+            <feOffset in="SourceAlpha" dy="-5" result="up"/>
+            <feComposite in="SourceAlpha" in2="up" operator="out" result="band"/>
+            <feGaussianBlur in="band" stdDeviation="1.5" result="soft"/>
+            <feFlood flood-color="#9fb4ff" flood-opacity=".9"/>
+            <feComposite in2="soft" operator="in" result="shade"/>
+            <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/></feMerge>
+          </filter>
           <path id="gt-arc-top" d="M40 205 Q380 40 720 205"/>
           <path id="gt-arc-bottom" d="M150 240 Q380 125 610 240"/>
         </defs>
         ${bottom ? `
         <use href="#gt-arc-bottom" class="game-title__pill-edge"/>
         <use href="#gt-arc-bottom" class="game-title__pill"/>
-        <text class="game-title__bottom-text"><textPath href="#gt-arc-bottom" startOffset="50%">${bottom}</textPath></text>` : ''}
-        <text class="game-title__top-text"><textPath href="#gt-arc-top" startOffset="50%">${top}</textPath></text>
+        <text class="game-title__bottom-text" filter="url(#gt-inner-white)"><textPath href="#gt-arc-bottom" startOffset="50%">${bottom}</textPath></text>` : ''}
+        <text class="game-title__top-stroke"><textPath href="#gt-arc-top" startOffset="50%">${top}</textPath></text>
+        <text class="game-title__top-text" filter="url(#gt-inner-gold)"><textPath href="#gt-arc-top" startOffset="50%">${top}</textPath></text>
       </svg>`;
     if (WORLD.heading.deco === 'doctor') {
       heading.insertAdjacentHTML('beforeend', `
-        <svg class="game-title__plus game-title__plus--a" viewBox="0 0 80 80" aria-hidden="true"><path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="#fff" stroke="#ff4f93" stroke-width="9" stroke-linejoin="round" paint-order="stroke"/><path d="M33 12h6v20" fill="none" stroke="#ffd1e3" stroke-width="3" stroke-linecap="round"/></svg>
-        <svg class="game-title__plus game-title__plus--b" viewBox="0 0 80 80" aria-hidden="true"><path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="#fff" stroke="#ff4f93" stroke-width="9" stroke-linejoin="round" paint-order="stroke"/><path d="M33 12h6v20" fill="none" stroke="#ffd1e3" stroke-width="3" stroke-linecap="round"/></svg>`);
+        <svg class="game-title__plus game-title__plus--a" viewBox="0 0 80 80" aria-hidden="true">
+          <defs>
+            <linearGradient id="gt-pink-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9cc4"/><stop offset=".5" stop-color="#ff4f93"/><stop offset="1" stop-color="#e33563"/></linearGradient>
+            <filter id="gt-plus-a" x="-10%" y="-10%" width="120%" height="130%">
+              <feOffset in="SourceAlpha" dy="-6" result="up"/>
+              <feComposite in="SourceAlpha" in2="up" operator="out" result="band"/>
+              <feGaussianBlur in="band" stdDeviation="1.5" result="soft"/>
+              <feFlood flood-color="#a3103f" flood-opacity=".85"/>
+              <feComposite in2="soft" operator="in" result="shade"/>
+              <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/></feMerge>
+            </filter>
+          </defs>
+          <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="none" stroke="#242275" stroke-width="12" stroke-linejoin="round"/>
+          <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="url(#gt-pink-a)" filter="url(#gt-plus-a)" stroke="#ff4f93" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M34 13h5v19" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <svg class="game-title__plus game-title__plus--b" viewBox="0 0 80 80" aria-hidden="true">
+          <defs>
+            <linearGradient id="gt-pink-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9cc4"/><stop offset=".5" stop-color="#ff4f93"/><stop offset="1" stop-color="#e33563"/></linearGradient>
+            <filter id="gt-plus-b" x="-10%" y="-10%" width="120%" height="130%">
+              <feOffset in="SourceAlpha" dy="-6" result="up"/>
+              <feComposite in="SourceAlpha" in2="up" operator="out" result="band"/>
+              <feGaussianBlur in="band" stdDeviation="1.5" result="soft"/>
+              <feFlood flood-color="#a3103f" flood-opacity=".85"/>
+              <feComposite in2="soft" operator="in" result="shade"/>
+              <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shade"/></feMerge>
+            </filter>
+          </defs>
+          <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="none" stroke="#242275" stroke-width="12" stroke-linejoin="round"/>
+          <path d="M30 8h20v22h22v20H50v22H30V50H8V30h22z" fill="url(#gt-pink-b)" filter="url(#gt-plus-b)" stroke="#ff4f93" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M34 13h5v19" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
+        </svg>`);
     }
   }
 
