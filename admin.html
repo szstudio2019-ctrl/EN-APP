@@ -227,13 +227,18 @@
           <a class="sb-link sb-item" href="about.html">
             <span>אודות</span><img src="assets/icons/page.svg" alt="">
           </a>
-          <a class="sb-link sb-item" href="profile.html">
-            <img class="sb-chevron sb-chevron--side" src="assets/icons/chevron-side.svg" alt="">
-            <span>אזור אישי</span><img src="assets/icons/user.svg" alt="">
-          </a>
-          <a class="sb-link sb-item" href="admin.html">
-            <span>מנהל</span><img src="assets/icons/settings.svg" alt="">
-          </a>
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>אזור אישי</span><img src="assets/icons/user.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-personal">
+              <div class="sb-sub__inner">
+                <a class="sb-sublink" href="profile.html"><span>הפרטים שלי</span></a>
+                <a class="sb-sublink" href="admin.html"><span>מנהל – סטטוס המשתמשים</span></a>
+              </div>
+            </div>
+          </div>
           <a class="sb-link sb-link--bright sb-item" href="shop.html">
             <span>חנות האותיות</span><img class="sb-pic" src="assets/shop.webp" alt="">
           </a>

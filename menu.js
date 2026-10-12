@@ -141,6 +141,15 @@
     });
   }
 
+  // "אזור אישי": highlight the current page and keep its group open there
+  document.querySelectorAll('#sb-personal .sb-sublink').forEach((link) => {
+    if (link.getAttribute('href') !== location.pathname.split('/').pop()) return;
+    link.classList.add('is-current');
+    const group = link.closest('.sb-group');
+    group.classList.add('is-open');
+    group.querySelector('.sb-link--group').setAttribute('aria-expanded', 'true');
+  });
+
   // Island lists
   const onMap = typeof window.journeyGoTo === 'function' || !!document.getElementById('journey');
   const here = location.pathname.split('/').pop();
