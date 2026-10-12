@@ -2553,3 +2553,10 @@ a:focus:not(:focus-visible) { outline: none; }
 }
 .menu-open .sidebar { clip-path: circle(1500px at 441px 50px); }
 .sidebar__close { left: 16px; top: 22px; width: 34px; height: 34px; }
+
+/* Menu top row: close button at the right, then the photo, then the name (yellow) */
+.sidebar__close { left: auto; right: 18px; top: 26px; }
+.sidebar__profile { padding-right: 52px; justify-content: flex-start; }
+.sidebar__avatar { order: -1; }
+.sidebar__who { flex: 1; min-width: 0; }
+.sidebar__name { color: var(--yellow); }
