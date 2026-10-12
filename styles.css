@@ -2476,3 +2476,21 @@ a:focus:not(:focus-visible) { outline: none; }
 .finale__btn { white-space: nowrap; padding: 0 14px; font-size: 17px; } .finale__actions { gap: 10px; }
 /* the finale trophy stands still, tilted to the left */
 .finale__trophy { animation: none; transform: rotate(-14deg); }
+
+/* Islands button: a round button at the bottom-left with the review island on it */
+.drawer-handle,
+.drawer-handle.is-open {
+  top: auto;
+  bottom: calc(var(--edge-shift-y, 0px) + 28px);
+  left: calc(var(--edge-shift, 0px) + 28px);
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: var(--menu-strong);
+  box-shadow: 0 0 0 4px #fff, 0 12px 26px rgba(36, 34, 117, .35);
+  overflow: visible;
+  transition: transform .2s ease, background .2s ease;
+}
+.drawer-handle:hover { transform: scale(1.06); }
+.drawer-handle__icon { width: 104px; height: 104px; object-fit: contain; opacity: 1; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .3)); }
+.is-loading .drawer-handle { translate: 0 160px; }
