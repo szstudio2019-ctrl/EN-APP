@@ -354,3 +354,4 @@
 .island-play svg { width: 30px; height: 30px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
 .island-play:not(.is-stop) svg { margin-left: 4px; }
 .world-page.is-loading .island-play { opacity: 0; }
+.island-play[hidden] { display: none; }
