@@ -171,7 +171,6 @@
   const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
   const STOP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3"/></svg>';
   const playBtn = document.createElement('button');
-  if (!art.video) playBtn.hidden = true;
   playBtn.type = 'button';
   playBtn.className = 'island-play';
   islandEl.after(playBtn);
@@ -186,8 +185,9 @@
   const sfx = art.sound ? new Audio(`assets/${art.sound}.wav`) : null;
   if (sfx) sfx.preload = 'auto';
   const ahh = () => { if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); } };
-  let startAnim = () => {};
-  let stopAnim = () => {};
+  // islands without a clip come alive with a CSS animation instead
+  let startAnim = () => islandEl.classList.add('is-alive');
+  let stopAnim = () => islandEl.classList.remove('is-alive');
 
   if (!reducedMotion && art.video) {
     const supportsAlphaVideo = !!navigator.userAgentData; // Chromium (Chrome, Edge, Opera)

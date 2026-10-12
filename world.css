@@ -355,3 +355,17 @@
 .island-play:not(.is-stop) svg { margin-left: 4px; }
 .world-page.is-loading .island-play { opacity: 0; }
 .island-play[hidden] { display: none; }
+
+/* Islands without a clip: Play makes the picture bounce and sway, with a glow */
+.world__island.is-alive .island__img {
+  animation: island-alive 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, .9)) drop-shadow(0 0 30px rgba(255, 214, 92, .6));
+  transform-origin: 50% 85%;
+}
+@keyframes island-alive {
+  0%, 100% { transform: translateY(0) rotate(0) scale(1); }
+  25% { transform: translateY(-14px) rotate(-2deg) scale(1.03); }
+  50% { transform: translateY(0) rotate(0) scale(1); }
+  75% { transform: translateY(-8px) rotate(2deg) scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) { .world__island.is-alive .island__img { animation: none; } }

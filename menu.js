@@ -5,6 +5,12 @@
 //   another page, via index.html#island-N)
 (function () {
   const ISLANDS = window.ISLANDS || [];
+  // The learner's saved name and photo (profile page) show on every page
+  try {
+    const me = JSON.parse(localStorage.getItem('en-app:profile'));
+    if (me && me.name) document.querySelectorAll('.user__name, .sidebar__name').forEach((el) => { el.textContent = me.name; });
+    if (me && me.photo) document.querySelectorAll('.user__photo').forEach((el) => { el.src = me.photo; });
+  } catch (err) { /* nothing saved */ }
   const viewport = document.querySelector('.viewport');
   const sidebar = document.getElementById('sidebar');
   const openBtn = document.getElementById('menu-open');
