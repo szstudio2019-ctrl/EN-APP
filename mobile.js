@@ -110,6 +110,7 @@
     openKind = kind;
     if (kind) {
       body.innerHTML = builders[kind]();
+      sheet.classList.toggle('m-sheet--full', kind === 'islands');
       sheet.setAttribute('aria-label', body.querySelector('.m-sheet__title').textContent);
     }
     document.body.classList.toggle('m-sheet-open', !!kind);
