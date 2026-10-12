@@ -13,7 +13,19 @@
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('sidebar-backdrop');
   const home = sidebar && sidebar.parentNode;
+  // …and so does the welcome popup, which grows to fill the phone's width
+  const intro = document.getElementById('intro');
+  const introHome = intro && intro.parentNode;
+  const sizeIntro = () => {
+    if (!intro) return;
+    const target = mq.matches ? document.body : introHome;
+    if (intro.parentNode !== target) target.appendChild(intro);
+    const k = Math.min((window.innerWidth - 24) / 593, (window.innerHeight - 110) / 692);
+    intro.style.setProperty('--m-k', mq.matches ? k.toFixed(3) : '1');
+  };
+  window.addEventListener('resize', sizeIntro);
   const place = () => {
+    sizeIntro();
     if (!sidebar) return;
     const target = mq.matches ? document.body : home;
     if (backdrop && backdrop.parentNode !== target) target.appendChild(backdrop);
@@ -129,12 +141,48 @@
     y0 = null;
   });
 
+  /* ---------- The stage at its biggest ----------
+     On a phone the stage fills the whole height above the bottom bar and
+     scrolls sideways (instead of shrinking to the window's width). It starts
+     at the page's main content: the lesson pins, the front island, or the
+     right edge of a white panel (Hebrew reads from the right). */
+  const stage = document.getElementById('stage');
+  const viewport = document.querySelector('.viewport');
+  let firstFit = true;
+  function bigFit() {
+    if (!mq.matches || !stage || !viewport) return;
+    const s = (window.innerHeight - bar.offsetHeight + 14) / 1080;
+    stage.style.transform = `scale(${s})`;
+    stage.style.setProperty('--edge-shift', '0px');
+    stage.style.setProperty('--edge-shift-y', '0px');
+    stage.style.setProperty('--scene-k', '1.01');
+    if (!firstFit) return;
+    firstFit = false;
+    const max = 1920 * s - window.innerWidth;
+    let focus = 960;
+    const pins = [...document.querySelectorAll('.lessons .lesson')];
+    if (document.getElementById('journey')) focus = 560;
+    else if (pins.length) {
+      const xs = pins.map((p) => parseFloat(p.style.left)).filter((x) => !Number.isNaN(x));
+      if (xs.length) focus = (Math.min(...xs) + Math.max(...xs)) / 2;
+    } else if (document.querySelector('.shop-panel')) focus = 1920;
+    viewport.scrollLeft = Math.max(0, Math.min(max, focus * s - window.innerWidth / 2));
+  }
+  window.addEventListener('resize', () => requestAnimationFrame(bigFit));
+
   document.body.append(top, shade, sheet, bar);
   const sync = () => {
     document.body.classList.toggle('is-mobile', mq.matches);
-    if (!mq.matches) setSheet(null);
+    if (!mq.matches) {
+      setSheet(null);
+      firstFit = true;
+      window.dispatchEvent(new Event('resize')); // the page's own fit() takes over again
+    }
     place();
+    bigFit();
   };
+  // pins are placed by world.js once the page has loaded
+  window.addEventListener('load', () => { firstFit = true; bigFit(); });
   (mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync));
   sync();
 })();
