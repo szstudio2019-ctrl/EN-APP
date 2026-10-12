@@ -47,8 +47,9 @@
     const inStage = index % PER;
     stepsEl.querySelectorAll('li').forEach((li, k) => {
       li.classList.toggle('is-current', k === stage);
-      // a level is done once the learner went through all six of its words
-      li.classList.toggle('is-done', STAGES[k].every((w, j) => seen[k * PER + j]));
+      // a level turns green once the learner has moved on to a later level
+      const reached = Math.max(-1, ...Object.keys(seen).map(Number));
+      li.classList.toggle('is-done', reached >= (k + 1) * PER);
     });
     [...dotsEl.children].forEach((d, k) => {
       d.classList.toggle('is-on', k === inStage);

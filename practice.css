@@ -182,3 +182,60 @@
 .practice__steps li.is-done button { background: #eaf6d2; color: #5d8a0a; box-shadow: inset 0 0 0 2px var(--green); }
 .practice__steps li.is-done.is-current button { box-shadow: inset 0 0 0 2px var(--green), 0 0 0 4px #eaf6d2; }
 .practice__arrow:disabled { opacity: .3; cursor: default; box-shadow: none; transform: none; }
+
+/* back arrow points the other way (back = to the right in RTL) */
+.practice__btn--back img { transform: rotate(180deg); }
+
+/* ---------- Lesson page ---------- */
+.lesson-page { justify-content: space-between; padding-bottom: 34px; }
+.lesson__story { width: 600px; font-size: 25px; line-height: 32px; color: #000; }
+.lesson__story p { margin: 0; }
+.lesson__quote { color: var(--pink); font-weight: 700; margin: 4px 0 !important; }
+.lesson__sum { display: flex; align-items: center; gap: 40px; }
+.lesson__tile {
+  min-width: 96px;
+  height: 98px;
+  padding: 0 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #e5f2ff;
+  color: #1d2b7a;
+  font-family: 'Varela Round', 'Rubik', sans-serif;
+  font-size: 82px;
+  font-weight: 700;
+  line-height: 1;
+}
+.lesson__tile--result { background: var(--pink); color: #fff; box-shadow: 0 0 0 2px #fff, 0 10px 20px rgba(227, 53, 99, .3); }
+.lesson__op { font-size: 82px; font-weight: 700; color: #1d2b7a; line-height: 1; }
+.lesson__try { margin: 0; font-size: 30px; font-weight: 700; color: var(--pink); }
+.lesson__ways { display: flex; gap: 52px; }
+.lesson__way {
+  width: 314px;
+  height: 267px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .8);
+  box-shadow: inset 0 0 0 1px #bebebe;
+}
+.lesson__way-title { margin: 0; font-size: 22px; font-weight: 700; color: var(--pink); }
+.lesson__way-text { margin: 0; width: 210px; font-size: 20px; line-height: 25px; color: #000; }
+.lesson__way-tile {
+  position: relative;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Varela Round', 'Rubik', sans-serif;
+  font-size: 82px;
+  font-weight: 700;
+  line-height: 1;
+  color: #1d2b7a;
+}
+.lesson__kamatz { margin-top: -50px; color: var(--pink); font-family: 'Rubik', sans-serif; }
+.lesson__way-tile--he { font-family: 'Rubik', sans-serif; }
+.lesson__go { border: 0; }
