@@ -96,12 +96,24 @@
               <span>החלפת תמונה</span>
             </label>
           </div>
-          <div class="profile__fields">
-            <label class="profile__field"><span>שם מלא</span><input type="text" id="p-name" required></label>
-            <label class="profile__field"><span>שם משתמש</span><input type="text" id="p-user" dir="ltr" required></label>
-            <label class="profile__field"><span>טלפון</span><input type="tel" id="p-phone" dir="ltr" inputmode="tel" placeholder="050-0000000"></label>
-            <label class="profile__field"><span>סיסמה חדשה</span><input type="password" id="p-pass" dir="ltr" placeholder="השאירו ריק אם לא משנים" autocomplete="new-password"></label>
-            <label class="profile__field"><span>אימות סיסמה</span><input type="password" id="p-pass2" dir="ltr" autocomplete="new-password"></label>
+          <div class="profile__groups">
+            <fieldset class="profile__group">
+              <legend class="profile__legend">פרטים אישיים</legend>
+              <div class="profile__fields">
+                <label class="profile__field"><span>שם פרטי</span><input type="text" id="p-first" required></label>
+                <label class="profile__field"><span>שם משפחה</span><input type="text" id="p-last"></label>
+                <label class="profile__field"><span>טלפון</span><input type="tel" id="p-phone" dir="ltr" inputmode="tel" placeholder="050-0000000"></label>
+                <label class="profile__field"><span>אימייל</span><input type="email" id="p-email" dir="ltr" placeholder="name@example.com"></label>
+              </div>
+            </fieldset>
+            <fieldset class="profile__group">
+              <legend class="profile__legend">פרטי כניסה</legend>
+              <div class="profile__fields">
+                <label class="profile__field profile__field--wide"><span>שם משתמש</span><input type="text" id="p-user" dir="ltr" required></label>
+                <label class="profile__field"><span>סיסמה חדשה</span><input type="password" id="p-pass" dir="ltr" placeholder="השאירו ריק אם לא משנים" autocomplete="new-password"></label>
+                <label class="profile__field"><span>אימות סיסמה</span><input type="password" id="p-pass2" dir="ltr" autocomplete="new-password"></label>
+              </div>
+            </fieldset>
           </div>
           <div class="profile__actions">
             <button class="btn-pill profile__save" type="submit"><span>שמירת השינויים</span></button>

@@ -24,13 +24,18 @@
     name: document.querySelector('.user__name')?.textContent.trim() || '',
     user: 'shira.cohen',
     phone: '',
+    email: '',
     photo: '',
   }, read(KEY) || {});
 
   /* ---------- Details form ---------- */
   const $ = (id) => document.getElementById(id);
   const photo = $('profile-photo');
-  $('p-name').value = profile.name;
+  // the full name is kept as one string; the form splits it into first / last
+  const [first, ...rest] = profile.name.split(/\s+/);
+  $('p-first').value = profile.first ?? first ?? '';
+  $('p-last').value = profile.last ?? rest.join(' ');
+  $('p-email').value = profile.email;
   $('p-user').value = profile.user;
   $('p-phone').value = profile.phone;
   if (profile.photo) photo.src = profile.photo;
@@ -64,7 +69,12 @@
     if (pass !== $('p-pass2').value) { say('הסיסמאות לא תואמות', false); return; }
     const phone = $('p-phone').value.trim();
     if (phone && !/^[0-9+\-\s]{9,15}$/.test(phone)) { say('מספר הטלפון לא תקין', false); return; }
-    profile.name = $('p-name').value.trim();
+    const email = $('p-email').value.trim();
+    if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('כתובת האימייל לא תקינה', false); return; }
+    profile.first = $('p-first').value.trim();
+    profile.last = $('p-last').value.trim();
+    profile.name = [profile.first, profile.last].filter(Boolean).join(' ');
+    profile.email = email;
     profile.user = $('p-user').value.trim();
     profile.phone = phone;
     profile.photo = photo.src.startsWith('data:') ? photo.src : profile.photo;
