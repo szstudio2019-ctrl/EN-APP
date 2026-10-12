@@ -2518,3 +2518,27 @@ a:focus:not(:focus-visible) { outline: none; }
 .menu-btn { width: 46px; height: 46px; }
 .menu-btn img { width: 25px; height: 15px; }
 .topbar__user { gap: 22px; }
+
+/* Header stats: each icon plays a little animation on hover —
+   the coin jumps and spins, the chest hops and shakes, the cart rolls */
+.stat__icon { transition: none; transform-origin: 50% 80%; }
+.stat--coins:hover .stat__icon--coin { animation: stat-coin .8s cubic-bezier(.34, 1.3, .64, 1); }
+.stat--chest:hover .stat__icon--chest { animation: stat-chest .7s ease; }
+.stat--shop:hover .stat__icon--shop { animation: stat-cart .8s ease; }
+@keyframes stat-coin {
+  0% { transform: translateY(0) rotateY(0); }
+  45% { transform: translateY(-16px) rotateY(360deg); }
+  100% { transform: translateY(0) rotateY(720deg); }
+}
+@keyframes stat-chest {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  25% { transform: translateY(-10px) rotate(-8deg); }
+  50% { transform: translateY(-10px) rotate(8deg); }
+  75% { transform: translateY(0) rotate(-4deg); }
+}
+@keyframes stat-cart {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  30% { transform: translateX(8px) rotate(6deg); }
+  60% { transform: translateX(-6px) rotate(-4deg); }
+}
+@media (prefers-reduced-motion: reduce) { .stat:hover .stat__icon { animation: none; } }
