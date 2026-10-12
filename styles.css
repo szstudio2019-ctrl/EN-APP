@@ -2542,3 +2542,4 @@ a:focus:not(:focus-visible) { outline: none; }
   60% { transform: translateX(-6px) rotate(-4deg); }
 }
 @media (prefers-reduced-motion: reduce) { .stat:hover .stat__icon { animation: none; } }
+.user__greeting { text-decoration: none; cursor: pointer; } .user__greeting:hover .user__name { text-decoration: underline; }
