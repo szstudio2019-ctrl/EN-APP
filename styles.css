@@ -2474,3 +2474,5 @@ a:focus:not(:focus-visible) { outline: none; }
 .finale__btn { height: 46px; padding: 0 18px; font-size: 18px; }
 .finale__btn[data-finale="shop"] { background: #fff; color: var(--pink); box-shadow: inset 0 0 0 2px var(--pink), 0 8px 16px rgba(227, 53, 99, .18); }
 .finale__btn { white-space: nowrap; padding: 0 14px; font-size: 17px; } .finale__actions { gap: 10px; }
+/* the finale trophy stands still, tilted to the left */
+.finale__trophy { animation: none; transform: rotate(-14deg); }
