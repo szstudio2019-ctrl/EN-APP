@@ -2424,3 +2424,53 @@ a:focus:not(:focus-visible) { outline: none; }
 }
 .home-round:hover { transform: scale(1.08); }
 .home-round svg { width: 26px; height: 26px; fill: none; stroke: var(--pink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Finale v3: big trophy on the circle's left, totals, the sentence ---------- */
+.finale { gap: 10px; padding: 0 70px; overflow: visible; }
+.finale__confetti { border-radius: 50%; overflow: hidden; }
+.finale__trophy {
+  position: absolute;
+  left: -110px;
+  top: 50%;
+  width: 230px;
+  height: 230px;
+  margin: -115px 0 0;
+  filter: drop-shadow(0 16px 24px rgba(36, 34, 117, .28));
+}
+.finale__en { font-size: 48px; margin: 0; }
+.finale__text { font-size: 26px; max-width: none; margin: 0; }
+.finale__stats { display: flex; gap: 22px; margin-top: 4px; }
+.finale__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 30px;
+  background: #f1f0fa;
+  font-family: 'Rubik', sans-serif;
+  font-size: 18px;
+  color: var(--menu-strong);
+}
+.finale__stat img { width: 32px; height: 32px; object-fit: contain; }
+.finale__stat b { color: var(--pink); font-size: 22px; }
+.finale__note { margin: 4px 0 0; max-width: 380px; font-family: 'Rubik', sans-serif; font-size: 17px; line-height: 1.35; color: #4b4a7a; }
+.finale__note b { color: var(--pink); }
+.finale__sentence { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 12px; }
+.finale__word { display: flex; gap: 3px; }
+.finale__tile {
+  width: 26px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: #e9eaf5;
+  color: #9a99bd;
+  font-family: 'Varela Round', 'Rubik', sans-serif;
+  font-size: 19px;
+}
+.finale__tile.is-found { background: var(--pink); color: #fff; }
+.finale__tile--mark { width: auto; background: none; color: #1d2b7a; }
+.finale__actions { margin-top: 8px; }
+.finale__btn { height: 46px; padding: 0 18px; font-size: 18px; }
+.finale__btn[data-finale="shop"] { background: #fff; color: var(--pink); box-shadow: inset 0 0 0 2px var(--pink), 0 8px 16px rgba(227, 53, 99, .18); }
+.finale__btn { white-space: nowrap; padding: 0 14px; font-size: 17px; } .finale__actions { gap: 10px; }

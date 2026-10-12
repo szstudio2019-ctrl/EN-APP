@@ -146,6 +146,41 @@
     }
     return `<span class="island__lock" aria-label="נעול">${lockSvg}</span>`;
   };
+  // The finale: coins and chests collected, the sentence still to complete
+  // (from the letter shop, or a demo one) and the way to finish it
+  function finaleCard(firstName, confetti) {
+    let sentence = { en: 'Dream big!', found: 'dre' };
+    try {
+      const shop = JSON.parse(localStorage.getItem('en-app:shop'));
+      if (shop && shop.sentences && shop.sentences[0]) sentence = shop.sentences[0];
+    } catch (err) { /* no saved shop */ }
+    const coins = document.querySelector('.stat--coins .stat__value')?.textContent || '350';
+    const chests = document.querySelector('.stat--chest .stat__value')?.textContent || '3';
+    const letters = [...new Set(sentence.en.toLowerCase().replace(/[^a-z]/g, ''))];
+    const missing = letters.filter((l) => !sentence.found.includes(l)).length;
+    const tiles = sentence.en.split(' ').map((w) => `<span class="finale__word">${w.split('').map((ch) => {
+      const l = ch.toLowerCase();
+      if (!/[a-z]/.test(l)) return `<b class="finale__tile finale__tile--mark">${ch}</b>`;
+      return sentence.found.includes(l) ? `<b class="finale__tile is-found">${ch}</b>` : '<b class="finale__tile">?</b>';
+    }).join('')}</span>`).join('');
+    return `<div class="finale">
+      <span class="finale__confetti" aria-hidden="true">${confetti}</span>
+      <img class="finale__trophy" src="assets/trophy.svg" alt="">
+      <p class="finale__en" lang="en" dir="ltr">Very Good!</p>
+      <p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p>
+      <div class="finale__stats">
+        <span class="finale__stat"><img src="assets/coin.webp" alt=""><b>${coins}</b> מטבעות</span>
+        <span class="finale__stat"><img src="assets/chest.webp" alt=""><b>${chests}</b> תיבות אוצר</span>
+      </div>
+      <p class="finale__note">${missing ? `למרות שסיימת את כל השלבים, נשארו לך עוד <b>${missing}</b> אותיות לרכוש ולנחש במשפט:` : 'השלמת את המשפט! אפשר להגריל משפט חדש בחנות:'}</p>
+      <div class="finale__sentence" lang="en" dir="ltr">${tiles}</div>
+      <span class="finale__actions">
+        <button class="finale__btn" type="button" data-finale="shop">אני רוצה לקנות אותיות</button>
+        <button class="finale__btn finale__btn--alt" type="button" data-finale="reviews"><span>רוצה לצבור עוד מטבעות</span><img src="assets/chevron.svg" alt="" class="finale__chevron"></button>
+      </span>
+    </div>`;
+  }
+
   const els = ISLANDS.map((island, i) => {
     const a = document.createElement('a');
     a.className = 'island';
@@ -155,7 +190,7 @@
     const firstName = (document.querySelector('.user__name')?.textContent || '').trim().split(/\s+/)[0];
     const confetti = Array.from({ length: 18 }, (_, k) => `<i style="--k:${k}"></i>`).join('');
     const art = island.finale
-      ? `<div class="finale"><span class="finale__confetti" aria-hidden="true">${confetti}</span><p class="finale__en" lang="en" dir="ltr">Very Good!</p><img class="finale__trophy" src="assets/trophy.svg" alt=""><p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p><span class="finale__actions"><button class="finale__btn" type="button" data-finale="start">להתחלה</button><button class="finale__btn finale__btn--alt" type="button" data-finale="reviews"><span>למסך החזרות</span><img src="assets/chevron.svg" alt="" class="finale__chevron"></button></span></div>`
+      ? finaleCard(firstName, confetti)
       : island.img
       ? `<img class="island__img${island.flip ? ' island__img--flip' : ''}" src="assets/${island.img}.webp" alt="" style="left:${l}px;top:${t}px;width:${w}px;height:${h}px">`
       : `<div class="island__placeholder">${island.name}</div>`;
@@ -599,6 +634,13 @@
     e.preventDefault();
     e.stopPropagation();
     if (btn.dataset.finale === 'start') goTo(0);
+    else if (btn.dataset.finale === 'shop') {
+      // through a real link so the page veil plays (transition.js)
+      const link = document.createElement('a');
+      link.href = 'shop.html';
+      document.body.appendChild(link);
+      link.click();
+    }
     else window.SiteMenu.openReviews();
   }, true);
 

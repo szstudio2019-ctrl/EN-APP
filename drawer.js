@@ -49,7 +49,8 @@
       setDrawer(false);
       // on the map: one flight straight there (locked islands can be looked at);
       // on another page: that island's own page, or the map opened at it
-      if (window.journeyGoTo) window.journeyGoTo(i);
+      // an island with its own page opens it; otherwise the map flies there
+      if (window.journeyGoTo && !island.page) window.journeyGoTo(i);
       else if (i !== current) {
         // through a link, so the page veil (transition.js) plays
         const link = document.createElement('a');
