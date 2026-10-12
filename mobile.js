@@ -149,8 +149,124 @@
   const stage = document.getElementById('stage');
   const viewport = document.querySelector('.viewport');
   let firstFit = true;
+  const WORLD = window.WORLD;
+  const isWorld = !!(WORLD && WORLD.lessons && document.body.classList.contains('world-page'));
+
+  /* ---------- Island pages: the whole scene + a lessons slider ----------
+     The scene (background and the small island) is shown whole across the
+     phone's width, under the top row; the lessons, too small there, move to a
+     card below it: one big pin at a time with arrows (and swipe). */
+  let pinsCard = null;
+  if (isWorld) {
+    const label = { done: 'הושלם', current: 'השיעור הבא', locked: 'נעול' };
+    const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const LOCKI = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+    const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+    const list = WORLD.lessons;
+    let at = Math.max(0, list.findIndex((l) => l.status === 'current'));
+    pinsCard = document.createElement('section');
+    pinsCard.className = 'm-pins';
+    pinsCard.setAttribute('aria-label', 'השיעורים באי');
+    pinsCard.innerHTML = `
+      <h2 class="m-pins__title">${WORLD.title || ''}</h2>
+      <p class="m-pins__range">${WORLD.lessonsRange ? `שיעורים ${WORLD.lessonsRange}` : ''}</p>
+      <div class="m-pins__row">
+        <button class="m-pins__arrow m-pins__arrow--prev" type="button" aria-label="השיעור הקודם">${ARROW}</button>
+        <div class="m-pins__stage" aria-live="polite"></div>
+        <button class="m-pins__arrow m-pins__arrow--next" type="button" aria-label="השיעור הבא">${ARROW}</button>
+      </div>
+      <div class="m-pins__dots">${list.map(() => '<i></i>').join('')}</div>`;
+    const slot = pinsCard.querySelector('.m-pins__stage');
+    const dots = [...pinsCard.querySelectorAll('.m-pins__dots i')];
+    const prev = pinsCard.querySelector('.m-pins__arrow--prev');
+    const next = pinsCard.querySelector('.m-pins__arrow--next');
+    const show = (i, dir) => {
+      if (!list.length) {
+        // an island whose lessons are not in yet
+        slot.innerHTML = '<p class="m-pin__soon">השיעורים של האי הזה יתווספו בקרוב</p>';
+        prev.hidden = true;
+        next.hidden = true;
+        return;
+      }
+      at = Math.max(0, Math.min(list.length - 1, i));
+      const l = list[at];
+      const badge = l.status === 'done' ? CHECK : l.status === 'locked' ? LOCKI : '<i></i>';
+      const locked = l.status === 'locked';
+      slot.innerHTML = `
+        <div class="m-pin${dir ? ` m-pin--${dir}` : ''}">
+          <a class="lesson lesson--${l.status}" href="${locked ? '#' : l.href}" aria-label="שיעור ${l.n} – ${label[l.status]}"><span class="lesson__n">${l.n}</span><span class="lesson__badge">${badge}</span></a>
+          <p class="m-pin__name">שיעור ${l.n} · <span class="m-pin__state m-pin__state--${l.status}">${label[l.status]}</span></p>
+          ${locked ? '<span class="m-pin__go is-locked">נעול</span>' : `<a class="btn-pill m-pin__go" href="${l.href}"><span>${l.status === 'done' ? 'לחזור לשיעור' : 'כניסה לשיעור'}</span></a>`}
+        </div>`;
+      slot.querySelectorAll('[href="#"]').forEach((a) => a.addEventListener('click', (e) => e.preventDefault()));
+      dots.forEach((d, k) => d.classList.toggle('is-on', k === at));
+      prev.disabled = at === 0;
+      next.disabled = at === list.length - 1;
+    };
+    prev.addEventListener('click', () => show(at - 1, 'prev'));
+    next.addEventListener('click', () => show(at + 1, 'next'));
+    let x0 = null;
+    slot.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    slot.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      // RTL: swiping left moves on to the next lesson
+      if (Math.abs(dx) > 40) show(at + (dx < 0 ? 1 : -1), dx < 0 ? 'next' : 'prev');
+      x0 = null;
+    });
+    show(at);
+    document.body.classList.add('m-world');
+  }
+
+  /* ---------- Letter shop: two white tabs (letters / sentences) ---------- */
+  const shopLetters = document.querySelector('.shop-panel--letters');
+  const shopSentences = document.querySelector('.shop-panel--sentences');
+  let shopBox = null;
+  if (shopLetters && shopSentences) {
+    shopBox = document.createElement('div');
+    shopBox.className = 'm-shop';
+    shopBox.dataset.tab = 'letters';
+    shopBox.innerHTML = `
+      <div class="m-shop__tabs" role="tablist">
+        <button class="m-shop__tab is-on" type="button" role="tab" aria-selected="true" data-tab="letters">חנות האותיות</button>
+        <button class="m-shop__tab" type="button" role="tab" aria-selected="false" data-tab="sentences">אזור המשפטים</button>
+      </div>`;
+    shopBox.querySelector('.m-shop__tabs').addEventListener('click', (e) => {
+      const tab = e.target.closest('[data-tab]');
+      if (!tab) return;
+      shopBox.dataset.tab = tab.dataset.tab;
+      shopBox.querySelectorAll('.m-shop__tab').forEach((t) => {
+        t.classList.toggle('is-on', t === tab);
+        t.setAttribute('aria-selected', String(t === tab));
+      });
+    });
+    document.body.classList.add('m-shop-page');
+  }
+  const shopHome = shopLetters && [shopLetters.parentNode, shopLetters.nextSibling, shopSentences.nextSibling];
+  const placeShop = () => {
+    if (!shopBox) return;
+    if (mq.matches && shopLetters.parentNode !== shopBox) shopBox.append(shopLetters, shopSentences);
+    else if (!mq.matches && shopLetters.parentNode === shopBox) {
+      shopHome[0].insertBefore(shopLetters, shopHome[1]);
+      shopHome[0].insertBefore(shopSentences, shopHome[2]);
+    }
+  };
+
   function bigFit() {
     if (!mq.matches || !stage || !viewport) return;
+    if (isWorld) {
+      // the whole scene across the width: the background reaches 86px above
+      // the stage and 1195px below its top
+      const s = window.innerWidth / 1920;
+      const top = 78 + 86 * s;
+      stage.style.transform = `translate(0px, ${top}px) scale(${s})`;
+      stage.style.setProperty('--edge-shift', '0px');
+      stage.style.setProperty('--edge-shift-y', '0px');
+      stage.style.setProperty('--scene-k', '1');
+      pinsCard.style.top = `${Math.round(top + 1195 * s - 26)}px`;
+      viewport.scrollLeft = 0;
+      return;
+    }
     const s = (window.innerHeight - bar.offsetHeight + 14) / 1080;
     stage.style.transform = `scale(${s})`;
     stage.style.setProperty('--edge-shift', '0px');
@@ -171,6 +287,8 @@
   window.addEventListener('resize', () => requestAnimationFrame(bigFit));
 
   document.body.append(top, shade, sheet, bar);
+  if (pinsCard) document.body.append(pinsCard);
+  if (shopBox) document.body.append(shopBox);
   const sync = () => {
     document.body.classList.toggle('is-mobile', mq.matches);
     if (!mq.matches) {
@@ -179,6 +297,7 @@
       window.dispatchEvent(new Event('resize')); // the page's own fit() takes over again
     }
     place();
+    placeShop();
     bigFit();
   };
   // pins are placed by world.js once the page has loaded
