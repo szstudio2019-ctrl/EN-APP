@@ -492,3 +492,5 @@
 }
 /* every card picture gets the same rounded corners, whatever its source size */
 .letter-card__img { border-radius: 14px; }
+/* room on the left for a card that grows and tilts on hover (alignment unchanged) */
+.letters { margin-left: -20px; padding-left: 20px; }
