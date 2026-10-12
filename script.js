@@ -193,7 +193,8 @@
         </div>
       </div>`;
     a.addEventListener('click', (e) => {
-      if (a.dataset.state === 'locked') e.preventDefault();
+      // locked islands stay closed, unless they already have a page (shown for the demo)
+      if (a.dataset.state === 'locked' && !island.page) e.preventDefault();
     });
     // Stagger the hover-float so the islands don't bob in sync
     a.querySelector('.island__float').style.animationDelay = `${-i * 1.3}s`;
@@ -433,6 +434,8 @@
     if (status === 'progress') {
       return `<a class="btn-pill about-btn" href="${island.page || '#'}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>אני רוצה להמשיך ללמוד</span></a>`;
     }
+    // locked, but its page exists already: let the client peek in (demo)
+    if (island.page) return `<span class="about-actions"><p class="about-locked">${lockIcon}<span>האי עדיין לא מוכן</span></p><a class="btn-pill about-btn" href="${island.page}"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>הצצה לעולם</span></a></span>`;
     return `<p class="about-locked">${lockIcon}<span>האי עדיין לא מוכן</span></p>`;
   }
 

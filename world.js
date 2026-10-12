@@ -160,14 +160,18 @@
   const islandEl = document.getElementById('world-island');
   const still = document.getElementById('world-island-still');
   const art = WORLD.island;
-  const box = 'left:11px;top:-5px;width:564px;height:501px';
+  // where the artwork sits in the island frame (left, top, width, height)
+  const [bl, bt, bw, bh] = art.box || [11, -5, 564, 501];
+  const box = `left:${bl}px;top:${bt}px;width:${bw}px;height:${bh}px`;
   still.src = `assets/${art.still}.webp`;
   still.style.cssText = box;
+  if (art.flip) still.classList.add('island__img--flip');
   islandEl.addEventListener('click', (e) => e.preventDefault());
 
   const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
   const STOP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3"/></svg>';
   const playBtn = document.createElement('button');
+  if (!art.video) playBtn.hidden = true;
   playBtn.type = 'button';
   playBtn.className = 'island-play';
   islandEl.after(playBtn);
@@ -185,7 +189,7 @@
   let startAnim = () => {};
   let stopAnim = () => {};
 
-  if (!reducedMotion) {
+  if (!reducedMotion && art.video) {
     const supportsAlphaVideo = !!navigator.userAgentData; // Chromium (Chrome, Edge, Opera)
     if (supportsAlphaVideo) {
       // Two copies take turns so the loop restarts without a seek hitch
