@@ -2494,3 +2494,9 @@ a:focus:not(:focus-visible) { outline: none; }
 .drawer-handle:hover { transform: scale(1.06); }
 .drawer-handle__icon { width: 104px; height: 104px; object-fit: contain; opacity: 1; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .3)); }
 .is-loading .drawer-handle { translate: 0 160px; }
+/* the island picture sits in the middle of the round button */
+.drawer-handle, .drawer-handle.is-open { justify-content: center; align-content: center; padding: 0; }
+/* the drawer's room above the row (for the name bubbles) must not catch the
+   mouse, or hovering high above the drawer reopens it */
+.drawer__scroll { pointer-events: none; }
+.drawer__list { pointer-events: auto; }
