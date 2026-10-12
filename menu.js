@@ -22,6 +22,7 @@
   function setMenu(state, byHover) {
     open = state;
     viewport.classList.toggle('menu-open', state);
+    document.body.classList.toggle('menu-open', state); // the phone menu sits outside the viewport (mobile.js)
     sidebar.setAttribute('aria-hidden', String(!state));
     openBtn.setAttribute('aria-expanded', String(state));
     if (byHover) return; // opened or closed by the mouse: leave the focus alone
