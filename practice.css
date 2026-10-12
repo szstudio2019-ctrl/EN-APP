@@ -170,3 +170,10 @@
 .practice-page .world__island { transform: translate(1290px, 560px); }
 .practice-page.is-loading .practice { opacity: 0; translate: 0 60px; }
 .practice { transition: opacity .8s ease, translate .9s cubic-bezier(.22, 1, .36, 1); }
+.practice__dots i.is-done { background: #ffa3be; }
+.practice__dots i.is-on { background: var(--pink); }
+
+/* "רמת קושי" beside the stage numbers */
+.practice__level { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
+.practice__level .practice__steps { margin-top: 0; }
+.practice__level-label { font-size: 18px; font-weight: 500; color: #2a2968; }

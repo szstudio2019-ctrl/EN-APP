@@ -1,8 +1,18 @@
-// Practice page ("בואו נתרגל"): one word card at a time. Tapping the word
-// says it aloud; "הקלט" records the learner (microphone), "בדיקה" plays the
-// recording back. The steps 1–6 and the dots show the place in the set.
+// Practice page ("בואו נתרגל"): six stages (the numbers 1–6 above the cards),
+// each with six words (the dashes under the cards). Tapping the word says it
+// aloud; "הקלט" records the learner (microphone), "בדיקה" plays it back.
 (function () {
-  const WORDS = ['bat', 'cat', 'hat', 'map', 'bag', 'jam'];
+  const STAGES = [
+    ['bat', 'cat', 'hat', 'mat', 'rat', 'sat'],
+    ['map', 'cap', 'tap', 'nap', 'lap', 'gap'],
+    ['bag', 'rag', 'tag', 'wag', 'nag', 'flag'],
+    ['jam', 'ham', 'ram', 'yam', 'dam', 'clam'],
+    ['can', 'fan', 'man', 'pan', 'ran', 'van'],
+    ['dad', 'bad', 'mad', 'pad', 'sad', 'glad'],
+  ];
+  const PER = STAGES[0].length;
+  // every word has one place in the whole set: stage * PER + word
+  const WORDS = STAGES.flat();
   const KEY = 'en-app:practice-doctor';
 
   const stepsEl = document.getElementById('practice-steps');
@@ -19,17 +29,23 @@
   try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { done = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
 
-  stepsEl.innerHTML = WORDS.map((w, i) => `<li><button type="button" data-step="${i}" aria-label="מילה ${i + 1}">${i + 1}</button></li>`).join('');
-  dotsEl.innerHTML = WORDS.map(() => '<i></i>').join('');
+  stepsEl.innerHTML = STAGES.map((w, i) => `<li><button type="button" data-step="${i}" aria-label="שלב ${i + 1}">${i + 1}</button></li>`).join('');
+  dotsEl.innerHTML = STAGES[0].map(() => '<i></i>').join('');
 
   function show(i, dir) {
     index = (i + WORDS.length) % WORDS.length;
     wordEl.textContent = WORDS[index];
+    const stage = Math.floor(index / PER);
+    const inStage = index % PER;
     stepsEl.querySelectorAll('li').forEach((li, k) => {
-      li.classList.toggle('is-current', k === index);
-      li.classList.toggle('is-done', !!done[k]);
+      li.classList.toggle('is-current', k === stage);
+      // a stage is done once each of its words was recorded
+      li.classList.toggle('is-done', STAGES[k].every((w, j) => done[k * PER + j]));
     });
-    [...dotsEl.children].forEach((d, k) => d.classList.toggle('is-on', k === index));
+    [...dotsEl.children].forEach((d, k) => {
+      d.classList.toggle('is-on', k === inStage);
+      d.classList.toggle('is-done', !!done[stage * PER + k]);
+    });
     playBtn.disabled = !recordings[index];
     statusEl.textContent = '';
     if (dir) {
@@ -43,7 +59,9 @@
   document.getElementById('practice-prev').addEventListener('click', () => show(index - 1, -1));
   stepsEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-step]');
-    if (b) show(Number(b.dataset.step), Number(b.dataset.step) > index ? 1 : -1);
+    if (!b) return;
+    const to = Number(b.dataset.step) * PER;
+    show(to, to > index ? 1 : -1);
   });
 
   /* Say the word (the browser's English voice) */

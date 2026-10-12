@@ -88,7 +88,10 @@
       <section class="practice" aria-labelledby="practice-title">
         <h1 class="practice__title" id="practice-title">בואו נתרגל</h1>
         <p class="practice__lead">האזינו למילים והקליטו את עצמיכם</p>
-        <ol class="practice__steps" id="practice-steps" aria-label="שלבי התרגול"></ol>
+        <div class="practice__level">
+          <span class="practice__level-label" id="level-label">רמת קושי</span>
+          <ol class="practice__steps" id="practice-steps" aria-labelledby="level-label"></ol>
+        </div>
         <div class="practice__deck">
           <button class="practice__arrow practice__arrow--prev" type="button" id="practice-prev" aria-label="המילה הקודמת"><img src="assets/chevron.svg" alt=""></button>
           <div class="practice__stack">
