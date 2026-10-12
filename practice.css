@@ -181,3 +181,4 @@
 /* a finished difficulty level: light green circle, green number and outline */
 .practice__steps li.is-done button { background: #eaf6d2; color: #5d8a0a; box-shadow: inset 0 0 0 2px var(--green); }
 .practice__steps li.is-done.is-current button { box-shadow: inset 0 0 0 2px var(--green), 0 0 0 4px #eaf6d2; }
+.practice__arrow:disabled { opacity: .3; cursor: default; box-shadow: none; transform: none; }

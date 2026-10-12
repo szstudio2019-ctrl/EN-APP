@@ -27,20 +27,28 @@
   const recordings = {}; // word index -> object URL of the recording
   let done = {};
   try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { done = {}; }
+  let seen = {};
+  try { seen = JSON.parse(localStorage.getItem(`${KEY}:seen`)) || {}; } catch (err) { seen = {}; }
+  const saveSeen = () => { try { localStorage.setItem(`${KEY}:seen`, JSON.stringify(seen)); } catch (err) { /* storage blocked */ } };
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
 
   stepsEl.innerHTML = STAGES.map((w, i) => `<li><button type="button" data-step="${i}" aria-label="שלב ${i + 1}">${i + 1}</button></li>`).join('');
   dotsEl.innerHTML = STAGES[0].map(() => '<i></i>').join('');
 
   function show(i, dir) {
-    index = (i + WORDS.length) % WORDS.length;
+    // no wrapping: the first word has no "previous", the last no "next"
+    index = Math.max(0, Math.min(WORDS.length - 1, i));
+    seen[index] = true;
+    saveSeen();
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === WORDS.length - 1;
     wordEl.textContent = WORDS[index];
     const stage = Math.floor(index / PER);
     const inStage = index % PER;
     stepsEl.querySelectorAll('li').forEach((li, k) => {
       li.classList.toggle('is-current', k === stage);
-      // a stage is done once each of its words was recorded
-      li.classList.toggle('is-done', STAGES[k].every((w, j) => done[k * PER + j]));
+      // a level is done once the learner went through all six of its words
+      li.classList.toggle('is-done', STAGES[k].every((w, j) => seen[k * PER + j]));
     });
     [...dotsEl.children].forEach((d, k) => {
       d.classList.toggle('is-on', k === inStage);
@@ -55,8 +63,10 @@
     }
   }
 
-  document.getElementById('practice-next').addEventListener('click', () => show(index + 1, 1));
-  document.getElementById('practice-prev').addEventListener('click', () => show(index - 1, -1));
+  const nextBtn = document.getElementById('practice-next');
+  const prevBtn = document.getElementById('practice-prev');
+  nextBtn.addEventListener('click', () => show(index + 1, 1));
+  prevBtn.addEventListener('click', () => show(index - 1, -1));
   stepsEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-step]');
     if (!b) return;
