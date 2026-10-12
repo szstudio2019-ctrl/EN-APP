@@ -2500,3 +2500,21 @@ a:focus:not(:focus-visible) { outline: none; }
    mouse, or hovering high above the drawer reopens it */
 .drawer__scroll { pointer-events: none; }
 .drawer__list { pointer-events: auto; }
+
+/* ---------- Header: bigger text and buttons, the name in yellow ---------- */
+.topbar { height: 112px; top: 41px; }
+.stat__label, .stat--chest .stat__label { font-size: 19px; }
+.stat__value { font-size: 26px; }
+.stat__text { line-height: 24px; }
+.stat__icon--chest { width: 56px; height: 55px; }
+.stat__icon--coin { width: 46px; height: 46px; }
+.stat__icon--shop { width: 54px; height: 49px; }
+.logo__title { font-size: 38px; }
+.logo__subtitle { font-size: 19px; }
+.user__hello { font-size: 19px; }
+.user__name { font-size: 26px; color: var(--yellow); }
+.home-btn { width: 46px; height: 46px; }
+.home-btn svg { width: 24px; height: 24px; }
+.menu-btn { width: 46px; height: 46px; }
+.menu-btn img { width: 25px; height: 15px; }
+.topbar__user { gap: 22px; }
