@@ -1,0 +1,117 @@
+// Practice page ("בואו נתרגל"): one word card at a time. Tapping the word
+// says it aloud; "הקלט" records the learner (microphone), "בדיקה" plays the
+// recording back. The steps 1–6 and the dots show the place in the set.
+(function () {
+  const WORDS = ['bat', 'cat', 'hat', 'map', 'bag', 'jam'];
+  const KEY = 'en-app:practice-doctor';
+
+  const stepsEl = document.getElementById('practice-steps');
+  const dotsEl = document.getElementById('practice-dots');
+  const wordEl = document.getElementById('practice-word');
+  const recBtn = document.getElementById('practice-rec');
+  const playBtn = document.getElementById('practice-play');
+  const statusEl = document.getElementById('practice-status');
+  const card = document.getElementById('practice-card');
+
+  let index = 0;
+  const recordings = {}; // word index -> object URL of the recording
+  let done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { done = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
+
+  stepsEl.innerHTML = WORDS.map((w, i) => `<li><button type="button" data-step="${i}" aria-label="מילה ${i + 1}">${i + 1}</button></li>`).join('');
+  dotsEl.innerHTML = WORDS.map(() => '<i></i>').join('');
+
+  function show(i, dir) {
+    index = (i + WORDS.length) % WORDS.length;
+    wordEl.textContent = WORDS[index];
+    stepsEl.querySelectorAll('li').forEach((li, k) => {
+      li.classList.toggle('is-current', k === index);
+      li.classList.toggle('is-done', !!done[k]);
+    });
+    [...dotsEl.children].forEach((d, k) => d.classList.toggle('is-on', k === index));
+    playBtn.disabled = !recordings[index];
+    statusEl.textContent = '';
+    if (dir) {
+      card.classList.remove('is-in-next', 'is-in-prev');
+      void card.offsetWidth;
+      card.classList.add(dir > 0 ? 'is-in-next' : 'is-in-prev');
+    }
+  }
+
+  document.getElementById('practice-next').addEventListener('click', () => show(index + 1, 1));
+  document.getElementById('practice-prev').addEventListener('click', () => show(index - 1, -1));
+  stepsEl.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-step]');
+    if (b) show(Number(b.dataset.step), Number(b.dataset.step) > index ? 1 : -1);
+  });
+
+  /* Say the word (the browser's English voice) */
+  function say(text) {
+    if (!('speechSynthesis' in window)) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    const voice = speechSynthesis.getVoices().find((v) => /^en(-|_)US/i.test(v.lang));
+    if (voice) u.voice = voice;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+  wordEl.addEventListener('click', () => {
+    say(WORDS[index]);
+    wordEl.classList.remove('is-speaking');
+    void wordEl.offsetWidth;
+    wordEl.classList.add('is-speaking');
+  });
+
+  /* Record and play back */
+  let recorder = null;
+  let chunks = [];
+  let stopTimer;
+  async function startRec() {
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      statusEl.textContent = 'הדפדפן הזה לא תומך בהקלטה';
+      return;
+    }
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (err) {
+      statusEl.textContent = 'צריך לאשר גישה למיקרופון כדי להקליט';
+      return;
+    }
+    chunks = [];
+    const at = index;
+    recorder = new MediaRecorder(stream);
+    recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    recorder.onstop = () => {
+      stream.getTracks().forEach((t) => t.stop());
+      if (recordings[at]) URL.revokeObjectURL(recordings[at]);
+      recordings[at] = URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType }));
+      done[at] = Date.now();
+      save();
+      recBtn.classList.remove('is-recording');
+      recBtn.querySelector('.practice__label').textContent = 'הקלט';
+      if (at === index) { playBtn.disabled = false; statusEl.textContent = 'מעולה! לחצו על בדיקה כדי לשמוע'; }
+      show(index);
+      if (at === index) statusEl.textContent = 'מעולה! לחצו על בדיקה כדי לשמוע';
+      recorder = null;
+    };
+    recorder.start();
+    recBtn.classList.add('is-recording');
+    recBtn.querySelector('.practice__label').textContent = 'עצור';
+    statusEl.textContent = 'מקליטים… אמרו את המילה';
+    clearTimeout(stopTimer);
+    stopTimer = setTimeout(() => { if (recorder && recorder.state === 'recording') recorder.stop(); }, 5000);
+  }
+  recBtn.addEventListener('click', () => {
+    if (recorder && recorder.state === 'recording') { clearTimeout(stopTimer); recorder.stop(); } else startRec();
+  });
+  playBtn.addEventListener('click', () => {
+    const url = recordings[index];
+    if (!url) return;
+    new Audio(url).play().catch(() => {});
+  });
+
+  show(0);
+})();
