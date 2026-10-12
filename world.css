@@ -334,3 +334,23 @@
 .game-title__bottom-text { font-size: 56px; }
 .game-title__plus--b { left: 84px; }
 .game-title__plus--a { right: 84px; }
+
+/* Play / Stop beside the animated island */
+.island-play {
+  position: absolute;
+  z-index: 120;
+  width: 65px;
+  height: 65px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 10px 20px rgba(227, 53, 99, .35);
+  cursor: pointer;
+  transition: background .2s ease, transform .15s ease;
+}
+.island-play:hover { background: #ee5c84; transform: scale(1.05); }
+.island-play svg { width: 30px; height: 30px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.island-play:not(.is-stop) svg { margin-left: 4px; }
+.world-page.is-loading .island-play { opacity: 0; }

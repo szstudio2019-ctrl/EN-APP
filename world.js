@@ -154,7 +154,9 @@
     lessons.appendChild(a);
   }
 
-  /* Animated island: loops on its own; a click restarts it once with the sound */
+  /* Animated island: still at first. The pink Play button beside it (or a
+     click on the island) starts the "Ahhh" loop with its sound; Stop goes back
+     to the still picture. */
   const islandEl = document.getElementById('world-island');
   const still = document.getElementById('world-island-still');
   const art = WORLD.island;
@@ -162,6 +164,26 @@
   still.src = `assets/${art.still}.webp`;
   still.style.cssText = box;
   islandEl.addEventListener('click', (e) => e.preventDefault());
+
+  const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
+  const STOP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3"/></svg>';
+  const playBtn = document.createElement('button');
+  playBtn.type = 'button';
+  playBtn.className = 'island-play';
+  islandEl.after(playBtn);
+  // sits on the island's lower left, following the island's own position
+  const placeBtn = () => {
+    const m = new DOMMatrix(getComputedStyle(islandEl).transform);
+    playBtn.style.left = `${m.e + 70}px`;
+    playBtn.style.top = `${m.f + 200}px`;
+  };
+  placeBtn();
+  let playing = false;
+  const sfx = art.sound ? new Audio(`assets/${art.sound}.wav`) : null;
+  if (sfx) sfx.preload = 'auto';
+  const ahh = () => { if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); } };
+  let startAnim = () => {};
+  let stopAnim = () => {};
 
   if (!reducedMotion) {
     const supportsAlphaVideo = !!navigator.userAgentData; // Chromium (Chrome, Edge, Opera)
@@ -182,33 +204,27 @@
       back.classList.add('is-standby');
       still.after(front, back);
       const swap = () => {
-        back.muted = true;
+        if (!playing) return;
         back.play().catch(() => {});
         back.classList.remove('is-standby');
         front.classList.add('is-standby');
         front.pause();
         front.currentTime = 0;
         [front, back] = [back, front];
+        ahh();
       };
       front.addEventListener('ended', swap);
       back.addEventListener('ended', swap);
-      const start = () => front.play().then(() => islandEl.classList.add('is-playing')).catch(() => {});
-      setTimeout(start, 900);
-      // "Ahhh" with sound: on click, and on hover once the visitor has interacted
-      // with the page (browsers block sound before that). One pass each time.
-      // Same as the home page: the video stays silent, the louder WAV carries the sound
-      const sfx = art.sound ? new Audio(`assets/${art.sound}.wav`) : null;
-      if (sfx) sfx.preload = 'auto';
-      const sayAhh = () => {
+      startAnim = () => {
         front.currentTime = 0;
         front.play().then(() => islandEl.classList.add('is-playing')).catch(() => {});
-        if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); }
+        ahh();
       };
-      islandEl.addEventListener('click', sayAhh);
-      islandEl.addEventListener('mouseenter', () => { if (canSound()) sayAhh(); });
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && front.paused) front.play().catch(() => {});
-      });
+      stopAnim = () => {
+        [front, back].forEach((v) => { v.pause(); v.currentTime = 0; });
+        islandEl.classList.remove('is-playing');
+        if (sfx) sfx.pause();
+      };
     } else {
       // Safari / iPhone: animated WebP + WAV
       const anim = document.createElement('img');
@@ -216,17 +232,21 @@
       anim.alt = '';
       anim.style.cssText = box;
       still.after(anim);
-      const audio = art.sound ? new Audio(`assets/${art.sound}.wav`) : null;
-      const restart = () => { anim.src = `assets/${art.video}.webp?${Date.now()}`; islandEl.classList.add('is-playing'); };
-      setTimeout(restart, 900);
-      const sayAhh = () => {
-        restart();
-        if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
-      };
-      islandEl.addEventListener('click', sayAhh);
-      islandEl.addEventListener('mouseenter', () => { if (canSound()) sayAhh(); });
+      startAnim = () => { anim.src = `assets/${art.video}.webp?${Date.now()}`; islandEl.classList.add('is-playing'); ahh(); };
+      stopAnim = () => { anim.removeAttribute('src'); islandEl.classList.remove('is-playing'); if (sfx) sfx.pause(); };
     }
   }
+
+  function setPlaying(on) {
+    playing = on;
+    playBtn.innerHTML = on ? STOP_ICON : PLAY_ICON;
+    playBtn.setAttribute('aria-label', on ? 'עצירת האנימציה' : 'הפעלת האנימציה');
+    playBtn.classList.toggle('is-stop', on);
+    if (on) startAnim(); else stopAnim();
+  }
+  setPlaying(false);
+  playBtn.addEventListener('click', () => setPlaying(!playing));
+  islandEl.addEventListener('click', () => setPlaying(!playing));
 
   /* Progress bar fills after the entrance */
   const bar = document.getElementById('world-progress');
