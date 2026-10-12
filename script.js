@@ -362,9 +362,18 @@
   let snakeRaf = 0;
   const ease = (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t)); // ease-out: quick start, slow settle
 
-  function snake(fromIndex, toIndex) {
+  let snakeClear;
+  const clearSnake = () => {
     cancelAnimationFrame(snakeRaf);
+    clearTimeout(snakeClear);
+    snakeParts.forEach((p) => p.setAttribute('d', ''));
+    path.classList.remove('is-travelling');
+  };
+  function snake(fromIndex, toIndex) {
+    clearSnake();
     if (reducedMotion) return;
+    // never left behind: wipe it shortly after the flight even if frames stalled
+    snakeClear = setTimeout(clearSnake, SNAKE_MS + 250);
     const A = anchor(slotFor(0, fromIndex));
     const B = anchor(slotFor(0, toIndex));
     const dx = B.x - A.x;
@@ -397,7 +406,7 @@
       }
       snakeParts.forEach((p) => p.setAttribute('d', head - tail > 0.002 ? d : ''));
       if (t < 1) snakeRaf = requestAnimationFrame(frame);
-      else path.classList.remove('is-travelling');
+      else clearSnake();
     };
     snakeRaf = requestAnimationFrame(frame);
   }
@@ -538,7 +547,8 @@
   // A move asked for while one is still playing is remembered (one step) and
   // runs as soon as the current one finishes, so quick scrolling isn't lost.
   let queued = null;
-  function goTo(target) {
+  // opts.quiet: move without the trail of light (jumps not made by scrolling)
+  function goTo(target, opts = {}) {
     target = Math.max(0, Math.min(ISLANDS.length - 1, target));
     if (target === current) return;
     if (busy) { queued = target; return; }
@@ -566,7 +576,7 @@
     // Forward: the island being left grows past the viewer. Back: it shrinks
     // away into the distance (render() already sent it to its small slot).
     if (forward) place(leaving, big(from));
-    snake(from, target);
+    if (opts.quiet) clearSnake(); else snake(from, target);
     setTimeout(() => {
       busy = false;
       setBackgroundRate(SPEED);
@@ -576,7 +586,7 @@
       place(leaving, rest);
       leaving.offsetWidth;
       leaving.style.transition = '';
-      if (queued !== null) { const next = queued; queued = null; goTo(next); }
+      if (queued !== null) { const next = queued; queued = null; goTo(next, opts); }
     }, TRAVEL_MS);
   }
   const go = (step) => goTo(current + step);

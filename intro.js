@@ -78,7 +78,7 @@
     isOpen = true;
     // behind the popup the map moves to the first island, so closing it
     // (skip or start) lands at the beginning of the journey
-    if (window.journeyGoTo) window.journeyGoTo(0);
+    if (window.journeyGoTo) window.journeyGoTo(0, { quiet: true });
     show(0);
     document.body.classList.add('intro-open');
     intro.hidden = false;
