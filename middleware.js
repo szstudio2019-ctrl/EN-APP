@@ -7,7 +7,7 @@
 export const config = { matcher: '/:path*' };
 
 const COOKIE = 'sz_preview';
-const PUBLIC = ['/assets/bg-clouds.webp', '/assets/logo-ring.svg'];
+const PUBLIC = ['/assets/bg-clouds.webp', '/assets/logo-ring.svg', '/favicon.svg'];
 
 async function tokenFor(user, pass) {
   const data = new TextEncoder().encode(`sz:${user}:${pass}`);
@@ -73,6 +73,7 @@ function loginPage(error, next) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <title>כניסה – מדקדקים באנגלית</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

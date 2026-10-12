@@ -2560,3 +2560,38 @@ a:focus:not(:focus-visible) { outline: none; }
 .sidebar__avatar { order: -1; }
 .sidebar__who { flex: 1; min-width: 0; }
 .sidebar__name { color: var(--yellow); }
+
+/* Back to the main page (shared: practice, lesson, about, admin) */
+.back-home {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  height: 46px;
+  min-width: 46px;
+  padding: 0 11px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  direction: rtl;
+  border-radius: 30px;
+  background: #1d2b7a;
+  color: #fff;
+  box-shadow: 0 8px 16px rgba(36, 34, 117, .25);
+  overflow: hidden;
+  transition: background .25s ease, padding .3s ease, box-shadow .25s ease;
+}
+.back-home svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.back-home__label {
+  max-width: 0;
+  font-family: 'Rubik', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width .3s ease, opacity .2s ease;
+}
+.back-home:hover { background: var(--pink); padding: 0 18px 0 16px; box-shadow: 0 10px 20px rgba(227, 53, 99, .3); }
+.back-home:hover .back-home__label { max-width: 80px; opacity: 1; }
+.back-home { gap: 0; }
+.back-home:hover .back-home__label { margin-left: 10px; }
+.back-home__label { transition: max-width .3s ease, opacity .2s ease, margin .3s ease; }
