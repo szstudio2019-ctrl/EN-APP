@@ -60,7 +60,7 @@
     <button class="m-bar__btn" type="button" data-sheet="islands"><img src="assets/island-review.webp" alt=""><span>איים</span></button>
     <button class="m-bar__btn" type="button" data-sheet="trophy"><img src="assets/trophy.svg" alt=""><span>המשפט שלי</span></button>
     <a class="m-bar__btn" href="shop.html"><img src="assets/shop.webp" alt=""><span>חנות</span></a>
-    <button class="m-bar__btn m-bar__btn--coin" type="button" data-sheet="coins"><img src="assets/coin.webp" alt=""><span>${coins}</span></button>`;
+    <button class="m-bar__btn m-bar__btn--coin" type="button" data-sheet="coins"><span class="m-bar__stack" aria-hidden="true"><img class="m-bar__chest" src="assets/chest.webp" alt=""><img class="m-bar__coin" src="assets/coin.webp" alt=""></span><span>מה צברתי</span></button>`;
 
   /* ---------- Bottom sheet ---------- */
   const shade = document.createElement('div');

@@ -2657,7 +2657,11 @@ a:focus:not(:focus-visible) { outline: none; }
   .m-bar__btn img { width: 38px; height: 38px; object-fit: contain; }
   .m-bar__btn:active { transform: scale(.94); }
   .m-bar__btn.is-on { background: rgba(255, 255, 255, .18); }
-  .m-bar__btn--coin span { color: var(--yellow); font-size: 14px; font-weight: 700; }
+  /* "מה צברתי": a treasure chest with the coin in front of it */
+  .m-bar__stack { position: relative; width: 38px; height: 38px; }
+  .m-bar__stack img { position: absolute; object-fit: contain; }
+  .m-bar__btn .m-bar__chest { width: 36px; height: 36px; top: -4px; left: 6px; }
+  .m-bar__btn .m-bar__coin { width: 26px; height: 26px; bottom: -2px; left: -2px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .3)); }
 
   .m-shade { display: block; position: fixed; inset: 0; z-index: 810; background: rgba(0, 0, 0, .4); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
   .m-sheet {
