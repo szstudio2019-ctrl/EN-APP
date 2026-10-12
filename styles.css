@@ -2543,3 +2543,13 @@ a:focus:not(:focus-visible) { outline: none; }
 }
 @media (prefers-reduced-motion: reduce) { .stat:hover .stat__icon { animation: none; } }
 .user__greeting { text-decoration: none; cursor: pointer; } .user__greeting:hover .user__name { text-decoration: underline; }
+
+/* Menu: wider so nothing is cut at its left edge; grows out of the menu button */
+.sidebar {
+  width: 510px;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  clip-path: circle(0 at 441px 50px);
+}
+.menu-open .sidebar { clip-path: circle(1500px at 441px 50px); }
+.sidebar__close { left: 16px; top: 22px; width: 34px; height: 34px; }

@@ -19,15 +19,25 @@
   window.SiteMenu = { isOpen: () => open, sync: () => {}, openReviews: () => {} };
   if (!sidebar || !openBtn) return;
 
-  function setMenu(state) {
+  function setMenu(state, byHover) {
     open = state;
     viewport.classList.toggle('menu-open', state);
     sidebar.setAttribute('aria-hidden', String(!state));
     openBtn.setAttribute('aria-expanded', String(state));
+    if (byHover) return; // opened or closed by the mouse: leave the focus alone
     if (state) sidebar.querySelector('.sidebar__close').focus();
     else openBtn.focus();
   }
   openBtn.addEventListener('click', () => setMenu(true));
+  // Desktop and laptop (a real mouse): the menu opens on hover over its button
+  // and closes a moment after the mouse leaves both the button and the menu
+  let hoverTimer;
+  const hoverOpen = (e) => { if (e.pointerType !== 'mouse') return; clearTimeout(hoverTimer); if (!open) setMenu(true, true); };
+  const hoverClose = (e) => { if (e.pointerType !== 'mouse') return; clearTimeout(hoverTimer); hoverTimer = setTimeout(() => { if (open) setMenu(false, true); }, 350); };
+  openBtn.addEventListener('pointerenter', hoverOpen);
+  openBtn.addEventListener('pointerleave', hoverClose);
+  sidebar.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') clearTimeout(hoverTimer); });
+  sidebar.addEventListener('pointerleave', hoverClose);
   document.getElementById('menu-close').addEventListener('click', () => setMenu(false));
   document.getElementById('sidebar-backdrop').addEventListener('click', () => setMenu(false));
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) setMenu(false); });
