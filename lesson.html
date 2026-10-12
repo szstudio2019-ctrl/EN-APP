@@ -88,6 +88,11 @@
       <section class="practice lesson-page" aria-labelledby="lesson-title">
         <a class="back-home" href="doctor.html" aria-label="חזרה לעולם האותיות של רופא/ה"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
         <h1 class="practice__title" id="lesson-title">אי האותיות של רופא/ה</h1>
+        <!-- The lesson guide: a zebra doctor; Play reads the story aloud (lesson.js) -->
+        <div class="lesson__guide">
+          <img class="lesson__guide-img" src="assets/zebra-doctor.webp" alt="זברה רופאה">
+          <button class="lesson__guide-play" type="button" id="guide-play" aria-label="השמעת ההסבר"></button>
+        </div>
         <div class="lesson__story">
           <p>כשכואב לכם הגרון, אתם הולכים לרופאה או לרופא.<br>הם מכניסים מקל לפה שלכם ואומרים לכם:</p>
           <p class="lesson__quote">"פתחו את הפה גדול גדול ואמרו אָהההה!"</p>
@@ -280,5 +285,6 @@
   <script src="menu.js"></script>
   <script src="drawer.js"></script>
   <script src="world.js"></script>
+  <script src="lesson.js"></script>
 </body>
 </html>
