@@ -9,6 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="world.css">
+  <style>
+    /* the bridge scene shifts left so the small island on the right stands clear;
+       the lesson pins move with it */
+    .world__bg { transform: scale(var(--scene-k, 1)) translate(-200px, 0) scale(1.28); }
+    .lessons { transform: scale(var(--scene-k, 1)) translate(-200px, 0) scale(1.25); }
+  </style>
 </head>
 <body class="world-page">
   <!-- אי צירוף האותיות: island page built on the doctor page's template (WORLD settings below) -->
@@ -242,7 +248,9 @@
       background: 'assets/world-blending-bg.webp',
       island: { still: 'island-blending', box: [0, 48, 557, 371] },
       lessons: [
-
+        { n: 1, x: 800, y: 425, status: 'current', href: '#lesson-1' },
+        { n: 2, x: 985, y: 395, status: 'locked', href: '#lesson-2' },
+        { n: 3, x: 1170, y: 425, status: 'locked', href: '#lesson-3' },
       ],
     };
   </script>
