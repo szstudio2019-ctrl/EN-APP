@@ -15,7 +15,6 @@
   const drawer = document.getElementById('drawer');
   const drawerList = document.getElementById('drawer-list');
   const drawerHandle = document.getElementById('drawer-handle');
-  const drawerZone = document.getElementById('drawer-zone');
   const drawerLine = drawerList.querySelector('.drawer__line');
   const drawerFill = drawerList.querySelector('.drawer__fill');
   const doneIcon = '<img class="drawer__done" src="assets/icons/done-check.svg" alt="">';
@@ -104,19 +103,18 @@
   }
   const closeSoon = () => { clearTimeout(drawerTimer); drawerTimer = setTimeout(() => setDrawer(false), 300); };
   // Desktop: hover the bottom strip, the icon or the drawer itself
-  [drawerZone, drawerHandle, drawer].forEach((el) => {
+  [drawerHandle, drawer].forEach((el) => {
     el.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse' && !hoverBlocked) { clearTimeout(drawerTimer); setDrawer(true); } });
     el.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') closeSoon(); });
   });
   document.addEventListener('pointermove', (e) => {
-    if (hoverBlocked && !e.target.closest('#drawer, #drawer-handle, #drawer-zone')) hoverBlocked = false;
+    if (hoverBlocked && !e.target.closest('#drawer, #drawer-handle')) hoverBlocked = false;
   });
   // Touch and keyboard: the icon toggles; a tap outside closes
   drawerHandle.addEventListener('click', () => setDrawer(!drawerOpen));
   // a click or tap anywhere along the bottom strip opens it too
-  drawerZone.addEventListener('click', () => setDrawer(true));
   document.addEventListener('pointerdown', (e) => {
-    if (drawerOpen && !e.target.closest('#drawer, #drawer-handle, #drawer-zone')) setDrawer(false);
+    if (drawerOpen && !e.target.closest('#drawer, #drawer-handle')) setDrawer(false);
   });
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && drawerOpen) { setDrawer(false); drawerHandle.focus(); }

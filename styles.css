@@ -2356,3 +2356,71 @@ a:focus:not(:focus-visible) { outline: none; }
 }
 .loader.is-done .loader__pct { opacity: 0; transition: opacity .4s ease; }
 .loader__pct { font-size: min(140px, 13vh); left: min(48px, 4vw); bottom: min(36px, 4vh); }
+
+/* ---------- Left tabs v2: trophy, shop, islands (navy) ---------- */
+/* the islands drawer opens from a square navy tab under the shop tab */
+.drawer-handle,
+.drawer-handle.is-open {
+  top: 616px;
+  bottom: auto;
+  left: var(--edge-shift, 0px);
+  width: 112px;
+  height: 112px;
+  padding: 0;
+  translate: none;
+  transform: none;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0 26px 26px 0;
+  background: var(--menu-strong);
+  box-shadow: 0 10px 24px rgba(36, 34, 117, .3);
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 340;
+}
+.drawer-handle:hover, .drawer-handle.is-open { background: #2f2c8f; }
+.drawer-handle__icon { width: 62px; height: 52px; opacity: .95; }
+.drawer-handle__arrow { display: none; }
+.is-loading .drawer-handle { translate: -140px 0; }
+/* small tooltip to the right of a tab */
+.tab-tip {
+  position: absolute;
+  left: calc(100% + 14px);
+  top: 50%;
+  translate: -6px -50%;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--menu-strong);
+  font-family: 'Rubik', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(36, 34, 117, .18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s ease, translate .2s ease;
+}
+.drawer-handle:hover .tab-tip { opacity: 1; translate: 0 -50%; }
+.drawer-handle.is-open .tab-tip { opacity: 0; }
+/* the bubbles of the trophy and the shop open with their name on top */
+.tab-hint-title { margin: 0 0 6px; font-family: 'Rubik', sans-serif; font-size: 22px; font-weight: 700; color: var(--pink); text-align: center; }
+
+/* round home button under the tabs (lesson and practice pages) */
+.home-round {
+  position: absolute;
+  top: 748px;
+  left: calc(var(--edge-shift, 0px) + 28px);
+  z-index: 300;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px var(--pink), 0 8px 18px rgba(36, 34, 117, .18);
+  transition: transform .15s ease;
+}
+.home-round:hover { transform: scale(1.08); }
+.home-round svg { width: 26px; height: 26px; fill: none; stroke: var(--pink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }

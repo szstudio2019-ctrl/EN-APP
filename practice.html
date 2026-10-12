@@ -143,10 +143,11 @@
       </a>
 
       <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
-      <button class="trophy" type="button" aria-label="המשפט שלי" aria-describedby="trophy-hint" aria-expanded="false">
+      <button class="trophy" type="button" aria-label="המשפט המנצח שלי" aria-describedby="trophy-hint" aria-expanded="false">
         <img src="assets/trophy.svg" alt="">
       </button>
       <div class="trophy-hint" id="trophy-hint" role="tooltip">
+        <p class="tab-hint-title">המשפט המנצח שלי</p>
         <p class="trophy-hint__text">מופיע לכל מקומות של המשפט.<br>תצטרכו להשיג כרטיסיות של אותיות כדי למצוא את המשפט שקיבלתם</p>
         <div class="sentence" aria-label="המשפט: b, n, y נמצאו">
           <span class="sentence__word"><b class="tile is-found">b</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
@@ -160,6 +161,7 @@
       </div>
       <a class="cart" href="shop.html" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
       <div class="hint" id="shop-hint" role="tooltip">
+        <p class="tab-hint-title">לחנות האותיות</p>
         <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>
         <a class="btn-pill hint__cta" href="shop.html">
           <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
@@ -167,13 +169,13 @@
         </a>
       </div>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
+      <a class="home-round" href="index.html" aria-label="לדף הראשי"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></a>
 
       <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
            button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
-      <div class="drawer-zone" id="drawer-zone" aria-hidden="true"></div>
       <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
-        <svg class="drawer-handle__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
-        <span class="drawer-handle__label">כל העולמות</span>
+        <img class="drawer-handle__icon" src="assets/icons/island.svg" alt="">
+        <span class="tab-tip">מעבר לאיים</span>
       </button>
       <div class="drawer" id="drawer" aria-hidden="true">
         <div class="drawer__scroll">
