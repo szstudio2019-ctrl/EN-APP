@@ -211,7 +211,21 @@
       const boxCss = `left:${vl}px;top:${vt}px;width:${vw}px;height:${vh}px`;
       const sfx = island.sound ? new Audio(`assets/${island.sound}.wav`) : null;
       if (sfx) sfx.preload = 'auto';
-      const playSound = () => { if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); } };
+      // Browsers block sound until the visitor clicks or presses a key on the
+      // page (hovering doesn't count). If it was blocked while the island is
+      // hot, it plays at that first click / key press instead.
+      let soundWaiting = false;
+      const playSound = () => {
+        if (!sfx) return;
+        sfx.currentTime = 0;
+        sfx.play().then(() => { soundWaiting = false; }).catch(() => { soundWaiting = true; });
+      };
+      const retrySound = () => {
+        if (soundWaiting && a.classList.contains('is-hot')) playSound();
+        soundWaiting = false;
+      };
+      window.addEventListener('pointerdown', retrySound, true);
+      window.addEventListener('keydown', retrySound, true);
       const stopSound = () => { if (sfx) sfx.pause(); };
 
       if (supportsAlphaVideo) {
