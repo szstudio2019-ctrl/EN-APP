@@ -307,7 +307,7 @@
 .review-practice .drawer-handle.is-open {
   top: 232px;
   bottom: auto;
-  left: 0;
+  left: var(--edge-shift, 0px); /* flush with the window edge, like the trophy and cart */
   width: 112px;
   height: 112px;
   display: flex;
