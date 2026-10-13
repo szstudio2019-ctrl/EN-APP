@@ -13,7 +13,7 @@
   // a playground slide (the emoji 🛝 is missing on Windows)
   const SLIDE = '<svg class="rp-svg" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 29V6M13 29V6M7 11h6M7 17h6M7 23h6" stroke="#3d4bb0" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M13 6c6 0 7 6 10 13 1.5 3.5 3 6 6 6" stroke="#e33563" stroke-width="4" stroke-linecap="round" fill="none"/></svg>';
   const TOPICS = [
-    { name: 'זיהוי האותיות', icon: '🔍', pic: 'review-abc', subs: [
+    { name: 'זיהוי האותיות', icon: '🔍', pic: 'review-find', subs: [
       { label: 'b–z', icon: '🔤', text: 'מזהים כל אות ואומרים את הצליל שלה', words: C },
     ] },
     { name: 'האות של הרופא/ה', icon: '🩺', pic: 'review-doctor', subs: [
@@ -24,7 +24,7 @@
       { label: 'ea', icon: '😊', text: 'ea מחייכות יחד ואומרות "אִי"', words: withC('ea') },
       { label: 'ee', icon: '😊', text: 'ee מחייכות יחד ואומרות "אִי"', words: withC('ee') },
     ] },
-    { name: 'האותיות הבודדות', icon: '☝️', subs: [
+    { name: 'האותיות הבודדות', icon: '☝️', pic: 'review-abc', subs: [
       { label: 'o', icon: '😮', text: 'o – עיגול עם הפה: "אוֹ"', words: withC('o') },
       { label: 'u', icon: SLIDE, text: 'u – צליל קצר: "אַ"', words: withC('u') },
       { label: 'e', icon: '🕹️', text: 'e – אומרת "אֶ"', words: withC('e') },
