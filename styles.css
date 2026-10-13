@@ -3163,3 +3163,27 @@ a:focus:not(:focus-visible) { outline: none; }
 .drawer-handle.worlds-tab .drawer-handle__icon { width: 74px; height: 64px; }
 .trophy img { width: 66px; height: 66px; }
 .help-btn { display: none; } /* the "?" on the cart is gone */
+
+/* the map popup opens from the middle: a soft scale-up and fade */
+.world-map__panel { transform: scale(.94); transform-origin: 50% 50%; }
+/* "שירה את כאן": a tooltip with a bigger photo and a small pointer down to the island */
+.wm-here {
+  top: -58px;
+  gap: 8px;
+  padding: 4px 16px 4px 5px;
+  border-radius: 28px;
+  font-size: 17px;
+}
+.wm-here img { width: 42px; height: 42px; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ffd1df; }
+.wm-here::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  background: #fff;
+  box-shadow: 2px 2px 0 0 var(--wm-pink);
+  transform: rotate(45deg);
+}

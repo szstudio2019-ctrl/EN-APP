@@ -41,6 +41,12 @@
   const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const CLOSE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   const photo = () => { const p = document.querySelector('.user__photo'); return p ? p.getAttribute('src') : 'assets/avatar.webp'; };
+  // "שירה את כאן": the learner's first name (from the header)
+  const hereText = () => {
+    const n = document.querySelector('.user__name');
+    const first = n ? n.textContent.trim().split(' ')[0] : '';
+    return first ? `${first} את כאן` : 'את כאן';
+  };
 
   /* ---------- The tab: a white card with a pink outline + "עולמות" ---------- */
   if (handle) {
@@ -102,7 +108,7 @@
     li.innerHTML = `
       <button class="wm-island__btn" type="button" aria-label="${island.name}${reviewNo[i] ? ` ${reviewNo[i]}` : ''}${range ? `, ${range}` : ''}${state === 'locked' ? ', נעול' : state === 'done' ? ', הושלם' : ''}">
         <span class="wm-island__pic">
-          ${state === 'current' ? `<span class="wm-here"><img src="${photo()}" alt="">אתה כאן</span>` : ''}
+          ${state === 'current' ? `<span class="wm-here"><img src="${photo()}" alt=""><span>${hereText()}</span></span>` : ''}
           ${pic ? `<img class="wm-island__img" src="${pic}" alt="" decoding="async">` : ''}${badge}
         </span>
         <span class="wm-label">
@@ -215,12 +221,6 @@
     if (open) {
       map.hidden = false;
       document.body.classList.add('world-map-open');
-      // the panel grows from the tab's centre
-      if (handle) {
-        const r = handle.getBoundingClientRect();
-        const p = panel.getBoundingClientRect();
-        panel.style.transformOrigin = `${r.left + r.width / 2 - p.left}px ${r.top + r.height / 2 - p.top}px`;
-      }
       const pts = layout();
       // bring the viewed world (or the learner's) into the middle, at once
       const focus = pts[viewing > 0 ? viewing : reached];
