@@ -39,7 +39,7 @@
     ] },
     { name: 'האותיות השורקות', icon: '🌬️', pic: 'review-whistling', subs: [
       { label: 'sh', icon: '🤫', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['ship', 'shop', 'she', 'shell', 'fish', 'wish'] },
-      { label: 'ch', icon: '🚂', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['chip', 'chop', 'chin', 'chat', 'much', 'rich'] },
+      { label: 'ch', icon: '🚂', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow', 'chight', 'chase', 'chime'] },
     ] },
     { name: 'צלילים מיוחדים', icon: '✨', pic: 'review-sounds', subs: [
       { label: 'th', icon: '👅', text: 'th – הלשון יוצאת קצת בין השיניים', words: ['this', 'that', 'thin', 'them', 'with', 'bath'] },
