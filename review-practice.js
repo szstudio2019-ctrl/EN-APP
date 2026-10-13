@@ -38,7 +38,7 @@
       { label: 'ou ow', icon: '😕', text: 'ou / ow – "אַוּוּ", כמו כשמשהו כואב', words: pair('ou', 'ow') },
     ] },
     { name: 'האותיות השורקות', icon: '🌬️', pic: 'review-whistling', subs: [
-      { label: 'sh', icon: '🤫', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['ship', 'shop', 'she', 'shell', 'fish', 'wish'] },
+      { label: 'sh', icon: '🤫', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['sha', 'she', 'shi', 'sho', 'shu', 'shea', 'shee', 'shay', 'shou', 'show', 'shight', 'shame', 'shine'] },
       { label: 'ch', icon: '🚂', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow', 'chight', 'chase', 'chime'] },
     ] },
     { name: 'צלילים מיוחדים', icon: '✨', pic: 'review-sounds', subs: [
