@@ -448,3 +448,79 @@
 .rp-topic__icon img { width: 60px; height: 60px; }
 .rp-topic__name { font-size: 18px; font-weight: 700; }
 .rp-topic__count { font-size: 14px; }
+
+/* ---------- v13: the zebra speaks; the island and its card are one unit ---------- */
+.review-practice .rp-body { grid-template-columns: 280px minmax(0, 1fr); }
+
+/* a row under the title: the speech bubble (with the parents' note under it)
+   and, on its left, the zebra right beside it */
+.rp-say { display: flex; align-items: center; gap: 16px; width: 100%; margin-top: 16px; direction: rtl; }
+.rp-say__col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.review-practice .rp-guide {
+  position: relative;
+  flex: none;
+  width: 132px;
+  height: 198px;
+  margin: 0;
+  left: auto;
+  top: auto;
+  transform: none;
+  align-self: center;
+}
+.rp-bubble {
+  position: relative;
+  padding: 16px 20px;
+  border: 2px solid #e8457a;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(232, 69, 122, .1);
+}
+/* the tail, on the left, pointing at the zebra */
+.rp-bubble::before,
+.rp-bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  translate: 0 -50%;
+}
+.rp-bubble::before { left: -14px; border-width: 10px 14px 10px 0; border-color: transparent #e8457a transparent transparent; }
+.rp-bubble::after { left: -10px; border-width: 8px 11px 8px 0; border-color: transparent #fff transparent transparent; }
+.rp-bubble__text { margin: 0; padding-right: 22px; font-size: 18px; line-height: 1.55; color: #232a6b; text-align: right; }
+/* Play reads the bubble, so it sits on the bubble's corner */
+.review-practice .rp-guide__play {
+  position: absolute;
+  left: auto;
+  right: -20px;
+  top: -20px;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 0 0 3px #fff, 0 6px 12px rgba(80, 110, 10, .3);
+}
+.review-practice .rp-guide__play svg { width: 26px; height: 26px; }
+.rp-say__col .rp-intro__note { margin: 0; }
+
+/* the island back to its earlier size, its ground ending 8px over its card;
+   both in one container at the bottom-left, centred on each other */
+.rp-isl-unit { position: absolute; left: 24px; top: 730px; z-index: 120; width: 302px; height: 334px; }
+.review-practice .rp-isl-unit .world__island { position: absolute; left: 0; top: 0; transform: translate(-19.2px, 8.4px) scale(.6); transform-origin: 0 0; }
+.rp-isl-unit .rp-isl-card { position: absolute; left: 11.5px; top: 235px; bottom: auto; z-index: 2; }
+
+/* the bar's end numbers in pink circles; no "1 מתוך 19" line under it;
+   the 7-days note quieter */
+.rp-progress__n {
+  width: 28px;
+  height: 28px;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8457a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.review-practice .rp-count { display: none; }
+.review-practice .practice__note { margin-top: 12px; font-size: 13px; font-weight: 400; color: #8a8fb3; }

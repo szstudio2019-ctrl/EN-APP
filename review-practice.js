@@ -308,9 +308,9 @@
 // voice) and turns into Stop while it speaks
 (function () {
   const btn = document.getElementById('rp-guide-play');
-  const intro = document.querySelector('.rp-intro');
+  const intro = document.querySelector('.rp-bubble__text'); // only what the zebra says, not the parents' note
   if (!btn || !intro) return;
-  const guide = btn.closest('.rp-guide');
+  const guide = document.querySelector('.rp-guide');
   const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5v11l9-5.5z"/><circle cx="12" cy="12" r="10.5"/></svg>';
   const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2.5"/></svg>';
   const canSpeak = 'speechSynthesis' in window;
