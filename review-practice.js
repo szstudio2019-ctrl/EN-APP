@@ -120,12 +120,22 @@
       d.classList.toggle('is-done', !!done[keyOf(k)]);
     });
     playBtn.disabled = !recordings[keyOf(index)];
+    syncDoneBtn();
     statusEl.textContent = '';
     if (dir) {
       card.classList.remove('is-in-next', 'is-in-prev');
       void card.offsetWidth;
       card.classList.add(dir > 0 ? 'is-in-next' : 'is-in-prev');
     }
+  }
+
+  // "סיימתי את החזרה": a quiet outline until every item of the topic is
+  // recorded (from the saved progress), then filled pink with a soft pulse
+  const doneBtn = document.getElementById('practice-done');
+  function syncDoneBtn() {
+    if (!doneBtn) return;
+    const all = TOPICS[topic].subs.every((s, si) => s.words.every((_, wi) => done[`${topic}.${si}.${wi}`]));
+    doneBtn.classList.toggle('is-complete', all);
   }
 
   const pickTopic = (i) => { topic = i; sub = 0; renderTopic(); renderSub(); show(0, 1); };

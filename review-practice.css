@@ -355,3 +355,78 @@
 .rp-done__icon img { display: block; width: 110px; height: 110px; margin: 0 auto; object-fit: contain; mix-blend-mode: multiply; }
 .rp-topic { grid-template-columns: 54px 1fr; }
 .rp-done__next-pic { width: 28px; height: 28px; vertical-align: middle; mix-blend-mode: multiply; }
+
+/* ---------- v11: a three-column grid (RTL) ----------
+   right: the topics; centre: the content (max 640px, centred); left: the
+   zebra's own 260px column, from the top of the panel. Earlier sizes were
+   set by the fixed .rp-guide box (251x388) and a scale(.7) on it; both go. */
+.review-practice .rp-body {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 260px;
+  column-gap: 28px;
+  padding-left: 0;
+}
+.review-practice .rp-main { width: 100%; max-width: 640px; justify-self: center; }
+.rp-guide {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 260px;
+  height: 380px;
+  transform: none;
+  align-self: start;
+}
+.rp-guide__zebra { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center top; }
+/* Play: against the zebra, level with the text it "says" */
+.rp-guide__play { left: auto; right: -14px; top: 92px; width: 74px; height: 74px; }
+.rp-guide__play svg { width: 36px; height: 36px; }
+
+/* the explanation stays inside the content column */
+.rp-intro__lead { font-size: 20px; line-height: 1.6; }
+.rp-intro__note {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fff1f5;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: right;
+}
+
+/* the progress dashes: as wide as the card and lined up under it; RTL, so
+   the first (active) segment is at the right end */
+.review-practice .practice__dots { width: 393px; direction: rtl; justify-content: space-between; gap: 5px; }
+.review-practice .practice__dots i { flex: 1; width: auto; }
+
+/* the island 15% bigger; its card 8px under it, clear of the ground, both
+   whole and still breaking out of the panel's corner */
+.review-practice .world__island { transform: translate(-20.6px, 670.7px) scale(.69); }
+.rp-isl-card { left: 36px; top: 965px; bottom: auto; }
+
+/* the topic pictures 48px (trimmed files), with at least 12px around them */
+.rp-topic { padding: 12px 14px; grid-template-columns: 52px 1fr; column-gap: 12px; }
+.rp-topic__icon img { width: 48px; height: 48px; }
+
+/* "סיימתי את החזרה": bigger; an outline (secondary) until the topic is all
+   recorded, then filled pink with a soft pulse (set by review-practice.js) */
+.review-practice .practice__btn--done {
+  height: 56px;
+  padding: 0 32px;
+  font-size: 18px;
+  font-weight: 700;
+  background: #fff;
+  color: #e8457a;
+  box-shadow: inset 0 0 0 2px #e8457a;
+  transition: background .3s ease, color .3s ease;
+}
+.review-practice .practice__btn--done .btn-pill__chevron { filter: brightness(0) saturate(100%) invert(39%) sepia(75%) saturate(2200%) hue-rotate(318deg); }
+.review-practice .practice__btn--done.is-complete {
+  background: #e8457a;
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(232, 69, 122, .35);
+  animation: rp-done-pulse 2s ease-in-out infinite;
+}
+.review-practice .practice__btn--done.is-complete .btn-pill__chevron { filter: none; }
+@keyframes rp-done-pulse { 50% { transform: scale(1.04); } }
+@media (prefers-reduced-motion: reduce) { .review-practice .practice__btn--done.is-complete { animation: none; } }
+.review-practice .back-home { z-index: 5; } /* above the zebra column */
