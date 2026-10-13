@@ -524,3 +524,47 @@
 }
 .review-practice .rp-count { display: none; }
 .review-practice .practice__note { margin-top: 12px; font-size: 13px; font-weight: 400; color: #8a8fb3; }
+
+/* ---------- v14: exact layout ---------- */
+/* the content column takes all the free width beside the topics */
+.review-practice .rp-main { max-width: none; }
+/* the bubble + parents' note: 820px; the zebra (300px tall) right beside it
+   on the left, 8px away, top lines level. The group (zebra + gap + 820) is
+   centred: the margin on the left makes room for the zebra. */
+.rp-say { position: relative; width: 820px; max-width: calc(100% - 208px); margin: 16px 0 0 208px; display: block; }
+.rp-say__col { gap: 8px; }
+.review-practice .rp-guide {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 8px);
+  width: 200px;
+  height: 300px;
+  max-width: none;
+  max-height: none;
+}
+.rp-guide__zebra { object-position: center top; }
+.rp-bubble__text { padding: 0 0 0 26px; font-size: 18px; white-space: nowrap; }
+/* Play on the bubble's corner nearest the zebra (top-left), 48px */
+.review-practice .rp-guide__play { right: auto; left: -22px; top: -22px; width: 48px; height: 48px; }
+.rp-say__col .rp-intro__note { font-size: 15px; line-height: 1.6; padding: 10px 14px; }
+
+/* the island and its card: one flex column, the picture then the card, 8px
+   apart, so the island cannot ride over the card; the unit sits in the
+   bottom-left corner, breaking out of the panel */
+.review-practice .rp-isl-unit .world__island { display: none; }
+.rp-isl-unit {
+  top: auto;
+  bottom: 16px;
+  left: 24px;
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.rp-isl-unit__img { display: block; height: 260px; width: auto; filter: drop-shadow(0 14px 16px rgba(36, 34, 117, .25)); }
+.rp-isl-unit .rp-isl-card { position: relative; left: auto; top: auto; bottom: auto; }
+.rp-say { margin-left: 188px; } /* 10px left of centre so the zebra clears the card deck */
+.review-practice .rp-guide__play { left: -16px; }
+.review-practice .rp-guide__play { left: -8px; } /* on the corner, just clear of the zebra */
