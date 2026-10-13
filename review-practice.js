@@ -10,6 +10,8 @@
   // a word that is written two ways (bai/bay) is said by its second spelling
   const pair = (a, b) => C.map((c) => ({ show: `${c}${a}/${c}${b}`, say: `${c}${b}` }));
 
+  // a playground slide (the emoji 🛝 is missing on Windows)
+  const SLIDE = '<svg class="rp-svg" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 29V6M13 29V6M7 11h6M7 17h6M7 23h6" stroke="#3d4bb0" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M13 6c6 0 7 6 10 13 1.5 3.5 3 6 6 6" stroke="#e33563" stroke-width="4" stroke-linecap="round" fill="none"/></svg>';
   const TOPICS = [
     { name: 'זיהוי האותיות', icon: '🔍', subs: [
       { label: 'b–z', icon: '🔤', text: 'מזהים כל אות ואומרים את הצליל שלה', words: C },
@@ -24,7 +26,7 @@
     ] },
     { name: 'האותיות הבודדות', icon: '☝️', subs: [
       { label: 'o', icon: '😮', text: 'o – עיגול עם הפה: "אוֹ"', words: withC('o') },
-      { label: 'u', icon: '🛝', text: 'u – צליל קצר: "אַ"', words: withC('u') },
+      { label: 'u', icon: SLIDE, text: 'u – צליל קצר: "אַ"', words: withC('u') },
       { label: 'e', icon: '🕹️', text: 'e – אומרת "אֶ"', words: withC('e') },
     ] },
     { name: 'צירופי האותיות', icon: '🔗', subs: [

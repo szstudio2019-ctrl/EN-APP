@@ -95,8 +95,10 @@
         <div class="rp-note" id="rp-note" hidden>
           <b>הערה להורים:</b> אנחנו לומדים את ההיגיון של הצלילים, ולכן נקראת את הצליל כאילו היה חלק ממילה, ולא מילה. למשל את <span lang="en">do</span> נקרא <b>דוֹ</b> ואת <span lang="en">he</span> נקרא <b>הֶ</b>.
         </div>
-        <!-- 1: the review topics (icon, name, how many) -->
-        <div class="rp-topics" id="rp-topics" role="tablist" aria-label="נושאי החזרה"></div>
+        <div class="rp-body">
+        <!-- 1: the review topics, a side menu (icon, name, how many) -->
+        <div class="rp-topics" id="rp-topics" role="tablist" aria-label="נושאי החזרה" aria-orientation="vertical"></div>
+        <div class="rp-main">
         <!-- 2: the letters / sounds of the chosen topic, and what they say -->
         <div class="rp-subs" id="rp-subs"></div>
         <p class="rp-explain" id="rp-explain"></p>
@@ -128,6 +130,8 @@
         <div class="practice__buttons">
           <a class="practice__btn practice__btn--back" href="review.html"><span>לאי החזרות</span><img src="assets/chevron.svg" alt=""></a>
           <a class="btn-pill practice__btn practice__btn--done" href="review.html" id="practice-done"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>סיימתי את החזרה</span></a>
+        </div>
+        </div>
         </div>
       </section>
 
