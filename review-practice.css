@@ -229,3 +229,12 @@
 .rp-intro__lead { font-size: 19px; }
 .rp-intro__note { font-size: 16px; }
 .review-practice .world__island { transform: translate(1398px, 515px); }
+
+/* v6: the title at the top (level with the back arrow); the rest centred in
+   the space under it; more air between the text lines */
+.rp-main .practice__title { margin: 0; }
+.rp-main .rp-intro { margin-top: auto; }
+.review-practice .rp-main .practice__buttons { margin-bottom: auto; }
+.rp-intro__lead { line-height: 1.7; }
+.rp-intro__note { margin-top: 10px; line-height: 1.8; }
+.review-practice .rp-main .practice__dots { margin-top: 44px; }
