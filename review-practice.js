@@ -4,6 +4,9 @@
 // hold that sound's words (the dashes and the count show how many there are).
 // Tapping the word says it; "הקלט" records the learner, "בדיקה" plays it back.
 (function () {
+  // icons for a done stage: a check, and round arrows (practise again)
+  const CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const AGAIN_ICON = '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
   // the consonant rows of the course's table (Einat's sheet)
   const C = ['b', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'y', 'z'];
   const withC = (end) => C.map((c) => c + end);
@@ -80,7 +83,18 @@
       <span class="rp-topic__icon" aria-hidden="true">${t.pic ? `<img src="assets/icons/${t.pic}.webp" alt="">` : t.icon}</span>
       <span class="rp-topic__name">${t.name}</span>
       <span class="rp-topic__count">${countOf(t)} ${i === 0 ? 'אותיות' : 'מילים'}</span>
+      <span class="rp-check" aria-hidden="true">${CHECK}</span>
+      <span class="rp-again" aria-hidden="true">${AGAIN_ICON}</span>
     </button>`).join('');
+
+  // a stage (or a whole topic) whose words are all recorded is done: a green
+  // outline and a green ✓, and a repeat icon inside to practise it again
+  const subDone = (ti, si) => TOPICS[ti].subs[si].words.every((_, wi) => done[`${ti}.${si}.${wi}`]);
+  const topicDone = (ti) => TOPICS[ti].subs.every((_, si) => subDone(ti, si));
+  function syncStates() {
+    topicsEl.querySelectorAll('.rp-topic').forEach((b, ti) => b.classList.toggle('is-done', topicDone(ti)));
+    subsEl.querySelectorAll('.rp-sub').forEach((b, si) => b.classList.toggle('is-done', subDone(topic, si)));
+  }
 
   function renderTopic() {
     topicsEl.querySelectorAll('.rp-topic').forEach((b, i) => {
@@ -93,6 +107,8 @@
         <span class="rp-sub__icon" aria-hidden="true">${s.icon}</span>
         <b lang="en" dir="ltr">${s.label}</b>
         <span class="rp-sub__n">${s.words.length}</span>
+        <span class="rp-check" aria-hidden="true">${CHECK}</span>
+        <span class="rp-again" aria-hidden="true">${AGAIN_ICON}</span>
       </button>`).join('');
   }
 
@@ -122,6 +138,7 @@
     });
     playBtn.disabled = !recordings[keyOf(index)];
     syncDoneBtn();
+    syncStates();
     statusEl.textContent = '';
     if (dir) {
       card.classList.remove('is-in-next', 'is-in-prev');

@@ -631,3 +631,47 @@
 }
 .rp-side .rp-isl-unit__img { height: 240px; }
 .rp-side .rp-isl-card { position: static; width: 100%; }
+
+/* a done stage / topic: green outline, a green ✓ and a repeat icon inside */
+.rp-check, .rp-again { display: none; }
+.rp-check svg, .rp-again svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.rp-sub.is-done { background: #fff; color: #6f8f10; box-shadow: inset 0 0 0 2px var(--green); }
+.rp-sub.is-done.is-on { background: #f3f9e6; box-shadow: inset 0 0 0 2.5px var(--green), 0 0 0 4px #e6f2c8; }
+.rp-sub.is-done .rp-sub__n { display: none; }
+.rp-sub.is-done .rp-check {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+}
+.rp-sub.is-done .rp-check svg { stroke-width: 3.2; }
+.rp-sub.is-done .rp-again { display: block; width: 18px; height: 18px; color: var(--green); }
+.rp-sub.is-done .rp-again svg { stroke-width: 2.4; }
+
+.rp-topic { position: relative; }
+.rp-topic.is-done { box-shadow: inset 0 0 0 2px var(--green); }
+.rp-topic.is-done.is-on { box-shadow: inset 0 0 0 2.5px var(--green), 0 10px 20px rgba(145, 177, 33, .2); }
+.rp-topic.is-done .rp-topic__name { color: #5d7a0c; }
+.rp-topic.is-done .rp-check {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff;
+}
+.rp-topic.is-done .rp-check svg { stroke-width: 3.2; }
+.rp-topic.is-done .rp-again { display: block; position: absolute; bottom: 10px; left: 12px; width: 20px; height: 20px; color: var(--green); }
+.rp-topic.is-done .rp-again svg { stroke-width: 2.4; }
+/* the zebra 20% bigger: 360px tall */
+.review-practice .rp-side .rp-guide { width: 240px; height: 360px; }
