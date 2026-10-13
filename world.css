@@ -363,7 +363,7 @@
   transform-origin: 50% 85%;
 }
 @keyframes island-alive {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-12px) scale(1.02); }
+  0%, 100% { translate: 0 0; scale: 1; }
+  50% { translate: 0 -12px; scale: 1.02; }
 }
 @media (prefers-reduced-motion: reduce) { .world__island.is-alive .island__img { animation: none; } }
