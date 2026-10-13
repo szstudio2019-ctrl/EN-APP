@@ -23,7 +23,7 @@
       { label: 'ee', icon: '😊', text: 'ee מחייכות יחד ואומרות "אִי"', words: withC('ee') },
     ] },
     { name: 'האותיות הבודדות', icon: '☝️', subs: [
-      { label: 'o', icon: '⭕', text: 'o – עיגול עם הפה: "אוֹ"', words: withC('o') },
+      { label: 'o', icon: '😮', text: 'o – עיגול עם הפה: "אוֹ"', words: withC('o') },
       { label: 'u', icon: '🛝', text: 'u – צליל קצר: "אַ"', words: withC('u') },
       { label: 'e', icon: '🐑', text: 'e – כמו הכבשה: "מֶה"', words: withC('e') },
     ] },
