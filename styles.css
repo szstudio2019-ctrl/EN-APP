@@ -2909,44 +2909,53 @@ a:focus:not(:focus-visible) { outline: none; }
 .worlds-tab__label { font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 700; line-height: 1; color: var(--pink); }
 .is-loading .drawer-handle.worlds-tab { translate: -140px 0; }
 
-/* the map: full screen over the page, growing out of the tab */
+/* the map: a popup with margins over the site's own sky (a faint dark veil
+   behind it); it grows out of the tab. Only transform and opacity animate. */
 .world-map {
+  --wm-navy: #232a6b;
+  --wm-navy-mid: #3c4590;
+  --wm-pink: #e8457a;
   position: fixed;
   inset: 0;
   z-index: 1200;
+  padding: 40px;
+  background: rgba(10, 12, 40, .15);
   direction: rtl;
   font-family: 'Rubik', sans-serif;
   opacity: 0;
-  transform: scale(.08);
-  transform-origin: var(--from-x, 60px) var(--from-y, 60%);
-  transition: opacity .4s ease, transform .4s cubic-bezier(.22, 1, .36, 1);
+  transition: opacity .4s ease;
 }
 .world-map[hidden] { display: none; }
-.world-map.is-open { opacity: 1; transform: none; }
-.world-map__sky {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(120, 170, 240, .55) 0%, rgba(240, 180, 220, .45) 60%, rgba(255, 214, 230, .6) 100%),
-    url("assets/bg-clouds.webp") center / cover no-repeat,
-    #c9b6e6;
+.world-map.is-open { opacity: 1; }
+.world-map__panel {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #c8dcf3 0%, #dcebfa 45%, #edf5fd 100%);
+  box-shadow: 0 30px 80px rgba(20, 24, 70, .28), 0 6px 18px rgba(20, 24, 70, .12);
+  transform: scale(.06);
+  opacity: 0;
+  transition: transform .4s cubic-bezier(.22, 1, .36, 1), opacity .4s ease;
+  will-change: transform, opacity;
 }
+.world-map.is-open .world-map__panel { transform: none; opacity: 1; }
 .world-map__head { position: absolute; top: 22px; left: 0; right: 0; z-index: 2; text-align: center; pointer-events: none; }
-.world-map__title { margin: 0; font-size: 44px; font-weight: 700; color: #2a2968; text-shadow: 0 2px 0 #fff, 0 6px 18px rgba(255, 255, 255, .8); }
-.world-map__sub { margin: 4px 0 0; font-size: 18px; font-weight: 500; color: #2a2968; opacity: .8; }
+.world-map__title { margin: 0; font-size: 40px; font-weight: 700; line-height: 1.1; color: var(--wm-navy); }
+.world-map__sub { margin: 6px 0 0; font-size: 17px; font-weight: 500; color: var(--wm-navy-mid); }
 .world-map__close {
   position: absolute;
-  top: 22px;
-  left: 22px;
+  top: 20px;
+  left: 20px;
   z-index: 3;
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
   display: grid;
   place-items: center;
   border: 0;
   border-radius: 50%;
-  background: var(--pink);
-  box-shadow: 0 0 0 4px #fff, 0 10px 20px rgba(227, 53, 99, .35);
+  background: var(--wm-pink);
+  box-shadow: 0 0 0 4px #fff, 0 10px 20px rgba(232, 69, 122, .35);
   cursor: pointer;
   transition: transform .2s ease;
 }
@@ -2954,140 +2963,185 @@ a:focus:not(:focus-visible) { outline: none; }
 .world-map__close svg { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 2.8; stroke-linecap: round; }
 .world-map__scroll {
   position: absolute;
-  inset: 110px 0 0;
+  inset: 104px 0 0;
   overflow: auto hidden;
   direction: ltr; /* the track is laid out in plain x/y; the first world sits on the right */
+  scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: rgba(36, 34, 117, .35) transparent;
+  scrollbar-color: rgba(35, 42, 107, .3) transparent;
 }
 .world-map__track { position: relative; }
 .world-map__path { position: absolute; inset: 0; overflow: visible; pointer-events: none; }
+
+/* the progress line: one colour, the brand pink, glowing where it is done;
+   dashed navy from the learner's world on */
 .wm-line { fill: none; stroke-linecap: round; }
-.wm-line--next { stroke: rgba(255, 255, 255, .95); stroke-width: 6; stroke-dasharray: 2 16; filter: drop-shadow(0 2px 3px rgba(36, 34, 117, .25)); }
-.wm-line--done { stroke: url(#wm-glow); stroke-width: 9; filter: drop-shadow(0 0 6px rgba(255, 212, 92, .9)) drop-shadow(0 0 14px rgba(227, 53, 99, .55)); }
+.wm-line--next { stroke: rgba(35, 42, 107, .42); stroke-width: 5; stroke-dasharray: 3 15; }
+.wm-line--done { stroke: var(--wm-pink); stroke-width: 9; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.wm-lines-done { filter: drop-shadow(0 0 6px rgba(232, 69, 122, .55)); }
+.wm-lines-next { opacity: 0; transition: opacity .6s ease .3s; }
+.world-map.is-drawn .wm-line--done { stroke-dashoffset: 0; transition: stroke-dashoffset 1.2s cubic-bezier(.4, 0, .2, 1); }
+.world-map.is-drawn .wm-lines-next { opacity: 1; }
 .world-map__list { margin: 0; padding: 0; list-style: none; }
 
-.wm-island { position: absolute; width: 0; height: 0; direction: rtl; }
+/* one island = a fixed block: the picture (fixed size) and the label under it */
+.wm-island { --pic-w: 176px; --pic-h: 150px; position: absolute; width: 0; height: 0; direction: rtl; }
+.wm-island--current { --pic-w: 214px; --pic-h: 182px; }
+.wm-island--finale { --pic-w: 130px; --pic-h: 130px; }
 .wm-island__btn {
   position: absolute;
-  left: -100px;
-  top: -84px;
-  width: 200px;
+  left: -115px;
+  top: calc(var(--pic-h) / -2); /* the picture's centre sits on the path */
+  width: 230px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 12px;
   padding: 0;
   border: 0;
   background: none;
   font-family: 'Rubik', sans-serif;
-  color: #2a2968;
   text-align: center;
   cursor: pointer;
 }
-.wm-island__pic { position: relative; width: 150px; height: 128px; display: grid; place-items: center; transition: transform .25s cubic-bezier(.34, 1.56, .64, 1); }
-.wm-island__pic img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 12px 14px rgba(36, 34, 117, .3)); animation: wm-float 4s ease-in-out infinite; }
-.wm-island:nth-child(2n) .wm-island__pic img { animation-delay: -2s; }
-@keyframes wm-float { 50% { translate: 0 -7px; } }
-.wm-island__btn:hover .wm-island__pic { transform: scale(1.08); }
-.wm-island__name {
-  margin-top: 4px;
-  padding: 4px 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, .9);
-  box-shadow: 0 6px 14px rgba(36, 34, 117, .15);
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.25;
+.wm-island__pic { position: relative; z-index: 1; width: var(--pic-w); height: var(--pic-h); flex: none; }
+.wm-island__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 12px rgba(35, 42, 107, .25));
+  animation: wm-float var(--float-time, 5s) ease-in-out var(--float-delay, 0s) infinite;
+  will-change: transform;
 }
-.wm-island__range { font-size: 13px; font-weight: 600; color: #fff; text-shadow: 0 1px 4px rgba(36, 34, 117, .7); }
-.wm-island__coins { margin-top: 2px; padding: 1px 8px; border-radius: 10px; background: rgba(255, 255, 255, .75); font-size: 13px; font-weight: 600; color: #2a2968; }
-.wm-island__coins b { color: var(--pink); }
-.wm-island__bar { display: block; width: 110px; height: 6px; margin-top: 4px; border-radius: 6px; background: rgba(36, 34, 117, .35); overflow: hidden; }
-.wm-island__bar i { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, #ffd45c, var(--pink)); }
-.wm-badge { position: absolute; bottom: 6px; left: 12px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 4px 8px rgba(0, 0, 0, .2); }
+@keyframes wm-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+.wm-island__btn:hover .wm-island__pic { transform: scale(1.06); }
+.wm-island__pic { transition: transform .25s cubic-bezier(.34, 1.56, .64, 1); }
+/* the label: always above any picture, in a solid white pill */
+.wm-label {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 150px;
+  max-width: 230px;
+  padding: 8px 14px 9px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(35, 42, 107, .14);
+}
+.wm-label__name { display: inline-flex; align-items: center; gap: 6px; font-size: 17px; font-weight: 700; line-height: 1.25; color: var(--wm-navy); }
+.wm-label__line { font-size: 14px; font-weight: 500; line-height: 1.3; color: var(--wm-navy-mid); }
+.wm-label__line b { font-weight: 700; color: var(--wm-pink); }
+.wm-label__bar { display: block; width: 110px; height: 6px; margin-top: 4px; border-radius: 6px; background: #e3e8f6; overflow: hidden; }
+.wm-label__bar i { display: block; height: 100%; border-radius: 6px; background: var(--wm-pink); }
+/* the review number: the same pink circle as on the review page's title */
+.wm-no {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--wm-pink);
+  box-shadow: 0 0 0 2.5px #ffe1ea;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+/* status badge: the picture's top corner */
+.wm-badge { position: absolute; top: 4px; left: 6px; z-index: 2; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 4px 8px rgba(0, 0, 0, .18); }
 .wm-badge svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .wm-badge--done { background: var(--green); }
-.wm-badge--lock { background: var(--pink); }
+.wm-badge--lock { background: var(--wm-pink); }
 .wm-badge--lock svg { stroke-width: 2.6; }
 
-/* the learner's world: bigger, glowing, "אתה כאן" with the avatar */
-.wm-island--current .wm-island__btn { top: -110px; }
-.wm-island--current .wm-island__pic { width: 190px; height: 162px; }
+/* the learner's world: a soft glow that pulses, and "אתה כאן" with the avatar */
 .wm-island--current .wm-island__pic::before {
   content: '';
   position: absolute;
-  inset: 8% 4% 0;
+  inset: 6% 0 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 236, 160, .85), rgba(255, 236, 160, 0) 70%);
-  animation: wm-pulse 2.2s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0) 68%);
+  animation: wm-pulse 2.4s ease-in-out infinite;
+  will-change: transform, opacity;
 }
-@keyframes wm-pulse { 50% { opacity: .45; scale: 1.08; } }
-.wm-island--current .wm-island__name { background: var(--pink); color: #fff; }
+@keyframes wm-pulse { 50% { opacity: .5; transform: scale(1.08); } }
+.wm-island--current .wm-label { box-shadow: 0 0 0 2.5px var(--wm-pink), 0 8px 18px rgba(232, 69, 122, .2); }
 .wm-here {
   position: absolute;
-  top: -34px;
-  z-index: 2;
+  top: -30px;
+  left: 50%;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 3px 12px 3px 4px;
   border-radius: 20px;
   background: #fff;
-  box-shadow: 0 0 0 2px var(--pink), 0 8px 16px rgba(227, 53, 99, .25);
+  box-shadow: 0 0 0 2px var(--wm-pink), 0 8px 16px rgba(232, 69, 122, .22);
   font-size: 15px;
   font-weight: 700;
-  color: var(--pink);
+  color: var(--wm-pink);
   white-space: nowrap;
+  transform: translateX(-50%);
   animation: wm-bob 2s ease-in-out infinite;
+  will-change: transform;
 }
 .wm-here img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-@keyframes wm-bob { 50% { translate: 0 -5px; } }
-/* locked worlds: faded, grey, with a lock; a click only shakes and explains */
-.wm-island--locked .wm-island__pic img { filter: grayscale(.85) brightness(1.05) drop-shadow(0 10px 12px rgba(36, 34, 117, .2)); opacity: .6; }
-.wm-island--locked .wm-island__name { background: rgba(255, 255, 255, .6); color: #6b6a92; }
+@keyframes wm-bob {
+  0%, 100% { transform: translate3d(-50%, 0, 0); }
+  50% { transform: translate3d(-50%, -5px, 0); }
+}
+/* locked worlds: only the picture dims (still clear on the light blue); the
+   label stays fully readable; a click shakes it and explains */
+.wm-island--locked .wm-island__img { filter: grayscale(1) contrast(.95) drop-shadow(0 10px 10px rgba(35, 42, 107, .22)); opacity: .62; }
 .wm-island--locked .wm-island__btn { cursor: not-allowed; }
 .wm-island.is-shake .wm-island__pic { animation: wm-shake .45s ease; }
-@keyframes wm-shake { 20%, 60% { translate: -8px 0; } 40%, 80% { translate: 8px 0; } }
-.wm-island--finale .wm-island__pic { width: 120px; height: 120px; }
-.wm-island.is-viewing:not(.wm-island--current) .wm-island__name { box-shadow: 0 0 0 2px var(--menu-strong), 0 6px 14px rgba(36, 34, 117, .15); }
+@keyframes wm-shake { 20%, 60% { transform: translate3d(-8px, 0, 0); } 40%, 80% { transform: translate3d(8px, 0, 0); } }
+.wm-island.is-viewing:not(.wm-island--current) .wm-label { box-shadow: 0 0 0 2px var(--wm-navy), 0 6px 16px rgba(35, 42, 107, .14); }
+
 .world-map__toast {
   position: absolute;
   left: 50%;
-  bottom: 34px;
-  z-index: 3;
+  bottom: 28px;
+  z-index: 4;
   margin: 0;
   padding: 12px 22px;
   border-radius: 24px;
-  background: var(--menu-strong);
+  background: var(--wm-navy);
   color: #fff;
   font-size: 18px;
   font-weight: 600;
-  box-shadow: 0 12px 26px rgba(20, 18, 74, .35);
-  translate: -50% 20px;
+  box-shadow: 0 12px 26px rgba(20, 24, 70, .3);
+  transform: translate3d(-50%, 20px, 0);
   opacity: 0;
   pointer-events: none;
-  transition: opacity .25s ease, translate .25s ease;
+  transition: opacity .25s ease, transform .25s ease;
 }
-.world-map__toast.is-on { opacity: 1; translate: -50% 0; }
+.world-map__toast.is-on { opacity: 1; transform: translate3d(-50%, 0, 0); }
+
 @media (max-width: 760px) {
-  .world-map__title { font-size: 28px; }
+  .world-map { padding: 16px; }
+  .world-map__title { font-size: 26px; }
   .world-map__sub { font-size: 14px; }
-  .world-map__head { top: 18px; }
-  .world-map__close { top: 14px; left: 14px; width: 44px; height: 44px; }
-  .world-map__scroll { inset: 84px 0 0; overflow: hidden auto; }
-  .world-map__toast { bottom: calc(24px + env(safe-area-inset-bottom)); width: max-content; max-width: 90vw; font-size: 15px; }
+  .world-map__head { top: 16px; }
+  .world-map__close { top: 12px; left: 12px; width: 42px; height: 42px; }
+  .world-map__scroll { inset: 80px 0 0; overflow: hidden auto; }
+  .wm-island { --pic-w: 150px; --pic-h: 128px; }
+  .wm-island--current { --pic-w: 180px; --pic-h: 154px; }
+  .world-map__toast { bottom: 20px; width: max-content; max-width: 86vw; font-size: 15px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .world-map { transition-duration: .01s; }
-  .wm-island__pic img, .wm-here, .wm-island--current .wm-island__pic::before { animation: none; }
-}
-/* desktop: bigger islands on the map */
-@media (min-width: 761px) {
-  .wm-island__btn { left: -115px; top: -100px; width: 230px; }
-  .wm-island__pic { width: 184px; height: 158px; }
-  .wm-island--current .wm-island__btn { top: -128px; }
-  .wm-island--current .wm-island__pic { width: 226px; height: 194px; }
-  .wm-island--finale .wm-island__pic { width: 140px; height: 140px; }
-  .wm-island__name { font-size: 18px; }
+  .world-map, .world-map__panel { transition-duration: .01s; }
+  .wm-island__img, .wm-here, .wm-island--current .wm-island__pic::before { animation: none; }
+  .world-map.is-drawn .wm-line--done { transition: none; }
+  .world-map__scroll { scroll-behavior: auto; }
 }
