@@ -302,3 +302,25 @@
 .rp-isl-card__bar i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 9px; background: var(--pink); }
 
 
+
+/* ---------- v8: panel under the header, island breaking out of its corner ----------
+   One shared frame for the header and the panel: the panel is the header's
+   width less the same inset on both sides, so it stays centred under it. */
+.review-practice {
+  --frame-left: 107px;     /* the header's left edge (styles.css .topbar) */
+  --frame-width: 1700px;   /* the header's width */
+  --panel-inset: 110px;    /* the same gap on the right and on the left */
+}
+.review-practice .practice {
+  left: calc(var(--frame-left) + var(--panel-inset));
+  width: calc(var(--frame-width) - 2 * var(--panel-inset));
+}
+.rp-intro__lead { font-size: 17px; }
+
+/* the island sits on the panel's bottom-left corner, half on the panel and
+   half out in the sky, above the panel; a clear gap from the left tabs */
+.review-practice .world__island { transform: translate(136px, 760px) scale(.496); transform-origin: 0 0; z-index: 120; }
+/* its status card is its base: under the island's ground, fully on screen */
+.rp-isl-card { left: 147px; top: 972px; width: 260px; height: 94px; padding: 12px 34px 0; z-index: 110; }
+.rp-isl-card__bar { margin-top: 10px; }
+.rp-intro__note { font-size: 15px; }
