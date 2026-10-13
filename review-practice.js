@@ -104,8 +104,12 @@
   function show(i, dir) {
     const list = words();
     index = Math.max(0, Math.min(list.length - 1, i));
-    prevBtn.disabled = index === 0;
-    nextBtn.disabled = index === list.length - 1;
+    // the arrows run on through the topic's stages (i → ea → ee); at the
+    // topic's very last word the "next" arrow fades: it opens the "done" popup
+    const subs = TOPICS[topic].subs;
+    prevBtn.disabled = index === 0 && sub === 0;
+    nextBtn.disabled = false;
+    nextBtn.classList.toggle('is-end', index === list.length - 1 && sub === subs.length - 1);
     wordEl.textContent = list[index].show;
     wordEl.classList.toggle('is-long', list[index].show.length > 6);
     countEl.textContent = `${index + 1} מתוך ${list.length}`;
@@ -123,7 +127,16 @@
   }
 
   const pickTopic = (i) => { topic = i; sub = 0; renderTopic(); renderSub(); show(0, 1); };
-  const pickSub = (i) => { sub = i; renderSub(); show(0, 1); };
+  const pickSub = (i, at = 0, dir = 1) => {
+    sub = i;
+    renderSub();
+    show(at, dir);
+    // the new stage's chip pops, so the move is noticed
+    const chip = subsEl.querySelector(`[data-sub="${i}"]`);
+    chip.classList.remove('is-new');
+    void chip.offsetWidth;
+    chip.classList.add('is-new');
+  };
   topicsEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-topic]');
     if (b) pickTopic(Number(b.dataset.topic));
@@ -132,8 +145,57 @@
     const b = e.target.closest('[data-sub]');
     if (b) pickSub(Number(b.dataset.sub));
   });
-  nextBtn.addEventListener('click', () => show(index + 1, 1));
-  prevBtn.addEventListener('click', () => show(index - 1, -1));
+  nextBtn.addEventListener('click', () => {
+    if (index < words().length - 1) show(index + 1, 1);
+    else if (sub < TOPICS[topic].subs.length - 1) pickSub(sub + 1);
+    else openDone();
+  });
+  prevBtn.addEventListener('click', () => {
+    if (index > 0) show(index - 1, -1);
+    else if (sub > 0) pickSub(sub - 1, TOPICS[topic].subs[sub - 1].words.length - 1, -1);
+  });
+
+  /* "סיימת את…" popup at the end of a topic: the screen darkens, and the
+     button moves on to the next topic's practice */
+  const pop = document.createElement('div');
+  pop.className = 'rp-done';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-modal', 'true');
+  pop.hidden = true;
+  document.body.appendChild(pop);
+  function closeDone() {
+    pop.classList.remove('is-open');
+    setTimeout(() => { pop.hidden = true; }, 300);
+  }
+  function openDone() {
+    const t = TOPICS[topic];
+    const nextT = TOPICS[topic + 1];
+    pop.setAttribute('aria-label', `סיימת את ${t.name}`);
+    pop.innerHTML = `
+      <div class="rp-done__card">
+        <span class="rp-done__icon" aria-hidden="true">${t.icon}</span>
+        <p class="rp-done__kicker">כל הכבוד!</p>
+        <h2 class="rp-done__title">סיימת את ${t.name}</h2>
+        <p class="rp-done__text">תרגלת ${countOf(t)} ${topic === 0 ? 'אותיות' : 'מילים'}</p>
+        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.icon} ${nextT.name}</b></p>` : '<p class="rp-done__next"><b>סיימת את כל החזרות 🏆</b></p>'}
+        <div class="rp-done__buttons">
+          ${nextT ? '<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span></button>'
+            : '<a class="btn-pill rp-done__go" href="review.html"><span>לאי החזרות</span></a>'}
+          <button class="rp-done__again" type="button" data-act="again">לתרגל שוב</button>
+        </div>
+      </div>`;
+    pop.hidden = false;
+    requestAnimationFrame(() => pop.classList.add('is-open'));
+    const go = pop.querySelector('.rp-done__go');
+    if (go) go.focus();
+  }
+  pop.addEventListener('click', (e) => {
+    const act = e.target.closest('[data-act]');
+    if (act && act.dataset.act === 'next') { closeDone(); pickTopic(topic + 1); }
+    else if (act && act.dataset.act === 'again') { closeDone(); pickSub(0); }
+    else if (e.target === pop) closeDone();
+  });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pop.hidden) closeDone(); });
 
   /* Say the word (the browser's English voice) */
   function say(text) {

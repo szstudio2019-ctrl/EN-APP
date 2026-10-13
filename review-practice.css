@@ -92,3 +92,58 @@
 }
 .rp-note b { color: #c27a00; }
 .rp-note[hidden] { display: none; }
+
+/* more air between the parts under the topics */
+.rp-subs { margin-top: 26px; }
+.rp-explain { margin-top: 16px; }
+.review-practice .practice__deck { margin-top: 18px; }
+.review-practice .practice__dots { margin-top: 26px; }
+.rp-count { margin-top: 12px; }
+.review-practice .practice__note { margin-top: 8px; }
+.review-practice .practice__buttons { margin-top: 24px; }
+
+/* the topic's last word: the "next" arrow fades (it opens the done popup) */
+.practice__arrow.is-end { opacity: .45; }
+.practice__arrow.is-end:hover { opacity: .8; }
+.rp-sub.is-new { animation: rp-chip .6s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes rp-chip { 40% { scale: 1.15; } }
+
+/* "סיימת את…": the screen darkens, a white card in the middle */
+.rp-done {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(10, 8, 40, .62);
+  opacity: 0;
+  transition: opacity .3s ease;
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+}
+.rp-done[hidden] { display: none; }
+.rp-done.is-open { opacity: 1; }
+.rp-done__card {
+  width: min(460px, 100%);
+  padding: 34px 30px 30px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .35);
+  text-align: center;
+  color: #2a2968;
+  transform: translateY(20px) scale(.94);
+  transition: transform .45s cubic-bezier(.34, 1.56, .64, 1);
+}
+.rp-done.is-open .rp-done__card { transform: none; }
+.rp-done__icon { display: block; font-size: 72px; line-height: 1; animation: rp-bob 2.4s ease-in-out infinite; }
+@keyframes rp-bob { 50% { translate: 0 -8px; } }
+.rp-done__kicker { margin: 14px 0 0; font-size: 18px; font-weight: 600; color: var(--pink); }
+.rp-done__title { margin: 4px 0 0; font-size: 32px; line-height: 1.2; }
+.rp-done__text { margin: 8px 0 0; font-size: 17px; color: #6b6a92; }
+.rp-done__next { margin: 18px 0 0; padding: 12px; border-radius: 16px; background: #f4f5fb; font-size: 17px; }
+.rp-done__next b { color: #2a2968; }
+.rp-done__buttons { display: flex; justify-content: center; gap: 14px; margin-top: 22px; flex-wrap: wrap; }
+.rp-done__go { height: 48px; padding: 0 28px; font-size: 19px; justify-content: center; border: 0; cursor: pointer; }
+.rp-done__again { height: 48px; padding: 0 22px; border: 1.5px solid var(--pink); border-radius: 30px; background: #fff; color: var(--pink); font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 600; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .rp-done__icon, .rp-sub.is-new { animation: none; } }
