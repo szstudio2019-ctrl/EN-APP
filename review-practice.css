@@ -568,3 +568,66 @@
 .rp-say { margin-left: 188px; } /* 10px left of centre so the zebra clears the card deck */
 .review-practice .rp-guide__play { left: -16px; }
 .review-practice .rp-guide__play { left: -8px; } /* on the corner, just clear of the zebra */
+
+/* ---------- v15: the panel as a three-column grid (RTL), no absolute layout ----------
+   right: the topics (260px) · centre: the content (all the free width) ·
+   left: the zebra on top and the island with its card at the bottom (300px) */
+.review-practice .rp-body {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 300px;
+  column-gap: 16px;
+  padding-left: 0;
+}
+.review-practice .rp-topics { width: 260px; }
+.review-practice .rp-topic { padding: 12px 14px; grid-template-columns: 62px 1fr; column-gap: 12px; }
+
+/* centre column */
+.review-practice .rp-main { max-width: none; width: 100%; justify-content: flex-start; }
+.rp-main .practice__title { margin: 0; }
+.rp-say { position: static; width: 100%; max-width: none; margin: 14px 0 0; }
+.rp-say__col { gap: 8px; }
+.rp-bubble__text { white-space: nowrap; }
+.review-practice .rp-guide__play { left: -14px; top: -22px; }
+.rp-main .rp-subs { margin-top: 18px; }
+.rp-main .rp-explain { margin-top: 10px; }
+/* the practice card 520x280, the arrows 16px from it */
+.review-practice .rp-main .practice__deck { margin-top: 12px; gap: 16px; }
+.review-practice .practice__stack { width: 520px; height: 290px; }
+.review-practice .practice__card { width: 520px; height: 280px; }
+.review-practice .practice__sheet { width: 520px; height: 272px; }
+/* the bar as wide as the card (the numbers sit outside its ends) */
+.review-practice .practice__dots { width: 520px; }
+.review-practice .rp-progress { margin-top: 18px; }
+.review-practice .practice__note { margin-top: 8px; }
+.review-practice .rp-main .practice__buttons { margin-top: 14px; margin-bottom: 0; }
+
+/* left column: the zebra up top, level with the bubble; the island + card below */
+.rp-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 0;
+  padding-top: 70px; /* the title's height: the zebra's top meets the bubble's */
+}
+.review-practice .rp-side .rp-guide {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
+  width: 200px;
+  height: 300px;
+  margin: 0;
+  transform: none;
+  align-self: flex-start; /* RTL: its right side, against the bubble */
+}
+.review-practice .rp-side .rp-isl-unit {
+  position: static;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.rp-side .rp-isl-unit__img { height: 240px; }
+.rp-side .rp-isl-card { position: static; width: 100%; }

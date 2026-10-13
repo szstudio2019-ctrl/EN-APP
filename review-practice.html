@@ -105,7 +105,6 @@
             </div>
             <p class="rp-intro__note"><b>הערה להורים:</b> אנחנו לומדים את ההיגיון של הצלילים, ולכן נקרא את הצליל כאילו היה חלק ממילה, ולא מילה.<br>למשל את המילה <span lang="en">do</span> נקרא <b class="rp-he">דוֹ</b> ואת המילה <span lang="en">he</span> נקרא <b class="rp-he">הֶ</b></p>
           </div>
-          <div class="rp-guide"><img class="rp-guide__zebra" src="assets/zebra-hoop.webp" alt=""></div>
         </div>
         <!-- 2: the letters / sounds of the chosen topic, and what they say -->
         <div class="rp-subs" id="rp-subs"></div>
@@ -139,41 +138,44 @@
           <a class="btn-pill practice__btn practice__btn--done" href="review.html" id="practice-done"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>סיימתי את החזרה</span></a>
         </div>
         </div>
+        <!-- left column: the zebra (top, level with the bubble) and the island with its card (bottom) -->
+        <div class="rp-side">
+          <div class="rp-guide"><img class="rp-guide__zebra" src="assets/zebra-hoop.webp" alt=""></div>
+    <!-- the island and its status card: one unit, the card under the island's ground -->
+          <div class="rp-isl-unit">
+            <img class="rp-isl-unit__img" src="assets/map/island-review.webp" alt="אי החזרות">
+            <a class="island world__island" id="world-island" href="#" data-slot="active" data-state="progress">
+              <div class="island__float">
+                <img class="island__img" id="world-island-still" alt="">
+                <div class="island__card">
+                  <p class="island__title" id="world-title"></p>
+                  <div class="island__stats">
+                    <p class="island__stat"><span>שיעורים</span><b id="world-lessons"></b></p>
+                    <div class="island__coins">
+                      <img src="assets/coin.webp" alt="">
+                      <p class="island__stat"><span>מטבעות</span><b id="world-coins"></b></p>
+                    </div>
+                  </div>
+                  <div class="island__progress"><span id="world-progress"></span></div>
+                </div>
+              </div>
+            </a>
+            <div class="rp-isl-card" aria-label="אי החזרות: 350 מתוך 500 מטבעות, חזרות 1-38">
+              <div class="rp-isl-card__row">
+                <p class="rp-isl-card__coins"><b>350</b>מתוך 500<br>מטבעות באי</p>
+                <img src="assets/chest.webp" alt="">
+                <p class="rp-isl-card__range"><b>1-38</b>חזרות</p>
+              </div>
+              <span class="rp-isl-card__bar"><i style="width: 42%"></i></span>
+            </div>
+          </div>
+        </div>
         </div>
       </section>
 
       <nav class="lessons" id="lessons" hidden></nav>
 
       <!-- Right side: the animated doctor island from the home page -->
-      <!-- the island and its status card: one unit, the card under the island's ground -->
-      <div class="rp-isl-unit">
-        <img class="rp-isl-unit__img" src="assets/map/island-review.webp" alt="אי החזרות">
-        <a class="island world__island" id="world-island" href="#" data-slot="active" data-state="progress">
-          <div class="island__float">
-            <img class="island__img" id="world-island-still" alt="">
-            <div class="island__card">
-              <p class="island__title" id="world-title"></p>
-              <div class="island__stats">
-                <p class="island__stat"><span>שיעורים</span><b id="world-lessons"></b></p>
-                <div class="island__coins">
-                  <img src="assets/coin.webp" alt="">
-                  <p class="island__stat"><span>מטבעות</span><b id="world-coins"></b></p>
-                </div>
-              </div>
-              <div class="island__progress"><span id="world-progress"></span></div>
-            </div>
-          </div>
-        </a>
-        <div class="rp-isl-card" aria-label="אי החזרות: 350 מתוך 500 מטבעות, חזרות 1-38">
-          <div class="rp-isl-card__row">
-            <p class="rp-isl-card__coins"><b>350</b>מתוך 500<br>מטבעות באי</p>
-            <img src="assets/chest.webp" alt="">
-            <p class="rp-isl-card__range"><b>1-38</b>חזרות</p>
-          </div>
-          <span class="rp-isl-card__bar"><i style="width: 42%"></i></span>
-        </div>
-      </div>
-
       <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
       <button class="trophy" type="button" aria-label="המשפט המנצח שלי" aria-describedby="trophy-hint" aria-expanded="false">
         <img src="assets/trophy.svg" alt="">
