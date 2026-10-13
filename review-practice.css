@@ -301,29 +301,4 @@
 .rp-isl-card__bar { position: relative; display: block; width: 148px; height: 7px; margin: 12px auto 0; border-radius: 9px; background: #2a2968; overflow: hidden; }
 .rp-isl-card__bar i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 9px; background: var(--pink); }
 
-/* the islands button: a white tab with a pink outline and the word "איים",
-   above the trophy and the cart */
-.review-practice .drawer-handle,
-.review-practice .drawer-handle.is-open {
-  top: 232px;
-  bottom: auto;
-  left: var(--edge-shift, 0px); /* flush with the window edge, like the trophy and cart */
-  width: 112px;
-  height: 112px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  border: 3px solid var(--pink);
-  border-left: 0;
-  border-radius: 0 26px 26px 0;
-  background: #fff;
-  box-shadow: 0 10px 24px rgba(36, 34, 117, .18);
-  translate: none;
-}
-.review-practice .drawer-handle:hover,
-.review-practice .drawer-handle.is-open { transform: none; background: #fff3f6; }
-.review-practice .drawer-handle__icon { width: 70px; height: 62px; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .2)); animation: none; }
-.rp-tab-label { font-family: 'Rubik', sans-serif; font-size: 18px; font-weight: 700; line-height: 1; color: var(--pink); }
-.review-practice.is-loading .drawer-handle { translate: -140px 0; }
+

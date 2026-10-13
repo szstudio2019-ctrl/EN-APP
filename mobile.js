@@ -118,7 +118,14 @@
   }
   bar.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-sheet]');
-    if (btn) setSheet(openKind === btn.dataset.sheet ? null : btn.dataset.sheet);
+    if (!btn) return;
+    // "איים" opens the full-screen worlds map (drawer.js), running down the phone
+    if (btn.dataset.sheet === 'islands' && window.SiteMap && window.SiteMap.close) {
+      setSheet(null);
+      window.SiteMap.open();
+      return;
+    }
+    setSheet(openKind === btn.dataset.sheet ? null : btn.dataset.sheet);
   });
   shade.addEventListener('click', () => setSheet(null));
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && openKind) setSheet(null); });
