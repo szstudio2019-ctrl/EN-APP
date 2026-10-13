@@ -25,7 +25,7 @@
     { name: 'האותיות הבודדות', icon: '☝️', subs: [
       { label: 'o', icon: '😮', text: 'o – עיגול עם הפה: "אוֹ"', words: withC('o') },
       { label: 'u', icon: '🛝', text: 'u – צליל קצר: "אַ"', words: withC('u') },
-      { label: 'e', icon: '🐑', text: 'e – כמו הכבשה: "מֶה"', words: withC('e') },
+      { label: 'e', icon: '🕹️', text: 'e – אומרת "אֶ"', words: withC('e') },
     ] },
     { name: 'צירופי האותיות', icon: '🔗', subs: [
       { label: 'oo', icon: '🐄', text: 'oo – כמו הפרה: "אוּוּ"', words: withC('oo') },
