@@ -48,8 +48,13 @@
     handle.setAttribute('aria-controls', 'world-map');
     handle.setAttribute('aria-label', 'מפת העולמות');
     handle.querySelectorAll('.tab-tip, .rp-tab-label, .drawer-handle__arrow').forEach((el) => el.remove());
-    if (!handle.querySelector('.worlds-tab__label')) handle.insertAdjacentHTML('beforeend', '<span class="worlds-tab__label">עולמות</span>');
+    if (!handle.querySelector('.worlds-tab__label')) handle.insertAdjacentHTML('beforeend', '<span class="worlds-tab__label">איים של אותיות</span>');
   }
+  // the trophy and cart tabs carry their names under the icon too
+  [['.trophy', 'המשפט שלי'], ['.cart', 'חנות האותיות']].forEach(([sel, name]) => {
+    const tab = document.querySelector(sel);
+    if (tab && !tab.querySelector('.tab-label')) tab.insertAdjacentHTML('beforeend', `<span class="tab-label" aria-hidden="true">${name}</span>`);
+  });
 
   /* ---------- The popup ---------- */
   const map = document.createElement('div');

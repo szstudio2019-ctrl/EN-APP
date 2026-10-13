@@ -3145,3 +3145,14 @@ a:focus:not(:focus-visible) { outline: none; }
   .world-map.is-drawn .wm-line--done { transition: none; }
   .world-map__scroll { scroll-behavior: auto; }
 }
+
+/* The left tabs carry their names under the icon: "איים של אותיות" (the
+   worlds map, now on top), "המשפט שלי" (trophy), "חנות האותיות" (cart) */
+.drawer-handle.worlds-tab,
+.drawer-handle.worlds-tab.is-open { top: 216px; }
+.drawer-handle.worlds-tab .drawer-handle__icon { width: 60px; height: 50px; }
+.worlds-tab__label { max-width: 96px; font-size: 14px; line-height: 1.1; text-align: center; }
+.trophy, .cart { flex-direction: column; display: flex; align-items: center; justify-content: center; gap: 3px; }
+.trophy img { width: 58px; height: 58px; }
+.cart img { width: 72px; height: 64px; }
+.tab-label { font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 700; line-height: 1.1; color: var(--pink); text-align: center; white-space: nowrap; }

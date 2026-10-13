@@ -324,3 +324,12 @@
 .rp-isl-card { left: 147px; top: 972px; width: 260px; height: 94px; padding: 12px 34px 0; z-index: 110; }
 .rp-isl-card__bar { margin-top: 10px; }
 .rp-intro__note { font-size: 15px; }
+
+/* v9: the panel reaches the header's inner line (its 51px padding); the side
+   menu sits in the middle of the height; the island a little bigger and
+   further left; the zebra a little lower */
+.review-practice { --panel-inset: 51px; }
+.review-practice .rp-topics { justify-content: center; }
+.review-practice .world__island { transform: translate(42px, 753px) scale(.55); }
+.rp-isl-card { left: 68px; top: 978px; }
+.rp-guide { top: 80px; }
