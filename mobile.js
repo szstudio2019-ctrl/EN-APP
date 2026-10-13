@@ -151,7 +151,8 @@
   const viewport = document.querySelector('.viewport');
   let firstFit = true;
   const WORLD = window.WORLD;
-  const isWorld = !!(WORLD && WORLD.lessons && document.body.classList.contains('world-page'));
+  const isWorld = !!(WORLD && WORLD.lessons && document.body.classList.contains('world-page')
+    && !document.body.classList.contains('practice-page'));
 
   /* ---------- Island pages: the whole scene + a lessons slider ----------
      The scene (background and the small island) is shown whole across the
