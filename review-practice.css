@@ -333,3 +333,18 @@
 .review-practice .world__island { transform: translate(42px, 753px) scale(.55); }
 .rp-isl-card { left: 68px; top: 978px; }
 .rp-guide { top: 80px; }
+
+/* v10: the practice is centred in the whole space beside the side menu (the
+   same air on its two sides); the zebra, smaller, moves to the top-left
+   corner, clear of the text; less air under the title, bigger explanation */
+.review-practice .rp-body { padding-left: 0; }
+.rp-guide { left: 30px; top: 18px; transform: scale(.7); transform-origin: 0 0; }
+.rp-main .rp-intro { margin-top: 14px; }
+.rp-main .rp-subs { margin-top: auto; }
+.rp-intro__lead { font-size: 21px; white-space: normal; }
+.rp-intro__note { font-size: 18px; }
+
+/* the island and its card at the bottom-left: the card with the same gap
+   below it as from the window's edge, the island above it (not over its text) */
+.review-practice .world__island { transform: translate(-2px, 660px) scale(.6); }
+.rp-isl-card { left: 24px; top: auto; bottom: 24px; width: 279px; height: 99px; padding: 14px 40px 0; }

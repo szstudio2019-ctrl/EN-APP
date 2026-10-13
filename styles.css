@@ -3156,3 +3156,10 @@ a:focus:not(:focus-visible) { outline: none; }
 .trophy img { width: 58px; height: 58px; }
 .cart img { width: 72px; height: 64px; }
 .tab-label { font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 700; line-height: 1.1; color: var(--pink); text-align: center; white-space: nowrap; }
+/* the three left tabs: the same gap between each; the island and trophy
+   pictures as big as the cart's */
+.drawer-handle.worlds-tab,
+.drawer-handle.worlds-tab.is-open { top: 232px; }
+.drawer-handle.worlds-tab .drawer-handle__icon { width: 74px; height: 64px; }
+.trophy img { width: 66px; height: 66px; }
+.help-btn { display: none; } /* the "?" on the cart is gone */
