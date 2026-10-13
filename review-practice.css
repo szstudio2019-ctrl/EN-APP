@@ -348,3 +348,10 @@
    below it as from the window's edge, the island above it (not over its text) */
 .review-practice .world__island { transform: translate(-2px, 660px) scale(.6); }
 .rp-isl-card { left: 24px; top: auto; bottom: 24px; width: 279px; height: 99px; padding: 14px 40px 0; }
+
+/* the topic pictures: their white background melts into the button
+   (multiply), the soft shadow under them stays */
+.rp-topic__icon img { display: block; width: 52px; height: 52px; object-fit: contain; mix-blend-mode: multiply; }
+.rp-done__icon img { display: block; width: 110px; height: 110px; margin: 0 auto; object-fit: contain; mix-blend-mode: multiply; }
+.rp-topic { grid-template-columns: 54px 1fr; }
+.rp-done__next-pic { width: 28px; height: 28px; vertical-align: middle; mix-blend-mode: multiply; }

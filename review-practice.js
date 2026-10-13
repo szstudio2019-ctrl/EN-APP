@@ -13,13 +13,13 @@
   // a playground slide (the emoji 🛝 is missing on Windows)
   const SLIDE = '<svg class="rp-svg" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 29V6M13 29V6M7 11h6M7 17h6M7 23h6" stroke="#3d4bb0" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M13 6c6 0 7 6 10 13 1.5 3.5 3 6 6 6" stroke="#e33563" stroke-width="4" stroke-linecap="round" fill="none"/></svg>';
   const TOPICS = [
-    { name: 'זיהוי האותיות', icon: '🔍', subs: [
+    { name: 'זיהוי האותיות', icon: '🔍', pic: 'review-abc', subs: [
       { label: 'b–z', icon: '🔤', text: 'מזהים כל אות ואומרים את הצליל שלה', words: C },
     ] },
-    { name: 'האות של הרופא/ה', icon: '🩺', subs: [
+    { name: 'האות של הרופא/ה', icon: '🩺', pic: 'review-doctor', subs: [
       { label: 'a', icon: '🩺', text: 'האות a אומרת לאות שלפניה להגיד "אָה" – כמו אצל הרופא/ה', words: withC('a') },
     ] },
-    { name: 'האותיות המחייכות', icon: '😊', subs: [
+    { name: 'האותיות המחייכות', icon: '😊', pic: 'review-smiles', subs: [
       { label: 'i', icon: '😊', text: 'האות i מחייכת ואומרת "אִי"', words: withC('i') },
       { label: 'ea', icon: '😊', text: 'ea מחייכות יחד ואומרות "אִי"', words: withC('ea') },
       { label: 'ee', icon: '😊', text: 'ee מחייכות יחד ואומרות "אִי"', words: withC('ee') },
@@ -29,16 +29,16 @@
       { label: 'u', icon: SLIDE, text: 'u – צליל קצר: "אַ"', words: withC('u') },
       { label: 'e', icon: '🕹️', text: 'e – אומרת "אֶ"', words: withC('e') },
     ] },
-    { name: 'צירופי האותיות', icon: '🔗', subs: [
+    { name: 'צירופי האותיות', icon: '🔗', pic: 'review-blending', subs: [
       { label: 'oo', icon: '🐄', text: 'oo – כמו הפרה: "אוּוּ"', words: withC('oo') },
       { label: 'ai ay', icon: '🎮', text: 'ai / ay – שתי דרכים לכתוב את אותו הצליל', words: pair('ai', 'ay') },
       { label: 'ou ow', icon: '😕', text: 'ou / ow – "אַוּוּ", כמו כשמשהו כואב', words: pair('ou', 'ow') },
     ] },
-    { name: 'האותיות השורקות', icon: '🌬️', subs: [
+    { name: 'האותיות השורקות', icon: '🌬️', pic: 'review-whistling', subs: [
       { label: 'sh', icon: '🤫', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['ship', 'shop', 'she', 'shell', 'fish', 'wish'] },
       { label: 'ch', icon: '🚂', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['chip', 'chop', 'chin', 'chat', 'much', 'rich'] },
     ] },
-    { name: 'צלילים מיוחדים', icon: '✨', subs: [
+    { name: 'צלילים מיוחדים', icon: '✨', pic: 'review-sounds', subs: [
       { label: 'th', icon: '👅', text: 'th – הלשון יוצאת קצת בין השיניים', words: ['this', 'that', 'thin', 'them', 'with', 'bath'] },
       { label: 'ph', icon: '📞', text: 'ph – נשמע כמו f', words: ['phone', 'photo', 'graph', 'dolphin', 'elephant', 'phonics'] },
       { label: 'tion', icon: '🎬', text: 'tion – בסוף מילה נשמע "שֶן"', words: ['action', 'nation', 'motion', 'lotion', 'station', 'fiction'] },
@@ -77,7 +77,7 @@
 
   topicsEl.innerHTML = TOPICS.map((t, i) => `
     <button class="rp-topic" type="button" role="tab" data-topic="${i}">
-      <span class="rp-topic__icon" aria-hidden="true">${t.icon}</span>
+      <span class="rp-topic__icon" aria-hidden="true">${t.pic ? `<img src="assets/icons/${t.pic}.webp" alt="">` : t.icon}</span>
       <span class="rp-topic__name">${t.name}</span>
       <span class="rp-topic__count">${countOf(t)} ${i === 0 ? 'אותיות' : 'מילים'}</span>
     </button>`).join('');
@@ -178,11 +178,11 @@
     pop.setAttribute('aria-label', `סיימת את ${t.name}`);
     pop.innerHTML = `
       <div class="rp-done__card">
-        <span class="rp-done__icon" aria-hidden="true">${t.icon}</span>
+        <span class="rp-done__icon" aria-hidden="true">${t.pic ? `<img src="assets/icons/${t.pic}.webp" alt="">` : t.icon}</span>
         <p class="rp-done__kicker">כל הכבוד!</p>
         <h2 class="rp-done__title">סיימת את ${t.name}</h2>
         <p class="rp-done__text">תרגלת ${countOf(t)} ${topic === 0 ? 'אותיות' : 'מילים'}</p>
-        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.icon} ${nextT.name}</b></p>` : '<p class="rp-done__next"><b>סיימת את כל החזרות 🏆</b></p>'}
+        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : '<p class="rp-done__next"><b>סיימת את כל החזרות 🏆</b></p>'}
         <div class="rp-done__buttons">
           <button class="rp-done__again" type="button" data-act="again">${AGAIN}<span>לתרגל שוב</span></button>
           ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`
