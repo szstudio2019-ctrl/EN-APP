@@ -700,3 +700,18 @@
 .review-practice .practice__note { margin-top: 12px; }
 .review-practice .rp-main .practice__buttons { margin-top: auto; margin-bottom: 0; }
 .review-practice .practice__stack { width: 393px; } /* the arrows 16px from the card itself */
+
+/* ---------- v17: the island sits behind its card and breaks out of the panel ----------
+   (the earlier "no overlap" rule is replaced on purpose) */
+.review-practice .rp-side .rp-isl-unit {
+  gap: 0;
+  position: relative;
+  z-index: 20;                  /* floats above the panel */
+  transform: translateX(-35%);  /* about a third out into the sky (RTL: to the left) */
+}
+.rp-side .rp-isl-unit__img { position: relative; z-index: 1; height: 240px; }
+/* the card rides over the island's bottom 25% (the rocks only), solid so
+   nothing shows through */
+.rp-side .rp-isl-card { position: relative; z-index: 2; margin-top: -60px; background: #242275; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.review-practice .practice, .review-practice .rp-body, .rp-side { overflow: visible; }
+.review-practice .rp-side .rp-isl-unit { transform: translateX(-52%); } /* about a third of the island itself out of the panel */
