@@ -675,3 +675,28 @@
 .rp-topic.is-done .rp-again svg { stroke-width: 2.4; }
 /* the zebra 20% bigger: 360px tall */
 .review-practice .rp-side .rp-guide { width: 240px; height: 360px; }
+
+/* ---------- v16: widths and grouping ----------
+   the practice card back to its own size (393x270), the arrows against it;
+   the text block (bubble + parents' note) one 680px block, centred;
+   three groups by proximity: A explanation (title, bubble, note: 12px apart),
+   B practice (tag, instruction, card, bar, 7-days line: 12px apart), 40px
+   between A and B, and C (the done button) pushed to the panel's bottom,
+   level with the bottom of the island's card on the left */
+.review-practice .practice__stack { width: 410px; height: 284px; }
+.review-practice .practice__card { width: 393px; height: 270px; }
+.review-practice .practice__sheet { width: 393px; height: 263px; }
+.review-practice .practice__dots { width: 393px; }
+.review-practice .rp-main .practice__deck { gap: 16px; }
+
+.rp-say { width: 100%; max-width: 680px; margin: 12px auto 0; }
+.rp-say__col { gap: 12px; }
+.rp-bubble, .rp-say__col .rp-intro__note { width: 100%; box-sizing: border-box; }
+
+.rp-main .rp-subs { margin-top: 40px; }
+.rp-main .rp-explain { margin-top: 12px; }
+.review-practice .rp-main .practice__deck { margin-top: 12px; }
+.review-practice .rp-progress { margin-top: 12px; }
+.review-practice .practice__note { margin-top: 12px; }
+.review-practice .rp-main .practice__buttons { margin-top: auto; margin-bottom: 0; }
+.review-practice .practice__stack { width: 393px; } /* the arrows 16px from the card itself */
