@@ -281,3 +281,39 @@
   btn.addEventListener('click', (e) => { e.stopPropagation(); set(note.hidden); });
   document.addEventListener('click', (e) => { if (!note.hidden && !note.contains(e.target)) set(false); });
 })();
+
+// The zebra's green Play reads the explanation aloud (the browser's Hebrew
+// voice) and turns into Stop while it speaks
+(function () {
+  const btn = document.getElementById('rp-guide-play');
+  const intro = document.querySelector('.rp-intro');
+  if (!btn || !intro) return;
+  const guide = btn.closest('.rp-guide');
+  const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6.5v11l9-5.5z"/><circle cx="12" cy="12" r="10.5"/></svg>';
+  const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2.5"/></svg>';
+  const canSpeak = 'speechSynthesis' in window;
+  let speaking = false;
+  const set = (on) => {
+    speaking = on;
+    btn.innerHTML = on ? STOP : PLAY;
+    btn.classList.toggle('is-stop', on);
+    btn.setAttribute('aria-label', on ? 'עצירת ההסבר' : 'השמעת ההסבר');
+    guide.classList.toggle('is-speaking', on);
+  };
+  set(false);
+  btn.addEventListener('click', () => {
+    if (!canSpeak) return;
+    if (speaking) { speechSynthesis.cancel(); set(false); return; }
+    const u = new SpeechSynthesisUtterance(intro.innerText.replace(/\s+/g, ' '));
+    u.lang = 'he-IL';
+    u.rate = 0.95;
+    const voice = speechSynthesis.getVoices().find((v) => /^he/i.test(v.lang));
+    if (voice) u.voice = voice;
+    u.onend = () => set(false);
+    u.onerror = () => set(false);
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+    set(true);
+  });
+  window.addEventListener('pagehide', () => { if (canSpeak) speechSynthesis.cancel(); });
+})();

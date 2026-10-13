@@ -89,6 +89,11 @@
            Built by practice.js. -->
       <section class="practice" aria-labelledby="practice-title">
         <a class="back-home" href="review.html" aria-label="חזרה לאי החזרות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+        <!-- the zebra with the hula hoop; Play reads the explanation aloud -->
+        <div class="rp-guide">
+          <img class="rp-guide__zebra" src="assets/zebra-hoop.webp" alt="">
+          <button class="rp-guide__play" type="button" id="rp-guide-play" aria-label="השמעת ההסבר"></button>
+        </div>
         <div class="rp-body">
         <!-- 1: the review topics, a side menu (icon, name, how many) -->
         <div class="rp-topics" id="rp-topics" role="tablist" aria-label="נושאי החזרה" aria-orientation="vertical"></div>
@@ -153,6 +158,14 @@
           </div>
         </div>
       </a>
+      <div class="rp-isl-card" aria-label="אי החזרות: 350 מתוך 500 מטבעות, חזרות 1-38">
+        <div class="rp-isl-card__row">
+          <p class="rp-isl-card__coins"><b>350</b>מתוך 500<br>מטבעות באי</p>
+          <img src="assets/chest.webp" alt="">
+          <p class="rp-isl-card__range"><b>1-38</b>חזרות</p>
+        </div>
+        <span class="rp-isl-card__bar"><i style="width: 42%"></i></span>
+      </div>
 
       <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
       <button class="trophy" type="button" aria-label="המשפט המנצח שלי" aria-describedby="trophy-hint" aria-expanded="false">
@@ -186,6 +199,7 @@
            button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
       <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
         <img class="drawer-handle__icon" src="assets/island-review.webp" alt="">
+        <span class="rp-tab-label">איים</span>
         <span class="tab-tip">מעבר לאיים</span>
       </button>
       <div class="drawer" id="drawer" aria-hidden="true">
@@ -295,7 +309,7 @@
       lessonsRange: '1-38',
       coins: 350,
       progress: 0,
-      background: 'assets/world-review-bg.webp',
+      background: 'assets/review-sky-bg.webp',
       island: { still: 'island-review', box: [32, -14, 504, 504] },
       lessons: [],
     };

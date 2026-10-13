@@ -238,3 +238,92 @@
 .rp-intro__lead { line-height: 1.7; }
 .rp-intro__note { margin-top: 10px; line-height: 1.8; }
 .review-practice .rp-main .practice__dots { margin-top: 44px; }
+
+/* ---------- v7: the Figma "אי החזרות" layout (311:7450) ----------
+   the sky background, a wide white panel, the zebra with a green Play at its
+   top-left, the small island with its card at the bottom-left, and the
+   islands tab above the trophy and the cart */
+.review-practice .world__bg { top: 0; height: 1080px; transform-origin: 960px 540px; }
+.review-practice .practice { left: 291px; width: 1516px; padding-inline: 24px; }
+.review-practice .rp-body { padding-left: 370px; }
+.rp-intro__lead { font-size: 18px; }
+
+.rp-guide { position: absolute; left: 131px; top: 37px; width: 251px; height: 388px; z-index: 2; }
+.rp-guide__zebra { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(36, 34, 117, .18)); transition: transform .3s ease; }
+.rp-guide.is-speaking .rp-guide__zebra { animation: rp-zebra 1.2s ease-in-out infinite; }
+@keyframes rp-zebra { 50% { translate: 0 -8px; } }
+.rp-guide__play {
+  position: absolute;
+  left: 0;
+  top: 257px;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 4px #fff, 0 10px 18px rgba(80, 110, 10, .35);
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+.rp-guide__play:hover { transform: scale(1.07); }
+.rp-guide__play svg { width: 40px; height: 40px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linejoin: round; }
+.rp-guide__play.is-stop { background: var(--pink); }
+.rp-guide__play.is-stop svg { fill: #fff; stroke: none; }
+
+/* the small island at the bottom-left, with the Figma card under it */
+.review-practice .world__island { transform: translate(99px, 700px) scale(.66); transform-origin: 0 0; }
+.review-practice .world__island .island__card,
+.review-practice .island-play { display: none; }
+.rp-isl-card {
+  position: absolute;
+  left: 147px;
+  top: 954px;
+  z-index: 110;
+  width: 279px;
+  height: 99px;
+  padding: 14px 40px 0;
+  border-radius: 23px;
+  background: rgba(36, 34, 117, .76);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 3px var(--pink);
+  direction: rtl;
+  font-family: 'Assistant', 'Rubik', sans-serif;
+  font-weight: 700;
+  color: #fff;
+}
+.rp-isl-card__row { display: flex; align-items: center; justify-content: space-between; }
+.rp-isl-card__row img { width: 45px; height: 45px; object-fit: contain; }
+.rp-isl-card p { margin: 0; font-size: 14px; line-height: 14px; text-align: right; }
+.rp-isl-card b { display: block; font-size: 21px; line-height: 22px; color: var(--pink); }
+.rp-isl-card__bar { position: relative; display: block; width: 148px; height: 7px; margin: 12px auto 0; border-radius: 9px; background: #2a2968; overflow: hidden; }
+.rp-isl-card__bar i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 9px; background: var(--pink); }
+
+/* the islands button: a white tab with a pink outline and the word "איים",
+   above the trophy and the cart */
+.review-practice .drawer-handle,
+.review-practice .drawer-handle.is-open {
+  top: 232px;
+  bottom: auto;
+  left: 0;
+  width: 112px;
+  height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 3px solid var(--pink);
+  border-left: 0;
+  border-radius: 0 26px 26px 0;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(36, 34, 117, .18);
+  translate: none;
+}
+.review-practice .drawer-handle:hover,
+.review-practice .drawer-handle.is-open { transform: none; background: #fff3f6; }
+.review-practice .drawer-handle__icon { width: 70px; height: 62px; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .2)); animation: none; }
+.rp-tab-label { font-family: 'Rubik', sans-serif; font-size: 18px; font-weight: 700; line-height: 1; color: var(--pink); }
+.review-practice.is-loading .drawer-handle { translate: -140px 0; }
