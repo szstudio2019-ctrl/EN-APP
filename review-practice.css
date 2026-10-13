@@ -212,3 +212,20 @@
 .rp-main .rp-count { margin-top: 8px; }
 .review-practice .rp-main .practice__note { margin-top: 2px; }
 .review-practice .rp-main .practice__buttons { margin-top: 16px; }
+
+/* v5: the title is centred over the practice column (the side menu starts at
+   the top); the explanation has no box and its first line fits on one row */
+.review-practice .rp-body { margin-top: 6px; }
+.rp-main .practice__title { margin: 0 0 10px; }
+.rp-intro { max-width: none; padding: 0; background: none; box-shadow: none; }
+.rp-intro__lead { font-size: 17px; white-space: nowrap; }
+.rp-intro__note { margin-top: 6px; padding: 0; background: none; box-shadow: none; font-size: 15px; }
+/* room for the explanation's first line on one row */
+.review-practice .practice { width: 1290px; padding-inline: 24px; }
+.rp-body { gap: 22px; }
+.rp-topics { width: 240px; }
+.rp-topic { padding: 10px 12px; column-gap: 10px; grid-template-columns: 42px 1fr; }
+.rp-topic__name { font-size: 18px; }
+.rp-intro__lead { font-size: 19px; }
+.rp-intro__note { font-size: 16px; }
+.review-practice .world__island { transform: translate(1398px, 515px); }
