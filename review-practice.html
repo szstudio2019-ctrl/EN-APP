@@ -89,16 +89,16 @@
            Built by practice.js. -->
       <section class="practice" aria-labelledby="practice-title">
         <a class="back-home" href="review.html" aria-label="חזרה לאי החזרות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
-        <h1 class="practice__title" id="practice-title">חוזרים על הכל</h1>
-        <p class="rp-lead">לפני שעוברים לצליל הבא, נתרגל את הצלילים שלמדנו עד עכשיו.
-          <button class="rp-parents" type="button" id="rp-parents" aria-expanded="false" aria-controls="rp-note">הערה להורים</button></p>
-        <div class="rp-note" id="rp-note" hidden>
-          <b>הערה להורים:</b> אנחנו לומדים את ההיגיון של הצלילים, ולכן נקראת את הצליל כאילו היה חלק ממילה, ולא מילה. למשל את <span lang="en">do</span> נקרא <b>דוֹ</b> ואת <span lang="en">he</span> נקרא <b>הֶ</b>.
-        </div>
+        <h1 class="practice__title" id="practice-title">אי החזרות <span class="rp-no" aria-label="מספר 5">5</span></h1>
         <div class="rp-body">
         <!-- 1: the review topics, a side menu (icon, name, how many) -->
         <div class="rp-topics" id="rp-topics" role="tablist" aria-label="נושאי החזרה" aria-orientation="vertical"></div>
         <div class="rp-main">
+        <!-- the explanation, centred above the cards -->
+        <div class="rp-intro">
+          <p class="rp-intro__lead">לפני שנעבור לצליל הבא, נתרגל את הצלילים שלמדנו עד עכשיו. <b>כאן קראו שורות משמאל לימין (ולא עמודות)</b></p>
+          <p class="rp-intro__note"><b>הערה להורים:</b> אנחנו לומדים את ההיגיון של הצלילים, ולכן נקרא את הצליל כאילו היה חלק ממילה, ולא מילה. למשל את המילה <span lang="en">do</span> נקרא <b class="rp-he">דוֹ</b> ואת המילה <span lang="en">he</span> נקרא <b class="rp-he">הֶ</b></p>
+        </div>
         <!-- 2: the letters / sounds of the chosen topic, and what they say -->
         <div class="rp-subs" id="rp-subs"></div>
         <p class="rp-explain" id="rp-explain"></p>
