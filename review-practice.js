@@ -101,6 +101,7 @@
     const s = TOPICS[topic].subs[sub];
     explainEl.textContent = s.text;
     dotsEl.innerHTML = s.words.map(() => '<i></i>').join('');
+    lastNo.textContent = s.words.length; // the bar's far end: how many items (from the data)
   }
 
   function show(i, dir) {
@@ -276,6 +277,17 @@
     const url = recordings[keyOf(index)];
     if (url) new Audio(url).play().catch(() => {});
   });
+
+  // the dashes get a number at each end: 1 on the right, the count on the left
+  const bar = document.createElement('div');
+  bar.className = 'rp-progress';
+  dotsEl.before(bar);
+  const firstNo = document.createElement('span');
+  firstNo.className = 'rp-progress__n';
+  firstNo.textContent = '1';
+  const lastNo = document.createElement('span');
+  lastNo.className = 'rp-progress__n';
+  bar.append(firstNo, dotsEl, lastNo);
 
   renderTopic();
   renderSub();
