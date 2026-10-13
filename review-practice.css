@@ -147,3 +147,6 @@
 .rp-done__go { height: 48px; padding: 0 28px; font-size: 19px; justify-content: center; border: 0; cursor: pointer; }
 .rp-done__again { height: 48px; padding: 0 22px; border: 1.5px solid var(--pink); border-radius: 30px; background: #fff; color: var(--pink); font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 600; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .rp-done__icon, .rp-sub.is-new { animation: none; } }
+/* icons in the popup buttons: round arrows on "again", an arrow on "next" */
+.rp-done__again, .rp-done__go { display: inline-flex; align-items: center; gap: 8px; }
+.rp-done__again svg, .rp-done__go svg { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }

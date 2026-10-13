@@ -167,6 +167,9 @@
     pop.classList.remove('is-open');
     setTimeout(() => { pop.hidden = true; }, 300);
   }
+  // "לתרגל שוב" = round arrows (like the redraw button); "לתרגול הבא" = an arrow
+  const AGAIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
+  const ARROW_NEXT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>';
   function openDone() {
     const t = TOPICS[topic];
     const nextT = TOPICS[topic + 1];
@@ -179,9 +182,9 @@
         <p class="rp-done__text">תרגלת ${countOf(t)} ${topic === 0 ? 'אותיות' : 'מילים'}</p>
         ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.icon} ${nextT.name}</b></p>` : '<p class="rp-done__next"><b>סיימת את כל החזרות 🏆</b></p>'}
         <div class="rp-done__buttons">
-          ${nextT ? '<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span></button>'
-            : '<a class="btn-pill rp-done__go" href="review.html"><span>לאי החזרות</span></a>'}
-          <button class="rp-done__again" type="button" data-act="again">לתרגל שוב</button>
+          <button class="rp-done__again" type="button" data-act="again">${AGAIN}<span>לתרגל שוב</span></button>
+          ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`
+            : `<a class="btn-pill rp-done__go" href="review.html"><span>לאי החזרות</span>${ARROW_NEXT}</a>`}
         </div>
       </div>`;
     pop.hidden = false;
