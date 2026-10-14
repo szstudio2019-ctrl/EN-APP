@@ -3263,3 +3263,15 @@ a:focus:not(:focus-visible) { outline: none; }
   filter: blur(9px) saturate(.88) brightness(1.06);
   scale: 1.05;
 }
+
+/* RTL arrows: "back" points right (continue buttons point left) */
+.back-home svg { transform: scaleX(-1); }
+
+/* the left tabs a little wider, so their names are whole and readable */
+.trophy, .cart,
+.drawer-handle.worlds-tab,
+.drawer-handle.worlds-tab.is-open { width: 124px; }
+.tab-label, .worlds-tab__label { max-width: 112px; font-size: 13.5px; white-space: normal; line-height: 1.15; }
+
+/* header labels: bigger and fully white */
+.stat__label, .stat--chest .stat__label { font-size: 20px; font-weight: 600; color: #fff; }

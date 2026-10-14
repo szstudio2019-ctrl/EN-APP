@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>שיעור 1 – אי האותיות של רופא/ה – מדקדקים באנגלית</title>
+  <title>שיעור 1 – האותיות של הרופאה – מדקדקים באנגלית</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="practice.css">
   <link rel="stylesheet" href="slide.css">
 </head>
-<body class="world-page practice-page slide-page">
+<body class="world-page practice-page slide-page lesson-body">
   <!-- Island template page (Figma "האותיות של הרופא עולם 2-4").
        To make another island page: copy this file and change the WORLD settings
        in the <script> at the bottom (background, lessons, island artwork). -->
@@ -50,7 +50,7 @@
           </a>
           <a class="stat stat--shop" href="shop.html">
             <img src="assets/shop.webp" alt="" class="stat__icon stat__icon--shop">
-            <span class="stat__text"><span class="stat__label">חנות</span><span class="stat__value">12</span></span>
+            <span class="stat__text"><span class="stat__label">פריטים בחנות</span><span class="stat__value">12</span></span>
           </a>
         </div>
 
@@ -88,44 +88,49 @@
       <!-- Lesson 1 of the doctor island (Figma "אי האותיות של רופא/ה" lesson):
            the story of the letter a, b + a = ba, two ways to read it, then practice -->
       <section class="practice lesson-page" aria-labelledby="lesson-title">
-        <a class="back-home" href="doctor.html" aria-label="חזרה לעולם האותיות של רופא/ה"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+        <a class="back-home" href="doctor.html" aria-label="חזרה לעולם האותיות של הרופאה"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
         <!-- right side: the island's two content pages -->
         <nav class="slide-nav" aria-label="בעמוד הזה">
           <a class="slide-nav__item is-on" href="lesson.html" aria-current="page">
             <span class="slide-nav__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8 7h8M8 11h6"/></svg></span>
-            <span class="slide-nav__text"><b>שיעור</b><small>האות a – האות של הרופא/ה</small></span>
+            <span class="slide-nav__text"><b>שיעור</b><small>האות a – האות של הרופאה</small></span>
           </a>
           <a class="slide-nav__item" href="practice.html">
             <span class="slide-nav__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
             <span class="slide-nav__text"><b>תרגול</b><small>6 רמות · מקשיבים ומקליטים</small></span>
           </a>
         </nav>
-        <h1 class="practice__title" id="lesson-title">אי האותיות של רופא/ה</h1>
-        <!-- The lesson guide: a zebra doctor; Play reads the story aloud (lesson.js) -->
-        <div class="lesson__guide">
-          <img class="lesson__guide-img" src="assets/zebra-doctor.webp" alt="זברה רופאה">
-          <button class="lesson__guide-play" type="button" id="guide-play" aria-label="השמעת ההסבר"></button>
+        <h1 class="practice__title" id="lesson-title">האותיות של הרופאה</h1>
+        <!-- one guide: the zebra doctor (left column); the one Play is the big button over the text -->
+        <div class="lesson__guide" aria-hidden="true">
+          <img class="lesson__guide-img" src="assets/zebra-doctor.webp" alt="">
         </div>
-        <div class="lesson__story">
-          <p>כשכואב לכם הגרון, אתם הולכים לרופאה או לרופא.<br>הם מכניסים מקל לפה שלכם ואומרים לכם:</p>
-          <p class="lesson__quote">"פתחו את הפה גדול גדול ואמרו אָהההה!"</p>
-          <p>האות a היא האות של הרופאה!<br>היא אומרת לאות שלפניה להגיד אָהה</p>
+        <div class="lesson__intro">
+          <button class="lesson__listen" type="button" id="guide-play" aria-label="השמעת ההסבר המלא"></button>
+          <p class="lesson__story" data-full="כשכואב לכם הגרון, אתם הולכים לרופאה. היא מכניסה מקל לפה שלכם ואומרת: פתחו את הפה גדול גדול ואמרו אָהההה! האות a היא האות של הרופאה. היא אומרת לאות שלפניה להגיד אָה. למשל, b ועוד a זה ba.">אצל הרופאה פותחים את הפה גדול ואומרים <b>"אָהההה!"</b><br>האות <b lang="en">a</b> אומרת לאות שלפניה להגיד <b>אָה</b>.</p>
         </div>
+        <!-- b + a = ba: each tile says its sound; the two letters slide together into ba -->
         <div class="lesson__sum" dir="ltr" lang="en">
-          <span class="lesson__tile">b</span><span class="lesson__op">+</span><span class="lesson__tile">a</span><span class="lesson__op">=</span><span class="lesson__tile lesson__tile--result">ba</span>
+          <button class="lesson__tile lesson__tile--b" type="button" data-say="buh" aria-label="b – השמעה">b</button>
+          <span class="lesson__op" aria-hidden="true">+</span>
+          <button class="lesson__tile lesson__tile--a" type="button" data-say="ah" aria-label="a – השמעה">a</button>
+          <button class="lesson__op lesson__op--eq" type="button" aria-label="לחבר את האותיות">=</button>
+          <button class="lesson__tile lesson__tile--result" type="button" data-say="bah" aria-label="ba – השמעה"><span class="c-b">b</span><span class="c-a">a</span></button>
         </div>
         <p class="lesson__try">נסו אחת מהשיטות האלו:</p>
         <div class="lesson__ways">
-          <div class="lesson__way">
-            <p class="lesson__way-title">שיטה 1</p>
-            <p class="lesson__way-text">שימו קמץ מתחת לאות וקיראו אותה</p>
-            <span class="lesson__way-tile"><span lang="en">b</span><span class="lesson__kamatz">ָ</span></span>
-          </div>
-          <div class="lesson__way">
-            <p class="lesson__way-title">שיטה 2</p>
-            <p class="lesson__way-text">קיראו כמה פעמים את שתי האותיות יחד</p>
-            <span class="lesson__way-tile lesson__way-tile--he">בָא</span>
-          </div>
+          <button class="lesson__way" type="button" data-say="bah" aria-label="שיטה 1 – השמעה">
+            <span class="lesson__way-speak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
+            <span class="lesson__way-title">שיטה 1</span>
+            <span class="lesson__way-text">שימו קמץ מתחת לאות וקיראו אותה</span>
+            <span class="lesson__way-tile"><span lang="en" class="c-b">b</span><span class="lesson__kamatz" aria-hidden="true">ָ</span></span>
+          </button>
+          <button class="lesson__way" type="button" data-say="bah" aria-label="שיטה 2 – השמעה">
+            <span class="lesson__way-speak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
+            <span class="lesson__way-title">שיטה 2</span>
+            <span class="lesson__way-text">קיראו כמה פעמים את שתי האותיות יחד</span>
+            <span class="lesson__way-tile lesson__way-tile--he">בָּא</span>
+          </button>
         </div>
         <a class="btn-pill lesson__go" href="practice.html"><span>לתרגול</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </section>
@@ -287,7 +292,7 @@
   <script>
     // Settings for this island page
     window.WORLD = {
-      title: 'אי האותיות של רופא/ה',
+      title: 'האותיות של הרופאה',
       // The name written on the clearing: one entry per line, x/y = its centre
       lessonsRange: '2-4',
       coins: 350,

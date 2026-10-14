@@ -1,36 +1,84 @@
-// Lesson page: the zebra-doctor guide. Play reads the lesson story aloud
-// (the browser's Hebrew voice) and turns into Stop while it speaks.
+// Lesson page: the zebra-doctor guide and one big Play over the short
+// explanation (it reads the full explanation aloud in the browser's Hebrew
+// voice and turns into Stop while it speaks). The b + a = ba tiles each say
+// their sound, and the two letters slide together into ba on entering the
+// page and on a tap of "=" or "ba". The two method cards say "ba" too.
 (function () {
   const btn = document.getElementById('guide-play');
   const story = document.querySelector('.lesson__story');
-  if (!btn || !story) return;
-  const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
-  const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3"/></svg>';
+  const guide = document.querySelector('.lesson__guide');
+  const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="play-tri" d="M8 5.5v13l10.5-6.5z"/></svg><span>האזינו להסבר</span>';
+  const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="play-tri" x="6" y="6" width="12" height="12" rx="3"/></svg><span>עצירה</span>';
   const canSpeak = 'speechSynthesis' in window;
   let speaking = false;
 
+  function voiceFor(lang) {
+    return speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang));
+  }
   function set(on) {
     speaking = on;
     btn.innerHTML = on ? STOP : PLAY;
     btn.classList.toggle('is-stop', on);
-    btn.setAttribute('aria-label', on ? 'עצירת ההסבר' : 'השמעת ההסבר');
-    document.querySelector('.lesson__guide').classList.toggle('is-speaking', on);
+    btn.setAttribute('aria-label', on ? 'עצירת ההסבר' : 'השמעת ההסבר המלא');
+    if (guide) guide.classList.toggle('is-speaking', on);
   }
-  set(false);
+  if (btn && story) {
+    set(false);
+    btn.addEventListener('click', () => {
+      if (!canSpeak) return;
+      if (speaking) { speechSynthesis.cancel(); set(false); return; }
+      const u = new SpeechSynthesisUtterance(story.dataset.full || story.innerText);
+      u.lang = 'he-IL';
+      u.rate = 0.95;
+      const v = voiceFor('he');
+      if (v) u.voice = v;
+      u.onend = () => set(false);
+      u.onerror = () => set(false);
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+      set(true);
+    });
+  }
 
-  btn.addEventListener('click', () => {
-    if (!canSpeak) return;
-    if (speaking) { speechSynthesis.cancel(); set(false); return; }
-    const u = new SpeechSynthesisUtterance(story.innerText.replace(/\s+/g, ' '));
-    u.lang = 'he-IL';
-    u.rate = 0.95;
-    const voice = speechSynthesis.getVoices().find((v) => /^he/i.test(v.lang));
-    if (voice) u.voice = voice;
-    u.onend = () => set(false);
-    u.onerror = () => set(false);
+  /* say an English sound */
+  function say(text) {
+    if (!canSpeak || !text) return;
+    if (speaking) set(false);
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    const v = voiceFor('en-us') || voiceFor('en');
+    if (v) u.voice = v;
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
-    set(true);
+  }
+  const pop = (el) => { el.classList.remove('is-tapped'); void el.offsetWidth; el.classList.add('is-tapped'); };
+  document.querySelectorAll('[data-say]').forEach((el) => {
+    el.addEventListener('click', () => { say(el.dataset.say); pop(el); });
   });
+
+  /* b and a slide together and merge into ba */
+  const sum = document.querySelector('.lesson__sum');
+  const tb = sum && sum.querySelector('.lesson__tile--b');
+  const ta = sum && sum.querySelector('.lesson__tile--a');
+  const tr = sum && sum.querySelector('.lesson__tile--result');
+  function merge() {
+    if (!sum) return;
+    // how far each letter travels to the middle of "ba" (stage units)
+    const k = sum.getBoundingClientRect().width / sum.offsetWidth || 1;
+    const centre = (el) => { const r = el.getBoundingClientRect(); return (r.left + r.width / 2) / k; };
+    const to = centre(tr);
+    sum.style.setProperty('--to-b', `${to - centre(tb)}px`);
+    sum.style.setProperty('--to-a', `${to - centre(ta)}px`);
+    sum.classList.remove('is-merging');
+    void sum.offsetWidth;
+    sum.classList.add('is-merging');
+  }
+  if (sum) {
+    sum.querySelector('.lesson__op--eq').addEventListener('click', merge);
+    tr.addEventListener('click', merge);
+    // on entering the page, once the loader is gone
+    setTimeout(merge, 1400);
+  }
   window.addEventListener('pagehide', () => { if (canSpeak) speechSynthesis.cancel(); });
 })();

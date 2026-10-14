@@ -523,7 +523,7 @@
   font-weight: 700;
 }
 .review-practice .rp-count { display: none; }
-.review-practice .practice__note { margin-top: 12px; font-size: 13px; font-weight: 400; color: #8a8fb3; }
+.review-practice .practice__note { margin-top: 12px; font-size: 13px; font-weight: 400; color: #5f6487; } /* AA contrast on white */
 
 /* ---------- v14: exact layout ---------- */
 /* the content column takes all the free width beside the topics */
