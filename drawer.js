@@ -31,7 +31,8 @@
   // coins in each world (demo): done = all of them, in progress = its share
   const coinsOf = (island) => {
     const total = 500;
-    if (island.status === 'done') return [island.earned && island.earned < total ? island.earned : total, total];
+    if (island.earned !== undefined) return [island.earned, total];
+    if (island.status === 'done') return [total, total];
     return [Math.round(((island.progress || 0) / 100) * total), total];
   };
   // the small map copies of the pictures (WebP at the shown size)
@@ -118,8 +119,7 @@
         <span class="wm-label">
           <span class="wm-label__name">${island.name}${no}</span>
           ${range ? `<span class="wm-label__line">${range}</span>` : ''}
-          ${open ? `<span class="wm-label__line"><b>${got}</b> מתוך ${total} מטבעות</span>
-            <span class="wm-label__bar"><i style="width:${Math.round((got / total) * 100)}%"></i></span>` : ''}
+          ${open ? `<span class="wm-coins"><img src="assets/coin.webp" alt="">צברת <b>${got}</b> מטבעות</span>` : ''}
         </span>
       </button>`;
     li.querySelector('button').addEventListener('click', () => go(i));

@@ -3238,3 +3238,19 @@ a:focus:not(:focus-visible) { outline: none; }
 .wm-here { top: -50px; gap: 6px; padding: 3px 4px 3px 12px; font-size: 14px; }
 .wm-here img { width: 30px; height: 30px; }
 .wm-here::after { bottom: -6px; width: 12px; height: 12px; margin-left: -6px; }
+/* the coins earned in each island: a small pill, as in the old reviews popup */
+.wm-coins {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  padding: 3px 10px 3px 8px;
+  border-radius: 14px;
+  background: #f1f3fb;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wm-navy);
+  white-space: nowrap;
+}
+.wm-coins img { width: 18px; height: 18px; object-fit: contain; }
+.wm-coins b { color: var(--wm-pink); }
