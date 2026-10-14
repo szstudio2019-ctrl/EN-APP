@@ -3221,3 +3221,12 @@ a:focus:not(:focus-visible) { outline: none; }
   .world-map__tab { height: 34px; padding: 0 16px; font-size: 15px; }
   .world-map__scroll { inset: 120px 0 0; }
 }
+/* the map's title and tabs a little lower, with air above them */
+.world-map__head { top: 44px; }
+.world-map__tabs { margin-top: 16px; }
+.world-map__scroll { inset: 182px 0 0; }
+@media (max-width: 760px) {
+  .world-map__head { top: 30px; }
+  .world-map__tabs { margin-top: 10px; }
+  .world-map__scroll { inset: 140px 0 0; }
+}
