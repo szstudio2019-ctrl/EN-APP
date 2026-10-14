@@ -242,3 +242,20 @@
 .slide-page:not(.lesson-body) .world__island .island__card { transform: scale(1.45); }
 .slide-page .world__island .island__stat span { font-size: 16px; }
 .slide-page .world__island .island__title { font-size: 24px; }
+
+/* ---------- Lesson v3 ---------- */
+/* the content centred in the panel's height (the same air above and below) */
+.slide-page .lesson-page { justify-content: center; }
+/* the b + a = ba tiles bigger, and still (no merge animation) */
+.slide-page .lesson__sum { gap: 30px; }
+.slide-page .lesson__tile { min-width: 120px; height: 122px; padding: 0 22px; font-size: 104px; border-radius: 14px; }
+.slide-page .lesson__op { font-size: 96px; }
+.lesson__sum.is-merging .lesson__tile--b,
+.lesson__sum.is-merging .lesson__tile--a,
+.lesson__sum.is-merging .lesson__tile--result,
+.slide-page .lesson__tile.is-tapped { animation: none; }
+.slide-page .lesson__tile--result { cursor: default; }
+/* the zebra bigger, in the marked area left of the text (the tooltip on top) */
+.slide-page .lesson__guide { left: 271px; top: 106px; width: 229px; height: 353px; }
+.slide-page .lesson-page { padding-bottom: 40px; } /* the same as the top, so the centring is even */
+.slide-page .lesson__guide { left: 255px; } /* clear of the b tile */
