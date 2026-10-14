@@ -3230,3 +3230,7 @@ a:focus:not(:focus-visible) { outline: none; }
   .world-map__tabs { margin-top: 10px; }
   .world-map__scroll { inset: 140px 0 0; }
 }
+/* "שירה את כאן": a pink tooltip with white text (and a pink pointer) */
+.wm-here { background: var(--wm-pink); color: #fff; box-shadow: 0 8px 16px rgba(232, 69, 122, .3); }
+.wm-here img { box-shadow: 0 0 0 2px #fff; }
+.wm-here::after { background: var(--wm-pink); box-shadow: none; }
