@@ -234,3 +234,11 @@
 }
 .slide-page .lesson__listen:hover { transform: scale(1.04); }
 .slide-page .lesson__guide { left: 357px; top: 150px; width: 173px; height: 260px; } /* ends above the method cards */
+
+/* the island's details card: back to a readable size (the island itself is
+   drawn small here, so its card is scaled back up, growing from its base) */
+.slide-page .world__island .island__card { transform-origin: 50% 100%; }
+.lesson-body .world__island .island__card { transform: scale(1.75); }
+.slide-page:not(.lesson-body) .world__island .island__card { transform: scale(1.45); }
+.slide-page .world__island .island__stat span { font-size: 16px; }
+.slide-page .world__island .island__title { font-size: 24px; }
