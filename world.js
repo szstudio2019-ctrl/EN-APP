@@ -177,8 +177,8 @@
   // sits on the island's lower left, following the island's own position
   const placeBtn = () => {
     const m = new DOMMatrix(getComputedStyle(islandEl).transform);
-    playBtn.style.left = `${m.e + 70}px`;
-    playBtn.style.top = `${m.f + 200}px`;
+    playBtn.style.left = `${m.e + 70 * m.a}px`; // m.a: the island's scale, when a page shrinks it
+    playBtn.style.top = `${m.f + 200 * m.d}px`;
   };
   placeBtn();
   let playing = false;
