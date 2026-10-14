@@ -29,3 +29,51 @@
 .slide-page .back-home { z-index: 5; }
 /* the island (with its own card) at the bottom-left, half out in the sky */
 .slide-page .world__island { transform: translate(36px, 702px) scale(.62); transform-origin: 0 0; z-index: 120; }
+
+/* right side: the island's two pages, "שיעור" and "תרגול" (as the topics
+   menu on the review page); the content centres between it and the zebra */
+.slide-page .practice { padding-right: 304px; }
+.slide-nav {
+  position: absolute;
+  top: 110px;
+  right: 24px;
+  z-index: 2;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  direction: rtl;
+}
+.slide-nav__item {
+  height: 96px;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  align-items: center;
+  column-gap: 14px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: #f4f5fb;
+  box-shadow: inset 0 0 0 1.5px #e4e6f2;
+  color: #2a2968;
+  text-decoration: none;
+  text-align: right;
+  font-family: 'Rubik', sans-serif;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.slide-nav__item:hover { transform: translateX(-4px); }
+.slide-nav__item.is-on { background: #fff; box-shadow: inset 0 0 0 2.5px var(--pink), 0 10px 20px rgba(227, 53, 99, .15); }
+.slide-nav__icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffe1ea;
+  color: var(--pink);
+}
+.slide-nav__item.is-on .slide-nav__icon { background: var(--pink); color: #fff; }
+.slide-nav__icon svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.slide-nav__text { display: flex; flex-direction: column; gap: 2px; }
+.slide-nav__text b { font-size: 20px; font-weight: 700; }
+.slide-nav__item.is-on .slide-nav__text b { color: var(--pink); }
+.slide-nav__text small { font-size: 14px; font-weight: 500; color: #6b6a92; }
