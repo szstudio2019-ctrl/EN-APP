@@ -299,3 +299,22 @@
 .slide-page:not(.lesson-body) .practice__level { zoom: 1.2; }
 .slide-page:not(.lesson-body) .practice__dots { zoom: 1.2; }
 .slide-page:not(.lesson-body) .practice__lead { font-size: 26px; }
+
+/* ---------- v6 (all lesson and practice pages) ---------- */
+/* no Play on the island on these pages */
+.slide-page .island-play { display: none; }
+/* the island and its details further left, out over the background (as far
+   as the screen edge allows) */
+.slide-page .world__island,
+.lesson-body .world__island { transform: translate(-3px, 702px) scale(.62); }
+/* every button the size of the lesson's "לתרגול" */
+.slide-page .practice__btn,
+.slide-page .practice__btn--back,
+.slide-page .practice__btn--done {
+  height: 64px;
+  padding: 0 40px;
+  gap: 14px;
+  font-size: 24px;
+  font-weight: 500;
+}
+.slide-page .practice__buttons { gap: 24px; margin-top: 18px; }
