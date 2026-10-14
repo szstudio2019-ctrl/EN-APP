@@ -757,3 +757,6 @@
 /* the white panel as wide as the header (as on every white-panel page) */
 .review-practice { --panel-inset: 0px; }
 .review-practice .rp-side .rp-isl-unit { transform: translateX(-45%); } /* the card stays clear of the screen edge */
+/* the island at the same size as on the lesson and practice pages */
+.rp-side .rp-isl-unit__img { height: 300px; }
+.rp-side .rp-isl-card { margin-top: -54px; }

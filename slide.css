@@ -281,3 +281,21 @@
 .slide-page .world__island .island__card { top: 395.2px; height: 90px; }
 .slide-page .world__island .island__stats { top: 12px; }
 .slide-page .world__island .island__progress { top: 72px; }
+
+/* ---------- v5 ---------- */
+/* under the big title, a small pink label: "שיעור" / "תרגול" */
+.slide-kicker { margin: 4px 0 0; font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 700; color: var(--pink); }
+/* the island at the practice page's size on the lesson too */
+.lesson-body .world__island { transform: translate(36px, 702px) scale(.62); }
+.lesson-body .world__island .island__card { transform: scale(1.45); }
+/* method 1 and 2: their parts on the same lines in both cards */
+.slide-page .lesson__way { justify-content: flex-start; padding: 22px 16px 0; height: 262px; }
+.slide-page .lesson__way-text { min-height: 50px; }
+.slide-page .lesson__way-tile { margin-top: 18px; height: 100px; justify-content: flex-start; }
+/* practice: no zebra, so less room kept on the left; the card, its arrows and
+   the levels bigger (as the lesson's tiles) */
+.slide-page:not(.lesson-body) .practice { padding-left: 140px; justify-content: center; }
+.slide-page:not(.lesson-body) .practice__deck { zoom: 1.22; }
+.slide-page:not(.lesson-body) .practice__level { zoom: 1.2; }
+.slide-page:not(.lesson-body) .practice__dots { zoom: 1.2; }
+.slide-page:not(.lesson-body) .practice__lead { font-size: 26px; }
