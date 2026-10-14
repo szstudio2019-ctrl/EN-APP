@@ -41,7 +41,9 @@
     seen[index] = true;
     saveSeen();
     prevBtn.disabled = index === 0;
-    nextBtn.disabled = index === WORDS.length - 1;
+    // the very last word: "next" fades and opens the end-of-practice popup
+    nextBtn.disabled = false;
+    nextBtn.classList.toggle('is-end', index === WORDS.length - 1);
     wordEl.textContent = WORDS[index];
     const stage = Math.floor(index / PER);
     const inStage = index % PER;
@@ -69,7 +71,13 @@
 
   const nextBtn = document.getElementById('practice-next');
   const prevBtn = document.getElementById('practice-prev');
-  nextBtn.addEventListener('click', () => show(index + 1, 1));
+  nextBtn.addEventListener('click', () => {
+    if (index === WORDS.length - 1) { openFinish(); return; }
+    const level = Math.floor(index / PER);
+    const endOfLevel = index % PER === PER - 1;
+    show(index + 1, 1);
+    if (endOfLevel) cheer(level + 1);
+  });
   prevBtn.addEventListener('click', () => show(index - 1, -1));
   stepsEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-step]');
@@ -144,6 +152,77 @@
     if (!url) return;
     new Audio(url).play().catch(() => {});
   });
+
+
+  /* Popups (as on the review page): a short "כל הכבוד" at the end of levels
+     1–5 that goes by itself; at the end of level 6 a trophy with confetti,
+     the coins earned and a way back to the island. The page's own details come
+     from the practice section: data-island-name, data-island-page, data-lesson. */
+  const page = document.querySelector('.practice');
+  const islandName = (page && page.dataset.islandName) || 'האי';
+  const islandPage = (page && page.dataset.islandPage) || 'index.html';
+  const lessonNo = (page && page.dataset.lesson) || '1';
+  const COINS_PER_LEVEL = 10;
+  const firstName = (() => { const n = document.querySelector('.user__name'); return n ? n.textContent.trim().split(' ')[0] : ''; })();
+  const COIN = '<img src="assets/coin.webp" alt="">';
+
+  const toast = document.createElement('div');
+  toast.className = 'pd-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toast);
+  let toastTimer;
+  function cheer(level) {
+    toast.innerHTML = `<span class="pd-toast__star" aria-hidden="true">⭐</span>
+      <span class="pd-toast__text"><b>כל הכבוד!</b> סיימת את רמה ${level}</span>
+      <span class="pd-toast__coins">+${COINS_PER_LEVEL} ${COIN}</span>`;
+    toast.classList.remove('is-on');
+    void toast.offsetWidth;
+    toast.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-on'), 2600);
+  }
+
+  const finish = document.createElement('div');
+  finish.className = 'pd-finish';
+  finish.setAttribute('role', 'dialog');
+  finish.setAttribute('aria-modal', 'true');
+  finish.hidden = true;
+  document.body.appendChild(finish);
+  const COLORS = ['#e33563', '#eeb741', '#91b121', '#2f7cf2', '#7d4ae8', '#ffd45c'];
+  function openFinish() {
+    const coins = STAGES.length * COINS_PER_LEVEL;
+    const confetti = Array.from({ length: 46 }, (_, i) => {
+      const left = Math.round(Math.random() * 100);
+      const delay = (Math.random() * 0.9).toFixed(2);
+      const dur = (2.4 + Math.random() * 1.6).toFixed(2);
+      const rot = Math.round(Math.random() * 360);
+      return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
+    }).join('');
+    finish.setAttribute('aria-label', 'סיימת את השיעור והתרגול');
+    finish.innerHTML = `
+      <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
+      <div class="pd-finish__card">
+        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
+        <p class="pd-finish__kicker">כל הכבוד!</p>
+        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את שיעור ותרגול ${lessonNo}</h2>
+        <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
+        <a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+      </div>`;
+    finish.hidden = false;
+    void finish.offsetWidth;
+    finish.classList.add('is-open');
+    finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
+  }
+  finish.addEventListener('click', (e) => {
+    if (e.target === finish) { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); }
+  });
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !finish.hidden) { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); }
+  });
+  // "סיימתי את התרגול" opens the same popup
+  const doneLink = document.getElementById('practice-done');
+  if (doneLink) doneLink.addEventListener('click', (e) => { e.preventDefault(); openFinish(); });
 
   show(0);
 })();

@@ -329,3 +329,93 @@
 
 /* "ההקלטה תשאר 7 ימים": quiet, as on the review page */
 .slide-page .practice__note { font-size: 13px; font-weight: 400; color: #5f6487; }
+
+/* ---------- practice popups ---------- */
+/* the last word: "next" fades (it opens the end popup) */
+.slide-page .practice__arrow.is-end { opacity: .45; }
+.slide-page .practice__arrow.is-end:hover { opacity: .8; }
+
+/* end of levels 1–5: a short "כל הכבוד" that goes by itself */
+.pd-toast {
+  position: fixed;
+  top: 22%;
+  left: 50%;
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 26px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--green), 0 18px 40px rgba(36, 34, 117, .25);
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+  color: #2a2968;
+  transform: translate(-50%, -16px) scale(.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease, transform .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+.pd-toast.is-on { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.pd-toast__star { font-size: 36px; animation: pd-spin 1.2s ease-in-out infinite; }
+@keyframes pd-spin { 50% { transform: rotate(18deg) scale(1.15); } }
+.pd-toast__text { font-size: 22px; }
+.pd-toast__text b { color: #5d8a0a; }
+.pd-toast__coins { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 16px; background: #fff6d6; font-size: 18px; font-weight: 700; color: #b07a00; }
+.pd-toast__coins img { width: 24px; height: 24px; }
+
+/* end of level 6: a trophy with confetti over a dimmed screen */
+.pd-finish {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(10, 8, 40, .55);
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+  opacity: 0;
+  transition: opacity .3s ease;
+  overflow: hidden;
+}
+.pd-finish[hidden] { display: none; }
+.pd-finish.is-open { opacity: 1; }
+.pd-finish__confetti { position: absolute; inset: 0; pointer-events: none; }
+.pd-finish__confetti i {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 16px;
+  border-radius: 3px;
+  animation: pd-fall 3s linear infinite;
+}
+.pd-finish__confetti i:nth-child(3n) { width: 8px; height: 8px; border-radius: 50%; }
+@keyframes pd-fall { to { transform: translate3d(40px, 110vh, 0) rotate(540deg); } }
+.pd-finish__card {
+  position: relative;
+  width: min(520px, 100%);
+  padding: 34px 34px 32px;
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .35);
+  text-align: center;
+  color: #2a2968;
+  transform: translateY(20px) scale(.92);
+  transition: transform .5s cubic-bezier(.34, 1.56, .64, 1);
+}
+.pd-finish.is-open .pd-finish__card { transform: none; }
+.pd-finish__trophy { width: 130px; height: 130px; margin-top: -90px; filter: drop-shadow(0 12px 18px rgba(176, 122, 0, .35)); animation: pd-trophy 2.4s ease-in-out infinite; }
+@keyframes pd-trophy { 50% { transform: translateY(-8px) rotate(-4deg); } }
+.pd-finish__kicker { margin: 6px 0 0; font-size: 22px; font-weight: 700; color: var(--pink); }
+.pd-finish__title { margin: 6px 0 0; font-size: 32px; line-height: 1.25; }
+.pd-finish__coins { display: inline-flex; align-items: center; gap: 8px; margin: 18px 0 0; padding: 8px 18px; border-radius: 20px; background: #fff6d6; font-size: 20px; font-weight: 600; color: #6b5200; }
+.pd-finish__coins img { width: 30px; height: 30px; }
+.pd-finish__coins b { color: #b07a00; font-size: 24px; }
+.pd-finish__go { margin-top: 24px; height: 60px; padding: 0 34px; gap: 12px; font-size: 22px; font-weight: 500; justify-content: center; direction: ltr; }
+.pd-finish__go span { direction: rtl; }
+.pd-finish__go .btn-pill__chevron { order: -1; transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) {
+  .pd-finish__confetti, .pd-toast__star, .pd-finish__trophy { animation: none; display: none; }
+  .pd-finish__trophy { display: inline; }
+}
