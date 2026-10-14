@@ -223,7 +223,6 @@
           <div class="island__progress"><span></span></div>
           <div class="island__done">
             <span class="island__done-label">הושלם</span>
-            <img class="island__done-icon" src="assets/icons/done-check.svg" alt="">
           </div>
         </div>
       </div>`;
