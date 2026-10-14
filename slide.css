@@ -276,3 +276,8 @@
 
 /* the white panel as wide as the header (as on every white-panel page) */
 .slide-page { --panel-inset: 0px; }
+/* the details card without its title: shorter (same bottom), so the island
+   shows above it while the card still sits on the island's base */
+.slide-page .world__island .island__card { top: 395.2px; height: 90px; }
+.slide-page .world__island .island__stats { top: 12px; }
+.slide-page .world__island .island__progress { top: 72px; }
