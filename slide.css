@@ -259,3 +259,17 @@
 .slide-page .lesson__guide { left: 271px; top: 106px; width: 229px; height: 353px; }
 .slide-page .lesson-page { padding-bottom: 40px; } /* the same as the top, so the centring is even */
 .slide-page .lesson__guide { left: 255px; } /* clear of the b tile */
+
+/* ---------- Lesson v4 ---------- */
+/* the island's details card without the page name */
+.slide-page .world__island .island__title { display: none; }
+/* "לתרגול": the arrow on the text's left, pointing left (on to the next step) */
+.slide-page .lesson__go { flex-direction: row; direction: ltr; }
+.slide-page .lesson__go .btn-pill__chevron { order: -1; transform: rotate(180deg); }
+/* the tooltip's play icon on its left side */
+.slide-page .lesson__listen { flex-direction: row; direction: ltr; padding: 0 16px 0 10px; }
+.slide-page .lesson__listen span { direction: rtl; }
+/* method 2: בָּא with the same big pink kamatz under the bet */
+.he-ba { display: inline-flex; align-items: flex-start; direction: rtl; }
+.he-bet { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
+.he-bet .lesson__kamatz { position: absolute; top: 100%; left: 50%; margin: 2px 0 0; translate: -50% 0; }

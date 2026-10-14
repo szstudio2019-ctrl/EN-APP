@@ -3275,3 +3275,4 @@ a:focus:not(:focus-visible) { outline: none; }
 
 /* header labels: bigger and fully white */
 .stat__label, .stat--chest .stat__label { font-size: 20px; font-weight: 600; color: #fff; }
+.back-home svg { transform: none; } /* the back arrow points left again (as asked) */
