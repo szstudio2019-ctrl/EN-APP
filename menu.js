@@ -85,6 +85,8 @@
     </div>`;
   document.getElementById('stage').appendChild(pop);
   const setPop = (state) => {
+    // the reviews now live in the islands map, on its "חזרות" tab (drawer.js)
+    if (state && window.SiteMap && window.SiteMap.close) { window.SiteMap.open('reviews'); return; }
     pop.classList.toggle('is-open', state);
     if (state) pop.querySelector('.reviews-pop__close').focus();
   };

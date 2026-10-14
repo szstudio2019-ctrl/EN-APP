@@ -3187,3 +3187,37 @@ a:focus:not(:focus-visible) { outline: none; }
   box-shadow: 2px 2px 0 0 var(--wm-pink);
   transform: rotate(45deg);
 }
+
+/* the map's two tabs under its title: "כל האיים" (default) and "חזרות" */
+.world-map__tabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 12px;
+  padding: 4px;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(35, 42, 107, .14);
+  pointer-events: auto;
+}
+.world-map__tab {
+  height: 40px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: var(--wm-navy);
+  font-family: 'Rubik', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.world-map__tab:hover { background: #fdeef3; }
+.world-map__tab.is-on { background: var(--wm-pink); color: #fff; }
+.world-map__scroll { inset: 150px 0 0; }
+.wm-island[hidden] { display: none; }
+@media (max-width: 760px) {
+  .world-map__tabs { margin-top: 8px; }
+  .world-map__tab { height: 34px; padding: 0 16px; font-size: 15px; }
+  .world-map__scroll { inset: 120px 0 0; }
+}

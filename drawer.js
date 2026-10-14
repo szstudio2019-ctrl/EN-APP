@@ -52,7 +52,7 @@
   if (handle) {
     handle.classList.add('worlds-tab');
     handle.setAttribute('aria-controls', 'world-map');
-    handle.setAttribute('aria-label', 'מפת העולמות');
+    handle.setAttribute('aria-label', 'מפת האיים');
     handle.querySelectorAll('.tab-tip, .rp-tab-label, .drawer-handle__arrow').forEach((el) => el.remove());
     if (!handle.querySelector('.worlds-tab__label')) handle.insertAdjacentHTML('beforeend', '<span class="worlds-tab__label">איים של אותיות</span>');
   }
@@ -70,8 +70,11 @@
   map.innerHTML = `
     <section class="world-map__panel" role="dialog" aria-modal="true" aria-labelledby="world-map-title">
       <header class="world-map__head">
-        <h2 class="world-map__title" id="world-map-title">מפת העולמות</h2>
-        <p class="world-map__sub">כל העולמות לפי סדר הלמידה</p>
+        <h2 class="world-map__title" id="world-map-title">מפת האיים</h2>
+        <div class="world-map__tabs" role="tablist" aria-label="מה להציג">
+          <button class="world-map__tab is-on" type="button" role="tab" aria-selected="true" data-tab="all">כל האיים</button>
+          <button class="world-map__tab" type="button" role="tab" aria-selected="false" data-tab="reviews">חזרות</button>
+        </div>
       </header>
       <button class="world-map__close" type="button" aria-label="סגירת המפה">${CLOSE}</button>
       <div class="world-map__scroll">
@@ -154,9 +157,14 @@
   /* ---------- Layout: picture centres along a wave, a smooth path through them ----------
      Spacing keeps every block (picture + label) clear of its neighbours. */
   const vertical = () => window.matchMedia('(max-width: 760px)').matches;
+  let isOpen = false;
+  // the tab: every island, or only the review islands (the old "כל החזרות" popup)
+  let tab = 'all';
+  const shownList = () => ISLANDS.map((_, i) => i).filter((i) => tab === 'all' || ISLANDS[i].review);
   function layout() {
     const V = vertical();
-    const n = ISLANDS.length;
+    const shown = shownList();
+    const n = shown.length;
     const W = scroll.clientWidth;
     const H = scroll.clientHeight;
     let pts;
@@ -168,29 +176,36 @@
       tw = W;
       th = 150 + (n - 1) * gap + 230;
       const amp = Math.max(0, Math.min(70, W / 2 - 120));
-      pts = ISLANDS.map((_, i) => [W / 2 + amp * Math.sin(i * 1.25), 150 + i * gap]);
+      pts = shown.map((_, k) => [W / 2 + amp * Math.sin(k * 1.25), 150 + k * gap]);
     } else {
       // blocks are 230px wide: 300px apart, and the wave stays inside the height
       const gap = 300;
-      th = Math.max(560, H);
+      th = Math.max(520, H);
       tw = Math.max(W, 220 + (n - 1) * gap + 220);
       const mid = th / 2 - 35; // the label hangs under the picture, so the centre sits a little higher
       const amp = Math.max(0, Math.min(190, (th - 420) / 2));
-      // RTL: the first world on the right
-      pts = ISLANDS.map((_, i) => [tw - 220 - i * gap, mid + amp * Math.sin(i * 1.15)]);
+      // RTL: the first one on the right; a short row (the reviews) sits in the middle
+      const start = n * gap < W ? (W + (n - 1) * gap) / 2 : tw - 220;
+      pts = shown.map((_, k) => [start - k * gap, mid + amp * Math.sin(k * 1.15)]);
     }
     track.style.width = `${tw}px`;
     track.style.height = `${th}px`;
     svg.setAttribute('width', tw);
     svg.setAttribute('height', th);
     svg.setAttribute('viewBox', `0 0 ${tw} ${th}`);
-    nodes.forEach((li, i) => { li.style.left = `${pts[i][0]}px`; li.style.top = `${pts[i][1]}px`; });
+    // place the shown islands; hide the rest
+    const at = {};
+    shown.forEach((i, k) => { at[i] = pts[k]; });
+    nodes.forEach((li, i) => {
+      li.hidden = !at[i];
+      if (at[i]) { li.style.left = `${at[i][0]}px`; li.style.top = `${at[i][1]}px`; }
+    });
     // Catmull-Rom through the picture centres, one piece per pair
-    const seg = (i) => {
-      const p0 = pts[Math.max(0, i - 1)];
-      const p1 = pts[i];
-      const p2 = pts[i + 1];
-      const p3 = pts[Math.min(n - 1, i + 2)];
+    const seg = (k) => {
+      const p0 = pts[Math.max(0, k - 1)];
+      const p1 = pts[k];
+      const p2 = pts[k + 1];
+      const p3 = pts[Math.min(n - 1, k + 2)];
       const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
       const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
       return `M${p1[0].toFixed(1)},${p1[1].toFixed(1)} C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
@@ -199,21 +214,48 @@
     // world or to the learner's world; every other piece is dashed
     let solid = '';
     let dashed = '';
-    for (let i = 0; i < n - 1; i += 1) {
-      const a = states[i];
-      const b = states[i + 1];
+    for (let k = 0; k < n - 1; k += 1) {
+      const a = states[shown[k]];
+      const b = states[shown[k + 1]];
       const lit = (a === 'done' && (b === 'done' || b === 'current')) || (a === 'current' && b === 'done');
-      if (lit) solid += `<path class="wm-line wm-line--done" pathLength="1" d="${seg(i)}"/>`;
-      else dashed += `<path class="wm-line wm-line--next" d="${seg(i)}"/>`;
+      if (lit) solid += `<path class="wm-line wm-line--done" pathLength="1" d="${seg(k)}"/>`;
+      else dashed += `<path class="wm-line wm-line--next" d="${seg(k)}"/>`;
     }
     svg.innerHTML = `<g class="wm-lines-next">${dashed}</g><g class="wm-lines-done">${solid}</g>`;
-    return pts;
+    return at;
   }
+  // bring the viewed island (or the learner's, or the first shown) into the middle
+  function focusMap(at) {
+    const shown = shownList();
+    const pick = [viewing, reached].find((i) => at[i]) ?? shown[0];
+    const focus = at[pick];
+    if (!focus) return;
+    if (vertical()) scroll.scrollTo({ top: focus[1] - scroll.clientHeight / 2, behavior: 'instant' });
+    else scroll.scrollTo({ left: focus[0] - scroll.clientWidth / 2, behavior: 'instant' });
+  }
+  function setTab(next) {
+    tab = next === 'reviews' ? 'reviews' : 'all';
+    map.querySelectorAll('.world-map__tab').forEach((b) => {
+      const on = b.dataset.tab === tab;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', String(on));
+    });
+    if (!isOpen) return;
+    focusMap(layout());
+    // redraw the line for the new set
+    map.classList.remove('is-drawn');
+    void map.offsetWidth;
+    map.classList.add('is-drawn');
+  }
+  map.querySelector('.world-map__tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-tab]');
+    if (b) setTab(b.dataset.tab);
+  });
 
   /* ---------- Open / close: grows out of the tab ---------- */
-  let isOpen = false;
   let closeTimer;
-  function setMap(open) {
+  function setMap(open, which) {
+    if (open && which) setTab(which);
     if (open === isOpen) return;
     isOpen = open;
     clearTimeout(closeTimer);
@@ -221,11 +263,7 @@
     if (open) {
       map.hidden = false;
       document.body.classList.add('world-map-open');
-      const pts = layout();
-      // bring the viewed world (or the learner's) into the middle, at once
-      const focus = pts[viewing > 0 ? viewing : reached];
-      if (vertical()) scroll.scrollTo({ top: focus[1] - scroll.clientHeight / 2, behavior: 'instant' });
-      else scroll.scrollTo({ left: focus[0] - scroll.clientWidth / 2, behavior: 'instant' });
+      focusMap(layout());
       map.classList.remove('is-drawn');
       void map.offsetWidth; // start from the small state, then grow
       map.classList.add('is-open');
@@ -239,7 +277,7 @@
       if (handle) handle.focus({ preventScroll: true });
     }
   }
-  if (handle) handle.addEventListener('click', () => setMap(!isOpen));
+  if (handle) handle.addEventListener('click', () => setMap(!isOpen, 'all'));
   map.querySelector('.world-map__close').addEventListener('click', () => setMap(false));
   // a click outside the popup closes it
   map.addEventListener('click', (e) => { if (!panel.contains(e.target)) setMap(false); });
@@ -257,7 +295,8 @@
   if ('requestIdleCallback' in window) requestIdleCallback(preload, { timeout: 2500 });
   else setTimeout(preload, 1200);
 
-  window.SiteMap = { open: () => setMap(true), close: () => setMap(false) };
+  // SiteMap.open('reviews') opens it on the reviews tab (the menu's "חזרות", the finale)
+  window.SiteMap = { open: (which) => setMap(true, which || 'all'), close: () => setMap(false) };
   window.SiteDrawer.sync = (index) => {
     viewing = index;
     nodes.forEach((li, i) => li.classList.toggle('is-viewing', i === index));
