@@ -184,7 +184,15 @@
   let playing = false;
   const sfx = art.sound ? new Audio(`assets/${art.sound}.wav`) : null;
   if (sfx) sfx.preload = 'auto';
-  const ahh = () => { if (sfx) { sfx.currentTime = 0; sfx.play().catch(() => {}); } };
+  // Sound and the browser's autoplay rule: no sound until the learner has
+  // tapped, clicked or pressed a key somewhere in the page (audioUnlocked).
+  // Before that a hover plays the island muted, with a small speaker hint.
+  let audioUnlocked = false;
+  let withSound = false;
+  const unlock = () => { audioUnlocked = true; };
+  window.addEventListener('pointerdown', unlock, { once: true, capture: true });
+  window.addEventListener('keydown', unlock, { once: true, capture: true });
+  const ahh = () => { if (sfx && withSound) { sfx.currentTime = 0; sfx.play().catch(() => {}); } };
   // islands without a clip come alive with a CSS animation instead
   let startAnim = () => islandEl.classList.add('is-alive');
   let stopAnim = () => islandEl.classList.remove('is-alive');
@@ -200,6 +208,8 @@
         v.muted = true;
         v.playsInline = true;
         v.preload = 'auto';
+        v.setAttribute('muted', ''); // as attributes too (Safari / iOS)
+        v.setAttribute('playsinline', '');
         v.style.cssText = box;
         return v;
       };
@@ -227,7 +237,7 @@
       stopAnim = () => {
         [front, back].forEach((v) => { v.pause(); v.currentTime = 0; });
         islandEl.classList.remove('is-playing');
-        if (sfx) sfx.pause();
+        if (sfx) { sfx.pause(); sfx.currentTime = 0; }
       };
     } else {
       // Safari / iPhone: animated WebP + WAV
@@ -237,11 +247,20 @@
       anim.style.cssText = box;
       still.after(anim);
       startAnim = () => { anim.src = `assets/${art.video}.webp?${Date.now()}`; islandEl.classList.add('is-playing'); ahh(); };
-      stopAnim = () => { anim.removeAttribute('src'); islandEl.classList.remove('is-playing'); if (sfx) sfx.pause(); };
+      stopAnim = () => { anim.removeAttribute('src'); islandEl.classList.remove('is-playing'); if (sfx) { sfx.pause(); sfx.currentTime = 0; } };
     }
   }
 
-  function setPlaying(on) {
+  // the speaker hint: shown while the island plays without sound
+  const hint = document.createElement('span');
+  hint.className = 'island-sound-hint';
+  hint.setAttribute('aria-hidden', 'true');
+  hint.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
+  islandEl.appendChild(hint);
+  function setPlaying(on, sound) {
+    withSound = !!(on && sound);
+    islandEl.classList.toggle('is-muted', on && !withSound);
+    if (on && playing) { ahh(); return; } // already moving: just add the sound
     playing = on;
     playBtn.innerHTML = on ? STOP_ICON : PLAY_ICON;
     playBtn.setAttribute('aria-label', on ? 'עצירת האנימציה' : 'הפעלת האנימציה');
@@ -249,13 +268,15 @@
     if (on) startAnim(); else stopAnim();
   }
   setPlaying(false);
-  playBtn.addEventListener('click', () => setPlaying(!playing));
-  islandEl.addEventListener('click', () => setPlaying(!playing));
+  playBtn.addEventListener('click', () => setPlaying(!playing, true));
+  // a click or tap on the island always plays it with its sound (and unlocks
+  // sound for the page): the way in on phones, which have no hover
+  islandEl.addEventListener('click', () => { audioUnlocked = true; setPlaying(true, true); });
   // no Play button any more: with a mouse the island comes alive (and makes its
   // sound) while the pointer is over it; a tap still toggles it on touch screens
   playBtn.hidden = true;
-  islandEl.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') setPlaying(true); });
-  islandEl.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setPlaying(false); });
+  islandEl.addEventListener('mouseenter', () => setPlaying(true, audioUnlocked));
+  islandEl.addEventListener('mouseleave', () => setPlaying(false));
 
   /* Progress bar fills after the entrance */
   const bar = document.getElementById('world-progress');

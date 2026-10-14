@@ -376,3 +376,28 @@
 .world-page .world__island .island__stats { top: 12px; }
 .world-page .world__island .island__progress { top: 72px; }
 .world-page .island-play { display: none; }
+
+/* a small speaker on the island while it plays without sound: tap to hear */
+.island-sound-hint {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  z-index: 5;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .92);
+  color: var(--pink);
+  box-shadow: 0 0 0 3px var(--pink), 0 8px 16px rgba(36, 34, 117, .25);
+  translate: -50% 0;
+  opacity: 0;
+  scale: .7;
+  pointer-events: none;
+  transition: opacity .25s ease, scale .25s ease;
+}
+.island-sound-hint svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.world__island.is-muted .island-sound-hint { opacity: 1; scale: 1; animation: hint-pulse 1.4s ease-in-out infinite; }
+@keyframes hint-pulse { 50% { scale: 1.1; } }
+@media (prefers-reduced-motion: reduce) { .world__island.is-muted .island-sound-hint { animation: none; } }
