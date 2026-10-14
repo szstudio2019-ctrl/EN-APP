@@ -273,3 +273,6 @@
 .he-ba { display: inline-flex; align-items: flex-start; direction: rtl; }
 .he-bet { position: relative; display: inline-flex; flex-direction: column; align-items: center; }
 .he-bet .lesson__kamatz { position: absolute; top: 100%; left: 50%; margin: 2px 0 0; translate: -50% 0; }
+
+/* the white panel as wide as the header (as on every white-panel page) */
+.slide-page { --panel-inset: 0px; }

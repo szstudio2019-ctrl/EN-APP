@@ -753,3 +753,7 @@
 .review-practice .rp-progress { margin-top: 36px; } /* 24px under the lowest (tilted) sheet */
 .review-practice .rp-main .practice__note { margin-top: 14px; }
 .review-practice .rp-main .practice__note { margin-top: 8px; }
+
+/* the white panel as wide as the header (as on every white-panel page) */
+.review-practice { --panel-inset: 0px; }
+.review-practice .rp-side .rp-isl-unit { transform: translateX(-45%); } /* the card stays clear of the screen edge */
