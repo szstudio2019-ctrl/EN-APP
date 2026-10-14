@@ -189,3 +189,48 @@
 .slide-page .lesson__kamatz::after { content: ''; position: absolute; left: 50%; border-radius: 4px; background: var(--pink); translate: -50% 0; }
 .slide-page .lesson__kamatz::before { top: 0; width: 44px; height: 9px; }
 .slide-page .lesson__kamatz::after { top: 0; width: 9px; height: 30px; }
+
+/* ---------- Lesson v2 ---------- */
+/* the tiles back to their first look: light blue with navy letters, "ba" filled pink */
+.slide-page .lesson__tile--b,
+.slide-page .lesson__tile--a { background: #e5f2ff; color: #1d2b7a; box-shadow: none; cursor: default; }
+.slide-page .lesson__tile--b:hover,
+.slide-page .lesson__tile--a:hover { transform: none; }
+.slide-page .lesson__tile--result { background: var(--pink); box-shadow: 0 0 0 2px #fff, 0 10px 20px rgba(227, 53, 99, .3); }
+.slide-page .lesson__tile--result .c-b,
+.slide-page .lesson__tile--result .c-a { color: #fff; }
+/* the method cards: plain cards again (no sound, no press) */
+.slide-page .lesson__way { cursor: default; }
+.slide-page .lesson__way:hover,
+.slide-page .lesson__way:active { transform: none; box-shadow: inset 0 0 0 1px #bebebe; }
+
+/* the same air under the title as over the "לתרגול" button */
+.slide-page .lesson__intro { margin-top: 36px; }
+.slide-page .lesson__go { margin-top: 36px; font-weight: 500; }
+/* "לתרגול": the arrow the other way */
+.slide-page .lesson__go .btn-pill__chevron { transform: none; }
+
+/* the zebra right beside the text; "האזינו להסבר" a tooltip over her */
+.slide-page .lesson__guide { left: 330px; top: 175px; width: 200px; height: 300px; }
+.slide-page .lesson__listen {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  translate: -50% 0;
+  white-space: nowrap;
+  height: 46px;
+  font-size: 17px;
+}
+.slide-page .lesson__listen::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+.slide-page .lesson__listen:hover { transform: scale(1.04); }
+.slide-page .lesson__guide { left: 357px; top: 150px; width: 173px; height: 260px; } /* ends above the method cards */
