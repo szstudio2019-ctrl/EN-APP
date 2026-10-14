@@ -367,3 +367,12 @@
   50% { translate: 0 -12px; scale: 1.02; }
 }
 @media (prefers-reduced-motion: reduce) { .world__island.is-alive .island__img { animation: none; } }
+
+/* the island's card on every island page: no title (the page already says
+   it), so a shorter card that leaves the island in view; and no Play button
+   (the island plays while the mouse is over it) */
+.world-page .world__island .island__title { display: none; }
+.world-page .world__island .island__card { top: 395.2px; height: 90px; }
+.world-page .world__island .island__stats { top: 12px; }
+.world-page .world__island .island__progress { top: 72px; }
+.world-page .island-play { display: none; }

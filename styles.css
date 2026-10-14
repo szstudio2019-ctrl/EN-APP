@@ -3276,3 +3276,7 @@ a:focus:not(:focus-visible) { outline: none; }
 /* header labels: bigger and fully white */
 .stat__label, .stat--chest .stat__label { font-size: 20px; font-weight: 600; color: #fff; }
 .back-home svg { transform: none; } /* the back arrow points left again (as asked) */
+
+/* the music button in the header (beside the home button) */
+.music-btn { padding: 0; background: none; cursor: pointer; }
+.music-btn.is-off { opacity: .6; }

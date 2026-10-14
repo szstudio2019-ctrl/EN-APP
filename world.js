@@ -251,6 +251,11 @@
   setPlaying(false);
   playBtn.addEventListener('click', () => setPlaying(!playing));
   islandEl.addEventListener('click', () => setPlaying(!playing));
+  // no Play button any more: with a mouse the island comes alive (and makes its
+  // sound) while the pointer is over it; a tap still toggles it on touch screens
+  playBtn.hidden = true;
+  islandEl.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') setPlaying(true); });
+  islandEl.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') setPlaying(false); });
 
   /* Progress bar fills after the entrance */
   const bar = document.getElementById('world-progress');
