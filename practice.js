@@ -50,6 +50,9 @@
       // a level turns green once the learner has moved on to a later level
       const reached = Math.max(-1, ...Object.keys(seen).map(Number));
       li.classList.toggle('is-done', reached >= (k + 1) * PER);
+      // a done (green) level can always be opened again
+      const b = li.querySelector('button');
+      b.title = li.classList.contains('is-done') && k !== stage ? `לחזור לרמה ${k + 1}` : `רמה ${k + 1}`;
     });
     [...dotsEl.children].forEach((d, k) => {
       d.classList.toggle('is-on', k === inStage);
