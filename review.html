@@ -261,12 +261,12 @@
       sceneHalf: 540, // the scene reaches 540px above the stage centre (not 626)
       island: { still: 'island-review', box: [32, -14, 504, 504] },
       lessons: [
-        // 1-4: the short reviews (demo: done); 5: the full review screen with every topic
-        { n: 1, x: 720, y: 431, status: 'done', href: '#review-1' },
-        { n: 2, x: 800, y: 327, status: 'done', href: '#review-2' },
-        { n: 3, x: 932, y: 387, status: 'done', href: '#review-3' },
-        { n: 4, x: 1110, y: 530, status: 'done', href: '#review-4' },
-        { n: 5, x: 1169, y: 389, status: 'current', href: 'review-practice.html?r=' + REVIEW },
+        // every pin opens the review practice with this island's range (topics after the range stay locked); p = the pin
+        { n: 1, x: 720, y: 431, status: 'done', href: 'review-practice.html?r=' + REVIEW + '&p=1' },
+        { n: 2, x: 800, y: 327, status: 'done', href: 'review-practice.html?r=' + REVIEW + '&p=2' },
+        { n: 3, x: 932, y: 387, status: 'done', href: 'review-practice.html?r=' + REVIEW + '&p=3' },
+        { n: 4, x: 1110, y: 530, status: 'done', href: 'review-practice.html?r=' + REVIEW + '&p=4' },
+        { n: 5, x: 1169, y: 389, status: 'current', href: 'review-practice.html?r=' + REVIEW + '&p=5' },
       ],
     };
   </script>

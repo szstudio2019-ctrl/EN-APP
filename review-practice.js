@@ -62,7 +62,9 @@
   try { RANGE = RANGE || sessionStorage.getItem('en-app:review-range'); } catch (err) { /* blocked */ }
   RANGE = (RANGE || '1-38').replace(/[^0-9-]/g, '') || '1-38';
   const LAST = Number(RANGE.split('-').pop()) || 38;
-  const REVIEW_NO = Math.max(1, RANGES.indexOf(RANGE) + 1 || RANGES.length);
+  // the pin on the island (1-5) this review was opened from; it is the number on the page
+  const PIN = Math.min(5, Math.max(1, Number(new URLSearchParams(location.search).get('p')) || 5));
+  const REVIEW_NO = PIN;
   const isOpen = (ti) => TOPICS[ti].from <= LAST;
   const LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   // the page shows this review's number and range, and its back link returns to it
@@ -87,7 +89,8 @@
   const nextBtn = document.getElementById('practice-next');
   const prevBtn = document.getElementById('practice-prev');
 
-  const KEY = 'en-app:practice-review-5';
+  // progress is kept per island range and pin
+  const KEY = RANGE === '1-38' && PIN === 5 ? 'en-app:practice-review-5' : `en-app:practice-review:${RANGE}:${PIN}`;
   let done = {};
   try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { done = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
