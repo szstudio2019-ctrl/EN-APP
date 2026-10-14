@@ -65,7 +65,8 @@
   // the pin on the island (1-5) this review was opened from; it is the number on the page
   const PIN = Math.min(5, Math.max(1, Number(new URLSearchParams(location.search).get('p')) || 5));
   const REVIEW_NO = PIN;
-  const isOpen = (ti) => TOPICS[ti].from <= LAST;
+  // pin 5 is the full review: every topic open, whatever the island's range
+  const isOpen = (ti) => PIN === 5 || TOPICS[ti].from <= LAST;
   const LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   // the page shows this review's number and range, and its back link returns to it
   const noEl = document.querySelector('.rp-no');
