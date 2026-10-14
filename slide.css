@@ -419,3 +419,19 @@
   .pd-finish__confetti, .pd-toast__star, .pd-finish__trophy { animation: none; display: none; }
   .pd-finish__trophy { display: inline; }
 }
+
+/* ---------- the difficulty levels ----------
+   each level a circle with its number under it: ahead = white with a pink
+   border; the level you are on = pink with its number; done = green with ✓ */
+.slide-page .practice__steps { align-items: flex-start; }
+.slide-page .practice__steps::before { top: 15px; }
+.slide-page .practice__steps li { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.slide-page .practice__steps button { display: grid; place-items: center; background: #fff; color: var(--pink); box-shadow: inset 0 0 0 2px var(--pink); }
+.slide-page .practice__steps li.is-current button { background: var(--pink); color: #fff; box-shadow: 0 0 0 4px #ffe1ea; }
+.slide-page .practice__steps li.is-done:not(.is-current) button { background: var(--green); color: #fff; box-shadow: none; }
+.slide-page .practice__steps li.is-done.is-current button { background: var(--pink); color: #fff; box-shadow: 0 0 0 4px #ffe1ea; }
+.slide-page .practice__steps .step__in svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+.step__no { font-family: 'Rubik', sans-serif; font-size: 13px; font-weight: 600; color: #4a4970; line-height: 1; }
+.slide-page .practice__steps li.is-current .step__no { color: var(--pink); }
+.slide-page .practice__steps li.is-done:not(.is-current) .step__no { color: #5d8a0a; }
+.slide-page .practice__level { align-items: flex-start; }

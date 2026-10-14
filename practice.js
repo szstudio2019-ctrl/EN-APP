@@ -32,7 +32,9 @@
   const saveSeen = () => { try { localStorage.setItem(`${KEY}:seen`, JSON.stringify(seen)); } catch (err) { /* storage blocked */ } };
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
 
-  stepsEl.innerHTML = STAGES.map((w, i) => `<li><button type="button" data-step="${i}" aria-label="שלב ${i + 1}">${i + 1}</button></li>`).join('');
+  // each level: a circle (✓ when done, its number when open) and its number under it
+  stepsEl.innerHTML = STAGES.map((w, i) => `<li><button type="button" data-step="${i}" aria-label="רמה ${i + 1}"><span class="step__in"></span></button><span class="step__no" aria-hidden="true">${i + 1}</span></li>`).join('');
+  const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   dotsEl.innerHTML = STAGES[0].map(() => '<i></i>').join('');
 
   function show(i, dir) {
@@ -55,6 +57,8 @@
       // a done (green) level can always be opened again
       const b = li.querySelector('button');
       b.title = li.classList.contains('is-done') && k !== stage ? `לחזור לרמה ${k + 1}` : `רמה ${k + 1}`;
+      // in the circle: the number on the level you are on, ✓ on a done one
+      b.querySelector('.step__in').innerHTML = k === stage ? String(k + 1) : li.classList.contains('is-done') ? CHECK : '';
     });
     [...dotsEl.children].forEach((d, k) => {
       d.classList.toggle('is-on', k === inStage);
