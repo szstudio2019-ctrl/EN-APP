@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="world.css">
 </head>
-<body class="world-page">
+<body class="world-page review-world">
   <!-- אי החזרות: island page built on the doctor page's template (WORLD settings below) -->
   <!-- Loader: shown until the islands, background and fonts are ready -->
   <div class="loader" id="loader" role="status" aria-live="polite">
@@ -242,20 +242,31 @@
   </div>
 
   <script>
-    // Settings for this island page
+    // Settings for this island page. Each review island on the map opens this page
+    // with its range (review.html?r=1-16): that range shows here and is passed on
+    // to the practice, which opens only the topics learned by then.
+    let REVIEW = new URLSearchParams(location.search).get('r');
+    try { REVIEW = REVIEW || sessionStorage.getItem('en-app:review-range'); } catch (err) { /* blocked */ }
+    REVIEW = (REVIEW || '1-10').replace(/[^0-9-]/g, '') || '1-10';
+    // kept for the practice page too, in case a server drops the ?r= on the way
+    try { sessionStorage.setItem('en-app:review-range', REVIEW); } catch (err) { /* blocked */ }
     window.WORLD = {
       title: 'אי החזרות',
-      lessonsRange: '1-10',
+      // the island name on the scene, before the first pin (same game-title style as the doctor island)
+      heading: { lines: ['אי החזרות'], x: 850, y: 660 },
+      lessonsRange: REVIEW,
       coins: 350,
       progress: 0,
-      background: 'assets/world-review-bg.webp',
+      background: 'assets/world-review-bg-hd.webp', // sharper copy; drawn whole at 16:9 (zoomed out), see .review-world in world.css
+      sceneHalf: 540, // the scene reaches 540px above the stage centre (not 626)
       island: { still: 'island-review', box: [32, -14, 504, 504] },
       lessons: [
-        { n: 1, x: 675, y: 425, status: 'current', href: 'review-practice.html' },
-        { n: 2, x: 770, y: 302, status: 'locked', href: '#review-2' },
-        { n: 3, x: 927, y: 373, status: 'locked', href: '#review-3' },
-        { n: 4, x: 1138, y: 542, status: 'locked', href: '#review-4' },
-        { n: 5, x: 1208, y: 375, status: 'locked', href: '#review-5' },
+        // 1-4: the short reviews (demo: done); 5: the full review screen with every topic
+        { n: 1, x: 720, y: 431, status: 'done', href: '#review-1' },
+        { n: 2, x: 800, y: 327, status: 'done', href: '#review-2' },
+        { n: 3, x: 932, y: 387, status: 'done', href: '#review-3' },
+        { n: 4, x: 1110, y: 530, status: 'done', href: '#review-4' },
+        { n: 5, x: 1169, y: 389, status: 'current', href: 'review-practice.html?r=' + REVIEW },
       ],
     };
   </script>

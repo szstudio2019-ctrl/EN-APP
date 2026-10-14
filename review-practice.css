@@ -760,3 +760,51 @@
 /* the island at the same size as on the lesson and practice pages */
 .rp-side .rp-isl-unit__img { height: 300px; }
 .rp-side .rp-isl-card { margin-top: -54px; }
+
+/* Even rhythm (gestalt): related items sit close (12px), groups are split by
+   one equal gap (28px): title | zebra bubble + parents' note | sound tabs +
+   explanation | cards + progress + note | the done button */
+@media (min-width: 900px) {
+  .review-practice .rp-main { --rp-in: 12px; --rp-gap: 28px; }
+  .review-practice .rp-main .practice__title { margin: 0 !important; }
+  .review-practice .rp-main .rp-say { margin-top: var(--rp-gap) !important; }
+  .review-practice .rp-say__col { gap: var(--rp-in); }
+  .review-practice .rp-main .rp-subs { margin-top: var(--rp-gap) !important; }
+  .review-practice .rp-main .rp-explain { margin-top: var(--rp-in) !important; }
+  .review-practice .rp-main .practice__deck { margin-top: var(--rp-gap) !important; }
+  .review-practice .rp-main .rp-progress { margin-top: 20px !important; }
+  .review-practice .rp-main .rp-progress .practice__dots { margin-top: 0 !important; }
+  .review-practice .rp-main .practice__note { margin-top: var(--rp-in) !important; }
+  .review-practice .rp-main .practice__status:empty { display: none; }
+  .review-practice .rp-main .practice__status { margin-top: 6px !important; }
+  .review-practice .rp-main .practice__buttons { margin-top: var(--rp-gap) !important; }
+}
+/* a stage chip can show the topic's picture instead of an emoji (the smiles) */
+.rp-sub__icon img { display: block; width: 26px; height: 26px; object-fit: contain; }
+
+/* a topic that opens in a later review: still listed, faded, with a lock */
+.rp-topic.is-locked { cursor: not-allowed; opacity: .5; filter: grayscale(.85); box-shadow: none; }
+.rp-topic.is-locked:hover { transform: none; }
+.rp-lock {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 50%;
+  background: #6b6a8e;
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff;
+}
+.rp-lock svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* bigger stage chips (b–z, i / ea / ee …) */
+.review-practice .rp-sub { height: 58px; padding: 0 22px 0 14px; gap: 10px; border-radius: 30px; }
+.review-practice .rp-sub b { font-size: 30px; }
+.review-practice .rp-sub__icon { font-size: 28px; }
+.review-practice .rp-sub__icon img { width: 36px; height: 36px; }
+.review-practice .rp-sub__n { min-width: 30px; height: 30px; border-radius: 15px; font-size: 15px; }
+.review-practice .rp-subs { gap: 14px; }

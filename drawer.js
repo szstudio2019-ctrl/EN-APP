@@ -15,7 +15,10 @@
   if (!ISLANDS.length) return;
 
   const here = location.pathname.split('/').pop();
-  let viewing = Math.max(0, ISLANDS.findIndex((island) => island.page && island.page === here));
+  // a review island's page carries its range (review.html?r=1-16): match it exactly, else by the file
+  const pageOf = (p) => (p || '').split('?')[0];
+  const exact = ISLANDS.findIndex((island) => island.page && island.page === here + location.search);
+  let viewing = Math.max(0, exact >= 0 ? exact : ISLANDS.findIndex((island) => island.page && pageOf(island.page) === here));
   // the learner's world: the first one not done yet
   const reached = (() => { const i = ISLANDS.findIndex((island) => island.status !== 'done'); return i < 0 ? ISLANDS.length - 1 : i; })();
   const stateOf = (island, i) => {

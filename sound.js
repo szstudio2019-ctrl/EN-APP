@@ -168,39 +168,81 @@
     timer = null;
   }
 
-  /* ---------- the button sound: a short soft wooden "tick" ---------- */
-  function click() {
-    audio();
-    const t = ctx.currentTime;
-    // the knock: a short low tone that dies at once
+  /* ---------- the button sound: a soft round "pop", like a marimba bubble ----------
+     A warm sine that drops a little in pitch (the "pop"), an octave above it
+     that fades fast (the wood), and a soft echo a fifth higher – no hard click. */
+  function tone(type, f0, f1, t, vol, attack, decay) {
     const o = ctx.createOscillator();
     const g = ctx.createGain();
-    o.type = 'triangle';
-    o.frequency.value = 880;
-    env(g, t, 0.14, 0.002, 0.06);
+    o.type = type;
+    o.frequency.setValueAtTime(f0, t);
+    if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + 0.07);
+    env(g, t, vol, attack, decay);
     o.connect(g);
     g.connect(master);
     o.start(t);
-    o.stop(t + 0.08);
-    // the click: a very short tap of filtered noise
-    if (!noise) hat(t, 0); // makes the noise buffer
-    const src = ctx.createBufferSource();
-    src.buffer = noise;
-    const f = ctx.createBiquadFilter();
-    f.type = 'bandpass';
-    f.frequency.value = 2400;
-    f.Q.value = 1.2;
-    const ng = ctx.createGain();
-    env(ng, t, 0.12, 0.001, 0.025);
-    src.connect(f);
-    f.connect(ng);
-    ng.connect(master);
-    src.start(t);
-    src.stop(t + 0.04);
+    o.stop(t + attack + decay + 0.02);
   }
-  // the controls that move between stages
-  const STAGE = '.practice__steps button, .practice__arrow, .rp-topic, .rp-sub, .m-pins__arrow, .lesson, .slide-nav__item, .wm-island__btn, .world-map__tab, .lesson__go, .practice__btn';
-  document.addEventListener('click', (e) => { if (e.target.closest(STAGE)) click(); }, true);
+  function click() {
+    audio();
+    const t = ctx.currentTime;
+    tone('sine', 740, 587, t, 0.16, 0.004, 0.24);           // the pop (F#5 → D5)
+    tone('sine', 1174, 1174, t, 0.05, 0.002, 0.07);         // the wooden ring
+    tone('triangle', 880, 880, t + 0.06, 0.035, 0.006, 0.18); // a soft echo (A5)
+  }
+  // what makes the sound: every button, link, tab and pin – and the word on the card
+  const STAGE = 'button, a[href], [role="tab"], .lesson, .practice__word, .rp-topic, .rp-sub';
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest(STAGE);
+    if (!el || el.disabled || el.getAttribute('aria-disabled') === 'true') return;
+    if (el.closest('.music-btn')) return; // the music button has its own feel
+    click();
+  }, true);
+
+  /* ---------- hover: a tiny cute "bloop" when the mouse reaches a button ----------
+     A soft sine that slides up a little (a note from a happy pentatonic scale,
+     so nearby buttons sound like a little tune), with a quiet sparkle on top.
+     Mouse only, and only once the browser has allowed sound (after the first tap). */
+  const HOVER = 'button, .btn-pill, a.lesson, .rp-topic, .rp-sub, .back-home, .home-btn, .stat, .cart, .trophy, .help-btn, .menu-btn, .sb-link, .sb-sublink, .drawer-handle';
+  const NOTES = [72, 74, 76, 79, 81, 84]; // C D E G A C
+  let lastHover = 0;
+  let lastEl = null;
+  function hover() {
+    if (!ctx || ctx.state !== 'running') return;
+    const t = ctx.currentTime;
+    const f = midi(NOTES[Math.floor(Math.random() * NOTES.length)]);
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f * 0.84, t);
+    o.frequency.exponentialRampToValueAtTime(f, t + 0.05);
+    env(g, t, 0.07, 0.008, 0.16);
+    o.connect(g);
+    g.connect(master);
+    o.start(t);
+    o.stop(t + 0.2);
+    const s = ctx.createOscillator();
+    const sg = ctx.createGain();
+    s.type = 'triangle';
+    s.frequency.value = f * 2;
+    env(sg, t + 0.03, 0.022, 0.004, 0.1);
+    s.connect(sg);
+    sg.connect(master);
+    s.start(t + 0.03);
+    s.stop(t + 0.16);
+  }
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.addEventListener('pointerover', (e) => {
+      const el = e.target.closest && e.target.closest(HOVER);
+      if (!el) { lastEl = null; return; }
+      if (el === lastEl || el.disabled) return;
+      lastEl = el;
+      const now = performance.now();
+      if (now - lastHover < 90) return;
+      lastHover = now;
+      hover();
+    }, true);
+  }
 
   /* ---------- the header button ---------- */
   const NOTE_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>';

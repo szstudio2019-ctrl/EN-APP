@@ -22,7 +22,7 @@
     const k = Math.max(
       1,
       window.innerWidth / (W * scale),
-      (window.innerHeight / 2) / (626 * scale),
+      (window.innerHeight / 2) / (((window.WORLD && WORLD.sceneHalf) || 626) * scale),
     );
     stage.style.setProperty('--scene-k', (k * 1.01).toFixed(4));
   }

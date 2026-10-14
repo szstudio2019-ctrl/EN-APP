@@ -16,32 +16,32 @@
   // a playground slide (the emoji 🛝 is missing on Windows)
   const SLIDE = '<svg class="rp-svg" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 29V6M13 29V6M7 11h6M7 17h6M7 23h6" stroke="#3d4bb0" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M13 6c6 0 7 6 10 13 1.5 3.5 3 6 6 6" stroke="#e33563" stroke-width="4" stroke-linecap="round" fill="none"/></svg>';
   const TOPICS = [
-    { name: 'זיהוי האותיות', icon: '🔍', pic: 'review-find', subs: [
-      { label: 'b–z', icon: '🔤', text: 'מזהים כל אות ואומרים את הצליל שלה', words: C },
+    { name: 'זיהוי האותיות', from: 1, icon: '🔍', pic: 'review-find', subs: [
+      { label: 'b–z', icon: '🔤', pic: 'review-find', text: 'מזהים כל אות ואומרים את הצליל שלה', words: C },
     ] },
-    { name: 'האות של הרופא/ה', icon: '🩺', pic: 'review-doctor', subs: [
-      { label: 'a', icon: '🩺', text: 'האות a אומרת לאות שלפניה להגיד "אָה" – כמו אצל הרופא/ה', words: withC('a') },
+    { name: 'האות של הרופא/ה', from: 2, icon: '🩺', pic: 'review-doctor', subs: [
+      { label: 'a', icon: '🩺', pic: 'review-doctor', text: 'האות a אומרת לאות שלפניה להגיד "אָה" – כמו אצל הרופא/ה', words: withC('a') },
     ] },
-    { name: 'האותיות המחייכות', icon: '😊', pic: 'review-smiles', subs: [
-      { label: 'i', icon: '😊', text: 'האות i מחייכת ואומרת "אִי"', words: withC('i') },
-      { label: 'ea', icon: '😊', text: 'ea מחייכות יחד ואומרות "אִי"', words: withC('ea') },
-      { label: 'ee', icon: '😊', text: 'ee מחייכות יחד ואומרות "אִי"', words: withC('ee') },
+    { name: 'האותיות המחייכות', from: 5, icon: '😊', pic: 'review-smiles', subs: [
+      { label: 'i', icon: '😊', pic: 'review-smiles', text: 'האות i מחייכת ואומרת "אִי"', words: withC('i') },
+      { label: 'ea', icon: '😊', pic: 'review-smiles', text: 'ea מחייכות יחד ואומרות "אִי"', words: withC('ea') },
+      { label: 'ee', icon: '😊', pic: 'review-smiles', text: 'ee מחייכות יחד ואומרות "אִי"', words: withC('ee') },
     ] },
-    { name: 'האותיות הבודדות', icon: '☝️', pic: 'review-abc', subs: [
+    { name: 'האותיות הבודדות', from: 11, icon: '☝️', pic: 'review-abc', subs: [
       { label: 'o', icon: '😮', text: 'o – עיגול עם הפה: "אוֹ"', words: withC('o') },
       { label: 'u', icon: SLIDE, text: 'u – צליל קצר: "אַ"', words: withC('u') },
       { label: 'e', icon: '🕹️', text: 'e – אומרת "אֶ"', words: withC('e') },
     ] },
-    { name: 'צירופי האותיות', icon: '🔗', pic: 'review-blending', subs: [
+    { name: 'צירופי האותיות', from: 17, icon: '🔗', pic: 'review-blending', subs: [
       { label: 'oo', icon: '🐄', text: 'oo – כמו הפרה: "אוּוּ"', words: withC('oo') },
       { label: 'ai ay', icon: '🎮', text: 'ai / ay – שתי דרכים לכתוב את אותו הצליל', words: pair('ai', 'ay') },
       { label: 'ou ow', icon: '😕', text: 'ou / ow – "אַוּוּ", כמו כשמשהו כואב', words: pair('ou', 'ow') },
     ] },
-    { name: 'האותיות השורקות', icon: '🌬️', pic: 'review-whistling', subs: [
+    { name: 'האותיות השורקות', from: 22, icon: '🌬️', pic: 'review-whistling', subs: [
       { label: 'sh', icon: '🤫', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['sha', 'she', 'shi', 'sho', 'shu', 'shea', 'shee', 'shay', 'shou', 'show', 'shight', 'shame', 'shine'] },
       { label: 'ch', icon: '🚂', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow', 'chight', 'chase', 'chime'] },
     ] },
-    { name: 'צלילים מיוחדים', icon: '✨', pic: 'review-sounds', subs: [
+    { name: 'צלילים מיוחדים', from: 35, icon: '✨', pic: 'review-sounds', subs: [
       { label: 'th', icon: '👅', text: 'th – הלשון יוצאת קצת בין השיניים', words: ['this', 'that', 'thin', 'them', 'with', 'bath'] },
       { label: 'ph', icon: '📞', text: 'ph – נשמע כמו f', words: ['phone', 'photo', 'graph', 'dolphin', 'elephant', 'phonics'] },
       { label: 'tion', icon: '🎬', text: 'tion – בסוף מילה נשמע "שֶן"', words: ['action', 'nation', 'motion', 'lotion', 'station', 'fiction'] },
@@ -53,6 +53,26 @@
     s.words = s.words.map((w) => (typeof w === 'string' ? { show: w, say: w } : w));
   }));
   const countOf = (t) => t.subs.reduce((n, s) => n + s.words.length, 0);
+
+  // which review this is: each review island passes its range (?r=1-16). A topic
+  // is open once its first lesson is inside the range; later topics stay on the
+  // list, faded with a lock (they open in a later review)
+  const RANGES = ['1-10', '1-16', '1-21', '1-34', '1-38'];
+  let RANGE = new URLSearchParams(location.search).get('r');
+  try { RANGE = RANGE || sessionStorage.getItem('en-app:review-range'); } catch (err) { /* blocked */ }
+  RANGE = (RANGE || '1-38').replace(/[^0-9-]/g, '') || '1-38';
+  const LAST = Number(RANGE.split('-').pop()) || 38;
+  const REVIEW_NO = Math.max(1, RANGES.indexOf(RANGE) + 1 || RANGES.length);
+  const isOpen = (ti) => TOPICS[ti].from <= LAST;
+  const LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  // the page shows this review's number and range, and its back link returns to it
+  const noEl = document.querySelector('.rp-no');
+  if (noEl) { noEl.textContent = REVIEW_NO; noEl.setAttribute('aria-label', 'מספר ' + REVIEW_NO); }
+  const rangeEl = document.querySelector('.rp-isl-card__range b');
+  if (rangeEl) rangeEl.textContent = RANGE;
+  const islCard = document.querySelector('.rp-isl-card');
+  if (islCard) islCard.setAttribute('aria-label', islCard.getAttribute('aria-label').replace(/1-38/, RANGE));
+  document.querySelectorAll('a[href="review.html"]').forEach((a) => { a.href = 'review.html?r=' + RANGE; });
 
   const topicsEl = document.getElementById('rp-topics');
   const subsEl = document.getElementById('rp-subs');
@@ -79,12 +99,13 @@
   const keyOf = (i) => `${topic}.${sub}.${i}`;
 
   topicsEl.innerHTML = TOPICS.map((t, i) => `
-    <button class="rp-topic" type="button" role="tab" data-topic="${i}">
+    <button class="rp-topic${isOpen(i) ? '' : ' is-locked'}" type="button" role="tab" data-topic="${i}"${isOpen(i) ? '' : ' disabled aria-disabled="true" title="ייפתח בחזרה הבאה"'}>
       <span class="rp-topic__icon" aria-hidden="true">${t.pic ? `<img src="assets/icons/${t.pic}.webp" alt="">` : t.icon}</span>
       <span class="rp-topic__name">${t.name}</span>
       <span class="rp-topic__count">${countOf(t)} ${i === 0 ? 'אותיות' : 'מילים'}</span>
       <span class="rp-check" aria-hidden="true">${CHECK}</span>
       <span class="rp-again" aria-hidden="true">${AGAIN_ICON}</span>
+      ${isOpen(i) ? '' : `<span class="rp-lock" aria-hidden="true">${LOCK}</span>`}
     </button>`).join('');
 
   // a stage (or a whole topic) whose words are all recorded is done: a green
@@ -104,7 +125,7 @@
     const t = TOPICS[topic];
     subsEl.innerHTML = t.subs.map((s, i) => `
       <button class="rp-sub" type="button" data-sub="${i}">
-        <span class="rp-sub__icon" aria-hidden="true">${s.icon}</span>
+        <span class="rp-sub__icon" aria-hidden="true">${s.pic ? `<img src="assets/icons/${s.pic}.webp" alt="">` : s.icon}</span>
         <b lang="en" dir="ltr">${s.label}</b>
         <span class="rp-sub__n">${s.words.length}</span>
         <span class="rp-check" aria-hidden="true">${CHECK}</span>
@@ -169,7 +190,7 @@
   };
   topicsEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-topic]');
-    if (b) pickTopic(Number(b.dataset.topic));
+    if (b && isOpen(Number(b.dataset.topic))) pickTopic(Number(b.dataset.topic));
   });
   subsEl.addEventListener('click', (e) => {
     const b = e.target.closest('[data-sub]');
@@ -202,7 +223,7 @@
   const ARROW_NEXT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>';
   function openDone() {
     const t = TOPICS[topic];
-    const nextT = TOPICS[topic + 1];
+    const nextT = TOPICS[topic + 1] && isOpen(topic + 1) ? TOPICS[topic + 1] : null;
     pop.setAttribute('aria-label', `סיימת את ${t.name}`);
     pop.innerHTML = `
       <div class="rp-done__card">
@@ -210,11 +231,11 @@
         <p class="rp-done__kicker">כל הכבוד!</p>
         <h2 class="rp-done__title">סיימת את ${t.name}</h2>
         <p class="rp-done__text">תרגלת ${countOf(t)} ${topic === 0 ? 'אותיות' : 'מילים'}</p>
-        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : '<p class="rp-done__next"><b>סיימת את כל החזרות 🏆</b></p>'}
+        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : `<p class="rp-done__next"><b>${TOPICS[topic + 1] ? `סיימת את חזרה ${REVIEW_NO} 🏆` : 'סיימת את כל החזרות 🏆'}</b></p>`}
         <div class="rp-done__buttons">
-          <button class="rp-done__again" type="button" data-act="again">${AGAIN}<span>לתרגל שוב</span></button>
+          <button class="rp-done__again" type="button" data-act="again"><span>לתרגל שוב</span>${AGAIN}</button>
           ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`
-            : `<a class="btn-pill rp-done__go" href="review.html"><span>לאי החזרות</span>${ARROW_NEXT}</a>`}
+            : `<a class="btn-pill rp-done__go" href="review.html?r=${RANGE}"><span>לאי החזרות</span>${ARROW_NEXT}</a>`}
         </div>
       </div>`;
     pop.hidden = false;

@@ -8,3 +8,6 @@ assets/original/
 Thumbs.db
 
 .vercel
+
+# The client's spec (her reading-app prototype) - kept locally, never published
+docs/

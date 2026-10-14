@@ -204,6 +204,7 @@
   // Highlight the island being viewed (on an island page: that page's island)
   const sync = (current) => links.forEach(([link, i]) => link.classList.toggle('is-current', i === current));
   window.SiteMenu.sync = sync;
-  const pageIsland = ISLANDS.findIndex((island) => island.page === here);
+  const exactIsland = ISLANDS.findIndex((island) => island.page === here + location.search);
+  const pageIsland = exactIsland >= 0 ? exactIsland : ISLANDS.findIndex((island) => (island.page || '').split('?')[0] === here);
   if (pageIsland >= 0) sync(pageIsland);
 })();

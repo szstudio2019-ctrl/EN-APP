@@ -401,3 +401,22 @@
 .world__island.is-muted .island-sound-hint { opacity: 1; scale: 1; animation: hint-pulse 1.4s ease-in-out infinite; }
 @keyframes hint-pulse { 50% { scale: 1.1; } }
 @media (prefers-reduced-motion: reduce) { .world__island.is-muted .island-sound-hint { animation: none; } }
+
+/* Review island page: the scene is drawn whole at 16:9 (1920x1080 from the
+   stage top) – a zoomed-out view, sharper too; the pins were moved with it */
+.review-world .world__bg {
+  top: 0;
+  height: 1080px;
+  transform-origin: 960px 540px;
+  transform:
+    scale(var(--scene-k, 1))
+    translate(calc(var(--mx) * -10px), calc(var(--my) * -7px))
+    scale(1.01);
+}
+
+/* Island pages: the small island (with its card) sits bottom-left, a little smaller */
+.world-page:not(.review-practice) .world__island {
+  transform: translate(70px, 560px) scale(.84);
+  transform-origin: 0 0;
+}
+.world-page.is-loading:not(.review-practice) .world__island { translate: -80px 0; }
