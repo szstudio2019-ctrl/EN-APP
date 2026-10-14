@@ -3254,3 +3254,12 @@ a:focus:not(:focus-visible) { outline: none; }
 }
 .wm-coins img { width: 18px; height: 18px; object-fit: contain; }
 .wm-coins b { color: var(--wm-pink); }
+
+/* Inner pages (a white panel over the island's world or the clouds): the
+   background behind turns to frosted glass, softly blurred and a little
+   lighter, so the panel leads. A touch bigger, so the blur leaves no edge. */
+.slide-page .world__bg,
+.shop-page .shop__bg {
+  filter: blur(9px) saturate(.88) brightness(1.06);
+  scale: 1.05;
+}
