@@ -104,7 +104,8 @@
     const pic = picOf(island);
     const range = island.review ? `חזרות ${island.review}` : island.lessons ? `שיעורים ${island.lessons}` : '';
     const [got, total] = coinsOf(island);
-    const open = state !== 'locked' && !island.finale;
+    // every world shows the coins earned in it (a locked one: 0 of 500)
+    const open = !island.finale;
     const badge = state === 'done' ? `<span class="wm-badge wm-badge--done">${CHECK}</span>`
       : state === 'locked' ? `<span class="wm-badge wm-badge--lock">${LOCK}</span>` : '';
     const no = reviewNo[i] ? ` <span class="wm-no" aria-label="מספר ${reviewNo[i]}">${reviewNo[i]}</span>` : '';

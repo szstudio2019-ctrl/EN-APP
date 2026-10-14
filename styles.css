@@ -3234,3 +3234,7 @@ a:focus:not(:focus-visible) { outline: none; }
 .wm-here { background: var(--wm-pink); color: #fff; box-shadow: 0 8px 16px rgba(232, 69, 122, .3); }
 .wm-here img { box-shadow: 0 0 0 2px #fff; }
 .wm-here::after { background: var(--wm-pink); box-shadow: none; }
+/* "שירה את כאן" smaller; the photo and text sit from the right with air on the left */
+.wm-here { top: -50px; gap: 6px; padding: 3px 4px 3px 12px; font-size: 14px; }
+.wm-here img { width: 30px; height: 30px; }
+.wm-here::after { bottom: -6px; width: 12px; height: 12px; margin-left: -6px; }
