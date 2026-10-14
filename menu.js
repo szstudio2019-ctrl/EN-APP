@@ -33,15 +33,24 @@
   // Desktop and laptop (a real mouse): the menu opens on hover over its button
   // and closes a moment after the mouse leaves both the button and the menu
   let hoverTimer;
-  const hoverOpen = (e) => { if (e.pointerType !== 'mouse') return; clearTimeout(hoverTimer); if (!open) setMenu(true, true); };
+  // after the menu is closed on purpose (✕, the backdrop, Esc) the mouse is
+  // often right over the menu button: don't let the hover reopen it until the
+  // mouse has left the button
+  let hoverBlocked = false;
+  const blockHover = () => {
+    hoverBlocked = true;
+    setTimeout(() => { if (!openBtn.matches(':hover')) hoverBlocked = false; }, 400);
+  };
+  openBtn.addEventListener('pointerleave', () => { hoverBlocked = false; });
+  const hoverOpen = (e) => { if (e.pointerType !== 'mouse' || hoverBlocked) return; clearTimeout(hoverTimer); if (!open) setMenu(true, true); };
   const hoverClose = (e) => { if (e.pointerType !== 'mouse') return; clearTimeout(hoverTimer); hoverTimer = setTimeout(() => { if (open) setMenu(false, true); }, 350); };
   openBtn.addEventListener('pointerenter', hoverOpen);
   openBtn.addEventListener('pointerleave', hoverClose);
   sidebar.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') clearTimeout(hoverTimer); });
   sidebar.addEventListener('pointerleave', hoverClose);
-  document.getElementById('menu-close').addEventListener('click', () => setMenu(false));
-  document.getElementById('sidebar-backdrop').addEventListener('click', () => setMenu(false));
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) setMenu(false); });
+  document.getElementById('menu-close').addEventListener('click', (e) => { e.stopPropagation(); blockHover(); setMenu(false); });
+  document.getElementById('sidebar-backdrop').addEventListener('click', () => { blockHover(); setMenu(false); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) { blockHover(); setMenu(false); } });
 
   // Stagger the cascade-in of the menu rows
   sidebar.querySelectorAll('.sb-item').forEach((el, i) => el.style.setProperty('--i', i));
