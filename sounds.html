@@ -11,7 +11,9 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="world.css">
   <!-- the background mirrored (left ↔ right); the pins mirrored with it -->
-  <style>.world__bg { scale: -1 1; }</style>
+  <style>.world__bg { scale: -1 1; }
+    /* the island further left, clear of the corals */
+    body.world-page:not(.is-loading) .world__island { translate: -100px 0; }</style>
 </head>
 <body class="world-page">
   <!-- אי הצלילים המיוחדים: island page built on the doctor page's template (WORLD settings below) -->
