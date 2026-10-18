@@ -542,3 +542,11 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 }
 .pd-finish__close:hover { background: #ffe1ea; transform: scale(1.06); }
 .pd-finish__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }
+
+/* the zebra's bubble and the parents' note: 20px, dark blue; the small notes
+   at the bottom ("ההקלטה תשאר 7 ימים") 16px – every lesson / practice page */
+.slide-page .dz-bubble .lesson__story,
+.slide-page .dz-bubble p,
+.slide-page .dz-note,
+.slide-page .dz-note li { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 400; line-height: 30px; color: #232a6b; }
+.slide-page .practice__note { font-size: 16px; }

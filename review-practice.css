@@ -868,3 +868,11 @@
 }
 .pd-finish__close:hover { background: #ffe1ea; transform: scale(1.06); }
 .pd-finish__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }
+
+/* the zebra's bubble, the parents' note and the sound's explanation: 20px,
+   dark blue (every lesson / practice / review page); the small notes at the
+   bottom 16px */
+.review-practice .rp-bubble__text,
+.review-practice .rp-say__col .rp-intro__note,
+.review-practice .rp-main .rp-explain { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 400; line-height: 30px; color: #232a6b; }
+.review-practice .rp-main .practice__note { font-size: 16px; }

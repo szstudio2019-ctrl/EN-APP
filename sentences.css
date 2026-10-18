@@ -236,3 +236,9 @@
 .sl-box__challenge { margin-top: 6px; }
 .sl-box__list li + li { margin-top: 2px; }
 .sl-boxes { gap: 12px; }
+/* (as slide.css) bubbles 20px dark blue, small notes 16px */
+.sl-box.dz-bubble .lesson__story,
+.sl-box.dz-bubble .sl-box__challenge,
+.sl-box.dz-note,
+.sl-box.dz-note .sl-box__list { font-size: 20px; line-height: 30px; color: #232a6b; }
+.sentences .sentences__notes .practice__note { font-size: 16px; }
