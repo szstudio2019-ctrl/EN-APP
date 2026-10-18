@@ -81,3 +81,79 @@
    the video and the letters */
 .letters-lesson .abc-song { margin-top: auto; gap: 34px; }
 .letters-lesson .lesson__intro { margin-top: 26px; }
+
+/* ---------- letters practice: the song (right) and the table (left) ---------- */
+.slide-page .practice.letters-practice { padding-left: 110px; padding-right: 300px; }
+.lp-boxes { display: flex; gap: 22px; align-items: stretch; margin-top: 18px; direction: rtl; }
+.lp-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 18px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #ececf5, 0 12px 26px rgba(36, 34, 117, .08);
+}
+.lp-box__title { margin: 0; font-family: 'Rubik', sans-serif; font-size: 22px; font-weight: 700; color: var(--pink); }
+.lp-box--song { width: 330px; flex: none; }
+.lp-box--song .abc-song__screen { width: 220px; }
+.lp-box--song .abc-song__play { width: 72px; height: 72px; }
+.lp-box--song .abc-song__play svg { width: 34px; height: 34px; }
+/* the song's letters as pairs (capital over small), 7 a row */
+.lp-pairs { display: grid; grid-template-columns: repeat(7, 38px); gap: 6px 4px; justify-content: center; }
+.lp-pair { display: flex; flex-direction: column; gap: 3px; }
+.lp-pairs .abc-tile { width: 38px; height: 32px; font-size: 20px; line-height: 32px; border-radius: 8px; }
+.lp-pairs .abc-tile--small { --c: #e33563; --bg: #ffe6ee; }
+
+.lp-box--table { flex: 1; min-width: 0; }
+.lp-steps { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; font-family: 'Rubik', sans-serif; font-size: 17px; color: #232a6b; }
+.lp-steps li::before { content: '•'; margin-inline-end: 6px; color: var(--pink); }
+.lp-table-wrap { position: relative; margin-top: 18px; }
+.lp-start {
+  position: absolute;
+  top: -26px;
+  left: -8px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: #ffe1e6;
+  color: #e33535;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.lp-start::after { content: ''; position: absolute; left: 14px; bottom: -6px; border: 6px solid transparent; border-top-color: #ffe1e6; border-bottom: 0; }
+.lp-table { border-collapse: separate; border-spacing: 3px; }
+.lp-table th { width: 38px; font-family: 'Rubik', sans-serif; font-size: 14px; font-weight: 600; color: #8a8db0; }
+.lp-table td { padding: 0; }
+.lp-table td button {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #e5f2ff;
+  color: #232a6b;
+  font-family: 'Fredoka', 'Rubik', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.lp-table tr:nth-child(even) td button { background: #fff6cf; }
+.lp-table td button:hover { background: #c8e6c9; }
+.lp-table td button.is-tapped { background: #91b121; color: #fff; animation: abc-jump .5s ease; }
+.lp-tip { margin: auto 0 0; padding: 8px 16px; border-radius: 12px; background: #e9f6e8; font-family: 'Rubik', sans-serif; font-size: 16px; color: #232a6b; }
+.lp-tip b { color: #4caf50; }
+.letters-practice > .practice__note { margin-top: 12px; }
+/* fit: a smaller video, the boxes end above the island's card */
+.lp-box--song .abc-song__screen { width: 168px; }
+.lp-box { padding: 14px 18px 16px; gap: 10px; }
+.lp-boxes { margin-top: 16px; }
+.lp-box--table { justify-content: center; }
+.lp-tip { margin-top: 14px; }
+body.slide-page .practice.letters-practice { justify-content: flex-start; }
+.letters-practice > .practice__buttons { margin-top: auto; margin-bottom: 15px; }
+.lp-pairs .abc-tile { height: 27px; line-height: 27px; font-size: 18px; }
+.lp-pairs { gap: 5px 4px; }

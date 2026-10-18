@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="world.css">
   <link rel="stylesheet" href="practice.css">
   <link rel="stylesheet" href="slide.css">
+  <link rel="stylesheet" href="letters.css">
 </head>
 <body class="world-page practice-page slide-page">
   <!-- Island template page (Figma "האותיות של הרופא עולם 2-4").
@@ -87,7 +88,7 @@
 
       <!-- Practice (Figma "בואו נתרגל"): listen to each word and record yourself.
            Built by practice.js. -->
-      <section class="practice" aria-labelledby="practice-title" data-island-name="אי זיהוי האותיות" data-island-page="letters.html" data-lesson="1">
+      <section class="practice letters-practice" aria-labelledby="practice-title" data-island-name="אי זיהוי האותיות" data-island-page="letters.html" data-lesson="1">
         <a class="back-home" href="letters.html" aria-label="חזרה לאי זיהוי האותיות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
         <!-- right side: the island's two content pages -->
         <nav class="slide-nav" aria-label="בעמוד הזה">
@@ -97,40 +98,42 @@
           </a>
           <a class="slide-nav__item is-on" href="letters-practice.html" aria-current="page">
             <span class="slide-nav__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
-            <span class="slide-nav__text"><b>תרגול</b><small>6 רמות · מזהים ואומרים</small></span>
+            <span class="slide-nav__text"><b>תרגול</b><small>טבלת אותיות · מזהים ואומרים</small></span>
           </a>
         </nav>
         <h1 class="practice__title" id="practice-title">האי של זיהוי אותיות</h1>
         <p class="slide-kicker">תרגול</p>
-        <p class="practice__lead">אמרו את שם האות והקליטו את עצמכם. לחצו על האות כדי לשמוע אותה</p>
-        <div class="practice__level">
-          <span class="practice__level-label" id="level-label">רמת קושי</span>
-          <ol class="practice__steps" id="practice-steps" aria-labelledby="level-label"></ol>
-        </div>
-        <div class="practice__deck">
-          <button class="practice__arrow practice__arrow--prev" type="button" id="practice-prev" aria-label="המילה הקודמת"><img src="assets/chevron.svg" alt=""></button>
-          <div class="practice__stack">
-            <span class="practice__sheet practice__sheet--a" aria-hidden="true"></span>
-            <span class="practice__sheet practice__sheet--b" aria-hidden="true"></span>
-            <div class="practice__card" id="practice-card">
-              <button class="practice__word" type="button" id="practice-word" lang="en" dir="ltr" aria-label="השמעת המילה"></button>
-              <div class="practice__actions">
-                <button class="practice__action practice__action--rec" type="button" id="practice-rec">
-                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
-                  <span class="practice__label">הקלט</span>
-                </button>
-                <button class="practice__action practice__action--play" type="button" id="practice-play" disabled>
-                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
-                  <span class="practice__label">בדיקה</span>
-                </button>
-              </div>
+        <p class="practice__lead">הצביעו על כל אות ואמרו את שמה. לחצו על אות כדי לשמוע אותה</p>
+        <div class="lp-boxes">
+          <!-- right: the ABC song, with the letters that jump as they are sung -->
+          <section class="lp-box lp-box--song" aria-label="שיר האותיות">
+            <h2 class="lp-box__title">שיר האותיות</h2>
+            <div class="abc-song__screen">
+              <video class="abc-song__video" id="abc-video" src="assets/abc-song.mp4" preload="metadata" playsinline></video>
+              <button class="abc-song__play" type="button" id="abc-play" aria-label="השמעת השיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg></button>
             </div>
-          </div>
-          <button class="practice__arrow practice__arrow--next" type="button" id="practice-next" aria-label="המילה הבאה"><img src="assets/chevron.svg" alt=""></button>
+            <div class="abc-rows lp-pairs" dir="ltr" lang="en" id="abc-rows">
+              <span class="lp-pair"><button class="abc-tile" type="button" data-i="0" data-say="a">A</button><button class="abc-tile abc-tile--small" type="button" data-i="0" data-say="a">a</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="1" data-say="b">B</button><button class="abc-tile abc-tile--small" type="button" data-i="1" data-say="b">b</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="2" data-say="c">C</button><button class="abc-tile abc-tile--small" type="button" data-i="2" data-say="c">c</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="3" data-say="d">D</button><button class="abc-tile abc-tile--small" type="button" data-i="3" data-say="d">d</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="4" data-say="e">E</button><button class="abc-tile abc-tile--small" type="button" data-i="4" data-say="e">e</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="5" data-say="f">F</button><button class="abc-tile abc-tile--small" type="button" data-i="5" data-say="f">f</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="6" data-say="g">G</button><button class="abc-tile abc-tile--small" type="button" data-i="6" data-say="g">g</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="7" data-say="h">H</button><button class="abc-tile abc-tile--small" type="button" data-i="7" data-say="h">h</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="8" data-say="i">I</button><button class="abc-tile abc-tile--small" type="button" data-i="8" data-say="i">i</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="9" data-say="j">J</button><button class="abc-tile abc-tile--small" type="button" data-i="9" data-say="j">j</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="10" data-say="k">K</button><button class="abc-tile abc-tile--small" type="button" data-i="10" data-say="k">k</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="11" data-say="l">L</button><button class="abc-tile abc-tile--small" type="button" data-i="11" data-say="l">l</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="12" data-say="m">M</button><button class="abc-tile abc-tile--small" type="button" data-i="12" data-say="m">m</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="13" data-say="n">N</button><button class="abc-tile abc-tile--small" type="button" data-i="13" data-say="n">n</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="14" data-say="o">O</button><button class="abc-tile abc-tile--small" type="button" data-i="14" data-say="o">o</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="15" data-say="p">P</button><button class="abc-tile abc-tile--small" type="button" data-i="15" data-say="p">p</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="16" data-say="q">Q</button><button class="abc-tile abc-tile--small" type="button" data-i="16" data-say="q">q</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="17" data-say="r">R</button><button class="abc-tile abc-tile--small" type="button" data-i="17" data-say="r">r</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="18" data-say="s">S</button><button class="abc-tile abc-tile--small" type="button" data-i="18" data-say="s">s</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="19" data-say="t">T</button><button class="abc-tile abc-tile--small" type="button" data-i="19" data-say="t">t</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="20" data-say="u">U</button><button class="abc-tile abc-tile--small" type="button" data-i="20" data-say="u">u</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="21" data-say="v">V</button><button class="abc-tile abc-tile--small" type="button" data-i="21" data-say="v">v</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="22" data-say="w">W</button><button class="abc-tile abc-tile--small" type="button" data-i="22" data-say="w">w</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="23" data-say="x">X</button><button class="abc-tile abc-tile--small" type="button" data-i="23" data-say="x">x</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="24" data-say="y">Y</button><button class="abc-tile abc-tile--small" type="button" data-i="24" data-say="y">y</button></span><span class="lp-pair"><button class="abc-tile" type="button" data-i="25" data-say="z">Z</button><button class="abc-tile abc-tile--small" type="button" data-i="25" data-say="z">z</button></span>
+            </div>
+          </section>
+          <!-- left: Einat's letter table – read each row, check yourself with the song -->
+          <section class="lp-box lp-box--table" aria-label="טבלת זיהוי אותיות">
+            <h2 class="lp-box__title">תרגול – זיהוי אותיות</h2>
+            <ul class="lp-steps">
+              <li>הצביעו על כל אות ואמרו את שמה</li>
+              <li>השתמשו בשיר ובאותיות כדי לבדוק את עצמכם</li>
+              <li>תרגלו עד שאתם מכירים את כל האותיות!</li>
+            </ul>
+            <div class="lp-table-wrap">
+              <span class="lp-start" aria-hidden="true">התחילו כאן!</span>
+              <table class="lp-table" dir="ltr" lang="en">
+                <thead><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th></tr></thead>
+                <tbody><tr><td><button type="button" data-say="b">b</button></td><td><button type="button" data-say="f">f</button></td><td><button type="button" data-say="k">k</button></td><td><button type="button" data-say="l">l</button></td><td><button type="button" data-say="m">m</button></td><td><button type="button" data-say="n">n</button></td><td><button type="button" data-say="p">p</button></td><td><button type="button" data-say="m">m</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="t">t</button></td><td><button type="button" data-say="s">s</button></td><td><button type="button" data-say="c">c</button></td><td><button type="button" data-say="c">c</button></td><td><button type="button" data-say="j">j</button></td><td><button type="button" data-say="q">q</button></td><td><button type="button" data-say="w">w</button></td></tr><tr><td><button type="button" data-say="c">c</button></td><td><button type="button" data-say="b">b</button></td><td><button type="button" data-say="b">b</button></td><td><button type="button" data-say="k">k</button></td><td><button type="button" data-say="b">b</button></td><td><button type="button" data-say="k">k</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="n">n</button></td><td><button type="button" data-say="r">r</button></td><td><button type="button" data-say="r">r</button></td><td><button type="button" data-say="z">z</button></td><td><button type="button" data-say="z">z</button></td><td><button type="button" data-say="d">d</button></td><td><button type="button" data-say="k">k</button></td><td><button type="button" data-say="r">r</button></td><td><button type="button" data-say="y">y</button></td></tr><tr><td><button type="button" data-say="b">b</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="d">d</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="l">l</button></td><td><button type="button" data-say="m">m</button></td><td><button type="button" data-say="k">k</button></td><td><button type="button" data-say="b">b</button></td><td><button type="button" data-say="m">m</button></td><td><button type="button" data-say="m">m</button></td><td><button type="button" data-say="x">x</button></td><td><button type="button" data-say="t">t</button></td><td><button type="button" data-say="f">f</button></td><td><button type="button" data-say="l">l</button></td><td><button type="button" data-say="s">s</button></td><td><button type="button" data-say="z">z</button></td></tr><tr><td><button type="button" data-say="f">f</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="c">c</button></td><td><button type="button" data-say="k">k</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="l">l</button></td><td><button type="button" data-say="d">d</button></td><td><button type="button" data-say="p">p</button></td><td><button type="button" data-say="p">p</button></td><td><button type="button" data-say="r">r</button></td><td><button type="button" data-say="t">t</button></td><td><button type="button" data-say="h">h</button></td><td><button type="button" data-say="n">n</button></td><td><button type="button" data-say="v">v</button></td><td><button type="button" data-say="z">z</button></td></tr><tr><td><button type="button" data-say="d">d</button></td><td><button type="button" data-say="f">f</button></td><td><button type="button" data-say="f">f</button></td><td><button type="button" data-say="d">d</button></td><td><button type="button" data-say="g">g</button></td><td><button type="button" data-say="d">d</button></td><td><button type="button" data-say="n">n</button></td><td><button type="button" data-say="f">f</button></td><td><button type="button" data-say="r">r</button></td><td><button type="button" data-say="l">l</button></td><td><button type="button" data-say="t">t</button></td><td><button type="button" data-say="v">v</button></td><td><button type="button" data-say="h">h</button></td><td><button type="button" data-say="p">p</button></td><td><button type="button" data-say="w">w</button></td><td><button type="button" data-say="y">y</button></td></tr></tbody>
+              </table>
+            </div>
+            <p class="lp-tip"><b>טיפ:</b> קראו כל שורה משמאל לימין, ובדקו את עצמכם עם השיר</p>
+          </section>
         </div>
-        <div class="practice__dots" id="practice-dots" aria-hidden="true"></div>
-        <p class="practice__note"><svg class="practice__note-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ההקלטה תשאר 7 ימים</p>
-        <p class="practice__status" id="practice-status" role="status"></p>
         <div class="practice__buttons">
           <a class="practice__btn practice__btn--back" href="letters-lesson.html"><span>חזרה לשיעור</span><img src="assets/chevron.svg" alt=""></a>
           <a class="btn-pill practice__btn practice__btn--done" href="letters.html" id="practice-done"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>סיימתי את התרגול</span></a>
@@ -305,18 +308,6 @@
       island: { still: 'island-abc' },
       lessons: [],
     };
-    // the practice: Einat's letter-identification rows, 8 letters a level
-    window.PRACTICE = {
-      key: 'en-app:practice-letters',
-      stages: [
-        ['b', 'f', 'k', 'l', 'm', 'n', 'p', 'g'],
-        ['t', 's', 'c', 'j', 'q', 'w', 'b', 'k'],
-        ['g', 'n', 'r', 'z', 'd', 'y', 'h', 'x'],
-        ['d', 'l', 'm', 'v', 'f', 'p', 'r', 's'],
-        ['a', 'e', 'i', 'o', 'u', 'z', 'c', 'w'],
-        ['h', 'j', 'q', 'v', 'x', 'y', 't', 'k'],
-      ],
-    };
   </script>
   <script src="transition.js"></script>
   <script src="sound.js"></script>
@@ -326,6 +317,6 @@
   <script src="drawer.js"></script>
   <script src="mobile.js"></script>
   <script src="world.js"></script>
-  <script src="practice.js"></script>
+  <script src="letters.js"></script>
 </body>
 </html>

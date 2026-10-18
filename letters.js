@@ -50,3 +50,29 @@
     last = -2;
   });
 })();
+
+// Letters practice: the table's letters (and the song's letters on a page
+// without lesson.js) say themselves on a tap
+(function () {
+  if (!document.querySelector('.letters-practice')) return;
+  const say = (t) => {
+    if (!('speechSynthesis' in window) || !t) return;
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    const v = speechSynthesis.getVoices().find((x) => /^en(-|_)US/i.test(x.lang));
+    if (v) u.voice = v;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  };
+  document.querySelectorAll('.letters-practice [data-say]').forEach((el) => {
+    el.addEventListener('click', () => {
+      say(el.dataset.say);
+      el.classList.remove('is-tapped');
+      void el.offsetWidth;
+      el.classList.add('is-tapped');
+    });
+  });
+  const done = document.getElementById('practice-done');
+  if (done) done.setAttribute('href', 'letters.html');
+})();
