@@ -157,3 +157,15 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .letters-practice > .practice__buttons { margin-top: auto; margin-bottom: 15px; }
 .lp-pairs .abc-tile { height: 27px; line-height: 27px; font-size: 18px; }
 .lp-pairs { gap: 5px 4px; }
+
+/* shop-like: two separate panels (each its own background), the titles
+   navy and on the right; the song on the left, the table on the right */
+.lp-boxes { gap: 26px; }
+.lp-box { border-radius: 30px; padding: 22px 26px 22px; box-shadow: 0 10px 30px rgba(36, 34, 117, .10); align-items: stretch; }
+.lp-box--table { background: #f3f7ff; }
+.lp-box--song { background: #fff4f8; }
+.lp-box__title { font-size: 30px; line-height: 36px; color: #2a2968; text-align: right; }
+.lp-box--table > *:not(.lp-box__title) { align-self: center; }
+.lp-steps { justify-content: flex-start; align-self: stretch !important; }
+.lp-box--song .abc-song__screen { align-self: center; margin-top: 4px; }
+.lp-box--song .lp-pairs { margin-top: 18px; }   /* air between the video and the letters */
