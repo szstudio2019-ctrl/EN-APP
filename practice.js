@@ -2,7 +2,9 @@
 // each with six words (the dashes under the cards). Tapping the word says it
 // aloud; "הקלט" records the learner (microphone), "בדיקה" plays it back.
 (function () {
-  const STAGES = [
+  // a page can set its own words: window.PRACTICE = { stages: [[...], ...], key: '...' }
+  const CFG = window.PRACTICE || {};
+  const STAGES = CFG.stages || [
     ['bat', 'cat', 'hat', 'mat', 'rat', 'sat'],
     ['map', 'cap', 'tap', 'nap', 'lap', 'gap'],
     ['bag', 'rag', 'tag', 'wag', 'nag', 'flag'],
@@ -13,7 +15,7 @@
   const PER = STAGES[0].length;
   // every word has one place in the whole set: stage * PER + word
   const WORDS = STAGES.flat();
-  const KEY = 'en-app:practice-doctor';
+  const KEY = CFG.key || 'en-app:practice-doctor';
 
   const stepsEl = document.getElementById('practice-steps');
   const dotsEl = document.getElementById('practice-dots');
