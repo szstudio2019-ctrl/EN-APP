@@ -246,14 +246,17 @@
     window.WORLD = {
       title: 'אי האותיות הבודדות',
       // the island name on the scene, before the first pin (same game-title style as the doctor island)
-      heading: { lines: ['אי האותיות', 'הבודדות'], x: 1200, y: 210 },
+      heading: { lines: ['אי האותיות', 'הבודדות'], x: 1006, y: 778 },
       lessonsRange: '11-16',
       coins: 350,
       progress: 0,
       background: 'assets/world-single-bg.webp',
       island: { still: 'island-single', box: [49, 0, 493, 493] },
       lessons: [
-
+        // three stages on the stepping stones, not active yet
+        { n: 1, x: 876, y: 510, status: 'locked', href: '#lesson-1' },
+        { n: 2, x: 956, y: 568, status: 'locked', href: '#lesson-2' },
+        { n: 3, x: 1021, y: 635, status: 'locked', href: '#lesson-3' },
       ],
     };
   </script>
