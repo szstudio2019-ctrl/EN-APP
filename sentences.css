@@ -167,3 +167,7 @@
 .slide-page .practice.sentences { justify-content: flex-start; padding-top: 40px; }
 /* the challenging level: light-yellow rows */
 .sentences__list[data-level="1"] .sentences__row { background: #fff6cf; }
+/* "ההקלטה תשאר 7 ימים" grouped with the sentences (close under them); the
+   24px space is between that group and the buttons */
+.sentences .practice__note { margin-top: 8px; }
+.sentences .practice__buttons { margin-top: 24px; }
