@@ -130,6 +130,34 @@
     return li;
   });
 
+  // the main review island: first on the "חזרות" tab only (not a course stop),
+  // it opens the review island page with all its pins
+  const MAIN = 'main';
+  const reviewCoins = ISLANDS.reduce((sum, island) => sum + (island.review ? coinsOf(island)[0] : 0), 0);
+  states[MAIN] = 'done';
+  const mainLi = document.createElement('li');
+  mainLi.className = 'wm-island wm-island--open wm-island--review wm-island--main';
+  mainLi.style.setProperty('--float-delay', '-1.4s');
+  mainLi.style.setProperty('--float-time', '5s');
+  mainLi.innerHTML = `
+      <button class="wm-island__btn" type="button" aria-label="אי החזרות הראשי, כל החזרות">
+        <span class="wm-island__pic"><img class="wm-island__img" src="assets/map/island-review.webp" alt="" decoding="async"></span>
+        <span class="wm-label">
+          <span class="wm-label__name">אי החזרות הראשי</span>
+          <span class="wm-label__line">כל החזרות</span>
+          <span class="wm-coins"><img src="assets/coin.webp" alt="">צברת <b>${reviewCoins}</b> מטבעות</span>
+        </span>
+      </button>`;
+  mainLi.querySelector('button').addEventListener('click', () => {
+    setMap(false);
+    if (here === 'review.html' && !location.search) return;
+    const link = document.createElement('a');
+    link.href = 'review.html';
+    document.body.appendChild(link);
+    setTimeout(() => link.click(), 250);
+  });
+  list.appendChild(mainLi);
+
   let toastTimer;
   function say(text) {
     toast.textContent = text;
@@ -164,7 +192,10 @@
   let isOpen = false;
   // the tab: every island, or only the review islands (the old "כל החזרות" popup)
   let tab = 'all';
-  const shownList = () => ISLANDS.map((_, i) => i).filter((i) => tab === 'all' || ISLANDS[i].review);
+  const shownList = () => {
+    const list = ISLANDS.map((_, i) => i).filter((i) => tab === 'all' || ISLANDS[i].review);
+    return tab === 'reviews' ? [MAIN, ...list] : list;
+  };
   function layout() {
     const V = vertical();
     const shown = shownList();
@@ -183,7 +214,8 @@
       pts = shown.map((_, k) => [W / 2 + amp * Math.sin(k * 1.25), 150 + k * gap]);
     } else {
       // blocks are 230px wide: 300px apart, and the wave stays inside the height
-      const gap = 300;
+      // the reviews (six with the main one) squeeze in a little to fit without scrolling
+      const gap = tab === 'reviews' ? Math.max(250, Math.min(300, (W - 440) / Math.max(1, n - 1))) : 300;
       th = Math.max(520, H);
       tw = Math.max(W, 220 + (n - 1) * gap + 220);
       const mid = th / 2 - 35; // the label hangs under the picture, so the centre sits a little higher
@@ -204,6 +236,8 @@
       li.hidden = !at[i];
       if (at[i]) { li.style.left = `${at[i][0]}px`; li.style.top = `${at[i][1]}px`; }
     });
+    mainLi.hidden = !at[MAIN];
+    if (at[MAIN]) { mainLi.style.left = `${at[MAIN][0]}px`; mainLi.style.top = `${at[MAIN][1]}px`; }
     // Catmull-Rom through the picture centres, one piece per pair
     const seg = (k) => {
       const p0 = pts[Math.max(0, k - 1)];

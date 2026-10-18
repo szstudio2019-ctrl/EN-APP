@@ -3292,3 +3292,8 @@ body:not(.is-mobile) .topbar .user__name { font-size: 22px; font-weight: 600; }
 body:not(.is-mobile) .topbar .logo { scale: .84; }
 body:not(.is-mobile) .topbar .logo__title { font-weight: 600; }
 body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
+
+/* the main review island (first on the map's "חזרות" tab): bigger, a pink-outlined label */
+.wm-island--main { --pic-w: 214px; --pic-h: 182px; }
+.wm-island--main .wm-label { box-shadow: 0 0 0 2.5px var(--wm-pink), 0 8px 18px rgba(232, 69, 122, .2); }
+.wm-island--main .wm-label__name { font-size: 1.08em; }
