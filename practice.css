@@ -269,3 +269,6 @@
 .lesson__guide-play:hover { background: #a6c83a; transform: scale(1.05); }
 .lesson__guide-play svg { width: 30px; height: 30px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
 .lesson__guide-play:not(.is-stop) svg { margin-left: 4px; }
+/* "ההקלטה תשאר 7 ימים" with a small clock before it */
+.practice__note { display: inline-flex; align-items: center; gap: 6px; }
+.practice__note-clock { flex: none; width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
