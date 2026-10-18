@@ -550,3 +550,7 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .dz-note,
 .slide-page .dz-note li { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 400; line-height: 30px; color: #232a6b; }
 .slide-page .practice__note { font-size: 16px; }
+/* the zebra's bubble: a thinner edge (its tail too) */
+.dz-bubble { border-width: 1px; }
+.dz-bubble::before { left: -13px; border-width: 10px 13px 10px 0; }
+.dz-bubble::after { left: -11px; border-width: 9px 12px 9px 0; }
