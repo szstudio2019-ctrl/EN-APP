@@ -57,10 +57,7 @@
 .abc-tile:hover { box-shadow: inset 0 0 0 2px var(--c); }
 .abc-tile.is-tapped { animation: abc-jump .5s ease; }
 
-/* while the song plays: every letter hops on the beat, in a wave along the
-   row; the letter being sung jumps high and lights up; sung ones stay warm */
-.abc-rows.is-playing .abc-tile { animation: abc-hop .5s ease-in-out infinite; }
-.abc-rows.is-playing .abc-tile:nth-child(odd) { animation-delay: .25s; }
+/* while the song plays only the letter being sung jumps and lights up; sung ones stay warm */
 .abc-tile.is-sung { --bg: #fff3c4; }
 .abc-rows .abc-tile.is-on {
   --bg: linear-gradient(135deg, #ffd45c 0%, #ff6b9d 100%);

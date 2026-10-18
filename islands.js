@@ -7,7 +7,7 @@
   // `progress` %), or locked when omitted. Locked islands stay locked even while
   // the learner scrolls past them to look.
   window.ISLANDS = [
-    { name: 'אי זיהוי האותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done', page: 'letters-lesson.html',
+    { name: 'אי זיהוי האותיות', lessons: '1', img: 'island-abc', box: [0, 0, 568, 476.6], status: 'done', page: 'letters.html',
       about: { title: 'נכיר את האותיות!', text: 'בעולם הזה נפגוש את כל האותיות באנגלית ונלמד לזהות אותן. (טקסט דמו)' } },
     { name: 'אי האותיות של רופא/ה', lessons: '2-4', img: 'island-doctor-still', box: [11, -5, 564, 501], video: 'island-doctor-ahh', videoBox: [11, -5, 564, 501], sound: 'doctor-ahh', status: 'progress', progress: 50, page: 'doctor.html',
       about: {
