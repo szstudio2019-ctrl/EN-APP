@@ -142,6 +142,8 @@
   }
 
   function renderSub() {
+    // the card's colour tells the stages apart: 1st light blue, 2nd light yellow, 3rd light pink
+    card.dataset.stage = String(sub % 3);
     subsEl.querySelectorAll('.rp-sub').forEach((b, i) => b.classList.toggle('is-on', i === sub));
     const s = TOPICS[topic].subs[sub];
     explainEl.textContent = s.text;

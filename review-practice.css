@@ -817,3 +817,8 @@
 .rp-side .rp-isl-card { background: rgba(35, 42, 107, .92); }
 /* "סיימתי את החזרה": the same size as the doctor lesson's "לתרגול" */
 .review-practice .practice__btn--done { height: 64px; padding: 0 46px; gap: 14px; font-size: 26px; font-weight: 500; }
+/* a topic with several stages: the card light blue in the 1st, light yellow
+   in the 2nd, light pink in the 3rd (set by review-practice.js) */
+.review-practice .practice__card[data-stage="0"] { background: #e5f2ff; }
+.review-practice .practice__card[data-stage="1"] { background: #fff6cf; }
+.review-practice .practice__card[data-stage="2"] { background: #ffe6ee; }
