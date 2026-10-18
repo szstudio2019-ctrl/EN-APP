@@ -554,3 +554,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .dz-bubble { border-width: 1px; }
 .dz-bubble::before { left: -13px; border-width: 10px 13px 10px 0; }
 .dz-bubble::after { left: -11px; border-width: 9px 12px 9px 0; }
+/* the explanation under the title on the practice pages: 20px dark blue too */
+.slide-page .practice > .practice__lead { font-size: 20px; line-height: 30px; color: #232a6b; }

@@ -244,3 +244,4 @@
 .sentences .sentences__notes .practice__note { font-size: 16px; }
 /* stage 2 lesson: the bubbles up, right under the title (the button stays) */
 .sentences-lesson .sl-boxes { margin-top: 40px; }
+.slide-page .practice.sentences .sentences__lead { font-size: 20px; line-height: 30px; color: #232a6b; }
