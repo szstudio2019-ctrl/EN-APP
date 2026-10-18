@@ -209,3 +209,8 @@
 .sl-box.dz-note { background: #ffe1e6; box-shadow: inset -4px 0 0 #e8584f; padding: 18px 24px; font-size: 19px; }
 .sl-box.dz-note .sl-box__title--green { color: #d9443b; font-size: 21px; margin-bottom: 6px; }
 .sl-boxes { gap: 16px; }
+/* the page's top and bottom as on every lesson / practice page (slide.css) */
+.slide-page .practice.sentences { padding-top: 41px; }
+.sentences .practice__title { font-size: 65px; line-height: 66px; }
+/* stage 2 lesson: the bubbles centred between the title and "לתרגול" */
+.sentences-lesson .sl-boxes { margin-top: auto; }

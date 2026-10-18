@@ -508,3 +508,10 @@
   box-shadow: inset -4px 0 0 #e8584f;
   text-align: right;
 }
+
+/* ---------- every lesson / practice page: the title and the bottom buttons
+   at the same height (the content in between) ---------- */
+body.slide-page .practice { justify-content: flex-start; padding-top: 41px; padding-bottom: 30px; }
+body.slide-page .practice > .practice__title { margin-top: 0; font-size: 65px; line-height: 66px; }
+body.slide-page .practice > .lesson__go,
+body.slide-page .practice > .practice__buttons { margin-top: auto; margin-bottom: 15px; }
