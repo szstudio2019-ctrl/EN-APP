@@ -810,10 +810,9 @@
 .review-practice .rp-subs { gap: 14px; }
 
 /* ---------- v14: the page's content centred ----------
-   the content (zebra, bubble, cards) moved up to the topics menu, and the
-   whole group (zebra → topics) centred in the panel; the island stays put */
-.review-practice .rp-main { translate: -46px 0; }
-.review-practice .rp-topics { translate: -205px 0; }
+   the topics stay on the right; the content (zebra → bubble) centred between
+   the panel's left edge and the topics: the same space on both sides */
+.review-practice .rp-main { translate: -22px 0; }
 /* the island's status card: less see-through */
 .rp-side .rp-isl-card { background: rgba(35, 42, 107, .92); }
 /* "סיימתי את החזרה": the same size as the doctor lesson's "לתרגול" */
