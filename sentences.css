@@ -1,0 +1,122 @@
+/* Stage 2 of the doctor island: reading sentences (Figma 337:6861).
+   The frame, header, island and buttons come from practice.css / slide.css. */
+.sentences .practice__title { font-size: 56px; line-height: 60px; }
+.sentences .sentences__lead { margin-top: 14px; font-size: 22px; line-height: 31px; }
+.sentences__star { color: var(--pink); font-weight: 700; }
+
+/* the two levels: the chosen one a filled pink pill, the other pink text */
+.sentences__tabs { display: flex; gap: 22px; margin-top: 18px; direction: rtl; }
+.sentences__tab {
+  height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--pink);
+  font-family: 'Rubik', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.sentences__tab.is-on { background: var(--pink); color: #fff; box-shadow: 0 10px 22px rgba(227, 53, 99, .3); }
+.sentences__tab:not(.is-on):hover { background: #ffe8ef; }
+
+/* the sentences: light-blue rows, the sentence on the left, record and check
+   on the right; the list scrolls if a level has many sentences */
+.sentences__list {
+  width: 100%;
+  max-width: 900px;
+  min-height: 0;
+  flex: 0 1 auto;
+  overflow-y: auto;
+  margin: 18px 0 0;
+  padding: 0 4px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sentences__row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 58px;
+  padding: 6px 16px 6px 18px;
+  border-radius: 8px;
+  background: #e5f2ff;
+  direction: ltr;
+  transition: box-shadow .2s ease;
+}
+.sentences__row.is-done { box-shadow: inset 0 0 0 2px #91b121; }
+.sentences__text {
+  flex: 1;
+  margin: 0;
+  font-family: 'Rubik', sans-serif;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #232a6b;
+  text-align: left;
+}
+/* a word to hear: pink, tap to hear it */
+.sentences__help {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--pink);
+  cursor: pointer;
+  border-bottom: 2px dotted rgba(227, 53, 99, .45);
+}
+.sentences__help:hover { border-bottom-style: solid; }
+
+/* record / check: a small round icon over its label */
+.sentences__act {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 52px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: 'Rubik', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #232a6b;
+  cursor: pointer;
+}
+.sentences__icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--pink);
+}
+.sentences__icon svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.sentences__act--play { color: #3d4bb0; }
+.sentences__act--play .sentences__icon { background: #3d4bb0; }
+.sentences__act:disabled { color: #c9cde6; cursor: default; }
+.sentences__act:disabled .sentences__icon { background: #f3c9d6; }
+.sentences__act--rec.is-recording .sentences__icon { animation: sentences-rec 1s ease-in-out infinite; }
+@keyframes sentences-rec { 50% { box-shadow: 0 0 0 6px rgba(227, 53, 99, .25); } }
+@media (prefers-reduced-motion: reduce) { .sentences__act--rec.is-recording .sentences__icon { animation: none; } }
+.sentences__act:not(:disabled):hover .sentences__icon { transform: scale(1.1); }
+
+.sentences .practice__note { margin-top: 14px; }
+.sentences .practice__buttons { margin-top: 14px; }
+
+/* fit: 7 sentences without scrolling, and the page does not jump between the
+   levels (the list always has room for 7 rows) */
+.sentences .sentences__lead { margin-top: 8px; font-size: 21px; line-height: 29px; }
+.sentences__tabs { margin-top: 12px; }
+.sentences__tab { height: 40px; }
+.sentences__list { margin-top: 14px; gap: 8px; height: 430px; flex: none; overflow: visible; }
+.sentences__row { min-height: 49px; padding: 3px 16px 3px 18px; }
+.sentences__text { font-size: 24px; }
+.sentences .practice__note { margin-top: 10px; }
+.sentences .practice__buttons { margin-top: 12px; }
