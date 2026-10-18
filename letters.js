@@ -75,4 +75,48 @@
   });
   const done = document.getElementById('practice-done');
   if (done) done.setAttribute('href', 'letters.html');
+
+  /* "סיימתי את התרגול" opens the finish popup: the trophy and the coins
+     earned (as on the other practice pages) */
+  const COINS = 10;
+  const COIN = '<img src="assets/coin.webp" alt="">';
+  const COLORS = ['#e33563', '#eeb741', '#91b121', '#2f7cf2', '#7d4ae8', '#ffd45c'];
+  const page = document.querySelector('.practice');
+  const islandName = page.dataset.islandName || 'האי';
+  const islandPage = page.dataset.islandPage || 'letters.html';
+  const firstName = (() => { const n = document.querySelector('.user__name'); return n ? n.textContent.trim().split(' ')[0] : ''; })();
+  const finish = document.createElement('div');
+  finish.className = 'pd-finish';
+  finish.setAttribute('role', 'dialog');
+  finish.setAttribute('aria-modal', 'true');
+  finish.setAttribute('aria-label', 'סיימת את תרגול האותיות');
+  finish.hidden = true;
+  document.body.appendChild(finish);
+  function openFinish() {
+    const confetti = Array.from({ length: 46 }, (_, i) => {
+      const left = Math.round(Math.random() * 100);
+      const delay = (Math.random() * 0.9).toFixed(2);
+      const dur = (2.4 + Math.random() * 1.6).toFixed(2);
+      const rot = Math.round(Math.random() * 360);
+      return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
+    }).join('');
+    finish.innerHTML = `
+      <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
+      <div class="pd-finish__card">
+        <button class="pd-finish__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
+        <p class="pd-finish__kicker">כל הכבוד!</p>
+        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את תרגול האותיות</h2>
+        <p class="pd-finish__coins">${COIN}צברת <b>${COINS}</b> מטבעות</p>
+        <a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+      </div>`;
+    finish.hidden = false;
+    void finish.offsetWidth;
+    finish.classList.add('is-open');
+    finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
+  }
+  const closeFinish = () => { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); };
+  finish.addEventListener('click', (e) => { if (e.target === finish || e.target.closest('[data-close]')) closeFinish(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !finish.hidden) closeFinish(); });
+  if (done) done.addEventListener('click', (e) => { e.preventDefault(); openFinish(); });
 })();
