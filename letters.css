@@ -227,3 +227,7 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .lp-table-wrap { margin-top: 26px; }
 .letters-practice .lp-boxes { margin-top: 14px; }
 .letters-practice .lp-box { padding-block: 14px; }
+/* no row numbers; more space between the letters, the table across the panel */
+.lp-table { border-spacing: 18px 5px; }
+.lp-table td button { width: 60px; }
+.lp-start { left: 12px; }
