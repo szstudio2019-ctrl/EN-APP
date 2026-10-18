@@ -65,6 +65,8 @@
   // the pin on the island (1-5) this review was opened from; it is the number on the page
   const PIN = Math.min(5, Math.max(1, Number(new URLSearchParams(location.search).get('p')) || 5));
   const REVIEW_NO = PIN;
+  // the learner's first name (from the header), for "כל הכבוד שירה"
+  const firstName = (() => { const n = document.querySelector('.user__name'); return n ? n.textContent.trim().split(' ')[0] : ''; })();
   // each pin is its own review with its own range: pin 1 = 1-10, 2 = 1-16,
   // 3 = 1-21, 4 = 1-34, 5 = everything. A page opened without a pin (old links)
   // keeps the island's range
@@ -219,7 +221,7 @@
   /* "סיימת את…" popup at the end of a topic: the screen darkens, and the
      button moves on to the next topic's practice */
   const pop = document.createElement('div');
-  pop.className = 'rp-done';
+  pop.className = 'pd-finish rp-done-pop';
   pop.setAttribute('role', 'dialog');
   pop.setAttribute('aria-modal', 'true');
   pop.hidden = true;
@@ -236,11 +238,13 @@
     const nextT = TOPICS[topic + 1] && isOpen(topic + 1) ? TOPICS[topic + 1] : null;
     pop.setAttribute('aria-label', `סיימת את ${t.name}`);
     pop.innerHTML = `
-      <div class="rp-done__card">
+      <div class="pd-finish__confetti" aria-hidden="true">${confettiHTML()}</div>
+      <div class="pd-finish__card">
         <button class="pd-finish__close rp-done__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-        <span class="rp-done__icon" aria-hidden="true">${t.pic ? `<img src="assets/icons/${t.pic}.webp" alt="">` : t.icon}</span>
-        <p class="rp-done__kicker">כל הכבוד!</p>
-        <h2 class="rp-done__title">סיימת את ${t.name}</h2>
+        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
+        <p class="pd-finish__kicker">כל הכבוד!</p>
+        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את ${t.name}</h2>
+        <p class="pd-finish__coins">${COIN}צברת <b>${t.subs.length * COINS_PER_STAGE}</b> מטבעות</p>
         <p class="rp-done__text">תרגלת ${countOf(t)} ${topic === 0 ? 'אותיות' : 'מילים'}</p>
         ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : `<p class="rp-done__next"><b>${TOPICS[topic + 1] ? `סיימת את חזרה ${REVIEW_NO} 🏆` : 'סיימת את כל החזרות 🏆'}</b></p>`}
         <div class="rp-done__buttons">
@@ -250,7 +254,8 @@
         </div>
       </div>`;
     pop.hidden = false;
-    requestAnimationFrame(() => pop.classList.add('is-open'));
+    void pop.offsetWidth;
+    pop.classList.add('is-open');
     const go = pop.querySelector('.rp-done__go');
     if (go) go.focus();
   }
@@ -261,6 +266,70 @@
     else if (e.target === pop || e.target.closest('[data-close]')) closeDone();
   });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pop.hidden) closeDone(); });
+
+  /* "כל הכבוד שירה!" when a stage is done (a short toast), and "סיימתי את
+     החזרה" opens the finish popup with the trophy and the coins (as on the
+     lesson practice pages) */
+  const COIN = '<img src="assets/coin.webp" alt="">';
+  const COINS_PER_STAGE = 10;
+  const toast = document.createElement('div');
+  toast.className = 'pd-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  document.body.appendChild(toast);
+  let toastTimer;
+  function cheer(label) {
+    toast.innerHTML = `<span class="pd-toast__star" aria-hidden="true">${COIN}</span>
+      <span class="pd-toast__text"><b>כל הכבוד${firstName ? ' ' + firstName : ''}!</b> סיימת את שלב <span lang="en" dir="ltr">${label}</span></span>
+      <span class="pd-toast__coins">+${COINS_PER_STAGE} ${COIN}</span>`;
+    toast.classList.remove('is-on');
+    void toast.offsetWidth;
+    toast.classList.add('is-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-on'), 2600);
+  }
+  const finish = document.createElement('div');
+  finish.className = 'pd-finish';
+  finish.setAttribute('role', 'dialog');
+  finish.setAttribute('aria-modal', 'true');
+  finish.setAttribute('aria-label', `סיימת את חזרה ${REVIEW_NO}`);
+  finish.hidden = true;
+  document.body.appendChild(finish);
+  function confettiHTML() {
+    const COLORS = ['#e33563', '#eeb741', '#91b121', '#2f7cf2', '#7d4ae8', '#ffd45c'];
+    return Array.from({ length: 46 }, (_, i) => {
+      const left = Math.round(Math.random() * 100);
+      const delay = (Math.random() * 0.9).toFixed(2);
+      const dur = (2.4 + Math.random() * 1.6).toFixed(2);
+      const rot = Math.round(Math.random() * 360);
+      return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
+    }).join('');
+  }
+  function openFinish() {
+    let stages = 0;
+    TOPICS.forEach((t, ti) => t.subs.forEach((_, si) => { if (subDone(ti, si)) stages += 1; }));
+    // demo: before any stage is recorded, the review's open stages
+    const open = TOPICS.reduce((n, t, ti) => n + (isOpen(ti) ? t.subs.length : 0), 0);
+    const coins = (stages || open) * COINS_PER_STAGE;
+    finish.innerHTML = `
+      <div class="pd-finish__confetti" aria-hidden="true">${confettiHTML()}</div>
+      <div class="pd-finish__card">
+        <button class="pd-finish__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
+        <p class="pd-finish__kicker">כל הכבוד!</p>
+        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את חזרה ${REVIEW_NO}</h2>
+        <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
+        <a class="btn-pill pd-finish__go" href="review.html?r=${RANGE}"><span>חזרה לאי החזרות</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+      </div>`;
+    finish.hidden = false;
+    void finish.offsetWidth;
+    finish.classList.add('is-open');
+    finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
+  }
+  const closeFinish = () => { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); };
+  finish.addEventListener('click', (e) => { if (e.target === finish || e.target.closest('[data-close]')) closeFinish(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !finish.hidden) closeFinish(); });
+  if (doneBtn) doneBtn.addEventListener('click', (e) => { e.preventDefault(); openFinish(); });
 
   /* Say the word (the browser's English voice) */
   function say(text) {
@@ -304,8 +373,14 @@
       stream.getTracks().forEach((t) => t.stop());
       if (recordings[at]) URL.revokeObjectURL(recordings[at]);
       recordings[at] = URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType }));
+      const [ti, si] = at.split('.').map(Number);
+      const wasSub = subDone(ti, si);
+      const wasTopic = topicDone(ti);
       done[at] = Date.now();
       save();
+      // a stage just finished: "כל הכבוד"; the whole topic: the "סיימת את…" popup
+      if (!wasTopic && topicDone(ti) && ti === topic) setTimeout(openDone, 600);
+      else if (!wasSub && subDone(ti, si)) cheer(TOPICS[ti].subs[si].label);
       recBtn.classList.remove('is-recording');
       recBtn.querySelector('.practice__label').textContent = 'הקלט';
       show(index);

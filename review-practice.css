@@ -878,3 +878,8 @@
 .review-practice .rp-main .practice__note { font-size: 16px; }
 /* the zebra's bubble: a thinner edge, as on the lesson pages */
 .rp-bubble { border-width: 1px; }
+
+/* the "סיימת את…" popup of a topic: like the other finish popups (trophy, confetti, coins) */
+.rp-done-pop .rp-done__text { margin: 12px 0 0; font-size: 17px; color: #6b6a92; }
+.rp-done-pop .rp-done__next { margin: 14px 0 0; }
+.rp-done-pop .rp-done__buttons { margin-top: 20px; }
