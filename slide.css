@@ -435,3 +435,16 @@
 .slide-page .practice__steps li.is-current .step__no { color: var(--pink); }
 .slide-page .practice__steps li.is-done:not(.is-current) .step__no { color: #5d8a0a; }
 .slide-page .practice__level { align-items: flex-start; }
+
+/* the island in its own container above the page (outside the white panel):
+   anchored to the screen's left edge, smaller, at the bottom-left */
+.slide-island {
+  position: absolute;
+  left: var(--edge-shift, 0px);
+  top: 0;
+  width: 0;
+  height: 1080px;
+  z-index: 130;
+}
+.slide-page .slide-island .world__island,
+.lesson-body .slide-island .world__island { transform: translate(14px, 790px) scale(.5); }
