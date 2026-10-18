@@ -816,3 +816,5 @@
 .review-practice .rp-topics { translate: -205px 0; }
 /* the island's status card: less see-through */
 .rp-side .rp-isl-card { background: rgba(35, 42, 107, .92); }
+/* "סיימתי את החזרה": the same size as the doctor lesson's "לתרגול" */
+.review-practice .practice__btn--done { height: 64px; padding: 0 46px; gap: 14px; font-size: 26px; font-weight: 500; }
