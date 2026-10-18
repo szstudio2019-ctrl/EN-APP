@@ -11,3 +11,6 @@ Thumbs.db
 
 # The client's spec (her reading-app prototype) - kept locally, never published
 docs/
+
+# Exported files for the client (PDFs) - local only
+exports/
