@@ -169,3 +169,19 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .lp-steps { justify-content: flex-start; align-self: stretch !important; }
 .lp-box--song .abc-song__screen { align-self: center; margin-top: 4px; }
 .lp-box--song .lp-pairs { margin-top: 18px; }   /* air between the video and the letters */
+
+/* the two panels: white, a grey border, no shadow; the table panel as wide
+   as its table; both kept right of the island, with the same space (70px)
+   between the side menu and the table as between the table and the song */
+.lp-boxes { width: 1110px; gap: 70px; align-self: flex-start; margin-right: 55px; justify-content: flex-start; }
+.lp-box { background: #fff !important; box-shadow: none; border: 1.5px solid #dcdfec; }
+.lp-box--table { flex: none; width: 710px; padding-inline: 22px; }
+.lp-box--song { width: 330px; }
+/* the titles and the instructions centred */
+.lp-box__title { text-align: center; }
+.lp-steps { justify-content: center; }
+/* the table panel narrower: a little smaller letters, the panel hugs the table */
+.lp-table th { width: 35px; }
+.lp-table td button { width: 35px; height: 35px; font-size: 21px; }
+.lp-box--table { width: 650px; padding-inline: 16px; }
+.lp-boxes { width: 1050px; }
