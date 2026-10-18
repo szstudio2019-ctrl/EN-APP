@@ -10,6 +10,8 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="world.css">
+  <!-- the background mirrored (left ↔ right); the pins mirrored with it -->
+  <style>.world__bg { scale: -1 1; }</style>
 </head>
 <body class="world-page">
   <!-- אי הצלילים המיוחדים: island page built on the doctor page's template (WORLD settings below) -->
@@ -253,9 +255,9 @@
       background: 'assets/world-sounds-bg.webp',
       island: { still: 'island-sounds-music', box: [8, 26, 540, 392] },
       lessons: [
-        { n: 1, x: 1229, y: 925, status: 'current', href: '#lesson-1' },
-        { n: 2, x: 1032, y: 850, status: 'locked', href: '#lesson-2' },
-        { n: 3, x: 741, y: 797, status: 'locked', href: '#lesson-3' },
+        { n: 1, x: 691, y: 925, status: 'current', href: '#lesson-1' },
+        { n: 2, x: 888, y: 850, status: 'locked', href: '#lesson-2' },
+        { n: 3, x: 1179, y: 797, status: 'locked', href: '#lesson-3' },
       ],
     };
   </script>
