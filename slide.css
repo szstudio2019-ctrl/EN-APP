@@ -515,3 +515,4 @@ body.slide-page .practice { justify-content: flex-start; padding-top: 41px; padd
 body.slide-page .practice > .practice__title { margin-top: 0; font-size: 65px; line-height: 66px; }
 body.slide-page .practice > .lesson__go,
 body.slide-page .practice > .practice__buttons { margin-top: auto; margin-bottom: 15px; }
+body.slide-page .practice.lesson-page { justify-content: flex-start; }

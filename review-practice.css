@@ -822,3 +822,28 @@
 .review-practice .practice__card[data-stage="0"] { background: #e5f2ff; }
 .review-practice .practice__card[data-stage="1"] { background: #fff6cf; }
 .review-practice .practice__card[data-stage="2"] { background: #ffe6ee; }
+
+/* the bubbles' text as in the doctor lesson's bubble (Rubik 24 / 36, regular) */
+.review-practice .rp-bubble__text,
+.review-practice .rp-say__col .rp-intro__note {
+  font-family: 'Rubik', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: #1d1d3a;
+  white-space: normal;
+}
+/* room for the bigger text: a wider bubble (fewer lines), slightly tighter
+   group gaps and a lower card, so the done button stays on the screen */
+@media (min-width: 900px) {
+  .review-practice .rp-main .rp-say { max-width: 900px; }
+  .review-practice .rp-main { --rp-gap: 20px; --rp-in: 10px; }
+  .review-practice .practice__card { height: 232px; }
+}
+@media (min-width: 900px) {
+  .review-practice .rp-main .practice__card { height: 214px; gap: 12px; }
+}
+@media (min-width: 900px) {
+  .review-practice .rp-main .practice__stack { height: 240px; }
+  .review-practice .rp-main .practice__sheet { height: 222px; }
+}
