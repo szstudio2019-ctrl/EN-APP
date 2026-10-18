@@ -185,3 +185,21 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .lp-table td button { width: 35px; height: 35px; font-size: 21px; }
 .lp-box--table { width: 650px; padding-inline: 16px; }
 .lp-boxes { width: 1050px; }
+
+/* the instructions in one line under the title; no title in the table panel */
+.letters-practice .lp-lead { font-size: 20px; line-height: 30px; color: #232a6b; }
+/* the table bigger and airier: the panel as wide as the room allows, more
+   space between the letters in the rows and the columns */
+.lp-boxes { width: 1100px; }
+.lp-box--table { width: 700px; justify-content: center; }
+.lp-table { border-spacing: 5px 14px; }
+.lp-table th { width: 37px; font-size: 15px; }
+.lp-table thead th { padding-bottom: 0; }
+.lp-table td button { width: 37px; height: 37px; font-size: 25px; }
+.lp-table-wrap { margin-top: 34px; }
+/* "התחילו כאן!" with a pink arrow that bobs down to the first letter */
+.lp-start { top: -40px; left: -6px; padding: 4px 12px; background: #ffe1ea; color: #d22a58; font-size: 16px; }
+.lp-start::after { display: none; }
+.lp-start__arrow { position: absolute; left: 4px; top: 100%; width: 34px; height: 34px; fill: none; stroke: #e33563; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; animation: lp-arrow 1.1s ease-in-out infinite; }
+@keyframes lp-arrow { 50% { translate: 0 6px; } }
+@media (prefers-reduced-motion: reduce) { .lp-start__arrow { animation: none; } }
