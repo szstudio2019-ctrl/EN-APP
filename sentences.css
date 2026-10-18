@@ -214,3 +214,9 @@
 .sentences .practice__title { font-size: 65px; line-height: 66px; }
 /* stage 2 lesson: the bubbles centred between the title and "לתרגול" */
 .sentences-lesson .sl-boxes { margin-top: auto; }
+/* padding above and below each sentence row */
+.sentences__row { padding-top: 9px; padding-bottom: 9px; }
+.sentences__list { gap: 22px; }
+/* the challenging level has 7 sentences: a little less space between them so
+   the group keeps air above and below */
+.sentences__list[data-level="1"] { gap: 14px; }
