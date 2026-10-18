@@ -77,3 +77,7 @@
   .abc-rows.is-playing .abc-tile, .abc-rows .abc-tile.is-on, .abc-tile.is-tapped { animation: none; }
   .abc-rows .abc-tile.is-on { scale: 1.2; }
 }
+/* even spacing: bubble → video → letters → button; a little more air between
+   the video and the letters */
+.letters-lesson .abc-song { margin-top: auto; gap: 34px; }
+.letters-lesson .lesson__intro { margin-top: 26px; }
