@@ -142,8 +142,8 @@
   transition: background .2s ease;
 }
 .lp-table tr:nth-child(even) td button { background: #fff6cf; }
-.lp-table td button:hover { background: #c8e6c9; }
-.lp-table td button.is-tapped { background: #91b121; color: #fff; animation: abc-jump .5s ease; }
+.lp-table td button:hover { background: #c8e6c9 !important; }
+.lp-table td button.is-tapped { background: #91b121 !important; color: #fff; animation: abc-jump .5s ease; }
 .lp-tip { margin: auto 0 0; padding: 8px 16px; border-radius: 12px; background: #e9f6e8; font-family: 'Rubik', sans-serif; font-size: 16px; color: #232a6b; }
 .lp-tip b { color: #4caf50; }
 .letters-practice > .practice__note { margin-top: 12px; }
@@ -203,3 +203,27 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .lp-start__arrow { position: absolute; left: 4px; top: 100%; width: 34px; height: 34px; fill: none; stroke: #e33563; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; animation: lp-arrow 1.1s ease-in-out infinite; }
 @keyframes lp-arrow { 50% { translate: 0 6px; } }
 @media (prefers-reduced-motion: reduce) { .lp-start__arrow { animation: none; } }
+
+/* the explanation as three points with pink dots between them, and the tip
+   under it in light pink (like the parents' note) */
+.letters-practice .lp-lead { display: flex; justify-content: center; flex-wrap: wrap; gap: 0; margin: 0; padding: 0; list-style: none; }
+.letters-practice .lp-lead li { display: flex; align-items: center; }
+.letters-practice .lp-lead li + li::before { content: ''; width: 8px; height: 8px; margin: 0 14px; border-radius: 50%; background: var(--pink); }
+.letters-practice > .lp-tip { margin: 12px 0 0; padding: 6px 18px; background: #ffe1e6; border-radius: 14px; font-size: 18px; }
+.letters-practice > .lp-tip b { color: #e33563; }
+/* the table bigger: every row of 16 on two lines of 8 (a row number at its side) */
+.lp-table { border-spacing: 8px 6px; }
+.lp-table th[scope="row"] { width: 24px; padding-right: 8px; font-size: 18px; vertical-align: middle; }
+.lp-table td button { width: 56px; height: 44px; font-size: 30px; border-radius: 10px; }
+.lp-table .lp-row-b td { padding-bottom: 12px; }
+.lp-table tr:nth-child(even) td button { background: #e5f2ff; }
+.lp-table tr:nth-child(4n+3) td button, .lp-table tr:nth-child(4n) td button { background: #fff6cf; }
+.lp-table-wrap { margin-top: 30px; }
+.lp-start { left: 34px; }
+/* fit above the buttons */
+.lp-table { border-spacing: 8px 5px; }
+.lp-table td button { width: 58px; height: 35px; font-size: 27px; line-height: 35px; }
+.lp-table .lp-row-b td { padding-bottom: 7px; }
+.lp-table-wrap { margin-top: 26px; }
+.letters-practice .lp-boxes { margin-top: 14px; }
+.letters-practice .lp-box { padding-block: 14px; }
