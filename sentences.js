@@ -30,7 +30,7 @@
   function sentenceHTML(s) {
     return s.split(' ').map((w) => {
       const bare = w.toLowerCase().replace(/[^a-z']/g, '');
-      return HELP.has(bare) ? `<button class="sentences__help" type="button" data-say="${bare}">${esc(w)}</button>` : esc(w);
+      return HELP.has(bare) ? `<button class="sentences__help" type="button" data-say="${bare}" aria-label="השמעת המילה ${bare}">${esc(w)}<svg class="sentences__help-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg></button>` : esc(w);
     }).join(' ');
   }
 
