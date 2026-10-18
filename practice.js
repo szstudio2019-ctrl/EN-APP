@@ -49,6 +49,8 @@
     wordEl.textContent = WORDS[index];
     const stage = Math.floor(index / PER);
     const inStage = index % PER;
+    // each level its own card colour, in turn: light blue, light pink, light yellow
+    card.dataset.level = String(stage % 3);
     stepsEl.querySelectorAll('li').forEach((li, k) => {
       li.classList.toggle('is-current', k === stage);
       // a level turns green once the learner has moved on to a later level

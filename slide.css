@@ -518,3 +518,7 @@ body.slide-page .practice > .practice__buttons { margin-top: auto; margin-bottom
 body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* the zebra's Play on the bubble's corner next to her (as on the review pages) */
 .slide-page .dz-bubble .lesson__listen { right: auto; left: -22px; }
+/* the practice card: a different colour per level, in turn (practice.js) */
+.slide-page .practice__card[data-level="0"] { background: #e5f2ff; }
+.slide-page .practice__card[data-level="1"] { background: #ffe6ee; }
+.slide-page .practice__card[data-level="2"] { background: #fff6cf; }
