@@ -36,6 +36,7 @@
 
   function render() {
     tabs.forEach((t, i) => { t.classList.toggle('is-on', i === level); t.setAttribute('aria-selected', String(i === level)); });
+    listEl.dataset.level = String(level); // the challenging level's rows are light yellow
     listEl.innerHTML = LEVELS[level].map((s, i) => {
       const k = `${level}.${i}`;
       return `

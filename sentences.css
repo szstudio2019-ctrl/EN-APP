@@ -154,3 +154,16 @@
 .sl-box__list { margin: 0; padding-inline-start: 26px; }
 .sl-box__list li + li { margin-top: 10px; }
 .sentences-lesson .lesson__go { margin-top: 34px; }
+
+/* the explanation in one line (+ the * line); the same space (24px) between
+   the kicker and the text, the text and the levels, and the sentences and the
+   buttons; the list as tall as its sentences */
+.sentences .sentences__lead { margin-top: 24px; line-height: 32px; }
+.sentences__tabs { margin-top: 24px; }
+.sentences__list { height: auto; margin-top: 18px; }
+.sentences .practice__note { margin-top: 24px; }
+.sentences .practice__buttons { margin-top: 12px; }
+/* the page starts from the top (does not jump between the levels) */
+.slide-page .practice.sentences { justify-content: flex-start; padding-top: 40px; }
+/* the challenging level: light-yellow rows */
+.sentences__list[data-level="1"] .sentences__row { background: #fff6cf; }
