@@ -220,3 +220,6 @@
 /* the challenging level has 7 sentences: a little less space between them so
    the group keeps air above and below */
 .sentences__list[data-level="1"] { gap: 14px; }
+/* the levels' tabs in the same place on both levels (where they are on the
+   challenging one); the extra room of the shorter level goes under its notes */
+.sentences__tabs { margin-top: 30px; }
