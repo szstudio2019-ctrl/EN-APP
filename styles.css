@@ -3280,3 +3280,15 @@ a:focus:not(:focus-visible) { outline: none; }
 /* the music button in the header (beside the home button) */
 .music-btn { padding: 0; background: none; cursor: pointer; }
 .music-btn.is-off { opacity: .6; }
+
+/* ---------- header (every page, desktop): the texts a little smaller and
+   lighter, the logo smaller ---------- */
+body:not(.is-mobile) .topbar .stat__label,
+body:not(.is-mobile) .topbar .stat--chest .stat__label { font-size: 17px; font-weight: 500; }
+body:not(.is-mobile) .topbar .stat__value { font-size: 22px; font-weight: 600; }
+body:not(.is-mobile) .topbar .user__greeting { font-weight: 500; }
+body:not(.is-mobile) .topbar .user__hello { font-size: 16px; }
+body:not(.is-mobile) .topbar .user__name { font-size: 22px; font-weight: 600; }
+body:not(.is-mobile) .topbar .logo { scale: .84; }
+body:not(.is-mobile) .topbar .logo__title { font-weight: 600; }
+body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
