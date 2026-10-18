@@ -516,3 +516,5 @@ body.slide-page .practice > .practice__title { margin-top: 0; font-size: 65px; l
 body.slide-page .practice > .lesson__go,
 body.slide-page .practice > .practice__buttons { margin-top: auto; margin-bottom: 15px; }
 body.slide-page .practice.lesson-page { justify-content: flex-start; }
+/* the zebra's Play on the bubble's corner next to her (as on the review pages) */
+.slide-page .dz-bubble .lesson__listen { right: auto; left: -22px; }
