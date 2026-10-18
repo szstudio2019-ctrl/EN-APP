@@ -237,6 +237,7 @@
     pop.setAttribute('aria-label', `סיימת את ${t.name}`);
     pop.innerHTML = `
       <div class="rp-done__card">
+        <button class="pd-finish__close rp-done__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
         <span class="rp-done__icon" aria-hidden="true">${t.pic ? `<img src="assets/icons/${t.pic}.webp" alt="">` : t.icon}</span>
         <p class="rp-done__kicker">כל הכבוד!</p>
         <h2 class="rp-done__title">סיימת את ${t.name}</h2>
@@ -257,7 +258,7 @@
     const act = e.target.closest('[data-act]');
     if (act && act.dataset.act === 'next') { closeDone(); pickTopic(topic + 1); }
     else if (act && act.dataset.act === 'again') { closeDone(); pickSub(0); }
-    else if (e.target === pop) closeDone();
+    else if (e.target === pop || e.target.closest('[data-close]')) closeDone();
   });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pop.hidden) closeDone(); });
 

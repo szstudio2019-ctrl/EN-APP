@@ -522,3 +522,23 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .practice__card[data-level="0"] { background: #e5f2ff; }
 .slide-page .practice__card[data-level="1"] { background: #ffe6ee; }
 .slide-page .practice__card[data-level="2"] { background: #fff6cf; }
+
+/* the finish popup: the trophy stays still, and a ✕ in the corner closes it */
+.pd-finish__trophy { animation: none; }
+.pd-finish__close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f1f8;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.pd-finish__close:hover { background: #ffe1ea; transform: scale(1.06); }
+.pd-finish__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }

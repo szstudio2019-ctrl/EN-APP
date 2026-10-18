@@ -164,6 +164,7 @@
     finish.innerHTML = `
       <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
       <div class="pd-finish__card">
+        <button class="pd-finish__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
         <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את קריאת המשפטים</h2>
@@ -176,7 +177,7 @@
     finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
   }
   const closeFinish = () => { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); };
-  finish.addEventListener('click', (e) => { if (e.target === finish) closeFinish(); });
+  finish.addEventListener('click', (e) => { if (e.target === finish || e.target.closest('[data-close]')) closeFinish(); });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !finish.hidden) closeFinish(); });
   const doneLink = document.getElementById('practice-done');
   if (doneLink) doneLink.addEventListener('click', (e) => { e.preventDefault(); openFinish(); });
