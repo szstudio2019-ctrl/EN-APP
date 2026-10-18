@@ -189,3 +189,18 @@
 /* a word to hear: a small speaker beside it */
 .sentences__help { display: inline-flex; align-items: center; gap: 3px; }
 .sentences__help-icon { width: .62em; height: .62em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* the levels + sentences + notes group centred between the text and the
+   buttons: the same space above and below it (auto margins); twice the space
+   between the sentences; record / check side by side, so the rows stay slim */
+.sentences__tabs { margin-top: auto; }
+.sentences .practice__buttons { margin-top: auto; }
+.practice.sentences .practice__lead { margin-bottom: 0; }
+.sentences__list { gap: 28px; }
+.sentences__row { min-height: 40px; padding-top: 2px; padding-bottom: 2px; }
+.sentences__act { flex-direction: row; gap: 6px; }
+/* the status line ("מקליטים…") out of the flow, under the notes, so it does
+   not change the spacing; a little more room at the top */
+.practice.sentences .practice__status { position: absolute; left: 0; right: 0; bottom: 118px; margin: 0; }
+.slide-page .practice.sentences { padding-top: 30px; }
+.sentences .sentences__lead { margin-top: 10px; }
