@@ -463,3 +463,5 @@
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
+/* the "כל הכבוד" toast: a coin instead of the star */
+.pd-toast__star img { display: block; width: 40px; height: 40px; object-fit: contain; }

@@ -177,7 +177,7 @@
   document.body.appendChild(toast);
   let toastTimer;
   function cheer(level) {
-    toast.innerHTML = `<span class="pd-toast__star" aria-hidden="true">⭐</span>
+    toast.innerHTML = `<span class="pd-toast__star" aria-hidden="true">${COIN}</span>
       <span class="pd-toast__text"><b>כל הכבוד!</b> סיימת את רמה ${level}</span>
       <span class="pd-toast__coins">+${COINS_PER_LEVEL} ${COIN}</span>`;
     toast.classList.remove('is-on');
