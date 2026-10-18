@@ -204,3 +204,8 @@
 .practice.sentences .practice__status { position: absolute; left: 0; right: 0; bottom: 118px; margin: 0; }
 .slide-page .practice.sentences { padding-top: 30px; }
 .sentences .sentences__lead { margin-top: 10px; }
+/* stage 2's boxes as the zebra's bubble and the parents' note */
+.sl-box.dz-bubble { background: #fff; box-shadow: 0 8px 18px rgba(232, 69, 122, .1); }
+.sl-box.dz-note { background: #ffe1e6; box-shadow: inset -4px 0 0 #e8584f; padding: 18px 24px; font-size: 19px; }
+.sl-box.dz-note .sl-box__title--green { color: #d9443b; font-size: 21px; margin-bottom: 6px; }
+.sl-boxes { gap: 16px; }

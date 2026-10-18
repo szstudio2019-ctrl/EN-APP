@@ -465,3 +465,46 @@
 }
 /* the "כל הכבוד" toast: a coin instead of the star */
 .pd-toast__star img { display: block; width: 40px; height: 40px; object-fit: contain; }
+
+/* ---------- the zebra speaks (as on the review pages) ----------
+   what the zebra says: a speech bubble beside her (its tail pointing at her),
+   with the Play on its corner; the parents' note in a second, quieter bubble */
+.dz-bubble {
+  position: relative;
+  padding: 18px 28px 18px 30px;
+  border: 2px solid #e8457a;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(232, 69, 122, .1);
+  text-align: right;
+}
+.dz-bubble::before,
+.dz-bubble::after { content: ''; position: absolute; top: 40px; width: 0; height: 0; border-style: solid; }
+.dz-bubble::before { left: -15px; border-width: 11px 15px 11px 0; border-color: transparent #e8457a transparent transparent; }
+.dz-bubble::after { left: -11px; border-width: 9px 12px 9px 0; border-color: transparent #fff transparent transparent; }
+.slide-page .dz-bubble .lesson__story { text-align: right; }
+.slide-page .dz-bubble .lesson__listen {
+  position: absolute;
+  top: -22px;
+  right: -22px;
+  bottom: auto;
+  left: auto;
+  translate: none;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+  border-radius: 50%;
+  z-index: 2;
+}
+.slide-page .dz-bubble .lesson__listen span,
+.slide-page .dz-bubble .lesson__listen::after { display: none; }
+.slide-page .dz-bubble .lesson__listen svg { width: 30px; height: 30px; background: none; }
+.dz-note {
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: #ffe1e6;
+  box-shadow: inset -4px 0 0 #e8584f;
+  text-align: right;
+}
