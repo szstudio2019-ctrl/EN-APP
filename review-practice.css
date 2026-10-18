@@ -808,3 +808,11 @@
 .review-practice .rp-sub__icon img { width: 36px; height: 36px; }
 .review-practice .rp-sub__n { min-width: 30px; height: 30px; border-radius: 15px; font-size: 15px; }
 .review-practice .rp-subs { gap: 14px; }
+
+/* ---------- v14: the page's content centred ----------
+   the content (zebra, bubble, cards) moved up to the topics menu, and the
+   whole group (zebra → topics) centred in the panel; the island stays put */
+.review-practice .rp-main { translate: -46px 0; }
+.review-practice .rp-topics { translate: -205px 0; }
+/* the island's status card: less see-through */
+.rp-side .rp-isl-card { background: rgba(35, 42, 107, .92); }
