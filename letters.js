@@ -13,6 +13,22 @@
   let last = -2;
   let raf = 0;
 
+  // the slider (lesson page): the pair being sung slides to the middle and
+  // its letter-shop card opens beside it; the ones before and after fade out
+  const slider = rows.closest('.abc-slider');
+  const slides = [...rows.querySelectorAll('.abc-slide')];
+  const CARD = 128 + 14; // the card's width + its gap (see .abc-slide.is-on)
+  function centre(i) {
+    if (!slider || !slides[i]) return;
+    slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
+    const s = slides[i];
+    // from the resting sizes (the cards opening and closing are still animating)
+    const pair = s.querySelector('.abc-pair').offsetWidth;
+    const left = i * (pair + 18); // 18 = the gap between the pairs (.abc-track)
+    const w = pair + CARD;
+    rows.style.transform = `translateX(${(slider.clientWidth / 2 - (left + w / 2)).toFixed(1)}px)`;
+  }
+
   function sync() {
     const t = video.currentTime;
     let on = -1;
@@ -23,7 +39,7 @@
     if (on !== last) {
       rows.querySelectorAll('.abc-tile.is-on').forEach((el) => el.classList.remove('is-on'));
       rows.querySelectorAll('.abc-tile').forEach((el) => el.classList.toggle('is-sung', on >= 0 && Number(el.dataset.i) < on));
-      if (on >= 0) tiles(on).forEach((el) => el.classList.add('is-on'));
+      if (on >= 0) { tiles(on).forEach((el) => el.classList.add('is-on')); centre(on); }
       last = on;
     }
     if (!video.paused && !video.ended) raf = requestAnimationFrame(sync);
@@ -31,22 +47,39 @@
   function state() {
     const playing = !video.paused && !video.ended;
     rows.classList.toggle('is-playing', playing);
-    play.hidden = playing;
-    video.controls = playing || video.currentTime > 0;
+    if (slider) {
+      // the big button: Play ↔ Pause
+      play.classList.toggle('is-playing', playing);
+      play.querySelector('.abc-play-btn__label').innerHTML = playing ? 'עצירת השיר' : video.currentTime > 0 && !video.ended ? 'המשך השיר' : 'השמעת שיר ה-<span lang="en">ABC</span>';
+    } else {
+      play.hidden = playing;
+      video.controls = playing || video.currentTime > 0;
+    }
     cancelAnimationFrame(raf);
     sync();
   }
   play.addEventListener('click', () => {
+    if (slider && !video.paused && !video.ended) { video.pause(); return; }
     // the game music steps aside while the song plays
     if (window.SiteSound && window.SiteSound.stopMusic) window.SiteSound.stopMusic();
     if (video.ended) video.currentTime = 0;
     video.play().catch(() => {});
   });
+  // a tap on a letter (it says itself, lesson.js) brings its pair and card to the middle
+  if (slider) {
+    rows.addEventListener('click', (e) => {
+      const s = e.target.closest('.abc-slide');
+      if (s && video.paused) centre(Number(s.dataset.i));
+    });
+    window.addEventListener('resize', () => { const on = slides.findIndex((s) => s.classList.contains('is-on')); centre(Math.max(0, on)); });
+    centre(0);
+  }
   ['play', 'pause', 'ended', 'seeked'].forEach((ev) => video.addEventListener(ev, state));
   // also on the video's own time ticks (when frames are not drawn, e.g. a hidden tab)
   video.addEventListener('timeupdate', sync);
   video.addEventListener('ended', () => {
     rows.querySelectorAll('.abc-tile').forEach((el) => el.classList.remove('is-sung', 'is-on'));
+    centre(0);
     last = -2;
   });
 })();
