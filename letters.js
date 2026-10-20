@@ -47,7 +47,7 @@
   function state() {
     const playing = !video.paused && !video.ended;
     rows.classList.toggle('is-playing', playing);
-    if (slider) {
+    if (play.classList.contains('abc-play-btn')) {
       // the big button: Play ↔ Pause
       play.classList.toggle('is-playing', playing);
       play.querySelector('.abc-play-btn__label').innerHTML = playing ? 'עצירת השיר' : video.currentTime > 0 && !video.ended ? 'המשך השיר' : 'השמעת שיר ה-<span lang="en">ABC</span>';
@@ -59,7 +59,7 @@
     sync();
   }
   play.addEventListener('click', () => {
-    if (slider && !video.paused && !video.ended) { video.pause(); return; }
+    if (play.classList.contains('abc-play-btn') && !video.paused && !video.ended) { video.pause(); return; }
     // the game music steps aside while the song plays
     if (window.SiteSound && window.SiteSound.stopMusic) window.SiteSound.stopMusic();
     if (video.ended) video.currentTime = 0;
@@ -83,11 +83,19 @@
     last = -2;
   });
 })();
-
-// Letters practice: the table's letters (and the song's letters on a page
-// without lesson.js) say themselves on a tap
+// Letters practice: the help window (the song and its letters) – a tap on a
+// letter says it; drag the window by its top bar; ✕ closes it and a small
+// "חלון עזר" tab brings it back. Its place and open/closed state are kept.
 (function () {
-  if (!document.querySelector('.letters-practice')) return;
+  const box = document.getElementById('lp-help');
+  if (!box) return;
+  const head = document.getElementById('lp-help-head');
+  const openBtn = document.getElementById('lp-help-open');
+  const KEY = 'en-app:letters-help';
+  let st = {};
+  try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { st = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (err) { /* storage blocked */ } };
+
   const say = (t) => {
     if (!('speechSynthesis' in window) || !t) return;
     const u = new SpeechSynthesisUtterance(t);
@@ -98,58 +106,58 @@
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   };
-  document.querySelectorAll('.letters-practice [data-say]').forEach((el) => {
-    el.addEventListener('click', () => {
-      say(el.dataset.say);
-      el.classList.remove('is-tapped');
-      void el.offsetWidth;
-      el.classList.add('is-tapped');
-    });
+  box.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-say]');
+    if (!t) return;
+    say(t.dataset.say);
+    t.classList.remove('is-tapped');
+    void t.offsetWidth;
+    t.classList.add('is-tapped');
   });
-  const done = document.getElementById('practice-done');
-  if (done) done.setAttribute('href', 'letters.html');
 
-  /* "סיימתי את התרגול" opens the finish popup: the trophy and the coins
-     earned (as on the other practice pages) */
-  const COINS = 10;
-  const COIN = '<img src="assets/coin.webp" alt="">';
-  const COLORS = ['#e33563', '#eeb741', '#91b121', '#2f7cf2', '#7d4ae8', '#ffd45c'];
-  const page = document.querySelector('.practice');
-  const islandName = page.dataset.islandName || 'האי';
-  const islandPage = page.dataset.islandPage || 'letters.html';
-  const firstName = (() => { const n = document.querySelector('.user__name'); return n ? n.textContent.trim().split(' ')[0] : ''; })();
-  const finish = document.createElement('div');
-  finish.className = 'pd-finish';
-  finish.setAttribute('role', 'dialog');
-  finish.setAttribute('aria-modal', 'true');
-  finish.setAttribute('aria-label', 'סיימת את תרגול האותיות');
-  finish.hidden = true;
-  document.body.appendChild(finish);
-  function openFinish() {
-    const confetti = Array.from({ length: 46 }, (_, i) => {
-      const left = Math.round(Math.random() * 100);
-      const delay = (Math.random() * 0.9).toFixed(2);
-      const dur = (2.4 + Math.random() * 1.6).toFixed(2);
-      const rot = Math.round(Math.random() * 360);
-      return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
-    }).join('');
-    finish.innerHTML = `
-      <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
-      <div class="pd-finish__card">
-        <button class="pd-finish__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
-        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
-        <p class="pd-finish__kicker">כל הכבוד!</p>
-        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את תרגול האותיות</h2>
-        <p class="pd-finish__coins">${COIN}צברת <b>${COINS}</b> מטבעות</p>
-        <a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
-      </div>`;
-    finish.hidden = false;
-    void finish.offsetWidth;
-    finish.classList.add('is-open');
-    finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
-  }
-  const closeFinish = () => { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); };
-  finish.addEventListener('click', (e) => { if (e.target === finish || e.target.closest('[data-close]')) closeFinish(); });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !finish.hidden) closeFinish(); });
-  if (done) done.addEventListener('click', (e) => { e.preventDefault(); openFinish(); });
+  // open / close
+  const show = (on) => {
+    box.hidden = !on;
+    openBtn.hidden = on;
+    st.closed = !on;
+    save();
+    if (!on) { const a = document.getElementById('abc-video'); if (a) a.pause(); }
+  };
+  document.getElementById('lp-help-close').addEventListener('click', () => show(false));
+  openBtn.addEventListener('click', () => show(true));
+  if (st.closed) show(false);
+
+  // drag: the stage is scaled, so the pointer's moves are divided by its scale
+  const stage = document.getElementById('stage');
+  const scale = () => (stage ? stage.getBoundingClientRect().width / 1920 : 1) || 1;
+  let x = st.x || 0;
+  let y = st.y || 0;
+  const place = () => { box.style.translate = `${x}px ${y}px`; };
+  place();
+  let drag = null;
+  head.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('button')) return;
+    drag = { px: e.clientX, py: e.clientY, x, y, k: scale() };
+    head.setPointerCapture(e.pointerId);
+    box.classList.add('is-dragging');
+  });
+  head.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    x = drag.x + (e.clientX - drag.px) / drag.k;
+    y = drag.y + (e.clientY - drag.py) / drag.k;
+    // keep the top bar on the stage
+    y = Math.max(-140, Math.min(900, y));
+    x = Math.max(-200, Math.min(1500, x));
+    place();
+  });
+  const end = () => {
+    if (!drag) return;
+    drag = null;
+    box.classList.remove('is-dragging');
+    st.x = Math.round(x);
+    st.y = Math.round(y);
+    save();
+  };
+  head.addEventListener('pointerup', end);
+  head.addEventListener('pointercancel', end);
 })();
