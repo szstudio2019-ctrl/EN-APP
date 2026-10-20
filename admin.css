@@ -170,3 +170,37 @@
 .admin__bar .admin__legend { margin: 0 auto; gap: 14px; font-size: 14px; }
 .admin__bar .admin__legend span { white-space: nowrap; }
 .admin__search { width: 300px; }
+
+/* the child's data: slides open and shut */
+.admin-acc { display: grid; grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows .32s ease, opacity .32s ease; }
+.admin-acc.is-shut { grid-template-rows: 0fr; opacity: 0; }
+.admin-acc__in { min-height: 0; overflow: hidden; }
+.admin-acc .admin-stats { animation: none; margin-bottom: 18px; }
+.admin__table .admin__stats-row > td { padding: 0; }
+@media (prefers-reduced-motion: reduce) { .admin-acc { transition: none; } }
+
+/* light blue only (the row and its data); the frame's corners: rounded
+   on top of the row and at the bottom of the data, straight where they meet */
+.admin__table tr.is-open > td, .admin__table tr.is-open:hover > td, .admin__table tr.is-open + .admin__stats-row > td { background: #eef5ff; }
+.admin__table tbody tr.is-open > td:first-child { border-radius: 0 14px 0 0; }
+.admin__table tbody tr.is-open > td:last-child { border-radius: 14px 0 0 0; }
+.admin__table tbody tr.is-open + .admin__stats-row > td { border-radius: 0 0 14px 14px; }
+
+/* the tiles: bigger text, an icon on the left */
+.admin-stats__tiles { grid-template-columns: repeat(5, 1fr); }
+.admin-sp .admin-stats__tiles { grid-template-columns: repeat(5, 1fr); }
+.admin-stats__tile { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; }
+.admin-stats__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.admin-stats__tile span { font-size: 17px; }
+.admin-stats__tile b { font-size: 36px; line-height: 1.1; }
+.admin-stats__tile small { font-size: 15px; }
+.admin-stats__icon { width: 56px; height: 56px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #fff; font-style: normal; }
+.admin-stats__icon img { width: 40px; height: 40px; object-fit: contain; }
+.admin-stats__icon svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.admin-stats__tile--days .admin-stats__icon { color: #2f7cf2; background: #e5f0ff; }
+.admin-stats__tile--persist .admin-stats__icon { color: #4c9a1a; background: #ecf6df; }
+.admin-stats__tile--streak .admin-stats__icon { color: #f08a24; background: #fff0e0; }
+.admin-stats__tile--streak .admin-stats__icon svg { fill: #ffb066; }
+.admin-stats__tile--reviews .admin-stats__icon { color: #7d4ae8; background: #f0e9ff; }
+.admin-stats__tile--kids .admin-stats__icon { color: #e33563; background: #ffe6ee; }
+.admin-stats__tile--coins .admin-stats__icon, .admin-stats__tile--top .admin-stats__icon { background: #fff6d6; }

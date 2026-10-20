@@ -54,6 +54,8 @@
       const min = played ? 5 + Math.round(rnd() * 35) : 0;
       return { min, coins: played ? Math.round(min * (1 + rnd())) : 0 };
     });
+    const rr = seeded(`${u.user || u.id}:reviews`);
+    days.forEach((d) => { d.rev = d.min && rr() < 0.3 ? 1 : 0; });
     activity[u.id] = days;
     return days;
   }
@@ -61,6 +63,16 @@
   const DAYS_HE = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
   const MONTHS_HE = ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'];
   const openStats = {}; // user id -> the period shown
+  const TILE_ICONS = {
+    coins: '<img src="assets/coin.webp" alt="">',
+    days: '<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8.5 14.5l2 2 4-4"/></svg>',
+    persist: '<svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg>',
+    streak: '<svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 1.6 1.2 2.6 2.3 3C11 9 11.5 6 12 3z"/></svg>',
+    reviews: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
+    kids: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.3c3 0 5.5 2.2 5.5 5.7"/></svg>',
+    top: '<img src="assets/trophy.svg" alt="">',
+  };
+  const tile = (kind, label, value, note) => `<div class="admin-stats__tile admin-stats__tile--${kind}"><div class="admin-stats__text"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ''}</div><i class="admin-stats__icon" aria-hidden="true">${TILE_ICONS[kind]}</i></div>`;
   const CHART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>';
 
   // the persistence chart: one bar per day (week, month) or per month (year)
@@ -111,10 +123,10 @@
     const part = days.slice(0, n);
     const played = part.filter((d) => d.min).length;
     const coins = part.reduce((s, d) => s + d.coins, 0);
+    const reviews = part.reduce((s, d) => s + d.rev, 0);
     let best = 0, run = 0;
     part.forEach((d) => { run = d.min ? run + 1 : 0; best = Math.max(best, run); });
     const pct = Math.round((played / n) * 100);
-    const tile = (label, value, note) => `<div class="admin-stats__tile"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ''}</div>`;
     return `
       <div class="admin-stats">
         <div class="admin-stats__head">
@@ -124,10 +136,11 @@
           </div>
         </div>
         <div class="admin-stats__tiles">
-          ${tile('מטבעות שנצברו', `<img src="assets/coin.webp" alt="">${coins}`)}
-          ${tile('ימי משחק', played, `מתוך ${n} ימים`)}
-          ${tile('התמדה', `${pct}%`, 'מהימים בתקופה')}
-          ${tile('הרצף הארוך', best, 'ימים ברצף')}
+          ${tile('coins', 'מטבעות שנצברו', coins, 'מטבעות')}
+          ${tile('days', 'ימי משחק', played, `מתוך ${n} ימים`)}
+          ${tile('persist', 'התמדה', `${pct}%`, 'מהימים בתקופה')}
+          ${tile('streak', 'הרצף הארוך', best, 'ימים ברצף')}
+          ${tile('reviews', 'חזרות שעשה/תה', reviews, 'חזרות בתקופה')}
         </div>
         <p class="admin-stats__chart-title">גרף התמדה · ${period === 'year' ? 'ימי משחק בכל חודש' : 'דקות משחק בכל יום'}</p>
         ${chartOf(days, period)}
@@ -155,12 +168,12 @@
       return { u, i, played, pct: Math.round((played / n) * 100), coins: part.reduce((s, d) => s + d.coins, 0) };
     }).sort((a, b) => b.pct - a.pct);
     const totalCoins = rowsData.reduce((s, r) => s + r.coins, 0);
+    const totalReviews = kids.reduce((s, [u]) => s + activityOf(u).slice(0, n).reduce((t, d) => t + d.rev, 0), 0);
     const avg = rowsData.length ? Math.round(rowsData.reduce((s, r) => s + r.pct, 0) / rowsData.length) : 0;
     const playing = rowsData.filter((r) => r.played).length;
     // how many children played each day (week, month) / the average per day in each month (year)
     const allDays = kids.map(([u]) => activityOf(u));
     const perDay = Array.from({ length: 365 }, (_, d) => ({ min: allDays.filter((a) => a[d].min).length, coins: 0 }));
-    const tile = (label, value, note) => `<div class="admin-stats__tile"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ''}</div>`;
     const chip = (attr, k, name, on) => `<button type="button" class="admin__chip${on ? ' is-on' : ''}" ${attr}="${k}">${name}</button>`;
     sp.innerHTML = `
       <div class="admin-pop__card admin-sp__card">
@@ -171,10 +184,11 @@
           <div class="admin-stats__periods" role="tablist" aria-label="ילדים">${Object.entries(WHO).map(([k, name]) => chip('data-sp-who', k, name, k === spWho)).join('')}</div>
         </div>
         <div class="admin-stats__tiles">
-          ${tile('מטבעות שנצברו', `<img src="assets/coin.webp" alt="">${totalCoins}`, `כל הילדים · ${PERIODS[spPeriod][0]}`)}
-          ${tile('התמדה ממוצעת', `${avg}%`, 'מהימים בתקופה')}
-          ${tile('ילדים ששיחקו', `${playing}`, `מתוך ${rowsData.length}`)}
-          ${tile('הכי מתמיד/ה', rowsData[0] ? rowsData[0].u.first : '–', rowsData[0] ? `${rowsData[0].pct}% מהימים` : '')}
+          ${tile('coins', 'מטבעות שנצברו', totalCoins, `כל הילדים · ${PERIODS[spPeriod][0]}`)}
+          ${tile('persist', 'התמדה ממוצעת', `${avg}%`, 'מהימים בתקופה')}
+          ${tile('kids', 'ילדים ששיחקו', `${playing}`, `מתוך ${rowsData.length}`)}
+          ${tile('reviews', 'חזרות', totalReviews, 'כל הילדים')}
+          ${tile('top', 'הכי מתמיד/ה', rowsData[0] ? rowsData[0].u.first : '–', rowsData[0] ? `${rowsData[0].pct}% מהימים` : '')}
         </div>
         <p class="admin-stats__chart-title">${spPeriod === 'year' ? 'כמה ילדים שיחקו · ממוצע ליום בכל חודש' : 'כמה ילדים שיחקו בכל יום'}</p>
         ${chartOf(perDay, spPeriod, { kids: kids.length })}
@@ -239,7 +253,7 @@
         <td>${fmt(u.end)} ${endNote}</td>
         <td><button class="admin__stats-btn${openStats[u.id] ? ' is-open' : ''}" type="button" data-stats="${u.id}" aria-expanded="${!!openStats[u.id]}" aria-label="הנתונים של ${u.first} ${u.last}">${CHART}</button></td>
         <td><label class="admin__toggle"><input type="checkbox" data-i="${i}" ${u.active ? 'checked' : ''} aria-label="${u.first} ${u.last} פעיל"><span></span></label></td>
-      </tr>${openStats[u.id] ? `<tr class="admin__stats-row"><td colspan="8">${statsOf(u, openStats[u.id])}</td></tr>` : ''}`;
+      </tr>${openStats[u.id] ? `<tr class="admin__stats-row"><td colspan="8"><div class="admin-acc" data-acc="${u.id}"><div class="admin-acc__in">${statsOf(u, openStats[u.id])}</div></div></td></tr>` : ''}`;
     }).join('');
   }
 
@@ -249,8 +263,17 @@
     const row = !e.target.closest('.admin__toggle') && e.target.closest('[data-row]');
     if (row) {
       const id = row.dataset.row;
-      if (openStats[id]) delete openStats[id]; else openStats[id] = 'week';
-      render();
+      // the data slides open / shut (.admin-acc)
+      const acc = rows.querySelector(`.admin-acc[data-acc="${id}"]`);
+      if (openStats[id]) {
+        if (acc) acc.classList.add('is-shut');
+        setTimeout(() => { delete openStats[id]; render(); }, acc ? 320 : 0);
+      } else {
+        openStats[id] = 'week';
+        render();
+        const opened = rows.querySelector(`.admin-acc[data-acc="${id}"]`);
+        if (opened) { opened.classList.add('is-shut'); void opened.offsetWidth; opened.classList.remove('is-shut'); }
+      }
       return;
     }
     const chip = e.target.closest('[data-period]');
