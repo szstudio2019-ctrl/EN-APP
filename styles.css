@@ -3297,3 +3297,6 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .wm-island--main { --pic-w: 214px; --pic-h: 182px; }
 .wm-island--main .wm-label { box-shadow: 0 0 0 2.5px var(--wm-pink), 0 8px 18px rgba(232, 69, 122, .2); }
 .wm-island--main .wm-label__name { font-size: 1.08em; }
+
+/* the menu's "נתוני התמדה": a small chart icon after the words */
+.sb-sublink .sb-sub-icon { width: 18px; height: 18px; flex: none; margin-inline-start: auto; }

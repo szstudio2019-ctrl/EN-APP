@@ -64,7 +64,8 @@
   const CHART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>';
 
   // the persistence chart: one bar per day (week, month) or per month (year)
-  function chartOf(days, period) {
+  // opts (all children): kids = the bars count children, not minutes / days
+  function chartOf(days, period, opts = {}) {
     let bars;
     if (period === 'year') {
       bars = Array.from({ length: 12 }, (_, k) => {
@@ -72,7 +73,12 @@
         const from = Math.floor((now - m) / DAY);
         const next = new Date(m); next.setMonth(m.getMonth() + 1);
         const to = Math.max(0, Math.ceil((now - next) / DAY));
-        const n = days.slice(to, from + 1).filter((d) => d.min).length;
+        const month = days.slice(to, from + 1);
+        if (opts.kids) {
+          const avg = Math.round((month.reduce((s, d) => s + d.min, 0) / Math.max(1, month.length)) * 10) / 10;
+          return { v: avg, label: MONTHS_HE[m.getMonth()], tip: `${avg} ילדים ביום בממוצע` };
+        }
+        const n = month.filter((d) => d.min).length;
         return { v: n, label: MONTHS_HE[m.getMonth()], tip: `${n} ימי משחק` };
       });
     } else {
@@ -81,15 +87,16 @@
         const d = n - 1 - k;
         const date = new Date(now - d * DAY);
         const label = period === 'week' ? DAYS_HE[date.getDay()] : (k % 5 === 4 || d === 0 ? String(date.getDate()) : '');
-        return { v: days[d].min, label, tip: days[d].min ? `${days[d].min} דקות` : 'לא שיחק' };
+        const tip = opts.kids ? `${days[d].min} ילדים שיחקו` : days[d].min ? `${days[d].min} דקות` : 'לא שיחק';
+        return { v: days[d].min, label, tip };
       });
     }
-    const W = 1000, H = 200, top = 24, base = H - 30;
-    const max = Math.max(...bars.map((b) => b.v), period === 'year' ? 10 : 20);
+    const W = 1400, H = 220, top = 24, base = H - 30; // wide, so the chart stays low in the panel
+    const max = opts.kids ? Math.max(1, opts.kids) : Math.max(...bars.map((b) => b.v), period === 'year' ? 10 : 20);
     const step = W / bars.length;
     const bw = Math.min(56, step * 0.62);
-    const unit = period === 'year' ? 'ימים' : 'דקות';
-    const grid = [0.5, 1].map((f) => { const y = base - (base - top) * f; return `<line x1="0" x2="${W}" y1="${y}" y2="${y}" class="admin-chart__grid"/><text x="${W}" y="${y - 6}" class="admin-chart__axis" text-anchor="end">${Math.round(max * f)} ${unit}</text>`; }).join('');
+    const unit = opts.kids ? 'ילדים' : period === 'year' ? 'ימים' : 'דקות';
+    const grid = [0.5, 1].map((f) => { const y = base - (base - top) * f; return `<line x1="0" x2="${W}" y1="${y}" y2="${y}" class="admin-chart__grid"/><text x="${W}" y="${y - 6}" class="admin-chart__axis" text-anchor="end">${Math.round(max * f * 10) / 10} ${unit}</text>`; }).join('');
     const marks = bars.map((b, k) => {
       const x = k * step + (step - bw) / 2;
       const h = b.v ? Math.max(4, ((base - top) * b.v) / max) : 3;
@@ -127,6 +134,77 @@
       </div>`;
   }
 
+  /* ---------- "נתוני התמדה": a popup with every child's data, with filters
+     (period, and which children) ---------- */
+  const sp = document.createElement('div');
+  sp.className = 'admin-pop admin-sp';
+  sp.setAttribute('role', 'dialog');
+  sp.setAttribute('aria-modal', 'true');
+  sp.setAttribute('aria-labelledby', 'sp-title');
+  sp.hidden = true;
+  document.getElementById('admin-pop').after(sp); // inside the stage, like the new-user popup
+  let spPeriod = 'week';
+  let spWho = 'all';
+  const WHO = { all: 'כל הילדים', active: 'פעילים', inactive: 'לא פעילים' };
+  function spRender() {
+    const n = PERIODS[spPeriod][1];
+    const kids = users.map((u, i) => [u, i]).filter(([u]) => spWho === 'all' || (spWho === 'active' ? u.active : !u.active));
+    const rowsData = kids.map(([u, i]) => {
+      const part = activityOf(u).slice(0, n);
+      const played = part.filter((d) => d.min).length;
+      return { u, i, played, pct: Math.round((played / n) * 100), coins: part.reduce((s, d) => s + d.coins, 0) };
+    }).sort((a, b) => b.pct - a.pct);
+    const totalCoins = rowsData.reduce((s, r) => s + r.coins, 0);
+    const avg = rowsData.length ? Math.round(rowsData.reduce((s, r) => s + r.pct, 0) / rowsData.length) : 0;
+    const playing = rowsData.filter((r) => r.played).length;
+    // how many children played each day (week, month) / the average per day in each month (year)
+    const allDays = kids.map(([u]) => activityOf(u));
+    const perDay = Array.from({ length: 365 }, (_, d) => ({ min: allDays.filter((a) => a[d].min).length, coins: 0 }));
+    const tile = (label, value, note) => `<div class="admin-stats__tile"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ''}</div>`;
+    const chip = (attr, k, name, on) => `<button type="button" class="admin__chip${on ? ' is-on' : ''}" ${attr}="${k}">${name}</button>`;
+    sp.innerHTML = `
+      <div class="admin-pop__card admin-sp__card">
+        <button class="admin-pop__close" type="button" data-sp-close aria-label="סגירה">✕</button>
+        <h2 class="admin-pop__title" id="sp-title">נתוני התמדה</h2>
+        <div class="admin-sp__filters">
+          <div class="admin-stats__periods" role="tablist" aria-label="תקופה">${Object.entries(PERIODS).map(([k, [name]]) => chip('data-sp-period', k, name, k === spPeriod)).join('')}</div>
+          <div class="admin-stats__periods" role="tablist" aria-label="ילדים">${Object.entries(WHO).map(([k, name]) => chip('data-sp-who', k, name, k === spWho)).join('')}</div>
+        </div>
+        <div class="admin-stats__tiles">
+          ${tile('מטבעות שנצברו', `<img src="assets/coin.webp" alt="">${totalCoins}`, `כל הילדים · ${PERIODS[spPeriod][0]}`)}
+          ${tile('התמדה ממוצעת', `${avg}%`, 'מהימים בתקופה')}
+          ${tile('ילדים ששיחקו', `${playing}`, `מתוך ${rowsData.length}`)}
+          ${tile('הכי מתמיד/ה', rowsData[0] ? rowsData[0].u.first : '–', rowsData[0] ? `${rowsData[0].pct}% מהימים` : '')}
+        </div>
+        <p class="admin-stats__chart-title">${spPeriod === 'year' ? 'כמה ילדים שיחקו · ממוצע ליום בכל חודש' : 'כמה ילדים שיחקו בכל יום'}</p>
+        ${chartOf(perDay, spPeriod, { kids: kids.length })}
+        <p class="admin-stats__chart-title">התמדה לפי ילד</p>
+        <ul class="admin-sp__kids">
+          ${rowsData.map((r) => `<li>
+            <span class="admin__user">${avatar(r.u, r.i)}<b>${r.u.first} ${r.u.last}</b></span>
+            <span class="admin-sp__bar"><i style="width:${r.pct}%"></i></span>
+            <b class="admin-sp__pct">${r.pct}%</b>
+            <span class="admin-sp__meta">${r.played} ימים · <img src="assets/coin.webp" alt="">${r.coins}</span>
+          </li>`).join('') || '<li class="admin-sp__none">אין ילדים בסינון הזה</li>'}
+        </ul>
+      </div>`;
+  }
+  const spOpen = () => { spRender(); sp.hidden = false; sp.querySelector('[data-sp-close]').focus(); };
+  const spClose = () => { sp.hidden = true; if (location.hash === '#stats') history.replaceState(null, '', location.pathname); };
+  sp.addEventListener('click', (e) => {
+    if (e.target === sp || e.target.closest('[data-sp-close]')) { spClose(); return; }
+    const p = e.target.closest('[data-sp-period]');
+    if (p) { spPeriod = p.dataset.spPeriod; spRender(); return; }
+    const w = e.target.closest('[data-sp-who]');
+    if (w) { spWho = w.dataset.spWho; spRender(); }
+  });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sp.hidden) spClose(); });
+  document.getElementById('admin-stats-open').addEventListener('click', spOpen);
+  // the menu's "נתוני התמדה" (admin.html#stats) opens it
+  const fromHash = () => { if (location.hash === '#stats') spOpen(); };
+  window.addEventListener('hashchange', fromHash);
+  setTimeout(fromHash, 0);
+
   function render() {
     document.getElementById('n-all').textContent = users.length;
     document.getElementById('n-active').textContent = users.filter((u) => u.active).length;
@@ -141,7 +219,7 @@
     rows.innerHTML = list.map(([u, i]) => {
       const left = daysLeft(u);
       const endNote = left < 0 ? '<small class="is-late">פג</small>' : left <= 30 ? `<small class="is-soon">עוד ${left} ימים</small>` : '';
-      return `<tr class="${u.active ? '' : 'is-off'}">
+      return `<tr class="${u.active ? '' : 'is-off'}${openStats[u.id] ? ' is-open' : ''}">
         <td><span class="admin__user">${avatar(u, i)}<b>${u.first} ${u.last}</b></span></td>
         <td dir="ltr">${u.user}</td>
         <td dir="ltr">${u.phone || '–'}</td>

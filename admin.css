@@ -109,3 +109,26 @@
 .admin-chart__grid { stroke: #ececf5; stroke-width: 1; stroke-dasharray: 4 4; }
 .admin-chart__base { stroke: #d6d7e6; stroke-width: 1.5; }
 .admin-chart__axis { fill: #8a89ad; font: 500 15px 'Rubik', sans-serif; }
+
+/* "נתוני התמדה" next to "הוספת משתמש", and its popup with every child */
+.admin__actions { display: flex; align-items: center; gap: 14px; }
+.admin__stats-open { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border: 2px solid var(--pink); border-radius: 30px; background: #fff; color: var(--pink); font: 600 20px 'Rubik', sans-serif; cursor: pointer; transition: background .2s ease; }
+.admin__stats-open:hover { background: #fff0f4; }
+.admin__stats-open svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.admin-sp__card { width: 1000px; max-height: 92vh; overflow-y: auto; }
+.admin-sp__filters { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.admin-sp__kids { margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.admin-sp__kids li { display: grid; grid-template-columns: 210px 1fr 56px 150px; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid #f0f0f6; }
+.admin-sp__kids .admin__avatar { width: 38px; height: 38px; font-size: 15px; }
+.admin-sp__kids .admin__user b { font-size: 17px; color: #2a2968; }
+.admin-sp__bar { height: 14px; border-radius: 8px; background: #eef0f7; overflow: hidden; }
+.admin-sp__bar i { display: block; height: 100%; border-radius: 8px; background: var(--pink); }
+.admin-sp__pct { font-size: 18px; color: #232a6b; }
+.admin-sp__meta { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; color: #6b6a92; }
+.admin-sp__meta img { width: 18px; height: 18px; }
+.admin-sp__none { justify-content: center; color: #6b6a92; display: block !important; text-align: center; }
+/* the open child's row: light pink, joined to its data below */
+.admin__table tr.is-open > td { background: #fff3f6; border-bottom-color: transparent; }
+.admin__table tr.is-open > td:first-child { border-radius: 0 14px 0 0; }
+.admin__table tr.is-open > td:last-child { border-radius: 14px 0 0 0; }
+.admin__table tr.is-open + .admin__stats-row > td { background: #fff3f6; border-radius: 0 0 14px 14px; }
