@@ -231,3 +231,17 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .lp-table { border-spacing: 18px 5px; }
 .lp-table td button { width: 60px; }
 .lp-start { left: 12px; }
+
+/* the lesson: the song on the left, the letters on the right (capital over
+   small, 9 a row), the cards as big as the room allows */
+.letters-lesson .abc-song { flex-direction: row-reverse; align-items: center; justify-content: center; gap: 56px; direction: ltr; }
+.letters-lesson .abc-song__screen { width: 330px; flex: none; }
+.abc-rows--pairs { display: grid; grid-template-columns: repeat(9, auto); gap: 14px 10px; }
+.abc-pair { display: flex; flex-direction: column; gap: 6px; }
+.abc-rows--pairs .abc-tile { width: 62px; height: 58px; font-size: 36px; line-height: 58px; border-radius: 12px; }
+.abc-rows--pairs .abc-tile--small { --c: #e33563; --bg: #ffe6ee; }
+/* the video on the left, the letters on the right, clear of the zebra */
+.letters-lesson .abc-song { flex-direction: row; gap: 34px; margin-left: 160px; }
+.letters-lesson .abc-song__screen { width: 290px; }
+.abc-rows--pairs { gap: 12px 9px; }
+.abc-rows--pairs .abc-tile { width: 57px; height: 54px; font-size: 34px; line-height: 54px; }
