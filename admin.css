@@ -143,3 +143,6 @@
 .admin__table tr.is-open > td:first-child { border-radius: 0 14px 0 0; }
 .admin__table tr.is-open > td:last-child { border-radius: 14px 0 0 0; }
 .admin__table tr.is-open + .admin__stats-row > td { background: #dcebff; }
+/* the "נתוני התמדה" popup wider */
+.admin-sp__card { width: 1500px; }
+.admin-sp__kids li { grid-template-columns: 260px 1fr 70px 180px; }
