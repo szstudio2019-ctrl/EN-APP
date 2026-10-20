@@ -230,7 +230,7 @@
     rows.innerHTML = list.map(([u, i]) => {
       const left = daysLeft(u);
       const endNote = left < 0 ? '<small class="is-late">פג</small>' : left <= 30 ? `<small class="is-soon">עוד ${left} ימים</small>` : '';
-      return `<tr class="${u.active ? '' : 'is-off'}${openStats[u.id] ? ' is-open' : ''}">
+      return `<tr class="${u.active ? '' : 'is-off'}${openStats[u.id] ? ' is-open' : ''}" data-row="${u.id}">
         <td><span class="admin__user">${badgeOf(u)}${avatar(u, i)}<b>${u.first} ${u.last}</b></span></td>
         <td dir="ltr">${u.user}</td>
         <td dir="ltr">${u.phone || '–'}</td>
@@ -243,11 +243,12 @@
     }).join('');
   }
 
-  // the data button opens / closes the child's data under the row; the period chips switch it
+  // a tap anywhere on the row (or its data button) opens / closes the child's data
+  // under it – not on the active toggle; the period chips switch it
   rows.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-stats]');
-    if (btn) {
-      const id = btn.dataset.stats;
+    const row = !e.target.closest('.admin__toggle') && e.target.closest('[data-row]');
+    if (row) {
+      const id = row.dataset.row;
       if (openStats[id]) delete openStats[id]; else openStats[id] = 'week';
       render();
       return;
