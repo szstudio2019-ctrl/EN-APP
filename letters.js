@@ -17,14 +17,14 @@
   // its letter-shop card opens beside it; the ones before and after fade out
   const slider = rows.closest('.abc-slider');
   const slides = [...rows.querySelectorAll('.abc-slide')];
-  const CARD = 128 + 14; // the card's width + its gap (see .abc-slide.is-on)
+  const CARD = 196 + 26; // the card's width + its gap (see .abc-slide.is-on)
   function centre(i) {
     if (!slider || !slides[i]) return;
     slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
     const s = slides[i];
     // from the resting sizes (the cards opening and closing are still animating)
     const pair = s.querySelector('.abc-pair').offsetWidth;
-    const left = i * (pair + 18); // 18 = the gap between the pairs (.abc-track)
+    const left = i * (pair + 40); // 40 = the gap between the pairs (.abc-track)
     const w = pair + CARD;
     rows.style.transform = `translateX(${(slider.clientWidth / 2 - (left + w / 2)).toFixed(1)}px)`;
   }

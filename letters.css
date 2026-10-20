@@ -326,3 +326,12 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .lp-help-open[hidden] { display: none; }
 .lp-help-open svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .is-mobile .lp-help, .is-mobile .lp-help-open { display: none; }
+/* the slider much bigger, with more room between the letters */
+.letters-lesson .abc-song { gap: 26px; width: 900px; }
+.abc-slider { height: 340px; }
+.abc-track { gap: 40px; }
+.abc-slide .abc-pair { gap: 14px; }
+.abc-slide .abc-tile { width: 100px; height: 92px; font-size: 62px; line-height: 92px; border-radius: 20px; }
+.abc-slide__card { height: 264px; border-radius: 20px; }
+.abc-slide.is-on .abc-pair { scale: 1.1; }
+.abc-slide.is-on .abc-slide__card { width: 196px; margin-left: 26px; }
