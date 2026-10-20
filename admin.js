@@ -181,7 +181,7 @@
         <p class="admin-stats__chart-title">התמדה לפי ילד</p>
         <ul class="admin-sp__kids">
           ${rowsData.map((r) => `<li>
-            <span class="admin__user">${avatar(r.u, r.i)}<b>${r.u.first} ${r.u.last}</b></span>
+            <span class="admin__user">${badgeOf(r.u)}${avatar(r.u, r.i)}<b>${r.u.first} ${r.u.last}</b></span>
             <span class="admin-sp__bar"><i style="width:${r.pct}%"></i></span>
             <b class="admin-sp__pct">${r.pct}%</b>
             <span class="admin-sp__meta">${r.played} ימים · <img src="assets/coin.webp" alt="">${r.coins}</span>
@@ -205,6 +205,17 @@
   window.addEventListener('hashchange', fromHash);
   setTimeout(fromHash, 0);
 
+  /* a badge before the child's picture, from the last 30 days: a trophy for the
+     outstanding (played 70%+ of the days), a medal for those who keep trying (40%+) */
+  const MEDAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#f4b73b" stroke="#d08a00" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg>';
+  function badgeOf(u) {
+    const part = activityOf(u).slice(0, 30);
+    const pct = (part.filter((d) => d.min).length / 30) * 100;
+    if (pct >= 70) return '<span class="admin__badge admin__badge--star" title="מצטיין/ת – שיחק/ה ברוב הימים בחודש האחרון"><img src="assets/trophy.svg" alt="מצטיין/ת"></span>';
+    if (pct >= 40) return `<span class="admin__badge admin__badge--medal" title="מתמיד/ה – משתדל/ת לשחק באופן קבוע">${MEDAL}<span class="sr-only">מתמיד/ה</span></span>`;
+    return '<span class="admin__badge"></span>';
+  }
+
   function render() {
     document.getElementById('n-all').textContent = users.length;
     document.getElementById('n-active').textContent = users.filter((u) => u.active).length;
@@ -220,7 +231,7 @@
       const left = daysLeft(u);
       const endNote = left < 0 ? '<small class="is-late">פג</small>' : left <= 30 ? `<small class="is-soon">עוד ${left} ימים</small>` : '';
       return `<tr class="${u.active ? '' : 'is-off'}${openStats[u.id] ? ' is-open' : ''}">
-        <td><span class="admin__user">${avatar(u, i)}<b>${u.first} ${u.last}</b></span></td>
+        <td><span class="admin__user">${badgeOf(u)}${avatar(u, i)}<b>${u.first} ${u.last}</b></span></td>
         <td dir="ltr">${u.user}</td>
         <td dir="ltr">${u.phone || '–'}</td>
         <td dir="ltr">${u.email || '–'}</td>
