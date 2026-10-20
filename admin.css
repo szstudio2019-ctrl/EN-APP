@@ -132,3 +132,14 @@
 .admin__table tr.is-open > td:first-child { border-radius: 0 14px 0 0; }
 .admin__table tr.is-open > td:last-child { border-radius: 14px 0 0 0; }
 .admin__table tr.is-open + .admin__stats-row > td { background: #fff3f6; border-radius: 0 0 14px 14px; }
+
+/* more room between the users; a light blue row under the mouse, and a
+   stronger blue for the row whose data is open (its data joined below) */
+.admin__table td { padding-top: 20px; padding-bottom: 20px; transition: background .15s ease; }
+.admin__table tbody tr:not(.admin__stats-row):hover > td { background: #eef5ff; }
+.admin__table tbody tr:not(.admin__stats-row) > td:first-child { border-radius: 0 14px 14px 0; }
+.admin__table tbody tr:not(.admin__stats-row) > td:last-child { border-radius: 14px 0 0 14px; }
+.admin__table tr.is-open > td, .admin__table tr.is-open:hover > td { background: #dcebff; }
+.admin__table tr.is-open > td:first-child { border-radius: 0 14px 0 0; }
+.admin__table tr.is-open > td:last-child { border-radius: 14px 0 0 0; }
+.admin__table tr.is-open + .admin__stats-row > td { background: #dcebff; }
