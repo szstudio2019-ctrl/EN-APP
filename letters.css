@@ -335,3 +335,6 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 .abc-slide__card { height: 264px; border-radius: 20px; }
 .abc-slide.is-on .abc-pair { scale: 1.1; }
 .abc-slide.is-on .abc-slide__card { width: 196px; margin-left: 26px; }
+/* the help window starts on the right, under the side menu */
+.lp-help, .lp-help-open { left: 1410px; top: 530px; }
+.lp-help-open { left: auto; right: calc(1920px - 1782px); }

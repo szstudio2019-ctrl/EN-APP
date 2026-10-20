@@ -91,7 +91,7 @@
   if (!box) return;
   const head = document.getElementById('lp-help-head');
   const openBtn = document.getElementById('lp-help-open');
-  const KEY = 'en-app:letters-help';
+  const KEY = 'en-app:letters-help:right';
   let st = {};
   try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { st = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (err) { /* storage blocked */ } };
