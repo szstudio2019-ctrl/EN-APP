@@ -48,7 +48,9 @@
     // the very last word: "next" fades and opens the end-of-practice popup
     nextBtn.disabled = false;
     nextBtn.classList.toggle('is-end', index === WORDS.length - 1);
-    wordEl.textContent = WORDS[index];
+    // a page can show a picture for the word instead of its text (CFG.pic → an image src)
+    if (CFG.pic) wordEl.innerHTML = `<img class="practice__pic" src="${CFG.pic(WORDS[index])}" alt="${WORDS[index]}">`;
+    else wordEl.textContent = WORDS[index];
     const stage = Math.floor(index / PER);
     const inStage = index % PER;
     // each level its own card colour, in turn: light blue, light pink, light yellow

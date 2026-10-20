@@ -338,3 +338,17 @@ body.slide-page .practice.letters-practice { justify-content: flex-start; }
 /* the help window starts on the right, under the side menu */
 .lp-help, .lp-help-open { left: 1410px; top: 530px; }
 .lp-help-open { left: auto; right: calc(1920px - 1782px); }
+
+/* letters practice: the card shows the letter's shop card, the buttons beside it */
+.practice__card:has(.practice__pic) { flex-direction: row; gap: 34px; }
+.practice__word:has(.practice__pic) { padding: 0; line-height: 0; }
+.practice__pic { display: block; height: 250px; width: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 18px; box-shadow: 0 10px 22px rgba(36, 34, 117, .2); transition: transform .2s ease; }
+.practice__word:hover .practice__pic { transform: scale(1.03); }
+.practice__card:has(.practice__pic) .practice__actions { flex-direction: column; gap: 14px; }
+
+/* the help window bigger, with room between each two rows */
+.lp-help, .lp-help-open { left: 1330px; top: 515px; }
+.lp-help { width: 460px; gap: 16px; }
+.lp-help__letters { grid-template-columns: repeat(7, 52px); gap: 22px 8px; }
+.lp-help__letters .abc-tile { width: 52px; height: 38px; font-size: 26px; line-height: 38px; border-radius: 9px; }
+.lp-help__title { font-size: 20px; }
