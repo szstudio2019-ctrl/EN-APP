@@ -204,3 +204,23 @@
 .admin-stats__tile--reviews .admin-stats__icon { color: #7d4ae8; background: #f0e9ff; }
 .admin-stats__tile--kids .admin-stats__icon { color: #e33563; background: #ffe6ee; }
 .admin-stats__tile--coins .admin-stats__icon, .admin-stats__tile--top .admin-stats__icon { background: #fff6d6; }
+
+/* the popup: the three most persistent children on a podium (2nd, 1st, 3rd) */
+.admin-sp .admin-stats__tiles { grid-template-columns: repeat(4, 1fr) 1.7fr; align-items: stretch; }
+.admin-podium { flex-direction: column; align-items: stretch; justify-content: flex-end; gap: 6px; padding: 12px 14px 0; }
+.admin-podium__title { font-size: 17px; color: #6b6a92; }
+.admin-podium__row { display: flex; align-items: flex-end; gap: 6px; }
+.admin-podium__place { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.admin-podium__who { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.admin-podium__who .admin__avatar { width: 40px; height: 40px; font-size: 15px; }
+.admin-podium__who b { font-size: 16px; color: #232a6b; white-space: nowrap; }
+.admin-podium__who small { font-size: 14px; font-weight: 600; color: var(--pink); }
+.admin-podium__step { position: relative; align-self: stretch; display: grid; place-items: center; border-radius: 12px 12px 0 0; color: #fff; font-style: normal; }
+.admin-podium__step em { font: 700 26px 'Fredoka', 'Rubik', sans-serif; font-style: normal; }
+.admin-podium__step img { position: absolute; top: -30px; width: 30px; height: 30px; }
+.admin-podium__place--1 .admin-podium__step { height: 70px; background: linear-gradient(180deg, #ffd45c, #eeb741); }
+.admin-podium__place--2 .admin-podium__step { height: 50px; background: linear-gradient(180deg, #d9dbe9, #b8bbd2); }
+.admin-podium__place--3 .admin-podium__step { height: 36px; background: linear-gradient(180deg, #f2b98a, #d9925a); }
+.admin-podium__place--1 .admin-podium__who { margin-bottom: 30px; }
+/* the persistence popup bigger */
+.admin-sp__card { width: 1720px; max-height: 1000px; }

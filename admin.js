@@ -188,7 +188,7 @@
           ${tile('persist', 'התמדה ממוצעת', `${avg}%`, 'מהימים בתקופה')}
           ${tile('kids', 'ילדים ששיחקו', `${playing}`, `מתוך ${rowsData.length}`)}
           ${tile('reviews', 'חזרות', totalReviews, 'כל הילדים')}
-          ${tile('top', 'הכי מתמיד/ה', rowsData[0] ? rowsData[0].u.first : '–', rowsData[0] ? `${rowsData[0].pct}% מהימים` : '')}
+          ${podiumOf(rowsData.slice(0, 3))}
         </div>
         <p class="admin-stats__chart-title">${spPeriod === 'year' ? 'כמה ילדים שיחקו · ממוצע ליום בכל חודש' : 'כמה ילדים שיחקו בכל יום'}</p>
         ${chartOf(perDay, spPeriod, { kids: kids.length })}
@@ -202,6 +202,14 @@
           </li>`).join('') || '<li class="admin-sp__none">אין ילדים בסינון הזה</li>'}
         </ul>
       </div>`;
+  }
+  // the three most persistent children on a podium: 2nd, 1st, 3rd
+  function podiumOf(top) {
+    const step = (r, place) => (r ? `<div class="admin-podium__place admin-podium__place--${place}">
+        <span class="admin-podium__who">${avatar(r.u, r.i)}<b>${r.u.first}</b><small>${r.pct}%</small></span>
+        <span class="admin-podium__step">${place === 1 ? '<img src="assets/trophy.svg" alt="">' : ''}<em>${place}</em></span>
+      </div>` : '<div class="admin-podium__place"></div>');
+    return `<div class="admin-stats__tile admin-podium" aria-label="המתמידים ביותר"><span class="admin-podium__title">המתמידים ביותר</span><div class="admin-podium__row">${step(top[1], 2)}${step(top[0], 1)}${step(top[2], 3)}</div></div>`;
   }
   const spOpen = () => { spRender(); sp.hidden = false; sp.querySelector('[data-sp-close]').focus(); };
   const spClose = () => { sp.hidden = true; if (location.hash === '#stats') history.replaceState(null, '', location.pathname); };
