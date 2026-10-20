@@ -369,3 +369,13 @@
 
   render();
 })();
+
+// the sticky head gets a soft shadow once the list scrolls under it
+(function () {
+  const top = document.querySelector('.admin__top');
+  const scroller = top && top.closest('.about__scroll');
+  if (!scroller) return;
+  const sync = () => top.classList.toggle('is-stuck', scroller.scrollTop > 4);
+  scroller.addEventListener('scroll', sync, { passive: true });
+  sync();
+})();
