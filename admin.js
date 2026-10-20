@@ -34,6 +34,99 @@
     ? `<img class="admin__avatar" src="${u.photo}" alt="">`
     : `<span class="admin__avatar" style="background:${COLORS[i % COLORS.length]}">${(u.first[0] || '') + (u.last[0] || '')}</span>`);
 
+  /* ---------- Each child's data (demo): a year of play, made up from the
+     username so it stays the same on every visit ---------- */
+  const seeded = (s) => {
+    let h = 2166136261;
+    for (const ch of s) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+    return () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
+  };
+  const activity = {};
+  function activityOf(u) {
+    if (activity[u.id]) return activity[u.id];
+    const rnd = seeded(u.user || u.id);
+    const keen = 0.35 + rnd() * 0.5; // how often this child plays
+    const since = Math.max(0, Math.floor((now - new Date(u.start)) / DAY));
+    const stopped = u.active ? 0 : 20 + Math.floor(rnd() * 40); // inactive: no play lately
+    // days[0] = today, days[1] = yesterday, … : minutes played and coins earned
+    const days = Array.from({ length: 365 }, (_, d) => {
+      const played = d <= since && d >= stopped && rnd() < keen;
+      const min = played ? 5 + Math.round(rnd() * 35) : 0;
+      return { min, coins: played ? Math.round(min * (1 + rnd())) : 0 };
+    });
+    activity[u.id] = days;
+    return days;
+  }
+  const PERIODS = { week: ['שבוע', 7], month: ['חודש', 30], year: ['שנה', 365] };
+  const DAYS_HE = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
+  const MONTHS_HE = ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'];
+  const openStats = {}; // user id -> the period shown
+  const CHART = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>';
+
+  // the persistence chart: one bar per day (week, month) or per month (year)
+  function chartOf(days, period) {
+    let bars;
+    if (period === 'year') {
+      bars = Array.from({ length: 12 }, (_, k) => {
+        const m = new Date(now); m.setDate(1); m.setMonth(m.getMonth() - (11 - k));
+        const from = Math.floor((now - m) / DAY);
+        const next = new Date(m); next.setMonth(m.getMonth() + 1);
+        const to = Math.max(0, Math.ceil((now - next) / DAY));
+        const n = days.slice(to, from + 1).filter((d) => d.min).length;
+        return { v: n, label: MONTHS_HE[m.getMonth()], tip: `${n} ימי משחק` };
+      });
+    } else {
+      const n = PERIODS[period][1];
+      bars = Array.from({ length: n }, (_, k) => {
+        const d = n - 1 - k;
+        const date = new Date(now - d * DAY);
+        const label = period === 'week' ? DAYS_HE[date.getDay()] : (k % 5 === 4 || d === 0 ? String(date.getDate()) : '');
+        return { v: days[d].min, label, tip: days[d].min ? `${days[d].min} דקות` : 'לא שיחק' };
+      });
+    }
+    const W = 1000, H = 200, top = 24, base = H - 30;
+    const max = Math.max(...bars.map((b) => b.v), period === 'year' ? 10 : 20);
+    const step = W / bars.length;
+    const bw = Math.min(56, step * 0.62);
+    const unit = period === 'year' ? 'ימים' : 'דקות';
+    const grid = [0.5, 1].map((f) => { const y = base - (base - top) * f; return `<line x1="0" x2="${W}" y1="${y}" y2="${y}" class="admin-chart__grid"/><text x="${W}" y="${y - 6}" class="admin-chart__axis" text-anchor="end">${Math.round(max * f)} ${unit}</text>`; }).join('');
+    const marks = bars.map((b, k) => {
+      const x = k * step + (step - bw) / 2;
+      const h = b.v ? Math.max(4, ((base - top) * b.v) / max) : 3;
+      return `<g><title>${b.label || ''} ${b.tip}</title><rect x="${x.toFixed(1)}" y="${(base - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(6, bw / 3).toFixed(1)}" class="${b.v ? 'admin-chart__bar' : 'admin-chart__none'}"/>${b.label ? `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 8}" class="admin-chart__axis" text-anchor="middle">${b.label}</text>` : ''}</g>`;
+    }).join('');
+    return `<svg class="admin-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="גרף התמדה – ${PERIODS[period][0]}">${grid}<line x1="0" x2="${W}" y1="${base}" y2="${base}" class="admin-chart__base"/>${marks}</svg>`;
+  }
+
+  function statsOf(u, period) {
+    const days = activityOf(u);
+    const n = PERIODS[period][1];
+    const part = days.slice(0, n);
+    const played = part.filter((d) => d.min).length;
+    const coins = part.reduce((s, d) => s + d.coins, 0);
+    let best = 0, run = 0;
+    part.forEach((d) => { run = d.min ? run + 1 : 0; best = Math.max(best, run); });
+    const pct = Math.round((played / n) * 100);
+    const tile = (label, value, note) => `<div class="admin-stats__tile"><span>${label}</span><b>${value}</b>${note ? `<small>${note}</small>` : ''}</div>`;
+    return `
+      <div class="admin-stats">
+        <div class="admin-stats__head">
+          <b class="admin-stats__title">הנתונים של ${u.first}</b>
+          <div class="admin-stats__periods" role="tablist" aria-label="תקופה">
+            ${Object.entries(PERIODS).map(([k, [name]]) => `<button type="button" role="tab" class="admin__chip${k === period ? ' is-on' : ''}" data-period="${k}" data-id="${u.id}" aria-selected="${k === period}">${name}</button>`).join('')}
+          </div>
+        </div>
+        <div class="admin-stats__tiles">
+          ${tile('מטבעות שנצברו', `<img src="assets/coin.webp" alt="">${coins}`)}
+          ${tile('ימי משחק', played, `מתוך ${n} ימים`)}
+          ${tile('התמדה', `${pct}%`, 'מהימים בתקופה')}
+          ${tile('הרצף הארוך', best, 'ימים ברצף')}
+        </div>
+        <p class="admin-stats__chart-title">גרף התמדה · ${period === 'year' ? 'ימי משחק בכל חודש' : 'דקות משחק בכל יום'}</p>
+        ${chartOf(days, period)}
+      </div>`;
+  }
+
   function render() {
     document.getElementById('n-all').textContent = users.length;
     document.getElementById('n-active').textContent = users.filter((u) => u.active).length;
@@ -55,11 +148,24 @@
         <td dir="ltr">${u.email || '–'}</td>
         <td>${fmt(u.start)}</td>
         <td>${fmt(u.end)} ${endNote}</td>
+        <td><button class="admin__stats-btn${openStats[u.id] ? ' is-open' : ''}" type="button" data-stats="${u.id}" aria-expanded="${!!openStats[u.id]}" aria-label="הנתונים של ${u.first} ${u.last}">${CHART}</button></td>
         <td><label class="admin__toggle"><input type="checkbox" data-i="${i}" ${u.active ? 'checked' : ''} aria-label="${u.first} ${u.last} פעיל"><span></span></label></td>
-      </tr>`;
+      </tr>${openStats[u.id] ? `<tr class="admin__stats-row"><td colspan="8">${statsOf(u, openStats[u.id])}</td></tr>` : ''}`;
     }).join('');
   }
 
+  // the data button opens / closes the child's data under the row; the period chips switch it
+  rows.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-stats]');
+    if (btn) {
+      const id = btn.dataset.stats;
+      if (openStats[id]) delete openStats[id]; else openStats[id] = 'week';
+      render();
+      return;
+    }
+    const chip = e.target.closest('[data-period]');
+    if (chip) { openStats[chip.dataset.id] = chip.dataset.period; render(); }
+  });
   rows.addEventListener('change', (e) => {
     const box = e.target.closest('[data-i]');
     if (!box) return;

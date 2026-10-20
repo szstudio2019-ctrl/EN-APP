@@ -84,3 +84,28 @@
 .admin-pop__photo-text small { flex-basis: 100%; font-size: 14px; color: #8a8db0; }
 .admin-pop__photo-btn, .admin-pop__photo-remove { padding: 0; border: 0; background: none; font: 600 17px 'Rubik', sans-serif; color: var(--pink); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .admin-pop__photo-remove { color: #6b6a92; font-weight: 500; }
+
+/* the data column: a pink chart button; it opens the child's data under the row */
+.admin__stats-btn { width: 42px; height: 42px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #ffe1ea; color: var(--pink); cursor: pointer; transition: background .2s ease, color .2s ease, transform .2s ease; }
+.admin__stats-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.admin__stats-btn:hover { transform: scale(1.06); }
+.admin__stats-btn.is-open { background: var(--pink); color: #fff; box-shadow: 0 6px 14px rgba(227, 53, 99, .3); }
+.admin__stats-row > td { padding: 0 0 18px; background: #fbfbfe; }
+.admin-stats { margin: 0 12px; padding: 22px 26px 18px; border-radius: 20px; background: #fff; box-shadow: inset 0 0 0 1.5px #ececf5; animation: admin-stats-in .3s ease; }
+@keyframes admin-stats-in { from { opacity: 0; translate: 0 -8px; } }
+.admin-stats__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.admin-stats__title { font-size: 22px; color: #232a6b; }
+.admin-stats__periods { display: flex; gap: 8px; }
+.admin-stats__tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 18px; }
+.admin-stats__tile { padding: 14px 18px; border-radius: 16px; background: #f4f5fb; display: flex; flex-direction: column; gap: 2px; }
+.admin-stats__tile span { font-size: 15px; color: #6b6a92; }
+.admin-stats__tile b { display: flex; align-items: center; gap: 8px; font-size: 30px; color: #232a6b; }
+.admin-stats__tile b img { width: 28px; height: 28px; }
+.admin-stats__tile small { font-size: 13px; color: #8a89ad; font-weight: 500; }
+.admin-stats__chart-title { margin: 20px 0 6px; font-size: 16px; font-weight: 600; color: #6b6a92; }
+.admin-chart { display: block; width: 100%; height: auto; direction: ltr; }
+.admin-chart__bar { fill: var(--pink); }
+.admin-chart__none { fill: #e4e5f0; }
+.admin-chart__grid { stroke: #ececf5; stroke-width: 1; stroke-dasharray: 4 4; }
+.admin-chart__base { stroke: #d6d7e6; stroke-width: 1.5; }
+.admin-chart__axis { fill: #8a89ad; font: 500 15px 'Rubik', sans-serif; }
