@@ -17,7 +17,7 @@
   // its letter-shop card opens beside it; the ones before and after fade out
   const slider = rows.closest('.abc-slider');
   const slides = [...rows.querySelectorAll('.abc-slide')];
-  const CARD = 196 + 26; // the card's width + its gap (see .abc-slide.is-on)
+  const CARD = 226 + 28; // the card's width + its gap (see .abc-slide.is-on)
   function centre(i) {
     if (!slider || !slides[i]) return;
     slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
