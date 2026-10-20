@@ -73,3 +73,14 @@
 .admin-pop__active { display: flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 18px; color: #2a2968; }
 .admin-pop__active input { width: 20px; height: 20px; accent-color: var(--green); }
 .admin-pop__save { margin-top: 22px; height: 50px; padding: 0 30px; border: 0; font-size: 20px; cursor: pointer; }
+
+/* new user: the photo (optional) – a round preview with a pink ring, like the manager's photo */
+.admin-pop__photo { display: flex; align-items: center; gap: 18px; margin: -6px 0 20px; }
+.admin-pop__pic { position: relative; width: 84px; height: 84px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #f3f4fb; box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--pink); cursor: pointer; overflow: hidden; }
+.admin-pop__pic img { width: 100%; height: 100%; object-fit: cover; }
+.admin-pop__pic-icon { width: 34px; height: 34px; fill: none; stroke: #8a8db0; stroke-width: 1.8; stroke-linejoin: round; }
+.admin-pop__pic:hover { background: #ffe1ea; }
+.admin-pop__photo-text { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+.admin-pop__photo-text small { flex-basis: 100%; font-size: 14px; color: #8a8db0; }
+.admin-pop__photo-btn, .admin-pop__photo-remove { padding: 0; border: 0; background: none; font: 600 17px 'Rubik', sans-serif; color: var(--pink); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.admin-pop__photo-remove { color: #6b6a92; font-weight: 500; }

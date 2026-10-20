@@ -79,8 +79,41 @@
   /* New user */
   const pop = document.getElementById('admin-pop');
   const form = document.getElementById('admin-form');
+  // the photo: shrunk to a 160px square (JPEG) so it stays light in storage
+  const photoIn = document.getElementById('u-photo');
+  const photoImg = document.getElementById('u-photo-img');
+  const photoRemove = document.getElementById('u-photo-remove');
+  const photoBtn = document.querySelector('.admin-pop__photo-btn');
+  let photo = '';
+  const setPhoto = (src) => {
+    photo = src;
+    photoImg.hidden = !src;
+    if (src) photoImg.src = src; else photoImg.removeAttribute('src');
+    photoRemove.hidden = !src;
+    photoBtn.textContent = src ? 'החלפת תמונה' : 'הוספת תמונה';
+  };
+  photoIn.addEventListener('change', () => {
+    const file = photoIn.files && photoIn.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const S = 160;
+      const side = Math.min(img.width, img.height);
+      const c = document.createElement('canvas');
+      c.width = S; c.height = S;
+      c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
+      setPhoto(c.toDataURL('image/jpeg', 0.85));
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+    photoIn.value = '';
+  });
+  photoRemove.addEventListener('click', () => setPhoto(''));
+
   const open = () => {
     form.reset();
+    setPhoto('');
     document.getElementById('u-start').value = iso(now);
     document.getElementById('u-end').value = iso(now + 365 * DAY);
     pop.hidden = false;
@@ -97,7 +130,7 @@
     users.unshift({
       id: `${v('u-user')}-${Date.now()}`, first: v('u-first'), last: v('u-last'), user: v('u-user'),
       phone: v('u-phone'), email: v('u-email'), start: v('u-start'), end: v('u-end'),
-      active: document.getElementById('u-active').checked, photo: '',
+      active: document.getElementById('u-active').checked, photo,
     });
     save();
     close();

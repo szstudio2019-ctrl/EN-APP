@@ -123,6 +123,19 @@
         <form class="admin-pop__card" id="admin-form">
           <button class="admin-pop__close" type="button" id="admin-close" aria-label="סגירה">✕</button>
           <h2 class="admin-pop__title" id="pop-title">משתמש חדש</h2>
+          <!-- the user's photo (optional): a round preview, tap to pick one -->
+          <div class="admin-pop__photo">
+            <label class="admin-pop__pic" for="u-photo" aria-label="בחירת תמונה">
+              <img id="u-photo-img" alt="" hidden>
+              <svg class="admin-pop__pic-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+            </label>
+            <div class="admin-pop__photo-text">
+              <label class="admin-pop__photo-btn" for="u-photo">הוספת תמונה</label>
+              <button class="admin-pop__photo-remove" type="button" id="u-photo-remove" hidden>הסרה</button>
+              <small>לא חובה · JPG או PNG</small>
+            </div>
+            <input id="u-photo" type="file" accept="image/*" hidden>
+          </div>
           <div class="admin-pop__grid">
             <label><span>שם פרטי</span><input id="u-first" required></label>
             <label><span>שם משפחה</span><input id="u-last"></label>
