@@ -50,6 +50,8 @@
     nextBtn.classList.toggle('is-end', index === WORDS.length - 1);
     // a page can show a picture for the word instead of its text (CFG.pic → an image src)
     if (CFG.pic) wordEl.innerHTML = `<img class="practice__pic" src="${CFG.pic(WORDS[index])}" alt="${WORDS[index]}">`;
+    // …or its own markup for it (CFG.html → e.g. the word's syllables in colours)
+    else if (CFG.html) wordEl.innerHTML = CFG.html(WORDS[index]);
     else wordEl.textContent = WORDS[index];
     const stage = Math.floor(index / PER);
     const inStage = index % PER;

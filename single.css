@@ -1,0 +1,9 @@
+/* The single-letters island, stage 1 – the letter o (lesson and practice) */
+.so-o { font-family: 'Fredoka', 'Rubik', sans-serif; color: #e33563; direction: ltr; display: inline-block; }
+.so-red { color: #e33563; }
+/* the syllables' colours: red, blue, green, purple (as in Einat's lesson) */
+.so-s1 { color: #e74c3c; }
+.so-s2 { color: #3498db; }
+.so-s3 { color: #27ae60; }
+.so-s4 { color: #9b59b6; }
+.single-practice .practice__word { font-family: 'Fredoka', 'Varela Round', 'Rubik', sans-serif; letter-spacing: .5px; }
