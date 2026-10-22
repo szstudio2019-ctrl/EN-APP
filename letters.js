@@ -145,9 +145,10 @@
     if (!drag) return;
     x = drag.x + (e.clientX - drag.px) / drag.k;
     y = drag.y + (e.clientY - drag.py) / drag.k;
-    // keep the top bar on the stage
-    y = Math.max(-140, Math.min(900, y));
-    x = Math.max(-200, Math.min(1500, x));
+    // anywhere on the stage – over the cards and the side menu too; only its
+    // top bar must stay on screen (the window starts at 1410, 530 on the stage)
+    y = Math.max(-530, Math.min(1080 - 530 - 60, y));
+    x = Math.max(-1410 - 300, Math.min(1920 - 1410 - 80, x));
     place();
   });
   const end = () => {
