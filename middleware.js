@@ -129,6 +129,13 @@ function loginPage(error, next) {
   .err{background:#fff3f6;color:var(--pink);border:1.5px solid #ffdbe6;border-radius:12px;padding:10px 14px;font-size:14px;font-weight:500;text-align:center;margin-bottom:16px}
   .foot{margin-top:18px;text-align:center;font-size:12px;color:rgba(43,40,112,.55)}
   .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--yellow);vertical-align:middle;margin:0 6px}
+  .pw{position:relative}
+  .pw input{padding-left:52px}
+  .eye{position:absolute;left:6px;top:5px;width:40px;height:40px;margin:0;padding:0;border-radius:12px;background:none;box-shadow:none;display:grid;place-items:center;color:rgba(43,40,112,.6)}
+  .eye:hover{background:rgba(227,53,99,.08);color:var(--pink);filter:none}
+  .eye:active{transform:none;box-shadow:none}
+  .eye svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .eye[aria-pressed="true"] .eye__slash{display:none}
   @media (prefers-reduced-motion:reduce){.wrap{animation:none}}
 </style>
 </head>
@@ -148,11 +155,25 @@ function loginPage(error, next) {
       <label for="u">שם משתמש</label>
       <input id="u" name="user" autocomplete="username" required autofocus>
       <label for="p">סיסמה</label>
-      <input id="p" name="pass" type="password" autocomplete="current-password" required>
+      <div class="pw">
+        <input id="p" name="pass" type="password" autocomplete="current-password" required>
+        <button class="eye" type="button" id="eye" aria-label="הצגת הסיסמה" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="eye__slash" d="M4 4l16 16"/></svg></button>
+      </div>
       <button type="submit">כניסה</button>
       <p class="foot">© 2026 SZ Studio<span class="dot"></span>כל הזכויות שמורות</p>
     </form>
   </div>
+  <script>
+    // the eye shows / hides the password
+    var eye = document.getElementById('eye'), p = document.getElementById('p');
+    eye.addEventListener('click', function () {
+      var show = p.type === 'password';
+      p.type = show ? 'text' : 'password';
+      eye.setAttribute('aria-pressed', String(show));
+      eye.setAttribute('aria-label', show ? 'הסתרת הסיסמה' : 'הצגת הסיסמה');
+      p.focus();
+    });
+  </script>
 </body>
 </html>`;
 }
