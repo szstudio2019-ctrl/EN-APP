@@ -96,7 +96,7 @@
         render();
         statusEl.textContent = 'מעולה! לחצו על בדיקה כדי לשמוע';
       }
-      if (!wasDone && LEVELS[at].every((_, j) => done[`${at}.${j}`])) cheer(at);
+      if (!wasDone && LEVELS[at].every((_, j) => done[`${at}.${j}`])) setTimeout(() => openLevel(at), 400);
     };
     recorder.start();
     btn.classList.add('is-recording');
@@ -176,8 +176,38 @@
     finish.classList.add('is-open');
     finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
   }
+  // a level all recorded: the big popup – trophy, confetti, coins; "לתרגל שוב"
+  // (that level again) or on to the next level
+  const AGAIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
+  function openLevel(lv) {
+    const confetti = Array.from({ length: 46 }, (_, i) => `<i style="left:${Math.round(Math.random() * 100)}%;background:${COLORS[i % COLORS.length]};animation-delay:${(Math.random() * 0.9).toFixed(2)}s;animation-duration:${(2.4 + Math.random() * 1.6).toFixed(2)}s;rotate:${Math.round(Math.random() * 360)}deg"></i>`).join('');
+    const next = LEVELS[lv + 1] ? lv + 1 : -1;
+    finish.setAttribute('aria-label', `קראת את כל המשפטים ה${lv === 0 ? 'קלים' : 'מאתגרים'}`);
+    finish.innerHTML = `
+      <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
+      <div class="pd-finish__card">
+        <button class="pd-finish__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
+        <p class="pd-finish__kicker">כל הכבוד!</p>
+        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}קראת את כל המשפטים ה${lv === 0 ? 'קלים' : 'מאתגרים'}</h2>
+        <p class="pd-finish__coins">${COIN}צברת <b>+${COINS_PER_LEVEL}</b> מטבעות</p>
+        <div class="pd-finish__buttons">
+          <button class="pd-finish__again" type="button" data-level="${lv}"><span>לתרגל שוב</span>${AGAIN}</button>
+          ${next >= 0 ? `<button class="btn-pill pd-finish__go" type="button" data-level="${next}"><span>לרמה המאתגרת</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>`
+            : `<a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>`}
+        </div>
+      </div>`;
+    finish.hidden = false;
+    void finish.offsetWidth;
+    finish.classList.add('is-open');
+    finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
+  }
   const closeFinish = () => { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); };
-  finish.addEventListener('click', (e) => { if (e.target === finish || e.target.closest('[data-close]')) closeFinish(); });
+  finish.addEventListener('click', (e) => {
+    const to = e.target.closest('[data-level]');
+    if (to) { level = Number(to.dataset.level); render(); closeFinish(); return; }
+    if (e.target === finish || e.target.closest('[data-close]')) closeFinish();
+  });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !finish.hidden) closeFinish(); });
   const doneLink = document.getElementById('practice-done');
   if (doneLink) doneLink.addEventListener('click', (e) => { e.preventDefault(); openFinish(); });

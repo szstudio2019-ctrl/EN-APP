@@ -556,3 +556,10 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .dz-bubble::after { left: -11px; border-width: 9px 12px 9px 0; }
 /* the explanation under the title on the practice pages: 20px dark blue too */
 .slide-page .practice > .practice__lead { font-size: 20px; line-height: 30px; color: #232a6b; }
+
+/* the end-of-level popup's two buttons (every practice page) */
+.pd-finish__buttons { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 24px; flex-wrap: wrap; }
+.pd-finish__buttons .pd-finish__go { margin-top: 0; border: 0; cursor: pointer; }
+.pd-finish__again { display: inline-flex; align-items: center; gap: 8px; height: 60px; padding: 0 26px; border: 2px solid var(--pink); border-radius: 32px; background: #fff; color: var(--pink); font: 600 20px 'Rubik', sans-serif; cursor: pointer; }
+.pd-finish__again:hover { background: #fff0f4; }
+.pd-finish__again svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }

@@ -86,7 +86,7 @@
     const level = Math.floor(index / PER);
     const endOfLevel = index % PER === PER - 1;
     show(index + 1, 1);
-    if (endOfLevel) cheer(level + 1);
+    if (endOfLevel) openLevel(level + 1);
   });
   prevBtn.addEventListener('click', () => show(index - 1, -1));
   stepsEl.addEventListener('click', (e) => {
@@ -200,6 +200,36 @@
   finish.hidden = true;
   document.body.appendChild(finish);
   const COLORS = ['#e33563', '#eeb741', '#91b121', '#2f7cf2', '#7d4ae8', '#ffd45c'];
+  const confettiHTML = () => Array.from({ length: 46 }, (_, i) => {
+    const left = Math.round(Math.random() * 100);
+    const delay = (Math.random() * 0.9).toFixed(2);
+    const dur = (2.4 + Math.random() * 1.6).toFixed(2);
+    const rot = Math.round(Math.random() * 360);
+    return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
+  }).join('');
+  const AGAIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
+  // the end of a level: the big popup – a trophy, confetti, the coins, and
+  // "לתרגל שוב" (back to the level's start) or "לרמה הבאה" (on to the next one)
+  function openLevel(level) {
+    finish.setAttribute('aria-label', `סיימת את רמה ${level}`);
+    finish.innerHTML = `
+      <div class="pd-finish__confetti" aria-hidden="true">${confettiHTML()}</div>
+      <div class="pd-finish__card">
+        <button class="pd-finish__close" type="button" data-close aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+        <img class="pd-finish__trophy" src="assets/trophy.svg" alt="">
+        <p class="pd-finish__kicker">כל הכבוד!</p>
+        <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את רמה ${level}</h2>
+        <p class="pd-finish__coins">${COIN}צברת <b>+${COINS_PER_LEVEL}</b> מטבעות</p>
+        <div class="pd-finish__buttons">
+          <button class="pd-finish__again" type="button" data-again="${level}"><span>לתרגל שוב</span>${AGAIN}</button>
+          <button class="btn-pill pd-finish__go" type="button" data-close><span>לרמה הבאה</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>
+        </div>
+      </div>`;
+    finish.hidden = false;
+    void finish.offsetWidth;
+    finish.classList.add('is-open');
+    finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
+  }
   function openFinish() {
     const coins = STAGES.length * COINS_PER_LEVEL;
     const confetti = Array.from({ length: 46 }, (_, i) => {
@@ -226,7 +256,9 @@
     finish.querySelector('.pd-finish__go').focus({ preventScroll: true });
   }
   finish.addEventListener('click', (e) => {
-    if (e.target === finish || e.target.closest('[data-close]')) { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); }
+    const again = e.target.closest('[data-again]');
+    if (again) { show((Number(again.dataset.again) - 1) * PER, -1); }
+    if (again || e.target === finish || e.target.closest('[data-close]')) { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); }
   });
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !finish.hidden) { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); }
