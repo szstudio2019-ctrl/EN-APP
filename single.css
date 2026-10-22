@@ -15,3 +15,6 @@
 .slide-page .so-sum .lesson__tile { min-width: 86px; height: 88px; padding: 0 16px; font-size: 72px; }
 .slide-page .so-sum .lesson__op { font-size: 64px; }
 .single-lesson .sl-boxes { margin-top: 26px; }
+/* the texts all in one weight – the marked words keep only their colour */
+.single-lesson .sl-box .lesson__story b,
+.single-lesson .sl-box .sl-box__list b { font-weight: inherit; }
