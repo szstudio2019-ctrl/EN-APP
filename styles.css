@@ -3300,3 +3300,56 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 
 /* the menu's "נתוני התמדה": a small chart icon after the words */
 .sb-sublink .sb-sub-icon { width: 18px; height: 18px; flex: none; margin-inline-start: auto; }
+
+/* ---------- the intro: "חזרה" beside "הבא", dashes you can tap, and a last
+   step – the screen darkens around the trophy and its sentence draw ---------- */
+.intro__btns { display: flex; align-items: center; gap: 12px; }
+.intro__back { display: inline-flex; align-items: center; gap: 8px; height: 52px; padding: 0 22px; border: 2px solid var(--pink); border-radius: 30px; background: #fff; color: var(--pink); font: 500 20px 'Rubik', sans-serif; cursor: pointer; }
+.intro__back[hidden] { display: none; }
+.intro__back img { width: 8px; height: 13px; transform: rotate(180deg); filter: brightness(0) saturate(100%) invert(31%) sepia(80%) saturate(2400%) hue-rotate(327deg); }
+.intro__back:hover { background: #fff0f4; }
+.intro__dots button { padding: 8px 0; border: 0; background: none; cursor: pointer; }
+.intro__dots button i { display: block; width: 17px; height: 3px; border-radius: 3px; background: #ffd6e2; transition: background .3s ease, width .3s ease; }
+.intro__dots button.is-on i { background: var(--pink); width: 26px; }
+.intro__dots button:hover i { background: #ff9bb8; }
+.intro__dots button:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; border-radius: 4px; }
+
+.intro { transition: opacity .4s ease, background .4s ease; }
+.intro.is-spot { background: rgba(14, 12, 48, .72); }
+.intro.is-spot .intro__card { opacity: 0; pointer-events: none; transform: scale(.94); transition: opacity .3s ease, transform .3s ease; }
+/* the trophy and its hint come back, above the dark */
+.intro-spot .trophy, .intro-spot .trophy-hint { opacity: 1 !important; pointer-events: auto !important; z-index: 430 !important; }
+.intro-spot .trophy { filter: drop-shadow(0 0 22px rgba(255, 212, 92, .9)); }
+.intro__spot {
+  position: absolute;
+  left: calc(var(--edge-shift, 0px) + 213px);
+  top: 470px;
+  width: 477px;
+  padding: 22px 24px 20px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .3);
+  direction: rtl;
+  text-align: center;
+  font-family: 'Rubik', sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 12px;
+  transition: opacity .35s ease, translate .35s ease, visibility 0s linear .35s;
+  z-index: 431;
+}
+.intro.is-spot .intro__spot { opacity: 1; visibility: visible; translate: 0 0; transition: opacity .35s ease .15s, translate .35s ease .15s, visibility 0s; }
+.intro__spot-title { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; font-size: 30px; color: #2a2968; }
+.intro__spot-title img { width: 40px; height: 40px; }
+.intro__spot-text { margin: 8px 0 0; font-size: 19px; line-height: 28px; color: #232a6b; }
+.intro__spot-btns { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+.intro__spot-go { height: 52px; border: 0; cursor: pointer; }
+.intro__spot-arrow { position: absolute; left: 60px; bottom: -14px; border: 14px solid transparent; border-top-color: #fff; border-bottom: 0; }
+.intro__spot-arrow { left: 60px; top: -14px; bottom: auto; border: 14px solid transparent; border-bottom-color: #fff; border-top: 0; }
+/* the dark reaches the window's edges, past the stage */
+.intro.is-spot { background: none; }
+.intro::before { content: ''; position: absolute; inset: -3000px; background: rgba(14, 12, 48, .72); opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+.intro.is-spot::before { opacity: 1; pointer-events: auto; }
+/* the sentence draw stays open through the whole step (whatever is clicked) */
+.intro-spot .trophy-hint { visibility: visible !important; transform: none !important; transition: opacity .3s ease; }
+.intro-spot .trophy img { transform: scale(1.06) rotate(3deg); }

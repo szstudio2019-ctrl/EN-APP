@@ -1,5 +1,6 @@
 // Welcome popup before the map: four slides on a white card over the cloud
-// video. "הבא" moves on, "דלגו" and "בואו נתחיל" (last slide) close it.
+// video, then a last step around the trophy (the sentence draw). "הבא" and
+// "חזרה" (and the dashes) move between them; "דלגו" / "בואו נתחיל" close it.
 // Shown by itself once per browser after the loader (?intro in the address
 // forces it); the menu's "הסבר על האתר" opens it again (SiteIntro.open).
 // Needs islands.js.
@@ -25,30 +26,61 @@
   const dots = intro.querySelector('.intro__dots');
   const next = intro.querySelector('.intro__next');
   const nextLabel = next.querySelector('span');
-  dots.innerHTML = slides.map(() => '<i></i>').join('');
+  // the card's slides, then one more step: the screen darkens around the
+  // trophy and its sentence draw (index = slides.length)
+  const SPOT = slides.length;
+  const back = intro.querySelector('.intro__back');
+  const spot = intro.querySelector('.intro__spot');
+  const trophy = document.querySelector('.trophy');
+  // the dashes are buttons: a tap goes to that step (back too)
+  dots.innerHTML = [...slides, spot].map((_, k) => `<button type="button" role="tab" aria-label="שקופית ${k + 1}"><i></i></button>`).join('');
   let index = 0;
 
   function show(i) {
     index = i;
+    const spotOn = i === SPOT;
     slides.forEach((s, k) => {
       s.classList.toggle('is-current', k === i);
       s.setAttribute('aria-hidden', String(k !== i));
     });
-    [...dots.children].forEach((d, k) => d.classList.toggle('is-on', k === i));
-    const last = i === slides.length - 1;
-    nextLabel.textContent = last ? 'בואו נתחיל' : 'הבא';
+    [...dots.children].forEach((d, k) => { d.classList.toggle('is-on', k === i); d.setAttribute('aria-selected', String(k === i)); });
+    nextLabel.textContent = 'הבא';
+    back.hidden = i === 0;
+    intro.classList.toggle('is-spot', spotOn);
+    document.body.classList.toggle('intro-spot', spotOn);
+    if (spot) spot.setAttribute('aria-hidden', String(!spotOn));
+    if (trophy && !spotOn) trophy.setAttribute('aria-expanded', 'false');
+    if (spotOn) placeSpot();
+  }
+  // the words sit right under the trophy's sentence (in stage pixels)
+  function placeSpot() {
+    const hint = document.querySelector('.trophy-hint');
+    const stage = document.getElementById('stage');
+    if (!spot || !hint || !stage) return;
+    const st = stage.getBoundingClientRect();
+    const k = st.width / 1920 || 1;
+    const h = hint.getBoundingClientRect();
+    spot.style.left = ((h.left - st.left) / k).toFixed(0) + 'px';
+    spot.style.top = ((h.bottom - st.top) / k + 22).toFixed(0) + 'px';
   }
 
   function close() {
     try { localStorage.setItem(KEY, '1'); } catch (err) { /* storage blocked */ }
     if (!isOpen) return;
     isOpen = false;
-    intro.classList.remove('is-open');
-    document.body.classList.remove('intro-open');
+    intro.classList.remove('is-open', 'is-spot');
+    document.body.classList.remove('intro-open', 'intro-spot');
+    if (trophy) trophy.setAttribute('aria-expanded', 'false');
     setTimeout(() => { if (!isOpen) intro.hidden = true; }, 450);
   }
 
-  next.addEventListener('click', () => (index < slides.length - 1 ? show(index + 1) : close()));
+  next.addEventListener('click', () => show(Math.min(SPOT, index + 1)));
+  back.addEventListener('click', () => show(Math.max(0, index - 1)));
+  dots.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) show([...dots.children].indexOf(b)); });
+  if (spot) {
+    spot.querySelector('.intro__spot-back').addEventListener('click', () => show(SPOT - 1));
+    spot.querySelector('.intro__spot-go').addEventListener('click', close);
+  }
   intro.querySelector('.intro__skip').addEventListener('click', close);
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) close(); });
 
