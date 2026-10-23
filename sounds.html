@@ -282,7 +282,11 @@
     (function () {
       const v = document.getElementById('world-bg-video');
       if (!v) return;
-      const wanted = () => { try { return localStorage.getItem('en-app:music') !== 'off'; } catch (err) { return true; } };
+      const wanted = () => {
+        const b = document.querySelector('.music-btn');
+        if (b) return b.getAttribute('aria-pressed') !== 'false';
+        try { return localStorage.getItem('en-app:music') !== 'off'; } catch (err) { return true; }
+      };
       let started = false;
       const apply = () => {
         if (window.SiteSound) window.SiteSound.stopMusic();
@@ -293,8 +297,8 @@
       const first = () => { started = true; apply(); window.removeEventListener('pointerdown', first, true); window.removeEventListener('keydown', first, true); };
       window.addEventListener('pointerdown', first, true);
       window.addEventListener('keydown', first, true);
-      const music = document.querySelector('.music-btn');
-      if (music) music.addEventListener('click', () => setTimeout(apply, 0));
+      // the header's music button (any copy of it, also the phone menu's)
+      document.addEventListener('click', (e) => { if (e.target.closest('.music-btn')) setTimeout(apply, 0); }, true);
       document.addEventListener('visibilitychange', () => { if (document.hidden) v.pause(); else apply(); });
     })();
   </script>
