@@ -166,7 +166,8 @@
   const onMap = typeof window.journeyGoTo === 'function' || !!document.getElementById('journey');
   const here = location.pathname.split('/').pop();
   const links = [];
-  const fillList = (containerId, filter, label) => {
+  // href (optional): where the item leads – else the island's own page
+  const fillList = (containerId, filter, label, href) => {
     const box = document.getElementById(containerId);
     if (!box) return;
     const inner = document.createElement('div');
@@ -177,12 +178,12 @@
       n += 1;
       const link = document.createElement('a');
       link.className = 'sb-sublink';
-      link.href = island.page || `index.html#island-${i + 1}`;
+      link.href = (href && href(island, n)) || island.page || `index.html#island-${i + 1}`;
       const status = island.status === 'done' ? '<span class="sb-sublink__status sb-sublink__status--done">✓ הושלם</span>'
         : island.status === 'progress' ? `<span class="sb-sublink__status">${island.progress || 0}%</span>`
         : `<span class="sb-sublink__status sb-sublink__status--locked" aria-label="נעול">${LOCK}</span>`;
       link.innerHTML = `<span>${label(island, n)}</span>${status}`;
-      if (!island.page && onMap) {
+      if (!island.page && !href && onMap) {
         // on the map: fly to the island instead of reloading the page
         link.addEventListener('click', (e) => {
           e.preventDefault();
@@ -199,7 +200,9 @@
   const short = (island) => island.name.replace(/^אי (ה)?/, '');
   fillList('sb-worlds', (island) => !isReview(island) && !island.finale,
     (island) => (island.lessons ? `${short(island)} (שיעור ${island.lessons})` : short(island)));
-  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n} (שיעורים ${island.review})`);
+  // each review leads straight to its own practice (its range and pin)
+  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n} (שיעורים ${island.review})`,
+    (island, n) => `review-practice.html?r=${island.review}&p=${n}`);
 
   // Highlight the island being viewed (on an island page: that page's island)
   const sync = (current) => links.forEach(([link, i]) => link.classList.toggle('is-current', i === current));
@@ -207,4 +210,9 @@
   const exactIsland = ISLANDS.findIndex((island) => island.page === here + location.search);
   const pageIsland = exactIsland >= 0 ? exactIsland : ISLANDS.findIndex((island) => (island.page || '').split('?')[0] === here);
   if (pageIsland >= 0) sync(pageIsland);
+  // on a review's practice: that review is the current one in the list
+  if (here === 'review-practice.html') {
+    const p = new URLSearchParams(location.search).get('p');
+    links.forEach(([link]) => link.classList.toggle('is-current', !!p && link.href.endsWith(`&p=${p}`)));
+  }
 })();
