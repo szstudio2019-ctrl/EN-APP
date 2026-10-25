@@ -148,3 +148,48 @@
       document.body.classList.remove('is-loading');
     }));
 })();
+
+// My persistence (the same demo data Einat sees on the admin page): a meter
+// for the last 30 days with a trophy / medal, and a tab with the week / month /
+// year data – coins, days played, persistence, longest streak, reviews, chart.
+(function () {
+  const meter = document.getElementById('pf-meter');
+  const box = document.getElementById('pf-stats');
+  if (!meter || !box || !window.ChildStats) return;
+  const { activityOf, statsOf } = window.ChildStats;
+  const DAY = 24 * 60 * 60 * 1000;
+  // the learner: her row in the admin's list (else the demo's own values)
+  let me = null;
+  try { me = (JSON.parse(localStorage.getItem('en-app:users')) || []).find((u) => u.user === 'shira.cohen'); } catch (err) { me = null; }
+  if (!me) {
+    const start = new Date(Date.now() - 120 * DAY).toISOString().slice(0, 10);
+    me = { id: 'shira.cohen', user: 'shira.cohen', first: 'שירה', last: 'כהן', start, active: true };
+  }
+  const part = activityOf(me).slice(0, 30);
+  const played = part.filter((d) => d.min).length;
+  const pct = Math.round((played / 30) * 100);
+  const MEDAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#f4b73b" stroke="#d08a00" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg>';
+  const badge = pct >= 70 ? { ico: '<img src="assets/trophy.svg" alt="">', name: 'מצטיינת!' }
+    : pct >= 40 ? { ico: MEDAL, name: 'מתמידה!' } : { ico: '', name: 'ממשיכים לשחק' };
+  meter.innerHTML = `
+    <div class="pf-meter__head"><b>מד ההתמדה שלי</b><span>${played} מתוך 30 הימים האחרונים</span></div>
+    <div class="pf-meter__row">
+      <div class="pf-meter__bar" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="התמדה"><i style="width:${pct}%"></i><span style="inset-inline-start:40%"></span><span style="inset-inline-start:70%"></span></div>
+      <b class="pf-meter__pct">${pct}%</b>
+      <span class="pf-meter__badge">${badge.ico}<small>${badge.name}</small></span>
+    </div>`;
+  let period = 'week';
+  const paint = () => { box.innerHTML = statsOf(me, period); };
+  box.addEventListener('click', (e) => { const c = e.target.closest('[data-period]'); if (c) { period = c.dataset.period; paint(); } });
+  paint();
+  // the two views
+  const list = document.getElementById('sentences');
+  document.querySelector('.pf-tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-view]');
+    if (!b) return;
+    const stats = b.dataset.view === 'stats';
+    document.querySelectorAll('.pf-tabs [data-view]').forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-selected', String(x === b)); });
+    list.hidden = stats;
+    box.hidden = !stats;
+  });
+})();

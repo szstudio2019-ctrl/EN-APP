@@ -10,6 +10,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="shop.css">
+  <link rel="stylesheet" href="admin.css">
   <link rel="stylesheet" href="profile.css">
 </head>
 <body class="shop-page profile-page">
@@ -132,8 +133,15 @@
           <span class="profile__total"><img src="assets/coin.webp" alt=""><b id="p-coins">350</b><small>מטבעות</small></span>
           <span class="profile__total"><img src="assets/chest.webp" alt=""><b id="p-chests">3</b><small>תיבות אוצר</small></span>
         </div>
-        <h3 class="profile__sub">המשפטים שלי</h3>
+        <!-- my persistence (the same data Einat sees on the admin page): a meter for the last 30 days -->
+        <div class="pf-meter" id="pf-meter"></div>
+        <!-- two views: my sentences / my persistence data (week, month, year) -->
+        <div class="pf-tabs" role="tablist" aria-label="מה להציג">
+          <button class="admin__chip is-on" type="button" role="tab" aria-selected="true" data-view="sentences">המשפטים שלי</button>
+          <button class="admin__chip" type="button" role="tab" aria-selected="false" data-view="stats">ההתמדה שלי</button>
+        </div>
         <ol class="sentences" id="sentences"></ol>
+        <div class="pf-stats" id="pf-stats" hidden></div>
       </section>
 
       <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
@@ -278,6 +286,7 @@
   <script src="menu.js"></script>
   <script src="drawer.js"></script>
   <script src="mobile.js"></script>
+  <script src="child-stats.js"></script>
   <script src="profile.js"></script>
 </body>
 </html>

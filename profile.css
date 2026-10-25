@@ -80,3 +80,34 @@
 .profile__field--wide { grid-column: 1 / -1; }
 .profile__form { padding-top: 26px; }
 .profile__fields { gap: 18px 26px; }
+
+/* ---------- my persistence: the meter, the two views and the data ---------- */
+.pf-meter { margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: #f4f5fb; text-align: right; }
+.pf-meter__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.pf-meter__head b { font-size: 19px; color: #2a2968; }
+.pf-meter__head span { font-size: 14px; color: #6b6a92; }
+.pf-meter__row { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+.pf-meter__bar { position: relative; flex: 1; height: 16px; border-radius: 10px; background: #e4e5f0; overflow: hidden; }
+.pf-meter__bar i { display: block; height: 100%; border-radius: 10px; background: linear-gradient(90deg, #ff6b9d, #e33563); }
+.pf-meter__bar span { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(255, 255, 255, .8); }
+.pf-meter__pct { font-size: 24px; color: #232a6b; min-width: 56px; text-align: center; }
+.pf-meter__badge { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 64px; }
+.pf-meter__badge img, .pf-meter__badge svg { width: 30px; height: 30px; }
+.pf-meter__badge small { font-size: 13px; font-weight: 600; color: #e33563; white-space: nowrap; }
+.pf-tabs { display: flex; gap: 8px; margin-top: 16px; }
+.pf-tabs .admin__chip { height: 38px; font-size: 17px; }
+.pf-stats { flex: 1; min-height: 0; margin-top: 12px; overflow-y: auto; scrollbar-width: thin; }
+.pf-stats[hidden], .profile-page .sentences[hidden] { display: none; }
+.pf-stats .admin-stats { margin: 0; padding: 14px 14px 10px; animation: none; }
+.pf-stats .admin-stats__head { flex-wrap: wrap; gap: 8px; }
+.pf-stats .admin-stats__title { font-size: 18px; }
+.pf-stats .admin__chip { height: 34px; padding: 0 12px; font-size: 15px; }
+.pf-stats .admin-stats__tiles { grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.pf-stats .admin-stats__tile { padding: 10px 12px; }
+.pf-stats .admin-stats__tile b { font-size: 26px; }
+.pf-stats .admin-stats__tile span { font-size: 14px; }
+.pf-stats .admin-stats__tile small { font-size: 12px; }
+.pf-stats .admin-stats__icon { width: 42px; height: 42px; }
+.pf-stats .admin-stats__icon img { width: 30px; height: 30px; }
+.pf-stats .admin-stats__icon svg { width: 22px; height: 22px; }
+.pf-stats .admin-stats__chart-title { margin-top: 12px; font-size: 14px; }
