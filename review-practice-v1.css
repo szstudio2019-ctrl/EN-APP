@@ -1,0 +1,886 @@
+/* גרסה 1 של אי החזרות (שמורה לפני השינויים, 25.10.2026) – לא לשנות */
+/* Review 5 ("חוזרים על הכל"): the practice page with the review topics on top.
+   1 topics, 2 the topic's letters / sounds + explanation, 3 the cards,
+   4 the dashes and the count. */
+.review-practice .practice { padding-top: 30px; }
+.review-practice .practice__title { font-size: 50px; line-height: 54px; }
+
+/* 1: topics */
+.rp-topics { display: flex; gap: 10px; margin-top: 18px; direction: rtl; }
+.rp-topic {
+  width: 138px;
+  padding: 10px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border: 0;
+  border-radius: 18px;
+  background: #f4f5fb;
+  box-shadow: inset 0 0 0 1.5px #e4e6f2;
+  font-family: 'Rubik', sans-serif;
+  color: #2a2968;
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.rp-topic:hover { transform: translateY(-3px); }
+.rp-topic__icon { font-size: 34px; line-height: 1.1; }
+.rp-topic__name { font-size: 16px; font-weight: 700; line-height: 1.2; min-height: 2.4em; display: grid; place-items: center; }
+.rp-topic__count { font-size: 13px; font-weight: 600; color: #6b6a92; }
+.rp-topic.is-on { background: #fff; box-shadow: inset 0 0 0 2.5px var(--pink), 0 10px 20px rgba(227, 53, 99, .15); }
+.rp-topic.is-on .rp-topic__name { color: var(--pink); }
+
+/* 2: the letters / sounds of the topic */
+.rp-subs { display: flex; gap: 10px; margin-top: 16px; direction: rtl; }
+.rp-sub {
+  height: 44px;
+  padding: 0 14px 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 24px;
+  background: #ffe1ea;
+  color: var(--pink);
+  font-family: 'Rubik', sans-serif;
+  cursor: pointer;
+}
+.rp-sub b { font-family: 'Varela Round', 'Rubik', sans-serif; font-size: 22px; }
+.rp-sub__icon { font-size: 20px; }
+.rp-sub__n { min-width: 24px; height: 24px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 12px; background: #fff; font-size: 13px; font-weight: 600; }
+.rp-sub.is-on { background: var(--pink); color: #fff; box-shadow: 0 0 0 4px #ffe1ea; }
+.rp-sub.is-on .rp-sub__n { color: var(--pink); }
+.rp-explain { margin: 12px 0 0; min-height: 28px; font-size: 20px; color: #2a2968; }
+
+/* 3: the cards (a bit lower than on the lesson practice) */
+.review-practice .practice__deck { margin-top: 10px; }
+.review-practice .practice__word.is-long { font-size: 52px; }
+
+/* 4: how many */
+.rp-count { margin: 6px 0 0; font-size: 16px; font-weight: 600; color: var(--pink); }
+.review-practice .practice__note { margin-top: 4px; }
+
+/* opening line + the parents' note (opens under it) */
+.rp-lead { margin: 8px 0 0; font-size: 19px; color: #2a2968; }
+.rp-parents {
+  margin-inline-start: 8px;
+  padding: 3px 12px;
+  border: 0;
+  border-radius: 14px;
+  background: #fff1d6;
+  color: #c27a00;
+  font-family: 'Rubik', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rp-parents[aria-expanded="true"] { background: #eeb741; color: #fff; }
+.rp-note {
+  position: absolute;
+  top: 150px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 20;
+  width: 640px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: #fff8e8;
+  box-shadow: inset 4px 0 0 #eeb741, 0 14px 30px rgba(36, 34, 117, .18);
+  font-size: 18px;
+  line-height: 1.55;
+  color: #333;
+  text-align: right;
+}
+.rp-note b { color: #c27a00; }
+.rp-note[hidden] { display: none; }
+
+/* more air between the parts under the topics */
+.rp-subs { margin-top: 26px; }
+.rp-explain { margin-top: 16px; }
+.review-practice .practice__deck { margin-top: 18px; }
+.review-practice .practice__dots { margin-top: 26px; }
+.rp-count { margin-top: 12px; }
+.review-practice .practice__note { margin-top: 8px; }
+.review-practice .practice__buttons { margin-top: 24px; }
+
+/* the topic's last word: the "next" arrow fades (it opens the done popup) */
+.practice__arrow.is-end { opacity: .45; }
+.practice__arrow.is-end:hover { opacity: .8; }
+.rp-sub.is-new { animation: rp-chip .6s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes rp-chip { 40% { scale: 1.15; } }
+
+/* "סיימת את…": the screen darkens, a white card in the middle */
+.rp-done {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(10, 8, 40, .62);
+  opacity: 0;
+  transition: opacity .3s ease;
+  direction: rtl;
+  font-family: 'Rubik', sans-serif;
+}
+.rp-done[hidden] { display: none; }
+.rp-done.is-open { opacity: 1; }
+.rp-done__card {
+  width: min(460px, 100%);
+  padding: 34px 30px 30px;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .35);
+  text-align: center;
+  color: #2a2968;
+  transform: translateY(20px) scale(.94);
+  transition: transform .45s cubic-bezier(.34, 1.56, .64, 1);
+}
+.rp-done.is-open .rp-done__card { transform: none; }
+.rp-done__icon { display: block; font-size: 72px; line-height: 1; animation: rp-bob 2.4s ease-in-out infinite; }
+@keyframes rp-bob { 50% { translate: 0 -8px; } }
+.rp-done__kicker { margin: 14px 0 0; font-size: 18px; font-weight: 600; color: var(--pink); }
+.rp-done__title { margin: 4px 0 0; font-size: 32px; line-height: 1.2; }
+.rp-done__text { margin: 8px 0 0; font-size: 17px; color: #6b6a92; }
+.rp-done__next { margin: 18px 0 0; padding: 12px; border-radius: 16px; background: #f4f5fb; font-size: 17px; }
+.rp-done__next b { color: #2a2968; }
+.rp-done__buttons { display: flex; justify-content: center; gap: 14px; margin-top: 22px; flex-wrap: wrap; }
+.rp-done__go { height: 48px; padding: 0 28px; font-size: 19px; justify-content: center; border: 0; cursor: pointer; }
+.rp-done__again { height: 48px; padding: 0 22px; border: 1.5px solid var(--pink); border-radius: 30px; background: #fff; color: var(--pink); font-family: 'Rubik', sans-serif; font-size: 17px; font-weight: 600; cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .rp-done__icon, .rp-sub.is-new { animation: none; } }
+/* icons in the popup buttons: round arrows on "again", an arrow on "next" */
+.rp-done__again, .rp-done__go { display: inline-flex; align-items: center; gap: 8px; }
+.rp-done__again svg, .rp-done__go svg { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* v3: a wider white panel; the topics are a side menu on the right and the
+   practice gets the full height beside it */
+.review-practice .practice { width: 1250px; padding: 26px 30px 24px; }
+.rp-body { flex: 1; min-height: 0; width: 100%; display: flex; gap: 34px; margin-top: 18px; direction: rtl; }
+.rp-topics { flex: none; width: 290px; margin: 0; flex-direction: column; gap: 10px; }
+.rp-topic {
+  flex: 1;
+  max-height: 96px;
+  width: auto;
+  padding: 10px 16px;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  column-gap: 14px;
+  align-items: center;
+  justify-items: start;
+  text-align: right;
+}
+.rp-topic:hover { transform: translateX(-4px); }
+.rp-topic__icon { grid-row: span 2; justify-self: center; font-size: 36px; }
+.rp-topic__name { min-height: 0; display: block; align-self: end; font-size: 19px; }
+.rp-topic__count { align-self: start; font-size: 14px; }
+.rp-topic.is-on { box-shadow: inset 0 0 0 2.5px var(--pink), 0 10px 20px rgba(227, 53, 99, .15); }
+.rp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.rp-main .rp-subs { margin-top: 0; }
+.rp-main .rp-explain { margin-top: 18px; }
+.review-practice .rp-main .practice__deck { margin-top: 26px; }
+.review-practice .rp-main .practice__dots { margin-top: 32px; }
+.rp-main .rp-count { margin-top: 12px; }
+.review-practice .rp-main .practice__buttons { margin-top: 30px; }
+/* the slide drawn as a picture */
+.rp-svg { width: 1em; height: 1em; display: block; }
+/* the review island moves right, beside the wider panel */
+.review-practice .world__island { transform: translate(1366px, 515px); }
+
+/* v4: "אי החזרות" + the review's number in a pink circle; the explanation in
+   a box centred above the cards */
+.review-practice .practice__title { display: inline-flex; align-items: center; gap: 14px; }
+.rp-no { width: 52px; height: 52px; display: inline-grid; place-items: center; border-radius: 50%; background: var(--pink); color: #fff; font-size: 30px; box-shadow: 0 0 0 5px #ffe1ea; }
+.review-practice .rp-body { margin-top: 14px; }
+.rp-intro {
+  width: 100%;
+  max-width: 700px;
+  padding: 12px 18px 14px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #fff8e6, #ffeef3);
+  box-shadow: inset 0 0 0 2px #f8dc82;
+  text-align: center;
+}
+.rp-intro__lead { margin: 0; font-size: 18px; line-height: 1.45; color: #2a2968; }
+.rp-intro__lead b { color: var(--pink); }
+.rp-intro__note { margin: 10px 0 0; padding: 8px 14px; border-radius: 12px; background: #ffe1e6; box-shadow: inset -4px 0 0 #e8584f; font-size: 15px; line-height: 1.5; color: #333; }
+.rp-intro__note > b:first-child { color: #d9443b; }
+.rp-he { color: #2a2968; }
+.rp-main .rp-subs { margin-top: 16px; }
+.rp-main .rp-explain { margin-top: 12px; }
+.review-practice .rp-main .practice__deck { margin-top: 10px; }
+.review-practice .practice__stack { height: 284px; }
+.review-practice .rp-main .practice__dots { margin-top: 18px; }
+.rp-main .rp-count { margin-top: 8px; }
+.review-practice .rp-main .practice__note { margin-top: 2px; }
+.review-practice .rp-main .practice__buttons { margin-top: 16px; }
+
+/* v5: the title is centred over the practice column (the side menu starts at
+   the top); the explanation has no box and its first line fits on one row */
+.review-practice .rp-body { margin-top: 6px; }
+.rp-main .practice__title { margin: 0 0 10px; }
+.rp-intro { max-width: none; padding: 0; background: none; box-shadow: none; }
+.rp-intro__lead { font-size: 17px; white-space: nowrap; }
+.rp-intro__note { margin-top: 6px; padding: 0; background: none; box-shadow: none; font-size: 15px; }
+/* room for the explanation's first line on one row */
+.review-practice .practice { width: 1290px; padding-inline: 24px; }
+.rp-body { gap: 22px; }
+.rp-topics { width: 240px; }
+.rp-topic { padding: 10px 12px; column-gap: 10px; grid-template-columns: 42px 1fr; }
+.rp-topic__name { font-size: 18px; }
+.rp-intro__lead { font-size: 19px; }
+.rp-intro__note { font-size: 16px; }
+.review-practice .world__island { transform: translate(1398px, 515px); }
+
+/* v6: the title at the top (level with the back arrow); the rest centred in
+   the space under it; more air between the text lines */
+.rp-main .practice__title { margin: 0; }
+.rp-main .rp-intro { margin-top: auto; }
+.review-practice .rp-main .practice__buttons { margin-bottom: auto; }
+.rp-intro__lead { line-height: 1.7; }
+.rp-intro__note { margin-top: 10px; line-height: 1.8; }
+.review-practice .rp-main .practice__dots { margin-top: 44px; }
+
+/* ---------- v7: the Figma "אי החזרות" layout (311:7450) ----------
+   the sky background, a wide white panel, the zebra with a green Play at its
+   top-left, the small island with its card at the bottom-left, and the
+   islands tab above the trophy and the cart */
+.review-practice .world__bg { top: 0; height: 1080px; transform-origin: 960px 540px; }
+.review-practice .practice { left: 291px; width: 1516px; padding-inline: 24px; }
+.review-practice .rp-body { padding-left: 370px; }
+.rp-intro__lead { font-size: 18px; }
+
+.rp-guide { position: absolute; left: 131px; top: 37px; width: 251px; height: 388px; z-index: 2; }
+.rp-guide__zebra { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(36, 34, 117, .18)); transition: transform .3s ease; }
+.rp-guide.is-speaking .rp-guide__zebra { animation: rp-zebra 1.2s ease-in-out infinite; }
+@keyframes rp-zebra { 50% { translate: 0 -8px; } }
+.rp-guide__play {
+  position: absolute;
+  left: 0;
+  top: 257px;
+  width: 84px;
+  height: 84px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 4px #fff, 0 10px 18px rgba(80, 110, 10, .35);
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+.rp-guide__play:hover { transform: scale(1.07); }
+.rp-guide__play svg { width: 40px; height: 40px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linejoin: round; }
+.rp-guide__play.is-stop { background: var(--pink); }
+.rp-guide__play.is-stop svg { fill: #fff; stroke: none; }
+
+/* the small island at the bottom-left, with the Figma card under it */
+.review-practice .world__island { transform: translate(99px, 700px) scale(.66); transform-origin: 0 0; }
+.review-practice .world__island .island__card,
+.review-practice .island-play { display: none; }
+.rp-isl-card {
+  position: absolute;
+  left: 147px;
+  top: 954px;
+  z-index: 110;
+  width: 279px;
+  height: 99px;
+  padding: 14px 40px 0;
+  border-radius: 23px;
+  background: rgba(36, 34, 117, .76);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 3px var(--pink);
+  direction: rtl;
+  font-family: 'Assistant', 'Rubik', sans-serif;
+  font-weight: 700;
+  color: #fff;
+}
+.rp-isl-card__row { display: flex; align-items: center; justify-content: space-between; }
+.rp-isl-card__row img { width: 45px; height: 45px; object-fit: contain; }
+.rp-isl-card p { margin: 0; font-size: 14px; line-height: 14px; text-align: right; }
+.rp-isl-card b { display: block; font-size: 21px; line-height: 22px; color: var(--pink); }
+.rp-isl-card__bar { position: relative; display: block; width: 148px; height: 7px; margin: 12px auto 0; border-radius: 9px; background: #2a2968; overflow: hidden; }
+.rp-isl-card__bar i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 9px; background: var(--pink); }
+
+
+
+/* ---------- v8: panel under the header, island breaking out of its corner ----------
+   One shared frame for the header and the panel: the panel is the header's
+   width less the same inset on both sides, so it stays centred under it. */
+.review-practice {
+  --frame-left: 107px;     /* the header's left edge (styles.css .topbar) */
+  --frame-width: 1700px;   /* the header's width */
+  --panel-inset: 110px;    /* the same gap on the right and on the left */
+}
+.review-practice .practice {
+  left: calc(var(--frame-left) + var(--panel-inset));
+  width: calc(var(--frame-width) - 2 * var(--panel-inset));
+}
+.rp-intro__lead { font-size: 17px; }
+
+/* the island sits on the panel's bottom-left corner, half on the panel and
+   half out in the sky, above the panel; a clear gap from the left tabs */
+.review-practice .world__island { transform: translate(136px, 760px) scale(.496); transform-origin: 0 0; z-index: 120; }
+/* its status card is its base: under the island's ground, fully on screen */
+.rp-isl-card { left: 147px; top: 972px; width: 260px; height: 94px; padding: 12px 34px 0; z-index: 110; }
+.rp-isl-card__bar { margin-top: 10px; }
+.rp-intro__note { font-size: 15px; }
+
+/* v9: the panel reaches the header's inner line (its 51px padding); the side
+   menu sits in the middle of the height; the island a little bigger and
+   further left; the zebra a little lower */
+.review-practice { --panel-inset: 51px; }
+.review-practice .rp-topics { justify-content: center; }
+.review-practice .world__island { transform: translate(42px, 753px) scale(.55); }
+.rp-isl-card { left: 68px; top: 978px; }
+.rp-guide { top: 80px; }
+
+/* v10: the practice is centred in the whole space beside the side menu (the
+   same air on its two sides); the zebra, smaller, moves to the top-left
+   corner, clear of the text; less air under the title, bigger explanation */
+.review-practice .rp-body { padding-left: 0; }
+.rp-guide { left: 30px; top: 18px; transform: scale(.7); transform-origin: 0 0; }
+.rp-main .rp-intro { margin-top: 14px; }
+.rp-main .rp-subs { margin-top: auto; }
+.rp-intro__lead { font-size: 21px; white-space: normal; }
+.rp-intro__note { font-size: 18px; }
+
+/* the island and its card at the bottom-left: the card with the same gap
+   below it as from the window's edge, the island above it (not over its text) */
+.review-practice .world__island { transform: translate(-2px, 660px) scale(.6); }
+.rp-isl-card { left: 24px; top: auto; bottom: 24px; width: 279px; height: 99px; padding: 14px 40px 0; }
+
+/* the topic pictures: their white background melts into the button
+   (multiply), the soft shadow under them stays */
+.rp-topic__icon img { display: block; width: 52px; height: 52px; object-fit: contain; mix-blend-mode: multiply; }
+.rp-done__icon img { display: block; width: 110px; height: 110px; margin: 0 auto; object-fit: contain; mix-blend-mode: multiply; }
+.rp-topic { grid-template-columns: 54px 1fr; }
+.rp-done__next-pic { width: 28px; height: 28px; vertical-align: middle; mix-blend-mode: multiply; }
+
+/* ---------- v11: a three-column grid (RTL) ----------
+   right: the topics; centre: the content (max 640px, centred); left: the
+   zebra's own 260px column, from the top of the panel. Earlier sizes were
+   set by the fixed .rp-guide box (251x388) and a scale(.7) on it; both go. */
+.review-practice .rp-body {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 260px;
+  column-gap: 28px;
+  padding-left: 0;
+}
+.review-practice .rp-main { width: 100%; max-width: 640px; justify-self: center; }
+.rp-guide {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 260px;
+  height: 380px;
+  transform: none;
+  align-self: start;
+}
+.rp-guide__zebra { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center top; }
+/* Play: against the zebra, level with the text it "says" */
+.rp-guide__play { left: auto; right: -14px; top: 92px; width: 74px; height: 74px; }
+.rp-guide__play svg { width: 36px; height: 36px; }
+
+/* the explanation stays inside the content column */
+.rp-intro__lead { font-size: 20px; line-height: 1.6; }
+.rp-intro__note {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fff1f5;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: right;
+}
+
+/* the progress dashes: as wide as the card and lined up under it; RTL, so
+   the first (active) segment is at the right end */
+.review-practice .practice__dots { width: 393px; direction: rtl; justify-content: space-between; gap: 5px; }
+.review-practice .practice__dots i { flex: 1; width: auto; }
+
+/* the island 15% bigger; its card 8px under it, clear of the ground, both
+   whole and still breaking out of the panel's corner */
+.review-practice .world__island { transform: translate(-20.6px, 670.7px) scale(.69); }
+.rp-isl-card { left: 36px; top: 965px; bottom: auto; }
+
+/* the topic pictures 48px (trimmed files), with at least 12px around them */
+.rp-topic { padding: 12px 14px; grid-template-columns: 52px 1fr; column-gap: 12px; }
+.rp-topic__icon img { width: 48px; height: 48px; }
+
+/* "סיימתי את החזרה": bigger; an outline (secondary) until the topic is all
+   recorded, then filled pink with a soft pulse (set by review-practice.js) */
+.review-practice .practice__btn--done {
+  height: 56px;
+  padding: 0 32px;
+  font-size: 18px;
+  font-weight: 700;
+  background: #fff;
+  color: #e8457a;
+  box-shadow: inset 0 0 0 2px #e8457a;
+  transition: background .3s ease, color .3s ease;
+}
+.review-practice .practice__btn--done .btn-pill__chevron { filter: brightness(0) saturate(100%) invert(39%) sepia(75%) saturate(2200%) hue-rotate(318deg); }
+.review-practice .practice__btn--done.is-complete {
+  background: #e8457a;
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(232, 69, 122, .35);
+  animation: rp-done-pulse 2s ease-in-out infinite;
+}
+.review-practice .practice__btn--done.is-complete .btn-pill__chevron { filter: none; }
+@keyframes rp-done-pulse { 50% { transform: scale(1.04); } }
+@media (prefers-reduced-motion: reduce) { .review-practice .practice__btn--done.is-complete { animation: none; } }
+.review-practice .back-home { z-index: 5; } /* above the zebra column */
+
+/* ---------- v12 ---------- */
+/* the zebra lower: its top (with the tiles) 24px+ under the back arrow */
+.rp-guide { margin-top: 72px; }
+/* the card's numbers above the island; the island lifted so it ends over the card */
+.rp-isl-card { z-index: 130; background: rgba(36, 34, 117, .92); }
+.review-practice .world__island { transform: translate(-20.6px, 649.7px) scale(.69); }
+/* the progress dashes with 1 on the right end and the count on the left end */
+.rp-progress { display: flex; align-items: center; gap: 10px; margin-top: 18px; direction: rtl; }
+.review-practice .rp-progress .practice__dots { margin: 0; }
+.rp-progress__n { min-width: 18px; font-size: 14px; font-weight: 600; line-height: 1; color: #232a6b; text-align: center; }
+/* the side menu uses its room: wider, 96px cards, big pictures, bigger text */
+.review-practice .rp-body { grid-template-columns: 280px minmax(0, 1fr) 260px; }
+.rp-topics { width: 280px; gap: 10px; }
+.rp-topic { flex: none; height: 96px; max-height: none; padding: 12px 16px; grid-template-columns: 64px 1fr; column-gap: 14px; }
+.rp-topic__icon img { width: 60px; height: 60px; }
+.rp-topic__name { font-size: 18px; font-weight: 700; }
+.rp-topic__count { font-size: 14px; }
+
+/* ---------- v13: the zebra speaks; the island and its card are one unit ---------- */
+.review-practice .rp-body { grid-template-columns: 280px minmax(0, 1fr); }
+
+/* a row under the title: the speech bubble (with the parents' note under it)
+   and, on its left, the zebra right beside it */
+.rp-say { display: flex; align-items: center; gap: 16px; width: 100%; margin-top: 16px; direction: rtl; }
+.rp-say__col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.review-practice .rp-guide {
+  position: relative;
+  flex: none;
+  width: 132px;
+  height: 198px;
+  margin: 0;
+  left: auto;
+  top: auto;
+  transform: none;
+  align-self: center;
+}
+.rp-bubble {
+  position: relative;
+  padding: 16px 20px;
+  border: 2px solid #e8457a;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(232, 69, 122, .1);
+}
+/* the tail, on the left, pointing at the zebra */
+.rp-bubble::before,
+.rp-bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  translate: 0 -50%;
+}
+.rp-bubble::before { left: -14px; border-width: 10px 14px 10px 0; border-color: transparent #e8457a transparent transparent; }
+.rp-bubble::after { left: -10px; border-width: 8px 11px 8px 0; border-color: transparent #fff transparent transparent; }
+.rp-bubble__text { margin: 0; padding-right: 22px; font-size: 18px; line-height: 1.55; color: #232a6b; text-align: right; }
+/* Play reads the bubble, so it sits on the bubble's corner */
+.review-practice .rp-guide__play {
+  position: absolute;
+  left: auto;
+  right: -20px;
+  top: -20px;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 0 0 3px #fff, 0 6px 12px rgba(80, 110, 10, .3);
+}
+.review-practice .rp-guide__play svg { width: 26px; height: 26px; }
+.rp-say__col .rp-intro__note { margin: 0; }
+
+/* the island back to its earlier size, its ground ending 8px over its card;
+   both in one container at the bottom-left, centred on each other */
+.rp-isl-unit { position: absolute; left: 24px; top: 730px; z-index: 120; width: 302px; height: 334px; }
+.review-practice .rp-isl-unit .world__island { position: absolute; left: 0; top: 0; transform: translate(-19.2px, 8.4px) scale(.6); transform-origin: 0 0; }
+.rp-isl-unit .rp-isl-card { position: absolute; left: 11.5px; top: 235px; bottom: auto; z-index: 2; }
+
+/* the bar's end numbers in pink circles; no "1 מתוך 19" line under it;
+   the 7-days note quieter */
+.rp-progress__n {
+  width: 28px;
+  height: 28px;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8457a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.review-practice .rp-count { display: none; }
+.review-practice .practice__note { margin-top: 12px; font-size: 13px; font-weight: 400; color: #5f6487; } /* AA contrast on white */
+
+/* ---------- v14: exact layout ---------- */
+/* the content column takes all the free width beside the topics */
+.review-practice .rp-main { max-width: none; }
+/* the bubble + parents' note: 820px; the zebra (300px tall) right beside it
+   on the left, 8px away, top lines level. The group (zebra + gap + 820) is
+   centred: the margin on the left makes room for the zebra. */
+.rp-say { position: relative; width: 820px; max-width: calc(100% - 208px); margin: 16px 0 0 208px; display: block; }
+.rp-say__col { gap: 8px; }
+.review-practice .rp-guide {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 8px);
+  width: 200px;
+  height: 300px;
+  max-width: none;
+  max-height: none;
+}
+.rp-guide__zebra { object-position: center top; }
+.rp-bubble__text { padding: 0 0 0 26px; font-size: 18px; white-space: nowrap; }
+/* Play on the bubble's corner nearest the zebra (top-left), 48px */
+.review-practice .rp-guide__play { right: auto; left: -22px; top: -22px; width: 48px; height: 48px; }
+.rp-say__col .rp-intro__note { font-size: 15px; line-height: 1.6; padding: 10px 14px; }
+
+/* the island and its card: one flex column, the picture then the card, 8px
+   apart, so the island cannot ride over the card; the unit sits in the
+   bottom-left corner, breaking out of the panel */
+.review-practice .rp-isl-unit .world__island { display: none; }
+.rp-isl-unit {
+  top: auto;
+  bottom: 16px;
+  left: 24px;
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.rp-isl-unit__img { display: block; height: 260px; width: auto; filter: drop-shadow(0 14px 16px rgba(36, 34, 117, .25)); }
+.rp-isl-unit .rp-isl-card { position: relative; left: auto; top: auto; bottom: auto; }
+.rp-say { margin-left: 188px; } /* 10px left of centre so the zebra clears the card deck */
+.review-practice .rp-guide__play { left: -16px; }
+.review-practice .rp-guide__play { left: -8px; } /* on the corner, just clear of the zebra */
+
+/* ---------- v15: the panel as a three-column grid (RTL), no absolute layout ----------
+   right: the topics (260px) · centre: the content (all the free width) ·
+   left: the zebra on top and the island with its card at the bottom (300px) */
+.review-practice .rp-body {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 300px;
+  column-gap: 16px;
+  padding-left: 0;
+}
+.review-practice .rp-topics { width: 260px; }
+.review-practice .rp-topic { padding: 12px 14px; grid-template-columns: 62px 1fr; column-gap: 12px; }
+
+/* centre column */
+.review-practice .rp-main { max-width: none; width: 100%; justify-content: flex-start; }
+.rp-main .practice__title { margin: 0; }
+.rp-say { position: static; width: 100%; max-width: none; margin: 14px 0 0; }
+.rp-say__col { gap: 8px; }
+.rp-bubble__text { white-space: nowrap; }
+.review-practice .rp-guide__play { left: -14px; top: -22px; }
+.rp-main .rp-subs { margin-top: 18px; }
+.rp-main .rp-explain { margin-top: 10px; }
+/* the practice card 520x280, the arrows 16px from it */
+.review-practice .rp-main .practice__deck { margin-top: 12px; gap: 16px; }
+.review-practice .practice__stack { width: 520px; height: 290px; }
+.review-practice .practice__card { width: 520px; height: 280px; }
+.review-practice .practice__sheet { width: 520px; height: 272px; }
+/* the bar as wide as the card (the numbers sit outside its ends) */
+.review-practice .practice__dots { width: 520px; }
+.review-practice .rp-progress { margin-top: 18px; }
+.review-practice .practice__note { margin-top: 8px; }
+.review-practice .rp-main .practice__buttons { margin-top: 14px; margin-bottom: 0; }
+
+/* left column: the zebra up top, level with the bubble; the island + card below */
+.rp-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 0;
+  padding-top: 70px; /* the title's height: the zebra's top meets the bubble's */
+}
+.review-practice .rp-side .rp-guide {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
+  width: 200px;
+  height: 300px;
+  margin: 0;
+  transform: none;
+  align-self: flex-start; /* RTL: its right side, against the bubble */
+}
+.review-practice .rp-side .rp-isl-unit {
+  position: static;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.rp-side .rp-isl-unit__img { height: 240px; }
+.rp-side .rp-isl-card { position: static; width: 100%; }
+
+/* a done stage / topic: green outline, a green ✓ and a repeat icon inside */
+.rp-check, .rp-again { display: none; }
+.rp-check svg, .rp-again svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.rp-sub.is-done { background: #fff; color: #6f8f10; box-shadow: inset 0 0 0 2px var(--green); }
+.rp-sub.is-done.is-on { background: #f3f9e6; box-shadow: inset 0 0 0 2.5px var(--green), 0 0 0 4px #e6f2c8; }
+.rp-sub.is-done .rp-sub__n { display: none; }
+.rp-sub.is-done .rp-check {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+}
+.rp-sub.is-done .rp-check svg { stroke-width: 3.2; }
+.rp-sub.is-done .rp-again { display: block; width: 18px; height: 18px; color: var(--green); }
+.rp-sub.is-done .rp-again svg { stroke-width: 2.4; }
+
+.rp-topic { position: relative; }
+.rp-topic.is-done { box-shadow: inset 0 0 0 2px var(--green); }
+.rp-topic.is-done.is-on { box-shadow: inset 0 0 0 2.5px var(--green), 0 10px 20px rgba(145, 177, 33, .2); }
+.rp-topic.is-done .rp-topic__name { color: #5d7a0c; }
+.rp-topic.is-done .rp-check {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff;
+}
+.rp-topic.is-done .rp-check svg { stroke-width: 3.2; }
+.rp-topic.is-done .rp-again { display: block; position: absolute; bottom: 10px; left: 12px; width: 20px; height: 20px; color: var(--green); }
+.rp-topic.is-done .rp-again svg { stroke-width: 2.4; }
+/* the zebra 20% bigger: 360px tall */
+.review-practice .rp-side .rp-guide { width: 240px; height: 360px; }
+
+/* ---------- v16: widths and grouping ----------
+   the practice card back to its own size (393x270), the arrows against it;
+   the text block (bubble + parents' note) one 680px block, centred;
+   three groups by proximity: A explanation (title, bubble, note: 12px apart),
+   B practice (tag, instruction, card, bar, 7-days line: 12px apart), 40px
+   between A and B, and C (the done button) pushed to the panel's bottom,
+   level with the bottom of the island's card on the left */
+.review-practice .practice__stack { width: 410px; height: 284px; }
+.review-practice .practice__card { width: 393px; height: 270px; }
+.review-practice .practice__sheet { width: 393px; height: 263px; }
+.review-practice .practice__dots { width: 393px; }
+.review-practice .rp-main .practice__deck { gap: 16px; }
+
+.rp-say { width: 100%; max-width: 680px; margin: 12px auto 0; }
+.rp-say__col { gap: 12px; }
+.rp-bubble, .rp-say__col .rp-intro__note { width: 100%; box-sizing: border-box; }
+
+.rp-main .rp-subs { margin-top: 40px; }
+.rp-main .rp-explain { margin-top: 12px; }
+.review-practice .rp-main .practice__deck { margin-top: 12px; }
+.review-practice .rp-progress { margin-top: 12px; }
+.review-practice .practice__note { margin-top: 12px; }
+.review-practice .rp-main .practice__buttons { margin-top: auto; margin-bottom: 0; }
+.review-practice .practice__stack { width: 393px; } /* the arrows 16px from the card itself */
+
+/* ---------- v17: the island sits behind its card and breaks out of the panel ----------
+   (the earlier "no overlap" rule is replaced on purpose) */
+.review-practice .rp-side .rp-isl-unit {
+  gap: 0;
+  position: relative;
+  z-index: 20;                  /* floats above the panel */
+  transform: translateX(-35%);  /* about a third out into the sky (RTL: to the left) */
+}
+.rp-side .rp-isl-unit__img { position: relative; z-index: 1; height: 240px; }
+/* the card rides over the island's bottom 25% (the rocks only), solid so
+   nothing shows through */
+.rp-side .rp-isl-card { position: relative; z-index: 2; margin-top: -60px; background: #242275; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.review-practice .practice, .review-practice .rp-body, .rp-side { overflow: visible; }
+.review-practice .rp-side .rp-isl-unit { transform: translateX(-52%); } /* about a third of the island itself out of the panel */
+
+/* ---------- v18 ---------- */
+/* the zebra: its own element on the bubble's left, 16px from it, its top
+   level with the bubble's; the left column now only holds the island */
+.rp-say { position: relative; }
+.review-practice .rp-say .rp-guide {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 16px);
+  left: auto;
+  width: 240px;
+  height: 360px;
+  margin: 0;
+  transform: none;
+}
+.rp-side { justify-content: flex-end; padding-top: 0; }
+
+/* Play: a plain green circle with a white triangle */
+.review-practice .rp-guide__play svg .rp-play-tri { fill: #fff; stroke: none; }
+.review-practice .rp-guide__play svg { width: 24px; height: 24px; margin-left: 3px; }
+
+/* the island card: glass (half-clear navy, blurred), pink edge, readable text;
+   16px lower, so it covers a little less of the island (the rocks only) */
+.rp-side .rp-isl-card {
+  margin-top: -44px;
+  background: rgba(35, 42, 107, .55);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 0 3px #e8457a, 0 10px 24px rgba(20, 18, 74, .25);
+  text-shadow: 0 1px 3px rgba(10, 10, 40, .45);
+}
+
+/* air between the card stack and the bar; the bar and the 7-days line together */
+.review-practice .rp-progress { margin-top: 24px; }
+.review-practice .practice__note { margin-top: 8px; }
+.review-practice .rp-progress { margin-top: 36px; } /* 24px under the lowest (tilted) sheet */
+.review-practice .rp-main .practice__note { margin-top: 14px; }
+.review-practice .rp-main .practice__note { margin-top: 8px; }
+
+/* the white panel as wide as the header (as on every white-panel page) */
+.review-practice { --panel-inset: 0px; }
+.review-practice .rp-side .rp-isl-unit { transform: translateX(-45%); } /* the card stays clear of the screen edge */
+/* the island at the same size as on the lesson and practice pages */
+.rp-side .rp-isl-unit__img { height: 300px; }
+.rp-side .rp-isl-card { margin-top: -54px; }
+
+/* Even rhythm (gestalt): related items sit close (12px), groups are split by
+   one equal gap (28px): title | zebra bubble + parents' note | sound tabs +
+   explanation | cards + progress + note | the done button */
+@media (min-width: 900px) {
+  .review-practice .rp-main { --rp-in: 12px; --rp-gap: 28px; }
+  .review-practice .rp-main .practice__title { margin: 0 !important; }
+  .review-practice .rp-main .rp-say { margin-top: var(--rp-gap) !important; }
+  .review-practice .rp-say__col { gap: var(--rp-in); }
+  .review-practice .rp-main .rp-subs { margin-top: var(--rp-gap) !important; }
+  .review-practice .rp-main .rp-explain { margin-top: var(--rp-in) !important; }
+  .review-practice .rp-main .practice__deck { margin-top: var(--rp-gap) !important; }
+  .review-practice .rp-main .rp-progress { margin-top: 20px !important; }
+  .review-practice .rp-main .rp-progress .practice__dots { margin-top: 0 !important; }
+  .review-practice .rp-main .practice__note { margin-top: var(--rp-in) !important; }
+  .review-practice .rp-main .practice__status:empty { display: none; }
+  .review-practice .rp-main .practice__status { margin-top: 6px !important; }
+  .review-practice .rp-main .practice__buttons { margin-top: var(--rp-gap) !important; }
+}
+/* a stage chip can show the topic's picture instead of an emoji (the smiles) */
+.rp-sub__icon img { display: block; width: 26px; height: 26px; object-fit: contain; }
+
+/* a topic that opens in a later review: still listed, faded, with a lock */
+.rp-topic.is-locked { cursor: not-allowed; opacity: .5; filter: grayscale(.85); box-shadow: none; }
+.rp-topic.is-locked:hover { transform: none; }
+.rp-lock {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+  border-radius: 50%;
+  background: #6b6a8e;
+  color: #fff;
+  box-shadow: 0 0 0 2px #fff;
+}
+.rp-lock svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* bigger stage chips (b–z, i / ea / ee …) */
+.review-practice .rp-sub { height: 58px; padding: 0 22px 0 14px; gap: 10px; border-radius: 30px; }
+.review-practice .rp-sub b { font-size: 30px; }
+.review-practice .rp-sub__icon { font-size: 28px; }
+.review-practice .rp-sub__icon img { width: 36px; height: 36px; }
+.review-practice .rp-sub__n { min-width: 30px; height: 30px; border-radius: 15px; font-size: 15px; }
+.review-practice .rp-subs { gap: 14px; }
+
+/* ---------- v14: the page's content centred ----------
+   the topics stay on the right; the content (zebra → bubble) centred between
+   the panel's left edge and the topics: the same space on both sides */
+.review-practice .rp-main { translate: -22px 0; }
+/* the island's status card: less see-through */
+.rp-side .rp-isl-card { background: rgba(35, 42, 107, .92); }
+/* "סיימתי את החזרה": the same size as the doctor lesson's "לתרגול" */
+.review-practice .practice__btn--done { height: 64px; padding: 0 46px; gap: 14px; font-size: 26px; font-weight: 500; }
+/* a topic with several stages: the card light blue in the 1st, light yellow
+   in the 2nd, light pink in the 3rd (set by review-practice.js) */
+.review-practice .practice__card[data-stage="0"] { background: #e5f2ff; }
+.review-practice .practice__card[data-stage="1"] { background: #fff6cf; }
+.review-practice .practice__card[data-stage="2"] { background: #ffe6ee; }
+
+/* the bubbles' text as in the doctor lesson's bubble (Rubik 24 / 36, regular) */
+.review-practice .rp-bubble__text,
+.review-practice .rp-say__col .rp-intro__note {
+  font-family: 'Rubik', sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  color: #1d1d3a;
+  white-space: normal;
+}
+/* room for the bigger text: a wider bubble (fewer lines), slightly tighter
+   group gaps and a lower card, so the done button stays on the screen */
+@media (min-width: 900px) {
+  .review-practice .rp-main .rp-say { max-width: 900px; }
+  .review-practice .rp-main { --rp-gap: 20px; --rp-in: 10px; }
+  .review-practice .practice__card { height: 232px; }
+}
+@media (min-width: 900px) {
+  .review-practice .rp-main .practice__card { height: 214px; gap: 12px; }
+}
+@media (min-width: 900px) {
+  .review-practice .rp-main .practice__stack { height: 240px; }
+  .review-practice .rp-main .practice__sheet { height: 222px; }
+}
+
+/* the finish popup: the trophy stays still, and a ✕ in the corner closes it */
+.rp-done__icon { animation: none; }
+.rp-done__card { position: relative; }
+.pd-finish__close {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f1f1f8;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.pd-finish__close:hover { background: #ffe1ea; transform: scale(1.06); }
+.pd-finish__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }
+
+/* the zebra's bubble, the parents' note and the sound's explanation: 20px,
+   dark blue (every lesson / practice / review page); the small notes at the
+   bottom 16px */
+.review-practice .rp-bubble__text,
+.review-practice .rp-say__col .rp-intro__note,
+.review-practice .rp-main .rp-explain { font-family: 'Rubik', sans-serif; font-size: 20px; font-weight: 400; line-height: 30px; color: #232a6b; }
+.review-practice .rp-main .practice__note { font-size: 16px; }
+/* the zebra's bubble: a thinner edge, as on the lesson pages */
+.rp-bubble { border-width: 1px; }
+
+/* the "סיימת את…" popup of a topic: like the other finish popups (trophy, confetti, coins) */
+.rp-done-pop .rp-done__text { margin: 12px 0 0; font-size: 17px; color: #6b6a92; }
+.rp-done-pop .rp-done__next { margin: 14px 0 0; }
+.rp-done-pop .rp-done__buttons { margin-top: 20px; }
