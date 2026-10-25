@@ -237,3 +237,11 @@
 .admin__top.is-stuck .admin__name { font-size: 26px; }
 .admin__top.is-stuck .admin__role { margin-top: 0; font-size: 16px; }
 .admin__top.is-stuck .admin__add, .admin__top.is-stuck .admin__stats-open { height: 42px; font-size: 17px; padding: 0 18px; }
+/* the podium: solid colours – 1st red, 2nd blue, 3rd yellow – the name in white on its step */
+.admin-podium__place--1 .admin-podium__step { background: #e33563; height: 78px; }
+.admin-podium__place--2 .admin-podium__step { background: #2f7cf2; height: 60px; }
+.admin-podium__place--3 .admin-podium__step { background: #eeb741; height: 46px; }
+.admin-podium__step { flex-direction: column; gap: 0; padding: 4px 4px 6px; align-content: center; }
+.admin-podium__step em { font-size: 22px; line-height: 1; color: #fff; }
+.admin-podium__step .admin-podium__name { font: 700 15px 'Rubik', sans-serif; color: #fff; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.admin-podium__who b { display: none; }

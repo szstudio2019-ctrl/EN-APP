@@ -99,7 +99,7 @@
   function podiumOf(top) {
     const step = (r, place) => (r ? `<div class="admin-podium__place admin-podium__place--${place}">
         <span class="admin-podium__who">${avatar(r.u, r.i)}<b>${r.u.first}</b><small>${r.pct}%</small></span>
-        <span class="admin-podium__step">${place === 1 ? '<img src="assets/trophy.svg" alt="">' : ''}<em>${place}</em></span>
+        <span class="admin-podium__step">${place === 1 ? '<img src="assets/trophy.svg" alt="">' : ''}<em>${place}</em><span class="admin-podium__name">${r.u.first}</span></span>
       </div>` : '<div class="admin-podium__place"></div>');
     return `<div class="admin-stats__tile admin-podium" aria-label="המתמידים ביותר"><span class="admin-podium__title">המתמידים ביותר</span><div class="admin-podium__row">${step(top[1], 2)}${step(top[0], 1)}${step(top[2], 3)}</div></div>`;
   }
