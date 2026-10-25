@@ -81,9 +81,12 @@
     spot.querySelector('.intro__spot-back').addEventListener('click', () => show(SPOT - 1));
     spot.querySelector('.intro__spot-go').addEventListener('click', close);
   }
-  intro.querySelector('.intro__skip').addEventListener('click', close);
-  intro.querySelector('.intro__close').addEventListener('click', close);
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) close(); });
+  // "דלגו", ✕ or Esc in the full intro still show the sentence game's card –
+  // the child can't go on to the game without it; on that card they close
+  const leave = () => { if (intro.classList.contains('is-short')) close(); else toShort(); };
+  intro.querySelector('.intro__skip').addEventListener('click', leave);
+  intro.querySelector('.intro__close').addEventListener('click', leave);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) leave(); });
 
   /* Slide 2: every island in a small slider (RTL: the left arrow goes on) */
   const pics = intro.querySelector('.intro__islands');
@@ -187,6 +190,18 @@
     sText.textContent = 'הוגרל לך משפט חדש! קני אותיות בחנות האותיות כדי לגלות אותו';
   });
   goBtn.addEventListener('click', close);
+  // from the full intro straight to the sentence card
+  function toShort() {
+    paintSentence();
+    document.body.classList.remove('intro-spot');
+    intro.classList.remove('is-spot');
+    intro.classList.add('is-short');
+    slides.forEach((sl) => { sl.classList.remove('is-current'); sl.setAttribute('aria-hidden', 'true'); });
+    const only = intro.querySelector('.intro__slide--sentence');
+    only.classList.add('is-current');
+    only.setAttribute('aria-hidden', 'false');
+    card.focus({ preventScroll: true });
+  }
   const openShort = () => {
     if (isOpen) return;
     isOpen = true;
