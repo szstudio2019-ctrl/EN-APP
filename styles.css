@@ -3367,3 +3367,13 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro.is-short .intro__options { display: flex; }
 .intro__options button { height: 32px; padding: 0 14px; border: 0; border-radius: 18px; background: none; color: #2a2968; font: 500 15px 'Rubik', sans-serif; cursor: pointer; }
 .intro__options button[aria-selected="true"] { background: var(--pink); color: #fff; }
+
+/* the sentence card: everything from the top, the buttons always in the same
+   place at the bottom (one row of sentence or two); text keeps its line breaks */
+.intro__slide--sentence { justify-content: flex-start; padding-top: 34px; }
+.intro__slide--sentence .intro__text { white-space: pre-line; }
+.intro__sentence-btns { position: absolute; left: 0; right: 0; bottom: 70px; margin: 0; }
+/* "הגרלת משפט אחר": white with a pink border, like "לחנות האותיות" */
+.intro__draw.is-other { background: #fff; color: var(--pink); box-shadow: inset 0 0 0 2px var(--pink); }
+.intro__draw.is-other svg { stroke: var(--pink); }
+.intro__draw.is-other:hover { background: #fff0f4; }

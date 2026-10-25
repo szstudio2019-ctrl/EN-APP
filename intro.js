@@ -168,6 +168,7 @@
     foundRow.hidden = !playing;
     drawBtn.hidden = playing && !fresh;
     drawLabel.textContent = fresh ? 'הגרלת משפט אחר' : 'הגרלת משפט';
+    drawBtn.classList.toggle('is-other', fresh);
     shopLink.hidden = !playing || fresh;
     intro.querySelectorAll('.intro__options button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.option === option)));
   }
@@ -184,7 +185,7 @@
     sBox.classList.remove('is-drawing');
     void sBox.offsetWidth;
     sBox.classList.add('is-drawing');
-    sText.textContent = 'הוגרל לך משפט חדש! קני אותיות בחנות האותיות כדי לגלות אותו';
+    sText.textContent = 'הוגרל לך משפט חדש!\nקני אותיות בחנות האותיות כדי לגלות אותו';
   });
   goBtn.addEventListener('click', close);
   // from the full intro straight to the sentence card
