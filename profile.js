@@ -85,7 +85,50 @@
     document.querySelectorAll('.user__name, .sidebar__name').forEach((el) => { el.textContent = profile.name; });
     if (profile.photo) document.querySelectorAll('.user__photo').forEach((el) => { el.src = profile.photo; });
     say(pass ? 'הפרטים והסיסמה נשמרו' : 'הפרטים נשמרו', true);
+    setMode('view');
   });
+
+  /* ---------- View / edit: the details show as text; 'עריכת פרטים' opens the
+     fields, 'שמירת השינויים' or 'ביטול' close them. The password only appears
+     behind 'שינוי סיסמה'. ---------- */
+  const form = $('profile-form');
+  const note = $('profile-note');
+  const shown = [...form.querySelectorAll('.profile__field input')].filter((i) => i.type !== 'password');
+  // a text twin for every field (view mode)
+  shown.forEach((input) => {
+    const v = document.createElement('span');
+    v.className = 'pf-value';
+    if (input.dir === 'ltr') v.dir = 'ltr';
+    input.after(v);
+  });
+  const paintValues = () => shown.forEach((input) => {
+    const v = input.nextElementSibling;
+    v.textContent = input.value.trim() || '—';
+    v.classList.toggle('is-empty', !input.value.trim());
+  });
+  const passFields = [...form.querySelectorAll('.pf-pass')];
+  const passOpen = $('pf-pass-open');
+  const showPass = (on) => { passFields.forEach((f) => { f.hidden = !on; }); passOpen.hidden = on; if (!on) { $('p-pass').value = ''; $('p-pass2').value = ''; } };
+  passOpen.addEventListener('click', () => { showPass(true); $('p-pass').focus(); });
+  // what the fields held when editing began (for 'ביטול')
+  let before = null;
+  function setMode(mode) {
+    const view = mode === 'view';
+    form.classList.toggle('is-view', view);
+    form.classList.toggle('is-edit', !view);
+    note.textContent = view ? 'הפרטים שלי' : 'אפשר לערוך את הפרטים ולשמור';
+    showPass(false);
+    if (view) paintValues();
+    else { before = shown.map((i) => i.value); msg.textContent = ''; shown[0].focus(); }
+  }
+  $('pf-edit').addEventListener('click', () => setMode('edit'));
+  $('pf-cancel').addEventListener('click', () => {
+    if (before) shown.forEach((i, k) => { i.value = before[k]; });
+    photo.src = profile.photo || photo.getAttribute('src');
+    msg.textContent = '';
+    setMode('view');
+  });
+  setMode('view');
 
   /* ---------- What I collected ---------- */
   const shop = read('en-app:shop');

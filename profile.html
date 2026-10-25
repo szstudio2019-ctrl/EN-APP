@@ -87,9 +87,9 @@
       <section class="shop-panel shop-panel--letters profile" aria-labelledby="profile-title">
         <div class="shop-panel__head">
           <h1 class="shop-panel__title" id="profile-title">הפרופיל שלי</h1>
-          <p class="shop-panel__note">אפשר לעדכן את הפרטים ולשמור</p>
+          <p class="shop-panel__note" id="profile-note">הפרטים שלי</p>
         </div>
-        <form class="profile__form" id="profile-form" autocomplete="off">
+        <form class="profile__form is-view" id="profile-form" autocomplete="off">
           <div class="profile__photo">
             <span class="profile__avatar"><img id="profile-photo" src="assets/avatar.webp" alt="התמונה שלי"></span>
             <label class="profile__photo-btn">
@@ -112,13 +112,16 @@
               <legend class="profile__legend">פרטי כניסה</legend>
               <div class="profile__fields">
                 <label class="profile__field profile__field--wide"><span>שם משתמש</span><input type="text" id="p-user" dir="ltr" required></label>
-                <label class="profile__field"><span>סיסמה חדשה</span><input type="password" id="p-pass" dir="ltr" placeholder="השאירו ריק אם לא משנים" autocomplete="new-password"></label>
-                <label class="profile__field"><span>אימות סיסמה</span><input type="password" id="p-pass2" dir="ltr" autocomplete="new-password"></label>
+                <button class="pf-pass-open" type="button" id="pf-pass-open">שינוי סיסמה</button>
+                <label class="profile__field pf-pass" hidden><span>סיסמה חדשה</span><input type="password" id="p-pass" dir="ltr" placeholder="השאירו ריק אם לא משנים" autocomplete="new-password"></label>
+                <label class="profile__field pf-pass" hidden><span>אימות סיסמה</span><input type="password" id="p-pass2" dir="ltr" autocomplete="new-password"></label>
               </div>
             </fieldset>
           </div>
           <div class="profile__actions">
+            <button class="btn-pill pf-edit" type="button" id="pf-edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg><span>עריכת פרטים</span></button>
             <button class="btn-pill profile__save" type="submit"><span>שמירת השינויים</span></button>
+            <button class="pf-cancel" type="button" id="pf-cancel">ביטול</button>
             <p class="profile__msg" id="profile-msg" role="status"></p>
           </div>
         </form>
