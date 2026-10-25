@@ -29,7 +29,7 @@
   // the card's slides, then one more step: the screen darkens around the
   // trophy and its sentence draw (index = slides.length)
   const SPOT = slides.length;
-  const back = intro.querySelector('.intro__back');
+  const back = intro.querySelector('.intro__btns .intro__back');
   const spot = intro.querySelector('.intro__spot');
   const trophy = document.querySelector('.trophy');
   // the dashes are buttons: a tap goes to that step (back too)
@@ -82,6 +82,7 @@
     spot.querySelector('.intro__spot-go').addEventListener('click', close);
   }
   intro.querySelector('.intro__skip').addEventListener('click', close);
+  intro.querySelector('.intro__close').addEventListener('click', close);
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen) close(); });
 
   /* Slide 2: every island in a small slider (RTL: the left arrow goes on) */

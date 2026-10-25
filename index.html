@@ -135,6 +135,7 @@
       <!-- Welcome popup (intro.js): four slides over the cloud video, before the map -->
       <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="ברוכים הבאים" hidden>
         <div class="intro__card">
+          <button class="intro__close" type="button" aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
           <section class="intro__slide">
             <h2 class="intro__title">ברוכים הבאים, <span class="intro__pink" data-first-name>!</span></h2>
             <p class="intro__text">הגעתם למדקדקים באנגלית<br>תוכלו ללמוד אנגלית בכיף.</p>
@@ -151,18 +152,18 @@
             </div>
           </section>
           <section class="intro__slide">
+            <h2 class="intro__title">בונוסים מ<span class="intro__pink">החזרות והתמדה</span></h2>
+            <p class="intro__text">כל כמה שלבים שיהיו לך שלבי חזרה על החומר<br>בהם תוכלי לצבור כמות גדולה של מטבעות בתיבות</p>
+            <img class="intro__zebra intro__zebra--hoop" src="assets/zebra-hoop.webp" alt="">
+            <img class="intro__deco intro__chest" src="assets/chest-big.webp" alt="">
+          </section>
+          <section class="intro__slide">
             <h2 class="intro__title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
             <p class="intro__text">בכל משחק תוכלי להגריל משפט ולקנות<br>אותיות מחנות האותיות מהמטבעות שתצברי במשחק.</p>
             <img class="intro__zebra" src="assets/zebra.webp" alt="">
             <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
             <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
             <img class="intro__deco intro__shop" src="assets/shop.webp" alt="">
-          </section>
-          <section class="intro__slide">
-            <h2 class="intro__title">בונוסים מ<span class="intro__pink">החזרות והתמדה</span></h2>
-            <p class="intro__text">כל כמה שלבים שיהיו לך שלבי חזרה על החומר<br>בהם תוכלי לצבור כמות גדולה של מטבעות בתיבות</p>
-            <img class="intro__zebra intro__zebra--hoop" src="assets/zebra-hoop.webp" alt="">
-            <img class="intro__deco intro__chest" src="assets/chest-big.webp" alt="">
           </section>
           <!-- from the second visit on: only this card – the sentence game (the sentence in progress, or a draw) -->
           <section class="intro__slide intro__slide--sentence" aria-labelledby="intro-sentence-title">

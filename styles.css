@@ -3371,3 +3371,14 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro__draw, .intro__go { height: 54px; border: 0; cursor: pointer; font-size: 20px; }
 .intro__draw svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .intro__shop { text-decoration: none; height: 54px; }
+
+/* the intro: a ✕ in the card's corner, the screen dimmed behind it, and
+   "חזרה" the same size as "הבא" with its arrow the other way */
+.intro__close { position: absolute; top: 16px; left: 16px; z-index: 5; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #f1f1f8; cursor: pointer; transition: background .2s ease, transform .2s ease; }
+.intro__close:hover { background: #ffe1ea; transform: scale(1.06); }
+.intro__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }
+.intro.is-open::before { opacity: .62; }
+.intro.is-open.is-spot::before { opacity: 1; }
+.intro__btns .intro__next, .intro__btns .intro__back { height: 48px; padding: 0 24px; font-size: 20px; }
+.intro__btns .intro__back { border-width: 2px; }
+.intro__back img { transform: none; }
