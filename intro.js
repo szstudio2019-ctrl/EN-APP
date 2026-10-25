@@ -22,7 +22,7 @@
 
   const card = intro.querySelector('.intro__card');
   card.tabIndex = -1;
-  const slides = [...intro.querySelectorAll('.intro__slide')];
+  const slides = [...intro.querySelectorAll('.intro__slide:not(.intro__slide--sentence)')];
   const dots = intro.querySelector('.intro__dots');
   const next = intro.querySelector('.intro__next');
   const nextLabel = next.querySelector('span');
@@ -68,7 +68,7 @@
     try { localStorage.setItem(KEY, '1'); } catch (err) { /* storage blocked */ }
     if (!isOpen) return;
     isOpen = false;
-    intro.classList.remove('is-open', 'is-spot');
+    intro.classList.remove('is-open', 'is-spot', 'is-short');
     document.body.classList.remove('intro-open', 'intro-spot');
     if (trophy) trophy.setAttribute('aria-expanded', 'false');
     setTimeout(() => { if (!isOpen) intro.hidden = true; }, 450);
@@ -119,6 +119,99 @@
     card.focus({ preventScroll: true });
   };
   window.SiteIntro = { open };
+
+  /* From the second visit on (the child already knows the site): only one card –
+     the sentence game. A sentence in progress shows as it is, with no way to
+     draw another (the game goes on with the same sentence until it is found);
+     with none, a button draws one. Once per visit (browser session). */
+  const VISITS = 'en-app:visits';
+  let visits = 0;
+  try {
+    visits = Number(localStorage.getItem(VISITS)) || 0;
+    if (!sessionStorage.getItem('en-app:visit')) {
+      visits += 1;
+      localStorage.setItem(VISITS, String(visits));
+      sessionStorage.setItem('en-app:visit', '1');
+    }
+  } catch (err) { /* storage blocked */ }
+  const SHOP = 'en-app:shop';
+  const POOL = [
+    { en: 'You can do it!', he: 'אתה יכול לעשות את זה!' }, { en: 'Believe in yourself!', he: 'תאמין בעצמך!' },
+    { en: 'You are amazing!', he: 'אתה מדהים!' }, { en: 'Never give up!', he: 'לעולם אל תוותר!' },
+    { en: 'Dream big!', he: 'חלום בגדול!' }, { en: 'Keep shining!', he: 'תמשיך להאיר!' },
+    { en: 'Be brave!', he: 'תהיה אמיץ!' }, { en: 'Choose to be kind.', he: 'בחר להיות נחמד.' },
+  ];
+  const lettersOf = (t) => [...new Set(t.toLowerCase().replace(/[^a-z]/g, ''))];
+  const isDone = (st) => lettersOf(st.en).every((l) => (st.found || '').includes(l));
+  const readShop = () => { try { return JSON.parse(localStorage.getItem(SHOP)); } catch (err) { return null; } };
+  const sBox = document.getElementById('intro-sentence');
+  const sText = document.getElementById('intro-sentence-text');
+  const drawBtn = document.getElementById('intro-draw');
+  const shopLink = document.getElementById('intro-shop');
+  const goBtn = document.getElementById('intro-go');
+  function paintSentence() {
+    const shop = readShop();
+    // the shop's demo when nothing was bought yet: a sentence already in progress
+    const active = shop ? shop.sentences && shop.sentences[0] : { en: 'Dream big!', he: 'חלום בגדול!', found: 'dre' };
+    const playing = !!active && !isDone(active);
+    if (playing) {
+      const found = active.found || '';
+      sBox.innerHTML = active.en.split(' ').map((w) => `<span class="sentence__word">${w.split('').map((ch) => {
+        const l = ch.toLowerCase();
+        if (!/[a-z]/.test(l)) return `<b class="tile tile--mark">${ch}</b>`;
+        return found.includes(l) ? `<b class="tile is-found">${ch}</b>` : '<b class="tile">?</b>';
+      }).join('')}</span>`).join('');
+      const left = lettersOf(active.en).filter((l) => !found.includes(l)).length;
+      sText.textContent = `זה המשפט שלך – נשארו ${left} אותיות לגלות. ממשיכים עם אותו משפט עד שמגלים את כולו: קני אותיות בחנות האותיות!`;
+    } else {
+      sBox.innerHTML = '';
+      sText.textContent = 'אין לך משפט פעיל כרגע – הגרילי משפט חדש ותתחילי לגלות אותו!';
+    }
+    sBox.hidden = !playing;
+    drawBtn.hidden = playing;
+    shopLink.hidden = !playing;
+  }
+  drawBtn.addEventListener('click', () => {
+    const shop = readShop() || { coins: Number(document.querySelector('.stat--coins .stat__value')?.textContent) || 350, inv: {}, sentences: [] };
+    const used = new Set((shop.sentences || []).map((x) => x.en));
+    const fresh = POOL.filter((p) => !used.has(p.en));
+    const list = fresh.length ? fresh : POOL;
+    const pick = list[Math.floor(Math.random() * list.length)];
+    shop.sentences = [{ en: pick.en, he: pick.he, date: Date.now(), found: '' }, ...(shop.sentences || []).filter((x) => isDone(x))];
+    try { localStorage.setItem(SHOP, JSON.stringify(shop)); } catch (err) { /* storage blocked */ }
+    paintSentence();
+    sBox.classList.remove('is-drawing');
+    void sBox.offsetWidth;
+    sBox.classList.add('is-drawing');
+    sText.textContent = 'הוגרל לך משפט חדש! קני אותיות בחנות האותיות כדי לגלות אותו';
+  });
+  goBtn.addEventListener('click', close);
+  const openShort = () => {
+    if (isOpen) return;
+    isOpen = true;
+    paintSentence();
+    intro.classList.add('is-short');
+    const only = intro.querySelector('.intro__slide--sentence');
+    only.classList.add('is-current');
+    only.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('intro-open');
+    intro.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => intro.classList.add('is-open')));
+    card.focus({ preventScroll: true });
+  };
+  window.SiteIntro.openSentence = openShort;
+  const whenLoaded = (fn) => {
+    if (!document.body.classList.contains('is-loading')) { fn(); return; }
+    const w = new MutationObserver(() => {
+      if (!document.body.classList.contains('is-loading')) { w.disconnect(); setTimeout(fn, 500); }
+    });
+    w.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  };
+  if (!auto && visits >= 2) {
+    let shown = false;
+    try { shown = sessionStorage.getItem('en-app:sentence-pop') === '1'; sessionStorage.setItem('en-app:sentence-pop', '1'); } catch (err) { /* blocked */ }
+    if (!shown) whenLoaded(openShort);
+  }
   if (!auto) return;
   if (!document.body.classList.contains('is-loading')) open();
   else {

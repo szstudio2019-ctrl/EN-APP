@@ -3353,3 +3353,21 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 /* the sentence draw stays open through the whole step (whatever is clicked) */
 .intro-spot .trophy-hint { visibility: visible !important; transform: none !important; transition: opacity .3s ease; }
 .intro-spot .trophy img { transform: scale(1.06) rotate(3deg); }
+
+/* ---------- the intro from the second visit: only the sentence-game card ---------- */
+.intro:not(.is-short) .intro__slide--sentence { display: none; }
+.intro.is-short .intro__slide:not(.intro__slide--sentence),
+.intro.is-short .intro__foot,
+.intro.is-short .intro__spot { display: none !important; }
+.intro__slide--sentence { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 36px; }
+.intro__sentence-trophy { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 10px 16px rgba(176, 122, 0, .3)); animation: intro-bob 3s ease-in-out infinite; }
+.intro__slide--sentence .intro__text { margin: 0; font-size: 22px; line-height: 30px; }
+.intro__sentence { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 18px; margin: 6px 0; }
+.intro__sentence[hidden] { display: none; }
+.intro__sentence .tile { width: 40px; height: 46px; font-size: 26px; }
+.intro__sentence .tile--mark { background: none; box-shadow: none; color: #2a2968; width: auto; }
+.intro__sentence-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
+.intro__sentence-btns [hidden] { display: none !important; }
+.intro__draw, .intro__go { height: 54px; border: 0; cursor: pointer; font-size: 20px; }
+.intro__draw svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.intro__shop { text-decoration: none; height: 54px; }
