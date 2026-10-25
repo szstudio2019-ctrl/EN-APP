@@ -32,6 +32,8 @@
       <!-- Background scene with the big lessons island. Exported from Figma
            ("רקע אותיות רופא 1"); until the file exists the clouds show instead. -->
       <img class="world__bg" id="world-bg" alt="" aria-hidden="true">
+      <!-- the background moving (a loop, with its own sound): the waterfalls flow, the front flowers sway; the still picture stays under it -->
+      <video class="world__bg world__bg--video" id="world-bg-video" src="assets/world-smiles-bg.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
 
       <!-- Header -->
       <header class="topbar">
@@ -268,5 +270,33 @@
   <script src="drawer.js"></script>
   <script src="mobile.js"></script>
   <script src="world.js"></script>
+  <script>
+    // The island's video: it loops (also when the file has no length written in it);
+    // its sound is this island's background sound, in place of the site music.
+    // The music button in the header turns it on and off; it starts with the
+    // first tap or key (the browser's rule) and rests while the tab is hidden.
+    (function () {
+      const v = document.getElementById('world-bg-video');
+      if (!v) return;
+      const wanted = () => {
+        const b = document.querySelector('.music-btn');
+        if (b) return b.getAttribute('aria-pressed') !== 'false';
+        try { return localStorage.getItem('en-app:music') !== 'off'; } catch (err) { return true; }
+      };
+      let started = false;
+      const apply = () => {
+        if (window.SiteSound) window.SiteSound.stopMusic();
+        v.muted = !(started && wanted());
+        if (v.paused && !document.hidden) v.play().catch(() => {});
+      };
+      v.addEventListener('ended', () => { v.currentTime = 0; v.play().catch(() => {}); });
+      const first = () => { started = true; apply(); window.removeEventListener('pointerdown', first, true); window.removeEventListener('keydown', first, true); };
+      window.addEventListener('pointerdown', first, true);
+      window.addEventListener('keydown', first, true);
+      // the header's music button (any copy of it, also the phone menu's)
+      document.addEventListener('click', (e) => { if (e.target.closest('.music-btn')) setTimeout(apply, 0); }, true);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) v.pause(); else apply(); });
+    })();
+  </script>
 </body>
 </html>
