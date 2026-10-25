@@ -189,7 +189,32 @@
     if (!b) return;
     const stats = b.dataset.view === 'stats';
     document.querySelectorAll('.pf-tabs [data-view]').forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-selected', String(x === b)); });
-    list.hidden = stats;
+    list.hidden = b.dataset.view !== 'sentences';
     box.hidden = !stats;
+    const cards = document.getElementById('pf-cards');
+    if (cards) cards.hidden = b.dataset.view !== 'cards';
   });
+})();
+
+// My letter cards: the ones bought in the shop and still waiting (with how
+// many), and under them the ones already in a sentence (faded, "במשפט")
+(function () {
+  const box = document.getElementById('pf-cards');
+  if (!box) return;
+  let shop = null;
+  try { shop = JSON.parse(localStorage.getItem('en-app:shop')); } catch (err) { shop = null; }
+  // demo, before anything was bought in this browser
+  const inv = (shop && shop.inv) || { e: 2, o: 1, t: 1, m: 1, s: 1 };
+  const sentences = (shop && shop.sentences) || [{ found: 'dre' }, { found: 'berav' }, { found: 'nevgiu' }];
+  const used = {};
+  sentences.forEach((s) => [...(s.found || '')].forEach((l) => { used[l] = (used[l] || 0) + 1; }));
+  const waiting = Object.keys(inv).sort().map((l) => [l, Math.max(0, (inv[l] || 0) - (used[l] || 0))]).filter(([, n]) => n > 0);
+  const inUse = Object.keys(used).sort();
+  const card = (l, extra) => `<span class="pf-card${extra.cls || ''}" title="${extra.title}"><img src="assets/cards/card-${l}.webp" alt="האות ${l}" loading="lazy">${extra.badge || ''}</span>`;
+  box.innerHTML = `
+    <p class="pf-cards__title">מחכות לשימוש <small>${waiting.reduce((n, [, c]) => n + c, 0)} כרטיסיות</small></p>
+    ${waiting.length ? `<div class="pf-cards__grid">${waiting.map(([l, n]) => card(l, { title: `האות ${l}`, badge: n > 1 ? `<b class="pf-card__n">×${n}</b>` : '' })).join('')}</div>`
+      : '<p class="pf-cards__empty">אין כרטיסיות שמחכות – אפשר לקנות ב<a href="shop.html">חנות האותיות</a></p>'}
+    ${inUse.length ? `<p class="pf-cards__title">כבר במשפט <small>${inUse.length} אותיות</small></p>
+    <div class="pf-cards__grid">${inUse.map((l) => card(l, { cls: ' is-used', title: `האות ${l} – במשפט`, badge: '<b class="pf-card__tag">במשפט</b>' })).join('')}</div>` : ''}`;
 })();
