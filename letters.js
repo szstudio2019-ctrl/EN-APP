@@ -9,7 +9,7 @@
   const rows = document.getElementById('abc-rows');
   if (!video || !rows) return;
   const TIMES = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27];
-  const tiles = (i) => rows.querySelectorAll(`.abc-tile[data-i="${i}"]`);
+  const tiles = (i) => document.querySelectorAll(`.abc-rows .abc-tile[data-i="${i}"]`);
   let last = -2;
   let raf = 0;
 
@@ -20,7 +20,8 @@
   const CARD = 226 + 28; // the card's width + its gap (see .abc-slide.is-on)
   function centre(i) {
     if (!slider || !slides[i]) return;
-    slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
+    // the sung pair in the middle; the next ones fade off, the ones already sung are very faint
+    slides.forEach((s, k) => { s.classList.toggle('is-on', k === i); s.dataset.d = k > i ? String(Math.min(k - i, 3)) : k < i ? 'past' : '0'; });
     const s = slides[i];
     // from the resting sizes (the cards opening and closing are still animating)
     const pair = s.querySelector('.abc-pair').offsetWidth;
@@ -37,8 +38,8 @@
     }
     if (video.ended) on = -1;
     if (on !== last) {
-      rows.querySelectorAll('.abc-tile.is-on').forEach((el) => el.classList.remove('is-on'));
-      rows.querySelectorAll('.abc-tile').forEach((el) => el.classList.toggle('is-sung', on >= 0 && Number(el.dataset.i) < on));
+      document.querySelectorAll('.abc-rows .abc-tile.is-on').forEach((el) => el.classList.remove('is-on'));
+      document.querySelectorAll('.abc-rows .abc-tile').forEach((el) => el.classList.toggle('is-sung', on >= 0 && Number(el.dataset.i) < on));
       if (on >= 0) { tiles(on).forEach((el) => el.classList.add('is-on')); centre(on); }
       last = on;
     }
@@ -78,7 +79,7 @@
   // also on the video's own time ticks (when frames are not drawn, e.g. a hidden tab)
   video.addEventListener('timeupdate', sync);
   video.addEventListener('ended', () => {
-    rows.querySelectorAll('.abc-tile').forEach((el) => el.classList.remove('is-sung', 'is-on'));
+    document.querySelectorAll('.abc-rows .abc-tile').forEach((el) => el.classList.remove('is-sung', 'is-on'));
     centre(0);
     last = -2;
   });
