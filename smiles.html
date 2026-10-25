@@ -249,7 +249,7 @@
     window.WORLD = {
       title: 'אי האותיות המחייכות',
       // the island name on the scene, before the first pin (same game-title style as the doctor island)
-      heading: { lines: ['אי האותיות', 'המחייכות'], x: 1200, y: 700 },
+      heading: { lines: ['אי האותיות', 'המחייכות'], x: 1200, y: 565 },
       lessonsRange: '5-11',
       coins: 350,
       progress: 0,
@@ -271,31 +271,74 @@
   <script src="mobile.js"></script>
   <script src="world.js"></script>
   <script>
-    // The island's video: it loops (also when the file has no length written in it);
-    // its sound is this island's background sound, in place of the site music.
-    // The music button in the header turns it on and off; it starts with the
-    // first tap or key (the browser's rule) and rests while the tab is hidden.
+    // The island's video: its clouds drift, so its last frame isn't its first –
+    // two copies of it take turns: near the end the next one starts from the
+    // beginning and fades in over the last second (picture and sound), so the
+    // loop has no jump. Its sound is this island's background sound, in place of
+    // the site music; the music button in the header turns it on and off; it
+    // starts with the first tap or key (the browser's rule) and rests while the
+    // tab is hidden.
     (function () {
-      const v = document.getElementById('world-bg-video');
-      if (!v) return;
+      const a = document.getElementById('world-bg-video');
+      if (!a) return;
+      a.loop = false;
+      const b = a.cloneNode();
+      b.removeAttribute('id');
+      b.removeAttribute('autoplay');
+      b.style.opacity = '0';
+      a.after(b);
+      const FADE = 1; // seconds
+      let cur = a;
+      let next = b;
+      let fading = false;
       const wanted = () => {
-        const b = document.querySelector('.music-btn');
-        if (b) return b.getAttribute('aria-pressed') !== 'false';
+        const btn = document.querySelector('.music-btn');
+        if (btn) return btn.getAttribute('aria-pressed') !== 'false';
         try { return localStorage.getItem('en-app:music') !== 'off'; } catch (err) { return true; }
       };
       let started = false;
       const apply = () => {
         if (window.SiteSound) window.SiteSound.stopMusic();
-        v.muted = !(started && wanted());
-        if (v.paused && !document.hidden) v.play().catch(() => {});
+        const on = started && wanted();
+        a.muted = !on;
+        b.muted = !on;
+        if (document.hidden) return;
+        if (cur.paused) cur.play().catch(() => {});
+        if (fading && next.paused) next.play().catch(() => {});
       };
-      v.addEventListener('ended', () => { v.currentTime = 0; v.play().catch(() => {}); });
+      const tick = () => {
+        const d = cur.duration;
+        if (!d || document.hidden) return;
+        const left = d - cur.currentTime;
+        if (!fading && left <= FADE) {
+          fading = true;
+          next.currentTime = 0;
+          next.play().catch(() => {});
+        }
+        if (fading) {
+          const k = Math.min(1, Math.max(0, 1 - left / FADE));
+          next.style.opacity = String(k);
+          next.volume = k;
+          cur.volume = 1 - k;
+          if (k >= 1 || cur.ended) {
+            cur.pause();
+            cur.style.opacity = '0';
+            // the one now playing goes under, the next one waits on top of it
+            next.after(cur);
+            [cur, next] = [next, cur];
+            cur.style.opacity = '1';
+            cur.volume = 1;
+            fading = false;
+          }
+        }
+      };
+      setInterval(tick, 40);
       const first = () => { started = true; apply(); window.removeEventListener('pointerdown', first, true); window.removeEventListener('keydown', first, true); };
       window.addEventListener('pointerdown', first, true);
       window.addEventListener('keydown', first, true);
       // the header's music button (any copy of it, also the phone menu's)
       document.addEventListener('click', (e) => { if (e.target.closest('.music-btn')) setTimeout(apply, 0); }, true);
-      document.addEventListener('visibilitychange', () => { if (document.hidden) v.pause(); else apply(); });
+      document.addEventListener('visibilitychange', () => { if (document.hidden) { a.pause(); b.pause(); } else apply(); });
     })();
   </script>
 </body>

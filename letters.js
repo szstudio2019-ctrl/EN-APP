@@ -151,6 +151,10 @@
     y = Math.max(-530, Math.min(1080 - 530 - 60, y));
     x = Math.max(-1410 - 300, Math.min(1920 - 1410 - 80, x));
     place();
+    // kept as it moves, so a refresh finds it where it was left (also when the drag is cut off)
+    st.x = Math.round(x);
+    st.y = Math.round(y);
+    save();
   });
   const end = () => {
     if (!drag) return;
@@ -162,4 +166,5 @@
   };
   head.addEventListener('pointerup', end);
   head.addEventListener('pointercancel', end);
+  head.addEventListener('lostpointercapture', end);
 })();
