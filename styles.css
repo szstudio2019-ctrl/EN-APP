@@ -3337,7 +3337,15 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro__sentence-btns [hidden] { display: none !important; }
 .intro__draw, .intro__go { height: 54px; border: 0; cursor: pointer; font-size: 20px; }
 .intro__draw svg { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.intro__shop { text-decoration: none; height: 54px; }
+/* "לחנות האותיות": the shop's icon and a pink arrow, the same height and side room as "בואו נתחיל" */
+.intro__sentence-btns .intro__shop-btn, .intro__sentence-btns .intro__go, .intro__sentence-btns .intro__draw { height: 54px; padding: 0 24px; gap: 10px; }
+.intro__shop-btn { text-decoration: none; }
+.intro__back .intro__shop-icon { width: 34px; height: 34px; object-fit: contain; filter: none; transform: none; }
+.intro__back .intro__shop-arrow { transform: rotate(180deg); }
+.intro__found { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 0; font-size: 19px; color: #232a6b; }
+.intro__found[hidden] { display: none; }
+.intro__found-tiles { display: inline-flex; gap: 6px; }
+.intro__found .tile { width: 34px; height: 38px; font-size: 22px; }
 
 /* the intro: a ✕ in the card's corner, the screen dimmed behind it, and
    "חזרה" the same size as "הבא" with its arrow the other way */

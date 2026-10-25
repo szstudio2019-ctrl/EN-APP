@@ -127,6 +127,7 @@
   const drawBtn = document.getElementById('intro-draw');
   const shopLink = document.getElementById('intro-shop');
   const goBtn = document.getElementById('intro-go');
+  const foundRow = document.getElementById('intro-found');
   function paintSentence() {
     const shop = readShop();
     // the shop's demo when nothing was bought yet: a sentence already in progress
@@ -141,6 +142,11 @@
       }).join('')}</span>`).join('');
       const left = lettersOf(active.en).filter((l) => !found.includes(l)).length;
       sText.textContent = `זה המשפט שלך – נשארו ${left} אותיות לגלות. ממשיכים עם אותו משפט עד שמגלים את כולו: קני אותיות בחנות האותיות!`;
+      // the letters already found, on their own row
+      const got = lettersOf(active.en).filter((l) => found.includes(l));
+      foundRow.innerHTML = got.length
+        ? `<span>אותיות שכבר מצאת:</span> <span class="intro__found-tiles" dir="ltr">${got.map((l) => `<b class="tile is-found">${l}</b>`).join('')}</span>`
+        : '<span>עוד לא מצאת אותיות – קני את הראשונה בחנות האותיות!</span>';
     } else if (active) {
       // the last sentence was found: it shows whole, and a new one can be drawn
       sBox.innerHTML = active.en.split(' ').map((w) => `<span class="sentence__word">${w.split('').map((ch) => (/[a-z]/i.test(ch) ? `<b class="tile is-found">${ch}</b>` : `<b class="tile tile--mark">${ch}</b>`)).join('')}</span>`).join('');
@@ -150,6 +156,7 @@
       sText.textContent = 'אין לך משפט פעיל כרגע – הגרילי משפט חדש ותתחילי לגלות אותו!';
     }
     sBox.hidden = !active;
+    foundRow.hidden = !playing;
     drawBtn.hidden = playing;
     shopLink.hidden = !playing;
   }
