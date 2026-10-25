@@ -17,26 +17,33 @@
   // the islands learned since the last review. A review's stages (the chips
   // on top) are the rows of the course's table: one consonant with its
   // vowels, read left to right (b → ba → bi → bea → bee). Review 1 holds the
-  // rows Einat marked, b–k.
-  const ROWS = ['b', 'd', 'f', 'g', 'h', 'j', 'k'];
+  // rows of the whole table (b … z). Each card shows, beside it, the icon of
+  // the island its sound comes from (the letter alone: the magnifier).
+  const ROWS = C;
   // a stage per row: the letter, then the letter with each sound
+  // sound = { v: 'a' | ['ai', 'ay'], ico: an icon in assets/icons, tag: its name }
   const rowsOf = (sounds, text) => ROWS.map((c) => ({
     label: c,
     text: text(c),
-    words: [...sounds.map((v) => (Array.isArray(v) ? { show: `${c}${v[0]}/${c}${v[1]}`, say: `${c}${v[1]}` } : c + v))],
+    words: sounds.map(({ v, ico, tag }) => (Array.isArray(v)
+      ? { show: `${c}${v[0]}/${c}${v[1]}`, say: `${c}${v[1]}`, ico, tag }
+      : { show: c + v, say: c + v, ico, tag })),
   }));
+  const S = (v, ico, tag) => ({ v, ico, tag });
   const TOPICS = [
-    { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', icon: '😊', pic: 'review-smiles',
-      subs: rowsOf(['', 'a', 'i', 'ea', 'ee'], (c) => `קראו את ${c} ואז את ${c} עם a, i, ea ו-ee – משמאל לימין`) },
-    { name: 'חזרה 2', islands: 'האותיות הבודדות', icon: '☝️', pic: 'review-abc',
-      subs: rowsOf(['o', 'u', 'e'], (c) => `קראו את ${c} עם o, u ו-e – משמאל לימין`) },
-    { name: 'חזרה 3', islands: 'צירופי האותיות', icon: '🔗', pic: 'review-blending',
-      subs: rowsOf(['oo', ['ai', 'ay'], ['ou', 'ow']], (c) => `קראו את ${c} עם oo, ai/ay ו-ou/ow – משמאל לימין`) },
-    { name: 'חזרה 4', islands: 'האותיות השורקות', icon: '🌬️', pic: 'review-whistling', subs: [
+    { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', pic: 'review-infinity',
+      subs: rowsOf([S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')],
+        (c) => `קראו את ${c} ואז את ${c} עם a, i, ea ו-ee`) },
+    { name: 'חזרה 2', islands: 'האותיות הבודדות', pic: 'review-infinity',
+      subs: rowsOf([S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], (c) => `קראו את ${c} עם o, u ו-e`) },
+    { name: 'חזרה 3', islands: 'צירופי האותיות', pic: 'review-infinity',
+      subs: rowsOf([S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
+        (c) => `קראו את ${c} עם oo, ai/ay ו-ou/ow`) },
+    { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling', subs: [
       { label: 'sh', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['sha', 'she', 'shi', 'sho', 'shu', 'shea', 'shee', 'shay', 'shou', 'show'] },
       { label: 'ch', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow'] },
     ] },
-    { name: 'חזרה 5', islands: 'צלילים מיוחדים', icon: '✨', pic: 'review-sounds', subs: [
+    { name: 'חזרה 5', islands: 'צלילים מיוחדים', pic: 'review-infinity', ico: 'review-sounds', subs: [
       { label: 'th', text: 'th – הלשון יוצאת קצת בין השיניים', words: ['this', 'that', 'thin', 'them', 'with', 'bath'] },
       { label: 'ph', text: 'ph – נשמע כמו f', words: ['phone', 'photo', 'graph', 'dolphin', 'elephant', 'phonics'] },
       { label: 'tion', text: 'tion – בסוף מילה נשמע "שֶן"', words: ['action', 'nation', 'motion', 'lotion', 'station', 'fiction'] },
@@ -45,7 +52,7 @@
   ];
   // every word as { show, say }
   TOPICS.forEach((t) => t.subs.forEach((s) => {
-    s.words = s.words.map((w) => (typeof w === 'string' ? { show: w, say: w } : w));
+    s.words = s.words.map((w) => (typeof w === 'string' ? { show: w, say: w, ico: t.ico, tag: s.label } : w));
   }));
   const countOf = (t) => t.subs.reduce((n, s) => n + s.words.length, 0);
 
@@ -138,6 +145,37 @@
       </button>`).join('');
   }
 
+  // the stages in a slider: arrows on both sides when they don't all fit
+  const subsWrap = document.createElement('div');
+  subsWrap.className = 'rp-subs-wrap';
+  subsEl.before(subsWrap);
+  const subPrev = document.createElement('button');
+  subPrev.type = 'button';
+  subPrev.className = 'rp-subs-arrow rp-subs-arrow--prev';
+  subPrev.setAttribute('aria-label', 'השלבים הקודמים');
+  subPrev.innerHTML = '<img src="assets/chevron.svg" alt="">';
+  const subNext = subPrev.cloneNode(true);
+  subNext.className = 'rp-subs-arrow rp-subs-arrow--next';
+  subNext.setAttribute('aria-label', 'השלבים הבאים');
+  subsWrap.append(subPrev, subsEl, subNext);
+  const page = () => subsEl.clientWidth * 0.7;
+  subPrev.addEventListener('click', () => subsEl.scrollBy({ left: page(), behavior: 'smooth' })); // RTL: back = to the right
+  subNext.addEventListener('click', () => subsEl.scrollBy({ left: -page(), behavior: 'smooth' }));
+  function syncSubArrows() {
+    const fits = subsEl.scrollWidth <= subsEl.clientWidth + 2;
+    subsWrap.classList.toggle('is-fit', fits);
+    const x = Math.abs(subsEl.scrollLeft);
+    subPrev.disabled = x < 2;
+    subNext.disabled = x + subsEl.clientWidth >= subsEl.scrollWidth - 2;
+  }
+  subsEl.addEventListener('scroll', syncSubArrows, { passive: true });
+  window.addEventListener('resize', syncSubArrows);
+  // the cue beside the card: which island this card's sound comes from
+  const cueEl = document.createElement('div');
+  cueEl.className = 'rp-cue';
+  cueEl.setAttribute('aria-hidden', 'true');
+  document.querySelector('.practice__deck').appendChild(cueEl);
+
   function renderSub() {
     // the card's colour tells the stages apart: 1st light blue, 2nd light yellow, 3rd light pink
     card.dataset.stage = String(sub % 3);
@@ -146,6 +184,13 @@
     explainEl.textContent = s.text;
     dotsEl.innerHTML = s.words.map(() => '<i></i>').join('');
     lastNo.textContent = s.words.length; // the bar's far end: how many items (from the data)
+    const on = subsEl.querySelector('.rp-sub.is-on');
+    if (on) {
+      const a = on.getBoundingClientRect();
+      const b = subsEl.getBoundingClientRect();
+      subsEl.scrollBy({ left: (a.left + a.width / 2) - (b.left + b.width / 2), behavior: 'smooth' });
+    }
+    syncSubArrows();
   }
 
   function show(i, dir) {
@@ -158,6 +203,14 @@
     nextBtn.disabled = false;
     nextBtn.classList.toggle('is-end', index === list.length - 1 && sub === subs.length - 1);
     wordEl.textContent = list[index].show;
+    if (cueEl) {
+      const w = list[index];
+      cueEl.hidden = !w.ico;
+      if (w.ico) cueEl.innerHTML = `<img src="assets/icons/${w.ico}.webp" alt=""><b lang="en" dir="ltr">${w.tag || ''}</b>`;
+      cueEl.classList.remove('is-new');
+      void cueEl.offsetWidth;
+      cueEl.classList.add('is-new');
+    }
     wordEl.classList.toggle('is-long', list[index].show.length > 6);
     countEl.textContent = `${index + 1} מתוך ${list.length}`;
     [...dotsEl.children].forEach((d, k) => {

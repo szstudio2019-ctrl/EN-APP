@@ -883,3 +883,43 @@
 .rp-done-pop .rp-done__text { margin: 12px 0 0; font-size: 17px; color: #6b6a92; }
 .rp-done-pop .rp-done__next { margin: 14px 0 0; }
 .rp-done-pop .rp-done__buttons { margin-top: 20px; }
+
+/* ---------- version 2 ---------- */
+/* the reviews' list starts level with the title */
+.review-practice .rp-topics { justify-content: flex-start; }
+/* the stages: letters only (no counts), in a slider with arrows when they don't fit */
+.rp-sub__n { display: none !important; }
+.rp-subs-wrap { position: relative; display: flex; align-items: center; gap: 8px; width: 720px; max-width: 100%; margin-top: auto; }
+.rp-main .rp-subs-wrap .rp-subs { flex: 1; min-width: 0; margin: 0; padding: 6px 4px; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; scroll-padding: 0 20px; }
+.rp-main .rp-subs-wrap .rp-subs::-webkit-scrollbar { display: none; }
+.rp-subs-wrap .rp-sub { flex: none; }
+.rp-subs-arrow { width: 40px; height: 40px; flex: none; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #232a6b; cursor: pointer; transition: opacity .2s ease, transform .2s ease; }
+.rp-subs-arrow img { width: 9px; height: 15px; filter: brightness(0) invert(1); }
+.rp-subs-arrow--next img { transform: rotate(180deg); }
+.rp-subs-arrow:disabled { opacity: .3; cursor: default; }
+.rp-subs-arrow:not(:disabled):hover { transform: scale(1.08); }
+.rp-subs-wrap.is-fit .rp-subs-arrow { visibility: hidden; }
+.rp-subs-wrap.is-fit .rp-subs { justify-content: center; }
+/* the cue beside the card: a white square with a pointer, the sound's island icon */
+.practice__deck { position: relative; }
+.rp-cue {
+  position: absolute; top: 50%; right: calc(100% + 26px); translate: 0 -50%;
+  width: 112px; padding: 12px 10px 10px; border-radius: 18px; background: #fff;
+  box-shadow: 0 10px 24px rgba(36, 34, 117, .14), 0 0 0 1.5px #ececf5;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.rp-cue[hidden] { display: none; }
+.rp-cue::after { content: ''; position: absolute; top: 50%; right: -12px; translate: 0 -50%; border: 12px solid transparent; border-left-color: #fff; border-right: 0; filter: drop-shadow(2px 0 0 #ececf5); }
+.rp-cue img { width: 70px; height: 70px; object-fit: contain; }
+.rp-cue b { font: 700 22px 'Fredoka', 'Rubik', sans-serif; color: #e33563; }
+.rp-cue.is-new img { animation: rp-cue-pop .35s cubic-bezier(.34, 1.56, .64, 1); }
+@keyframes rp-cue-pop { from { scale: .7; opacity: .3; } }
+/* three groups with even room between them: explanation / practice / the button */
+/* three groups with even room between them: the explanation / the practice
+   (stages, cards, progress) / the button – the button level with the other pages */
+@media (min-width: 900px) {
+  .review-practice .rp-main { --rp-in: 8px; --rp-gap: 14px; }
+  .review-practice .rp-main .rp-subs-wrap { margin-top: auto !important; }
+  .review-practice .rp-main .rp-subs-wrap .rp-subs { margin-top: 0 !important; padding: 4px 2px; }
+  .review-practice .rp-main .practice__buttons { margin-top: auto !important; margin-bottom: 18px; }
+}
