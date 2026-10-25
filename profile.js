@@ -40,24 +40,117 @@
   $('p-phone').value = profile.phone;
   if (profile.photo) photo.src = profile.photo;
 
-  // a new photo is shrunk to a small square before it is kept
+  // a new photo opens a popup to place it in the circle: drag to move it, the
+  // slider (or the wheel) to zoom; "שמירה" keeps the circle as a 240px square
+  const F = 340; // the frame (stage px)
+  const C = 280; // the circle inside it
+  const cropPop = document.createElement('div');
+  cropPop.className = 'pf-crop';
+  cropPop.setAttribute('role', 'dialog');
+  cropPop.setAttribute('aria-modal', 'true');
+  cropPop.setAttribute('aria-label', 'מיקום התמונה בעיגול');
+  cropPop.hidden = true;
+  cropPop.innerHTML = `
+    <div class="pf-crop__card">
+      <h2 class="pf-crop__title">מיקום התמונה</h2>
+      <p class="pf-crop__note">גררו את התמונה כדי למרכז אותה בעיגול, והגדילו או הקטינו</p>
+      <div class="pf-crop__frame" id="pf-crop-frame"><img id="pf-crop-img" alt="" draggable="false"><span class="pf-crop__ring" aria-hidden="true"></span></div>
+      <label class="pf-crop__zoom"><span aria-hidden="true">−</span><input type="range" id="pf-crop-zoom" min="1" max="3" step="0.01" value="1" aria-label="הגדלה"><span aria-hidden="true">+</span></label>
+      <div class="pf-crop__btns">
+        <button class="btn-pill pf-crop__ok" type="button" id="pf-crop-ok"><span>שמירה</span></button>
+        <button class="pf-cancel" type="button" id="pf-crop-cancel">ביטול</button>
+      </div>
+    </div>`;
+  document.getElementById('stage').appendChild(cropPop);
+  const cImg = $('pf-crop-img');
+  const cZoom = $('pf-crop-zoom');
+  const cFrame = $('pf-crop-frame');
+  let src = null;
+  let base = 1;
+  let zoom = 1;
+  let ox = 0;
+  let oy = 0;
+  // keep the image covering the whole circle
+  const clamp = () => {
+    const w = src.width * base * zoom;
+    const h = src.height * base * zoom;
+    const mx = Math.max(0, (w - C) / 2);
+    const my = Math.max(0, (h - C) / 2);
+    ox = Math.max(-mx, Math.min(mx, ox));
+    oy = Math.max(-my, Math.min(my, oy));
+  };
+  const place = () => {
+    clamp();
+    const w = src.width * base * zoom;
+    const h = src.height * base * zoom;
+    cImg.style.width = `${w}px`;
+    cImg.style.height = `${h}px`;
+    cImg.style.left = `${(F - w) / 2 + ox}px`;
+    cImg.style.top = `${(F - h) / 2 + oy}px`;
+  };
+  const closeCrop = () => { cropPop.hidden = true; $('profile-file').value = ''; };
   $('profile-file').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const img = new Image();
     img.onload = () => {
-      const size = 240;
-      const c = document.createElement('canvas');
-      c.width = size;
-      c.height = size;
-      const s = Math.max(size / img.width, size / img.height);
-      const w = img.width * s;
-      const h = img.height * s;
-      c.getContext('2d').drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-      photo.src = c.toDataURL('image/jpeg', 0.85);
-      URL.revokeObjectURL(img.src);
+      src = img;
+      base = Math.max(C / img.width, C / img.height); // the circle covered at zoom 1
+      zoom = 1; ox = 0; oy = 0;
+      cZoom.value = '1';
+      cImg.src = img.src;
+      place();
+      cropPop.hidden = false;
+      $('pf-crop-ok').focus();
     };
     img.src = URL.createObjectURL(file);
+  });
+  cZoom.addEventListener('input', () => { zoom = Number(cZoom.value); place(); });
+  cFrame.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoom = Math.max(1, Math.min(3, zoom - e.deltaY * 0.002));
+    cZoom.value = String(zoom);
+    place();
+  }, { passive: false });
+  // drag (the stage is scaled: divide the pointer's moves by its scale)
+  let drag = null;
+  cFrame.addEventListener('pointerdown', (e) => {
+    const k = document.getElementById('stage').getBoundingClientRect().width / 1920 || 1;
+    drag = { x: e.clientX, y: e.clientY, ox, oy, k };
+    cFrame.setPointerCapture(e.pointerId);
+    cFrame.classList.add('is-dragging');
+  });
+  cFrame.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    ox = drag.ox + (e.clientX - drag.x) / drag.k;
+    oy = drag.oy + (e.clientY - drag.y) / drag.k;
+    place();
+  });
+  const endDrag = () => { drag = null; cFrame.classList.remove('is-dragging'); };
+  cFrame.addEventListener('pointerup', endDrag);
+  cFrame.addEventListener('pointercancel', endDrag);
+  $('pf-crop-cancel').addEventListener('click', closeCrop);
+  cropPop.addEventListener('click', (e) => { if (e.target === cropPop) closeCrop(); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !cropPop.hidden) closeCrop(); });
+  $('pf-crop-ok').addEventListener('click', () => {
+    // the circle's square, in the picture's own pixels
+    const k = base * zoom;
+    const w = src.width * k;
+    const h = src.height * k;
+    const left = (F - w) / 2 + ox;
+    const top = (F - h) / 2 + oy;
+    const cx = (F - C) / 2;
+    const sx = (cx - left) / k;
+    const sy = (cx - top) / k;
+    const side = C / k;
+    const size = 240;
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    c.getContext('2d').drawImage(src, sx, sy, side, side, 0, 0, size, size);
+    photo.src = c.toDataURL('image/jpeg', 0.85);
+    URL.revokeObjectURL(src.src);
+    closeCrop();
   });
 
   const msg = $('profile-msg');

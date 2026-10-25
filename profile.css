@@ -177,3 +177,24 @@
 .pf-cancel:hover { background: #fff0f4; }
 .pf-pass-open { justify-self: start; align-self: end; height: 44px; padding: 0; border: 0; background: none; color: var(--pink); font: 600 18px 'Rubik', sans-serif; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
 .pf-pass-open[hidden] { display: none; }
+
+/* ---------- placing a new photo in the circle (popup) ---------- */
+.pf-crop { position: absolute; inset: -3000px; z-index: 480; display: grid; place-items: center; background: rgba(14, 12, 48, .55); }
+.pf-crop[hidden] { display: none; }
+.pf-crop__card { width: 460px; padding: 28px 30px 26px; border-radius: 26px; background: #fff; box-shadow: 0 30px 70px rgba(20, 18, 74, .35); direction: rtl; text-align: center; font-family: 'Rubik', sans-serif; }
+.pf-crop__title { margin: 0; font-size: 28px; color: var(--pink); }
+.pf-crop__note { margin: 6px 0 16px; font-size: 16px; color: #6b6a92; }
+.pf-crop__frame { position: relative; width: 340px; height: 340px; margin: 0 auto; overflow: hidden; border-radius: 18px; background: #f4f5fb; cursor: grab; touch-action: none; user-select: none; }
+.pf-crop__frame.is-dragging { cursor: grabbing; }
+.pf-crop__frame img { position: absolute; max-width: none; pointer-events: none; }
+/* the circle: everything outside it is veiled */
+.pf-crop__ring { position: absolute; left: 30px; top: 30px; width: 280px; height: 280px; border-radius: 50%; box-shadow: 0 0 0 3px var(--pink), 0 0 0 400px rgba(255, 255, 255, .72); pointer-events: none; }
+.pf-crop__zoom { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; font-size: 24px; font-weight: 700; color: #2a2968; }
+.pf-crop__zoom input { width: 240px; accent-color: var(--pink); }
+.pf-crop__btns { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
+.pf-crop__ok { height: 52px; padding: 0 34px; border: 0; font-size: 20px; cursor: pointer; }
+/* the meter: the trophy / medal bigger */
+.pf-meter__badge { min-width: 76px; }
+.pf-meter__badge img, .pf-meter__badge svg { width: 48px; height: 48px; }
+.pf-meter__badge small { font-size: 14px; }
+.pf-meter__head span { margin-inline-start: auto; text-align: left; }
