@@ -147,7 +147,7 @@
         return found.includes(l) ? `<b class="tile is-found">${ch}</b>` : '<b class="tile">?</b>';
       }).join('')}</span>`).join('');
       const left = lettersOf(active.en).filter((l) => !found.includes(l)).length;
-      sText.textContent = `זה המשפט שלך – נשארו ${left} אותיות לגלות. ממשיכים עם אותו משפט עד שמגלים את כולו: קני אותיות בחנות האותיות!`;
+      sText.textContent = `זה המשפט שלך – נשארו ${left} אותיות לגלות. ממשיכים עם אותו משפט עד שמגלים את כולו.\nקני אותיות בחנות האותיות!`;
     } else if (active) {
       // the last sentence was found: it shows whole, and a new one can be drawn
       sBox.innerHTML = active.en.split(' ').map((w) => `<span class="sentence__word">${w.split('').map((ch) => (/[a-z]/i.test(ch) ? `<b class="tile is-found">${ch}</b>` : `<b class="tile tile--mark">${ch}</b>`)).join('')}</span>`).join('');
