@@ -123,3 +123,7 @@
 .profile-page .profile__fields { min-width: 0; gap: 18px 18px; }
 .profile-page .profile__field { min-width: 0; }
 .profile-page .profile__field input { width: 100%; min-width: 0; box-sizing: border-box; }
+/* "שמירת השינויים" in line with the fields' left edge */
+.profile-page .profile__actions { left: 42px; }
+/* more room between the meter and the two tabs */
+.pf-tabs { margin-top: 30px; }
