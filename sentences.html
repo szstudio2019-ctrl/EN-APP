@@ -109,7 +109,29 @@
           <button class="sentences__tab is-on" type="button" role="tab" aria-selected="true" data-level="0"><span lang="en">easy</span> - קל</button>
           <button class="sentences__tab" type="button" role="tab" aria-selected="false" data-level="1"><span lang="en">challenging</span> - מאתגר</button>
         </div>
-        <ol class="sentences__list" id="sentences-list"></ol>
+        <!-- one sentence per card (like the letter cards): arrows at the sides, the numbers and dashes under it -->
+        <div class="practice__deck sn-deck">
+          <button class="practice__arrow practice__arrow--prev" type="button" id="practice-prev" aria-label="המשפט הקודם"><img src="assets/chevron.svg" alt=""></button>
+          <div class="practice__stack sn-stack">
+            <span class="practice__sheet practice__sheet--a" aria-hidden="true"></span>
+            <span class="practice__sheet practice__sheet--b" aria-hidden="true"></span>
+            <div class="practice__card sn-card" id="practice-card">
+              <p class="sn-sentence" id="sn-sentence" lang="en" dir="ltr"></p>
+              <div class="practice__actions">
+                <button class="practice__action practice__action--rec" type="button" id="practice-rec">
+                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
+                  <span class="practice__label">הקלט</span>
+                </button>
+                <button class="practice__action practice__action--play" type="button" id="practice-play" disabled>
+                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
+                  <span class="practice__label">בדיקה</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button class="practice__arrow practice__arrow--next" type="button" id="practice-next" aria-label="המשפט הבא"><img src="assets/chevron.svg" alt=""></button>
+        </div>
+        <div class="sn-progress" aria-hidden="true"><span class="sn-progress__n">1</span><div class="practice__dots" id="practice-dots"></div><span class="sn-progress__n" id="sn-last"></span></div>
         <div class="sentences__notes">
           <p class="practice__note"><svg class="practice__note-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ההקלטה תשאר 7 ימים</p>
           <p class="practice__note"><svg class="practice__note-clock" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>המילים בוורוד זמינות לשמיעה בלחיצה</p>

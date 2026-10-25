@@ -16,43 +16,65 @@
   const SPEAKER = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
   const COIN = '<img src="assets/coin.webp" alt="">';
 
-  const listEl = document.getElementById('sentences-list');
   const tabs = [...document.querySelectorAll('.sentences__tab')];
   const statusEl = document.getElementById('practice-status');
+  const textEl = document.getElementById('sn-sentence');
+  const card = document.getElementById('practice-card');
+  const recBtn = document.getElementById('practice-rec');
+  const playBtn = document.getElementById('practice-play');
+  const prevBtn = document.getElementById('practice-prev');
+  const nextBtn = document.getElementById('practice-next');
+  const dotsEl = document.getElementById('practice-dots');
+  const lastNo = document.getElementById('sn-last');
   let level = 0;
+  let index = 0;
   const recordings = {}; // "level.i" -> object URL
   let done = {};
   try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { done = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
 
   // a sentence as words: the help words pink buttons, the rest plain text
-  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  function sentenceHTML(s) {
-    return s.split(' ').map((w) => {
+  const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function sentenceHTML(t) {
+    return t.split(' ').map((w) => {
       const bare = w.toLowerCase().replace(/[^a-z']/g, '');
       return HELP.has(bare) ? `<button class="sentences__help" type="button" data-say="${bare}" aria-label="השמעת המילה ${bare}">${esc(w)}<svg class="sentences__help-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg></button>` : esc(w);
     }).join(' ');
   }
 
+  // the level's tabs, its dashes and the far number
   function render() {
     tabs.forEach((t, i) => { t.classList.toggle('is-on', i === level); t.setAttribute('aria-selected', String(i === level)); });
-    listEl.dataset.level = String(level); // the challenging level's rows are light yellow
-    listEl.innerHTML = LEVELS[level].map((s, i) => {
-      const k = `${level}.${i}`;
-      return `
-      <li class="sentences__row${done[k] ? ' is-done' : ''}" data-i="${i}">
-        <p class="sentences__text" lang="en" dir="ltr">${sentenceHTML(s)}</p>
-        <button class="sentences__act sentences__act--rec" type="button" data-act="rec" aria-label="הקלטת המשפט">
-          <span class="sentences__icon">${MIC}</span><span class="sentences__label">הקלט</span>
-        </button>
-        <button class="sentences__act sentences__act--play" type="button" data-act="play" aria-label="בדיקת ההקלטה"${recordings[k] ? '' : ' disabled'}>
-          <span class="sentences__icon">${SPEAKER}</span><span class="sentences__label">בדיקה</span>
-        </button>
-      </li>`;
-    }).join('');
-    statusEl.textContent = '';
+    card.dataset.level = String(level); // the challenging level's card is light yellow
+    dotsEl.innerHTML = LEVELS[level].map(() => '<i></i>').join('');
+    lastNo.textContent = LEVELS[level].length;
+    show(Math.min(index, LEVELS[level].length - 1));
   }
-  tabs.forEach((t, i) => t.addEventListener('click', () => { if (i !== level) { level = i; render(); } }));
+  // one sentence on the card
+  function show(i, dir) {
+    const list = LEVELS[level];
+    index = Math.max(0, Math.min(list.length - 1, i));
+    const k = `${level}.${index}`;
+    textEl.innerHTML = sentenceHTML(list[index]);
+    textEl.classList.toggle('is-long', list[index].length > 34);
+    playBtn.disabled = !recordings[k];
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === list.length - 1;
+    [...dotsEl.children].forEach((d, j) => {
+      d.classList.toggle('is-on', j === index);
+      d.classList.toggle('is-done', !!done[`${level}.${j}`]);
+    });
+    card.classList.toggle('is-done', !!done[k]);
+    statusEl.textContent = '';
+    if (dir) {
+      card.classList.remove('is-in-next', 'is-in-prev');
+      void card.offsetWidth;
+      card.classList.add(dir > 0 ? 'is-in-next' : 'is-in-prev');
+    }
+  }
+  tabs.forEach((t, i) => t.addEventListener('click', () => { if (i !== level) { level = i; index = 0; render(); } }));
+  nextBtn.addEventListener('click', () => show(index + 1, 1));
+  prevBtn.addEventListener('click', () => show(index - 1, -1));
 
   /* Say a word (the browser's English voice) */
   function say(text) {
@@ -65,12 +87,16 @@
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   }
+  textEl.addEventListener('click', (e) => {
+    const help = e.target.closest('[data-say]');
+    if (help) say(help.dataset.say);
+  });
 
   /* Record and play back, one sentence at a time */
   let recorder = null;
   let chunks = [];
   let stopTimer;
-  async function startRec(row) {
+  async function startRec() {
     if (!navigator.mediaDevices || !window.MediaRecorder) { statusEl.textContent = 'הדפדפן הזה לא תומך בהקלטה'; return; }
     let stream;
     try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (err) {
@@ -78,9 +104,8 @@
       return;
     }
     const at = level;
-    const i = Number(row.dataset.i);
+    const i = index;
     const k = `${at}.${i}`;
-    const btn = row.querySelector('[data-act="rec"]');
     chunks = [];
     recorder = new MediaRecorder(stream);
     recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
@@ -92,32 +117,27 @@
       done[k] = Date.now();
       save();
       recorder = null;
+      recBtn.classList.remove('is-recording');
+      recBtn.querySelector('.practice__label').textContent = 'הקלט';
       if (at === level) {
-        render();
-        statusEl.textContent = 'מעולה! לחצו על בדיקה כדי לשמוע';
+        show(index);
+        if (i === index) statusEl.textContent = 'מעולה! לחצו על בדיקה כדי לשמוע';
       }
       if (!wasDone && LEVELS[at].every((_, j) => done[`${at}.${j}`])) setTimeout(() => openLevel(at), 400);
     };
     recorder.start();
-    btn.classList.add('is-recording');
-    btn.querySelector('.sentences__label').textContent = 'עצור';
+    recBtn.classList.add('is-recording');
+    recBtn.querySelector('.practice__label').textContent = 'עצור';
     statusEl.textContent = 'מקליטים… קראו את המשפט';
     clearTimeout(stopTimer);
     stopTimer = setTimeout(() => { if (recorder && recorder.state === 'recording') recorder.stop(); }, 10000);
   }
-
-  listEl.addEventListener('click', (e) => {
-    const help = e.target.closest('[data-say]');
-    if (help) { say(help.dataset.say); return; }
-    const act = e.target.closest('[data-act]');
-    if (!act) return;
-    const row = act.closest('.sentences__row');
-    if (act.dataset.act === 'rec') {
-      if (recorder && recorder.state === 'recording') { clearTimeout(stopTimer); recorder.stop(); } else startRec(row);
-    } else {
-      const url = recordings[`${level}.${row.dataset.i}`];
-      if (url) new Audio(url).play().catch(() => {});
-    }
+  recBtn.addEventListener('click', () => {
+    if (recorder && recorder.state === 'recording') { clearTimeout(stopTimer); recorder.stop(); } else startRec();
+  });
+  playBtn.addEventListener('click', () => {
+    const url = recordings[`${level}.${index}`];
+    if (url) new Audio(url).play().catch(() => {});
   });
 
   /* Popups, as on the practice page: a short "כל הכבוד" when a level is all
@@ -205,7 +225,7 @@
   const closeFinish = () => { finish.classList.remove('is-open'); setTimeout(() => { finish.hidden = true; }, 300); };
   finish.addEventListener('click', (e) => {
     const to = e.target.closest('[data-level]');
-    if (to) { level = Number(to.dataset.level); render(); closeFinish(); return; }
+    if (to) { level = Number(to.dataset.level); index = 0; render(); closeFinish(); return; }
     if (e.target === finish || e.target.closest('[data-close]')) closeFinish();
   });
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !finish.hidden) closeFinish(); });
