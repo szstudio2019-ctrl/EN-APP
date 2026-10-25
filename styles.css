@@ -3361,3 +3361,9 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro__card { height: 736px; }
 .intro__slide { inset: 44px 0 0; }
 .intro__slide--sentence { padding-top: 10px; }
+
+/* the sentence card's two cases ("אפשרות 1 / 2"), in the card's top corner */
+.intro__options { display: none; position: absolute; top: 16px; right: 16px; z-index: 5; gap: 4px; padding: 4px; border-radius: 22px; background: #f1f1f8; }
+.intro.is-short .intro__options { display: flex; }
+.intro__options button { height: 32px; padding: 0 14px; border: 0; border-radius: 18px; background: none; color: #2a2968; font: 500 15px 'Rubik', sans-serif; cursor: pointer; }
+.intro__options button[aria-selected="true"] { background: var(--pink); color: #fff; }

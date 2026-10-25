@@ -135,6 +135,11 @@
       <!-- Welcome popup (intro.js): four slides over the cloud video, before the map -->
       <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="ברוכים הבאים" hidden>
         <div class="intro__card">
+          <!-- for showing the client: the sentence card's two cases, one after the other -->
+          <div class="intro__options" role="tablist" aria-label="אפשרויות">
+            <button type="button" role="tab" data-option="1">אפשרות 1</button>
+            <button type="button" role="tab" data-option="2">אפשרות 2</button>
+          </div>
           <button class="intro__close" type="button" aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
           <section class="intro__slide">
             <h2 class="intro__title">ברוכים הבאים, <span class="intro__pink" data-first-name>!</span></h2>

@@ -128,13 +128,20 @@
   const shopLink = document.getElementById('intro-shop');
   const goBtn = document.getElementById('intro-go');
   const foundRow = document.getElementById('intro-found');
+  // "אפשרות 1": no letter found yet – a different sentence can still be drawn;
+  // "אפשרות 2": some letters found – the game goes on, to the shop. Without a
+  // choice the card follows the child's own sentence.
+  let option = null;
+  const drawLabel = drawBtn.querySelector('span');
   function paintSentence() {
     const shop = readShop();
     // the shop's demo when nothing was bought yet: a sentence already in progress
     const active = shop ? shop.sentences && shop.sentences[0] : { en: 'Dream big!', he: 'חלום בגדול!', found: 'dre' };
     const playing = !!active && !isDone(active);
     if (playing) {
-      const found = active.found || '';
+      let found = active.found || '';
+      if (option === '1') found = '';
+      if (option === '2' && !found) found = lettersOf(active.en).slice(0, 4).join('');
       sBox.innerHTML = active.en.split(' ').map((w) => `<span class="sentence__word">${w.split('').map((ch) => {
         const l = ch.toLowerCase();
         if (!/[a-z]/.test(l)) return `<b class="tile tile--mark">${ch}</b>`;
@@ -155,11 +162,16 @@
       sBox.innerHTML = '';
       sText.textContent = 'אין לך משפט פעיל כרגע – הגרילי משפט חדש ותתחילי לגלות אותו!';
     }
+    // a sentence not started yet (no letter found) can be swapped for another
+    const fresh = playing && !(option === '2' || (option !== '1' && active.found));
     sBox.hidden = !active;
     foundRow.hidden = !playing;
-    drawBtn.hidden = playing;
-    shopLink.hidden = !playing;
+    drawBtn.hidden = playing && !fresh;
+    drawLabel.textContent = fresh ? 'הגרלת משפט אחר' : 'הגרלת משפט';
+    shopLink.hidden = !playing || fresh;
+    intro.querySelectorAll('.intro__options button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.option === option)));
   }
+  intro.querySelectorAll('.intro__options button').forEach((b) => b.addEventListener('click', () => { option = b.dataset.option; paintSentence(); }));
   drawBtn.addEventListener('click', () => {
     const shop = readShop() || { coins: Number(document.querySelector('.stat--coins .stat__value')?.textContent) || 350, inv: {}, sentences: [] };
     const used = new Set((shop.sentences || []).map((x) => x.en));
