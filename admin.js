@@ -20,6 +20,7 @@
   let users;
   try { users = JSON.parse(localStorage.getItem(KEY)); } catch (err) { users = null; }
   if (!Array.isArray(users)) users = demo();
+  window.AdminUsers = () => users; // for the chart tooltip below
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(users)); } catch (err) { /* blocked */ } };
 
   const rows = document.getElementById('admin-rows');
@@ -51,9 +52,11 @@
   let spPeriod = 'week';
   let spWho = 'all';
   const WHO = { all: 'כל הילדים', active: 'פעילים', inactive: 'לא פעילים' };
+  let spKids = []; // the children shown in the popup (for the chart's tooltip)
   function spRender() {
     const n = PERIODS[spPeriod][1];
     const kids = users.map((u, i) => [u, i]).filter(([u]) => spWho === 'all' || (spWho === 'active' ? u.active : !u.active));
+    spKids = kids;
     const rowsData = kids.map(([u, i]) => {
       const part = activityOf(u).slice(0, n);
       const played = part.filter((d) => d.min).length;
@@ -270,4 +273,50 @@
   const sync = () => top.classList.toggle('is-stuck', scroller.scrollTop > 4);
   scroller.addEventListener('scroll', sync, { passive: true });
   sync();
+})();
+
+// The persistence popup's chart: hovering a column shows who played then –
+// each child's picture, name and minutes that day (a month: days played)
+(function () {
+  const sp = document.querySelector('.admin-sp');
+  if (!sp || !window.ChildStats) return;
+  const { activityOf, barDays } = window.ChildStats;
+  const COLORS = ['#e33563', '#2f7cf2', '#eeb741', '#91b121', '#7d4ae8', '#16a99a'];
+  const tip = document.createElement('div');
+  tip.className = 'admin-tip';
+  tip.hidden = true;
+  document.body.appendChild(tip);
+  const pic = (u) => {
+    const users = window.AdminUsers ? window.AdminUsers() : [];
+    const i = Math.max(0, users.findIndex((x) => x.id === u.id));
+    return u.photo ? `<img class="admin__avatar" src="${u.photo}" alt="">`
+      : `<span class="admin__avatar" style="background:${COLORS[i % COLORS.length]}">${(u.first[0] || '') + (u.last[0] || '')}</span>`;
+  };
+  sp.addEventListener('mousemove', (e) => {
+    const g = e.target.closest('.admin-chart [data-k]');
+    if (!g) { tip.hidden = true; return; }
+    const period = (sp.querySelector('[data-sp-period].is-on') || {}).dataset?.spPeriod || 'week';
+    const who = (sp.querySelector('[data-sp-who].is-on') || {}).dataset?.spWho || 'all';
+    const users = window.AdminUsers ? window.AdminUsers() : [];
+    const kids = users.filter((u) => who === 'all' || (who === 'active' ? u.active : !u.active));
+    const { to, from, label } = barDays(period, Number(g.dataset.k));
+    const rows = kids.map((u) => {
+      const days = activityOf(u).slice(to, from + 1);
+      const v = period === 'year' ? days.filter((d) => d.min).length : days.reduce((n, d) => n + d.min, 0);
+      return { u, v };
+    }).filter((r) => r.v > 0).sort((p, q) => q.v - p.v);
+    const unit = period === 'year' ? 'ימים' : 'דק׳';
+    tip.innerHTML = `<b class="admin-tip__title">${label} · ${rows.length} ${rows.length === 1 ? 'ילד/ה שיחק/ה' : 'ילדים שיחקו'}</b>
+      ${rows.length ? rows.map((r) => `<span class="admin-tip__row">${pic(r.u)}<span>${r.u.first} ${r.u.last}</span><b>${r.v} ${unit}</b></span>`).join('') : '<span class="admin-tip__none">אף אחד לא שיחק</span>'}`;
+    tip.hidden = false;
+    const w = tip.offsetWidth;
+    const h = tip.offsetHeight;
+    let x = e.clientX - w / 2;
+    let y = e.clientY - h - 18;
+    x = Math.max(8, Math.min(window.innerWidth - w - 8, x));
+    if (y < 8) y = e.clientY + 22;
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y}px`;
+  });
+  sp.addEventListener('mouseleave', () => { tip.hidden = true; });
 })();

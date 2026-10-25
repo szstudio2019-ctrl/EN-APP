@@ -80,7 +80,8 @@
     const marks = bars.map((b, k) => {
       const x = k * step + (step - bw) / 2;
       const h = b.v ? Math.max(4, ((base - top) * b.v) / max) : 3;
-      return `<g><title>${b.label || ''} ${b.tip}</title><rect x="${x.toFixed(1)}" y="${(base - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(6, bw / 3).toFixed(1)}" class="${b.v ? 'admin-chart__bar' : 'admin-chart__none'}"/>${b.label ? `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 8}" class="admin-chart__axis" text-anchor="middle">${b.label}</text>` : ''}</g>`;
+      // all children: the page shows its own tooltip (who played), so no plain title
+      return `<g data-k="${k}"><rect class="admin-chart__hit" x="${(k * step).toFixed(1)}" y="0" width="${step.toFixed(1)}" height="${H}"/>${opts.kids ? '' : `<title>${b.label || ''} ${b.tip}</title>`}<rect x="${x.toFixed(1)}" y="${(base - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="${Math.min(6, bw / 3).toFixed(1)}" class="${b.v ? 'admin-chart__bar' : 'admin-chart__none'}"/>${b.label ? `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 8}" class="admin-chart__axis" text-anchor="middle">${b.label}</text>` : ''}</g>`;
     }).join('');
     return `<svg class="admin-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="גרף התמדה – ${PERIODS[period][0]}">${grid}<line x1="0" x2="${W}" y1="${base}" y2="${base}" class="admin-chart__base"/>${marks}</svg>`;
   }
@@ -114,5 +115,19 @@
         ${chartOf(days, period)}
       </div>`;
   }
-  window.ChildStats = { activityOf, chartOf, statsOf, tile, PERIODS };
+  // the days (indexes into a child's days, 0 = today) behind bar k of a chart
+  function barDays(period, k) {
+    if (period === 'year') {
+      const m = new Date(now); m.setDate(1); m.setMonth(m.getMonth() - (11 - k));
+      const next = new Date(m); next.setMonth(m.getMonth() + 1);
+      const from = Math.floor((now - m) / DAY);
+      const to = Math.max(0, Math.ceil((now - next) / DAY));
+      return { to, from, label: MONTHS_HE[m.getMonth()] };
+    }
+    const n = PERIODS[period][1];
+    const d = n - 1 - k;
+    const date = new Date(now - d * DAY);
+    return { to: d, from: d, label: period === 'week' ? `יום ${DAYS_HE[date.getDay()]}` : date.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' }) };
+  }
+  window.ChildStats = { activityOf, chartOf, statsOf, tile, PERIODS, barDays };
 })();
