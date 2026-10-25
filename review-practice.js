@@ -33,12 +33,12 @@
   const TOPICS = [
     { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', pic: 'review-infinity',
       subs: rowsOf([S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')],
-        (c) => `קראו את ${c} ואז את ${c} עם a, i, ea ו-ee`) },
+        () => '') },
     { name: 'חזרה 2', islands: 'האותיות הבודדות', pic: 'review-infinity',
-      subs: rowsOf([S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], (c) => `קראו את ${c} עם o, u ו-e`) },
+      subs: rowsOf([S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], () => '') },
     { name: 'חזרה 3', islands: 'צירופי האותיות', pic: 'review-infinity',
       subs: rowsOf([S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
-        (c) => `קראו את ${c} עם oo, ai/ay ו-ou/ow`) },
+        () => '') },
     { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling', subs: [
       { label: 'sh', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['sha', 'she', 'shi', 'sho', 'shu', 'shea', 'shee', 'shay', 'shou', 'show'] },
       { label: 'ch', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow'] },
@@ -136,7 +136,7 @@
     });
     const t = TOPICS[topic];
     subsEl.innerHTML = t.subs.map((s, i) => `
-      <button class="rp-sub" type="button" data-sub="${i}">
+      <button class="rp-sub" type="button" data-sub="${i}"${s.label.length > 2 ? ' data-long' : ''}>
         ${s.pic || s.icon ? `<span class="rp-sub__icon" aria-hidden="true">${s.pic ? `<img src="assets/icons/${s.pic}.webp" alt="">` : s.icon}</span>` : ''}
         <b lang="en" dir="ltr">${s.label}</b>
         <span class="rp-sub__n">${s.words.length}</span>
@@ -153,7 +153,7 @@
   subPrev.type = 'button';
   subPrev.className = 'rp-subs-arrow rp-subs-arrow--prev';
   subPrev.setAttribute('aria-label', 'השלבים הקודמים');
-  subPrev.innerHTML = '<img src="assets/chevron.svg" alt="">';
+  subPrev.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
   const subNext = subPrev.cloneNode(true);
   subNext.className = 'rp-subs-arrow rp-subs-arrow--next';
   subNext.setAttribute('aria-label', 'השלבים הבאים');

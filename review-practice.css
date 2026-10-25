@@ -923,3 +923,37 @@
   .review-practice .rp-main .rp-subs-wrap .rp-subs { margin-top: 0 !important; padding: 4px 2px; }
   .review-practice .rp-main .practice__buttons { margin-top: auto !important; margin-bottom: 18px; }
 }
+
+/* v2: the rows' stages have no sentence (the explanation line goes away when empty) */
+.review-practice .rp-main .rp-explain:empty { display: none; }
+/* the stages: round, the same size, the letter in the middle; white, the chosen one pink */
+.review-practice .rp-subs-wrap .rp-sub { position: relative; width: 62px; height: 62px; padding: 0; gap: 0; justify-content: center; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 2px #ffd6e2; }
+.review-practice .rp-subs-wrap .rp-sub b { font-size: 30px; line-height: 1; }
+.review-practice .rp-subs-wrap .rp-sub.is-on { background: var(--pink); color: #fff; box-shadow: 0 0 0 4px #ffe1ea; }
+.review-practice .rp-subs-wrap .rp-sub .rp-again { display: none !important; }
+.review-practice .rp-subs-wrap .rp-sub .rp-check { position: absolute; top: -4px; right: -4px; }
+.review-practice .rp-subs-wrap .rp-sub b:not(:only-of-type) { font-size: 20px; }
+.review-practice .rp-subs-wrap .rp-subs { gap: 12px; padding: 8px 6px; }
+/* longer names (tion, igh) a little smaller, still inside the circle */
+.review-practice .rp-subs-wrap .rp-sub[data-long] b { font-size: 19px; }
+/* the slider's arrows: white with a navy arrow */
+.review-practice .rp-subs-arrow { background: #fff; box-shadow: 0 4px 12px rgba(36, 34, 117, .16), inset 0 0 0 1.5px #e4e5f0; }
+.review-practice .rp-subs-arrow img { filter: none; }
+/* the card taller, its word bigger */
+@media (min-width: 900px) {
+  .review-practice .rp-main .practice__card { height: 268px; gap: 14px; }
+  .review-practice .rp-main .practice__stack { height: 294px; }
+  .review-practice .rp-main .practice__sheet { height: 276px; }
+  .review-practice .rp-main .practice__word { font-size: 92px; }
+  .review-practice .rp-main .practice__word.is-long { font-size: 70px; }
+  /* more room between the stages, the cards, the progress and the note */
+  .review-practice .rp-main .practice__deck { margin-top: 22px !important; }
+  .review-practice .rp-main .rp-progress { margin-top: 22px !important; }
+  .review-practice .rp-main .practice__note { margin-top: 12px !important; }
+}
+/* the cue: a bigger square and name (the icon keeps its size) */
+.review-practice .rp-cue { width: 140px; padding: 16px 12px 14px; gap: 8px; border-radius: 20px; }
+.review-practice .rp-cue b { font-size: 34px; line-height: 1.1; }
+.review-practice .rp-subs-arrow { color: #232a6b; }
+.review-practice .rp-subs-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.review-practice .rp-subs-arrow--next svg { transform: rotate(180deg); }
