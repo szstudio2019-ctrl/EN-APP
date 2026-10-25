@@ -3322,8 +3322,13 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro.is-short .intro__slide:not(.intro__slide--sentence),
 .intro.is-short .intro__foot { display: none !important; }
 .intro__slide--sentence { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 36px; }
-.intro__sentence-trophy { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 10px 16px rgba(176, 122, 0, .3)); animation: intro-bob 3s ease-in-out infinite; }
 .intro__slide--sentence .intro__text { margin: 0; font-size: 22px; line-height: 30px; }
+/* a smaller zebra (the "משחק הגרלת המשפטים" slide's), its coins beside it */
+.intro__sentence-pic { position: relative; width: 340px; height: 200px; flex: none; }
+.intro__sentence-zebra { position: absolute; left: 50%; top: 0; width: 130px; height: 200px; translate: -50% 0; object-fit: contain; }
+.intro__sentence-pic .intro__coin { width: 52px; height: 52px; }
+.intro__sentence-pic .intro__coin--a { left: auto; right: 34px; top: 70px; }
+.intro__sentence-pic .intro__coin--b { left: 40px; top: 10px; }
 .intro__sentence { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 18px; margin: 6px 0; }
 .intro__sentence[hidden] { display: none; }
 .intro__sentence .tile { width: 40px; height: 46px; font-size: 26px; }
@@ -3343,3 +3348,8 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro__btns .intro__next, .intro__btns .intro__back { height: 48px; padding: 0 24px; font-size: 20px; }
 .intro__btns .intro__back { border-width: 2px; }
 .intro__back img { transform: none; }
+
+/* the card is taller: its slides start lower, so the ✕ isn't up against the title */
+.intro__card { height: 736px; }
+.intro__slide { inset: 44px 0 0; }
+.intro__slide--sentence { padding-top: 10px; }

@@ -141,11 +141,15 @@
       }).join('')}</span>`).join('');
       const left = lettersOf(active.en).filter((l) => !found.includes(l)).length;
       sText.textContent = `זה המשפט שלך – נשארו ${left} אותיות לגלות. ממשיכים עם אותו משפט עד שמגלים את כולו: קני אותיות בחנות האותיות!`;
+    } else if (active) {
+      // the last sentence was found: it shows whole, and a new one can be drawn
+      sBox.innerHTML = active.en.split(' ').map((w) => `<span class="sentence__word">${w.split('').map((ch) => (/[a-z]/i.test(ch) ? `<b class="tile is-found">${ch}</b>` : `<b class="tile tile--mark">${ch}</b>`)).join('')}</span>`).join('');
+      sText.textContent = 'סיימת את המשפט הקודם! הגרילי משפט חדש';
     } else {
       sBox.innerHTML = '';
       sText.textContent = 'אין לך משפט פעיל כרגע – הגרילי משפט חדש ותתחילי לגלות אותו!';
     }
-    sBox.hidden = !playing;
+    sBox.hidden = !active;
     drawBtn.hidden = playing;
     shopLink.hidden = !playing;
   }
