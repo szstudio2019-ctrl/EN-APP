@@ -10,12 +10,6 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="world.css">
-  <style>
-    /* this scene is drawn bigger and higher, so the tornado reaches up close to
-       the header; the lesson pins move with it */
-    .world__bg { transform: scale(var(--scene-k, 1)) translate(0, -120px) scale(1.22); }
-    .lessons { transform: scale(var(--scene-k, 1)) translate(0, -120px) scale(1.2); }
-  </style>
 </head>
 <body class="world-page">
   <!-- אי האותיות השורקות: island page built on the doctor page's template (WORLD settings below) -->
@@ -253,7 +247,7 @@
     window.WORLD = {
       title: 'אי האותיות השורקות',
       // the island name on the scene, before the first pin (same game-title style as the doctor island)
-      heading: { lines: ['אי האותיות', 'השורקות'], x: 936, y: 778 },
+      heading: { lines: ['אי האותיות', 'השורקות'], x: 936, y: 880 },
       lessonsRange: '22-25',
       coins: 350,
       progress: 0,

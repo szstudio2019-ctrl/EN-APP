@@ -13,10 +13,7 @@
   <!-- the background mirrored (left ↔ right); the pins mirrored with it -->
   <style>.world__bg { scale: -1 1; }
     /* the island further left, clear of the corals */
-    body.world-page:not(.is-loading) .world__island { translate: -100px 0; }
-    .sounds-clef-glow { background: radial-gradient(ellipse 150px 200px at 995px 478px, rgba(150, 225, 255, .55) 0%, rgba(120, 200, 255, .25) 45%, transparent 75%); mix-blend-mode: screen; pointer-events: none; animation: clef-glow 2.6s ease-in-out infinite; }
-    @keyframes clef-glow { 0%, 100% { opacity: .15; } 50% { opacity: .9; } }
-    @media (prefers-reduced-motion: reduce) { .sounds-clef-glow { animation: none; opacity: .5; } }</style>
+    body.world-page:not(.is-loading) .world__island { translate: -100px 0; }</style>
 </head>
 <body class="world-page">
   <!-- אי הצלילים המיוחדים: island page built on the doctor page's template (WORLD settings below) -->
@@ -42,7 +39,6 @@
       <!-- the background moving under the sea (a loop, with its own sound); the still picture stays under it -->
       <video class="world__bg world__bg--video" id="world-bg-video" src="assets/world-sounds-bg.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
       <!-- the treble clef glows (a soft light that comes and goes – it never grows); same frame as the background -->
-      <div class="world__bg sounds-clef-glow" aria-hidden="true"></div>
 
       <!-- Header -->
       <header class="topbar">
