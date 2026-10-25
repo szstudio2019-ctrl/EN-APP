@@ -3375,3 +3375,6 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro__draw.is-other:hover { background: #fff0f4; }
 /* the shop's icon in "לחנות האותיות" bigger (it may reach a little past the button's height) */
 .intro__back .intro__shop-icon { width: 50px; height: 50px; margin: -6px 0; }
+/* the sentence card a little taller, its buttons lower (both options) */
+.intro.is-short .intro__card { height: 780px; }
+.intro__sentence-btns { bottom: 52px; }
