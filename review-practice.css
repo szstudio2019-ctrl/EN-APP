@@ -957,3 +957,5 @@
 .review-practice .rp-subs-arrow { color: #232a6b; }
 .review-practice .rp-subs-arrow svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 .review-practice .rp-subs-arrow--next svg { transform: rotate(180deg); }
+/* in the card: the letter navy, the letters joined to it pink */
+.review-practice .practice__word .rp-join { color: var(--pink); }

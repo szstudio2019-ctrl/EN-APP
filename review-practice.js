@@ -26,8 +26,8 @@
     label: c,
     text: text(c),
     words: sounds.map(({ v, ico, tag }) => (Array.isArray(v)
-      ? { show: `${c}${v[0]}/${c}${v[1]}`, say: `${c}${v[1]}`, ico, tag }
-      : { show: c + v, say: c + v, ico, tag })),
+      ? { show: `${c}${v[0]}/${c}${v[1]}`, say: `${c}${v[1]}`, ico, tag, c }
+      : { show: c + v, say: c + v, ico, tag, c })),
   }));
   const S = (v, ico, tag) => ({ v, ico, tag });
   const TOPICS = [
@@ -52,7 +52,7 @@
   ];
   // every word as { show, say }
   TOPICS.forEach((t) => t.subs.forEach((s) => {
-    s.words = s.words.map((w) => (typeof w === 'string' ? { show: w, say: w, ico: t.ico, tag: s.label } : w));
+    s.words = s.words.map((w) => (typeof w === 'string' ? { show: w, say: w, ico: t.ico, tag: s.label, c: t.name === 'חזרה 4' ? s.label : '' } : w));
   }));
   const countOf = (t) => t.subs.reduce((n, s) => n + s.words.length, 0);
 
@@ -202,7 +202,12 @@
     prevBtn.disabled = index === 0 && sub === 0;
     nextBtn.disabled = false;
     nextBtn.classList.toggle('is-end', index === list.length - 1 && sub === subs.length - 1);
-    wordEl.textContent = list[index].show;
+    // the letter navy, the letters joined to it pink (b + ee, sh + a, b + ai/ay)
+    const cur = list[index];
+    if (cur.c && cur.show !== cur.c) {
+      const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      wordEl.innerHTML = cur.show.split('/').map((part) => (part.startsWith(cur.c) ? `${esc(cur.c)}<span class="rp-join">${esc(part.slice(cur.c.length))}</span>` : esc(part))).join('/');
+    } else wordEl.textContent = cur.show;
     if (cueEl) {
       const w = list[index];
       cueEl.hidden = !w.ico;
