@@ -204,6 +204,8 @@
     nextBtn.classList.toggle('is-end', index === list.length - 1 && sub === subs.length - 1);
     // the letter navy, the letters joined to it pink (b + ee, sh + a, b + ai/ay)
     const cur = list[index];
+    // the card's colour by the kind of sound: the letter alone light blue, the doctor's a pink, the smiles yellow
+    card.dataset.kind = { 'review-find': 'find', 'review-doctor': 'doctor', 'review-smiles': 'smiles' }[cur.ico] || '';
     if (cur.c && cur.show !== cur.c) {
       const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
       wordEl.innerHTML = cur.show.split('/').map((part) => (part.startsWith(cur.c) ? `${esc(cur.c)}<span class="rp-join">${esc(part.slice(cur.c.length))}</span>` : esc(part))).join('/');

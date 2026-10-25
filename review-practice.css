@@ -959,3 +959,7 @@
 .review-practice .rp-subs-arrow--next svg { transform: rotate(180deg); }
 /* in the card: the letter navy, the letters joined to it pink */
 .review-practice .practice__word .rp-join { color: var(--pink); }
+/* the card's colour by its kind (over the stage colours) */
+.review-practice .practice__card[data-kind="find"] { background: #e5f2ff; }
+.review-practice .practice__card[data-kind="doctor"] { background: #ffe6ee; }
+.review-practice .practice__card[data-kind="smiles"] { background: #fff6cf; }
