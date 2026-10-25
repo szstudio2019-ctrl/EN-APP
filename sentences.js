@@ -59,7 +59,7 @@
     textEl.classList.toggle('is-long', list[index].length > 34);
     playBtn.disabled = !recordings[k];
     prevBtn.disabled = index === 0;
-    nextBtn.disabled = index === list.length - 1;
+    nextBtn.disabled = false; // on the last sentence it opens the level's popup
     [...dotsEl.children].forEach((d, j) => {
       d.classList.toggle('is-on', j === index);
       d.classList.toggle('is-done', !!done[`${level}.${j}`]);
@@ -73,7 +73,7 @@
     }
   }
   tabs.forEach((t, i) => t.addEventListener('click', () => { if (i !== level) { level = i; index = 0; render(); } }));
-  nextBtn.addEventListener('click', () => show(index + 1, 1));
+  nextBtn.addEventListener('click', () => (index < LEVELS[level].length - 1 ? show(index + 1, 1) : openLevel(level)));
   prevBtn.addEventListener('click', () => show(index - 1, -1));
 
   /* Say a word (the browser's English voice) */
@@ -212,9 +212,9 @@
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}קראת את כל המשפטים ה${lv === 0 ? 'קלים' : 'מאתגרים'}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>+${COINS_PER_LEVEL}</b> מטבעות</p>
         <div class="pd-finish__buttons">
-          <button class="pd-finish__again" type="button" data-level="${lv}"><span>לתרגל שוב</span>${AGAIN}</button>
-          ${next >= 0 ? `<button class="btn-pill pd-finish__go" type="button" data-level="${next}"><span>לרמה המאתגרת</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>`
-            : `<a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>`}
+          ${next >= 0 ? `<button class="btn-pill pd-finish__go" type="button" data-level="${next}"><span>לשלב המאתגר</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>`
+            : `<button class="pd-finish__again" type="button" data-level="${lv}"><span>לתרגל שוב</span>${AGAIN}</button>`}
+          <a class="pd-finish__again pd-finish__done" href="review.html"><span>סיימתי את התרגול</span></a>
         </div>
       </div>`;
     finish.hidden = false;

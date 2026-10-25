@@ -277,3 +277,11 @@
 .sn-deck { margin-top: 30px; }
 .sn-progress { margin-top: 26px; }
 .sn-deck { margin-top: 44px; }
+/* the cards narrower: a long sentence wraps onto two centred lines */
+.sentences .sn-card { width: 560px; padding: 18px 28px 16px; }
+.sn-stack { width: 580px; }
+.sn-stack .practice__sheet { width: 552px; }
+.sn-sentence { white-space: normal; font-size: 34px; text-wrap: balance; }
+.sn-sentence.is-long { font-size: 30px; }
+/* the popup's "סיימתי את התרגול" (to the reviews) */
+.pd-finish__done { text-decoration: none; }
