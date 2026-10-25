@@ -3378,3 +3378,9 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 /* the sentence card a little taller, its buttons lower (both options) */
 .intro.is-short .intro__card { height: 780px; }
 .intro__sentence-btns { bottom: 52px; }
+/* the sentence card: a bigger zebra, the sentence lower under it (fills the room above the buttons) */
+.intro__sentence-pic { width: 380px; height: 262px; }
+.intro__sentence-zebra { width: 172px; height: 262px; }
+.intro__sentence-pic .intro__coin { width: 60px; height: 60px; }
+.intro__sentence-pic .intro__coin--a { right: 30px; top: 96px; }
+.intro__sentence-pic .intro__coin--b { left: 36px; top: 20px; }
