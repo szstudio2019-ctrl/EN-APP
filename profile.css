@@ -111,3 +111,15 @@
 .pf-stats .admin-stats__icon img { width: 30px; height: 30px; }
 .pf-stats .admin-stats__icon svg { width: 22px; height: 22px; }
 .pf-stats .admin-stats__chart-title { margin-top: 12px; font-size: 14px; }
+
+/* half and half: the two white panels the same width */
+.profile-page .shop-panel--sentences { left: 107px; width: 835px; }
+.profile-page .shop-panel--letters { left: 972px; width: 835px; }
+/* the wider "מה השגתי": the data tiles three a row */
+.pf-stats .admin-stats__tiles { grid-template-columns: repeat(3, 1fr); }
+/* the details at half width: a smaller photo, the fields fill the rest */
+.profile-page .profile__form { gap: 32px; padding-inline: 20px; }
+.profile-page .profile__avatar { width: 170px; height: 170px; }
+.profile-page .profile__fields { min-width: 0; gap: 18px 18px; }
+.profile-page .profile__field { min-width: 0; }
+.profile-page .profile__field input { width: 100%; min-width: 0; box-sizing: border-box; }
