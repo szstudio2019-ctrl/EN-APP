@@ -127,7 +127,6 @@
   const drawBtn = document.getElementById('intro-draw');
   const shopLink = document.getElementById('intro-shop');
   const goBtn = document.getElementById('intro-go');
-  const foundRow = document.getElementById('intro-found');
   // "אפשרות 1": no letter found yet – a different sentence can still be drawn;
   // "אפשרות 2": some letters found – the game goes on, to the shop. Without a
   // choice the card follows the child's own sentence.
@@ -149,11 +148,6 @@
       }).join('')}</span>`).join('');
       const left = lettersOf(active.en).filter((l) => !found.includes(l)).length;
       sText.textContent = `זה המשפט שלך – נשארו ${left} אותיות לגלות. ממשיכים עם אותו משפט עד שמגלים את כולו: קני אותיות בחנות האותיות!`;
-      // the letters already found, on their own row
-      const got = lettersOf(active.en).filter((l) => found.includes(l));
-      foundRow.innerHTML = got.length
-        ? `<span>אותיות שכבר מצאת:</span> <span class="intro__found-tiles" dir="ltr">${got.map((l) => `<b class="tile is-found">${l}</b>`).join('')}</span>`
-        : '<span>עוד לא מצאת אותיות – קני את הראשונה בחנות האותיות!</span>';
     } else if (active) {
       // the last sentence was found: it shows whole, and a new one can be drawn
       sBox.innerHTML = active.en.split(' ').map((w) => `<span class="sentence__word">${w.split('').map((ch) => (/[a-z]/i.test(ch) ? `<b class="tile is-found">${ch}</b>` : `<b class="tile tile--mark">${ch}</b>`)).join('')}</span>`).join('');
@@ -165,7 +159,6 @@
     // a sentence not started yet (no letter found) can be swapped for another
     const fresh = playing && !(option === '2' || (option !== '1' && active.found));
     sBox.hidden = !active;
-    foundRow.hidden = !playing;
     drawBtn.hidden = playing && !fresh;
     drawLabel.textContent = fresh ? 'הגרלת משפט אחר' : 'הגרלת משפט';
     drawBtn.classList.toggle('is-other', fresh);
