@@ -70,3 +70,21 @@
 .vw-dots i { width: 26px; height: 4px; border-radius: 4px; background: #ffd6e2; cursor: pointer; transition: background .3s ease, width .3s ease; }
 .vw-dots i.is-on { width: 40px; background: var(--pink); }
 .vowels-lesson .lesson__go { margin-top: 58px; }
+
+/* like every other lesson: the steps on the page itself (no coloured box), the
+   letter cards light blue with navy letters (the doctor lesson's b + a = ba),
+   the result filled pink, the notes plain white cards with a thin grey line */
+.vw-step { background: none; border: 0; box-shadow: none; padding: 10px 20px; }
+.vw-card, .vw-tile { background: #e5f2ff; color: #1d2b7a; box-shadow: none; border-radius: 14px; }
+.vw-card b, .vw-tile, .vw-card b[lang="en"] { color: #1d2b7a; }
+.vw-card small { color: #4a5080; }
+.vw-card:hover { box-shadow: none; }
+.vw-card--static:hover { box-shadow: none; }
+.vw-tile--result { background: var(--pink); color: #fff; box-shadow: 0 0 0 2px #fff, 0 10px 20px rgba(227, 53, 99, .3); }
+.vw-tile--result b { color: #fff; }
+.vw-tile--mark i::before, .vw-tile--mark i::after { background: var(--pink); }
+.vw-step--pink .vw-card:not(.vw-card--static) { background: var(--pink); }
+.vw-step--pink .vw-card:not(.vw-card--static) b, .vw-step--pink .vw-card:not(.vw-card--static) small { color: #fff; }
+.vw-step--pink .vw-card:not(.vw-card--static) .vw-green { color: #fff3a8; }
+.vw-note, .vw-list { background: #fff; box-shadow: inset 0 0 0 1px #bebebe; border-radius: 16px; }
+.vw-op, .vw-arrow-to { color: #1d2b7a; }
