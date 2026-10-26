@@ -124,3 +124,17 @@
 .vw-tabs .sentences__tab { border: 0; background: none; color: var(--pink); font-family: 'Rubik', sans-serif; font-weight: 700; cursor: pointer; transition: background .2s ease, color .2s ease, box-shadow .2s ease; }
 .vw-tabs .sentences__tab.is-on { background: var(--pink); color: #fff; }
 .vw-tabs .sentences__tab:not(.is-on):hover { background: #ffe8ef; }
+/* even spacing: the same room above the tabs (under the bubble) and under the content (above the button);
+   each tab's content starts right under the tabs */
+.vw-steps { margin-top: 40px; }
+.vw-view { height: 330px; }
+.vw-step { justify-content: flex-start; padding: 0 20px; }
+.vowels-lesson .lesson__go { margin-top: 40px; }
+/* the open tab takes its own height (the others are hidden), and the free room is split
+   evenly: as much above the tabs (under the bubble) as under the content (above the button) */
+.vw-view { height: auto; }
+.vw-step { position: static; inset: auto; display: none; padding: 0 20px; }
+.vw-step.is-on { display: flex; animation: vw-in .35s ease; }
+@keyframes vw-in { from { opacity: 0; translate: -20px 0; } }
+.vw-steps { margin-top: auto; }
+.vowels-lesson .lesson__go { margin-top: auto; }

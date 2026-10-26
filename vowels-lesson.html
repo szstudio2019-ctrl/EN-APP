@@ -118,19 +118,11 @@
             <button class="sentences__tab" type="button" role="tab" aria-selected="false" aria-controls="vw-step-3">קוראים</button>
           </div>
           <div class="vw-view">
-            <!-- מגלים: English has no marks – it uses letters, after the letter -->
-            <article class="vw-step vw-step--pink is-on" id="vw-step-1" role="tabpanel" aria-label="מגלים">
-              <ul class="vw-list">
-                <li><b>באנגלית אין לנו את הסימנים האלו!</b></li>
-                <li><b>במקום זה אנחנו משתמשים באותיות!</b></li>
-                <li>האותיות האלו נקראות <b class="vw-pink">אותיות ניקוד</b></li>
-                <li>במקום שהן יהיו <b>מתחת</b> לאות – הן מגיעות <b class="vw-green">אחריה</b></li>
-              </ul>
-              <div class="vw-compare">
-                <figure class="vw-card vw-card--static"><small>בעברית</small><b lang="he">בָּ</b><small>ניקוד מתחת</small></figure>
-                <span class="vw-arrow-to" aria-hidden="true">←</span>
-                <button class="vw-card" type="button" data-say="bah"><small>באנגלית</small><b lang="en" class="vw-pink">b<span class="vw-green">a</span></b><small>ניקוד אחרי האות</small></button>
-              </div>
+            <!-- מגלים: the sounds in Hebrew – read them by their marks -->
+            <article class="vw-step vw-step--yellow is-on" id="vw-step-1" role="tabpanel" aria-label="מגלים">
+              <h2 class="vw-step__title">קראו את הצלילים הבאים בעברית:</h2>
+              <div class="vw-cards"><button class="vw-card" type="button" data-say="buh"><b lang="he">בְּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bah"><b lang="he">בָּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bee"><b lang="he">בִּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button></div>
+              <div class="vw-note"><p>💭 <b>איך ידעתם איך לקרוא כל צליל?</b></p><p>נכון! לפי <b class="vw-pink">סימן הניקוד</b> מתחת לאות!</p></div>
             </article>
             <!-- מרכיבים: the letter b + kamatz = בָּ -->
             <article class="vw-step vw-step--blue" id="vw-step-2" role="tabpanel" aria-label="מרכיבים">
@@ -143,11 +135,19 @@
                 <figure class="vw-sum__item"><button class="vw-tile vw-tile--result" type="button" data-say="bah"><b lang="he">בָּ</b></button><figcaption class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</figcaption></figure>
               </div>
             </article>
-            <!-- קוראים: the sounds in Hebrew, read alone -->
-            <article class="vw-step vw-step--yellow" id="vw-step-3" role="tabpanel" aria-label="קוראים">
-              <h2 class="vw-step__title">קראו את הצלילים הבאים בעברית:</h2>
-              <div class="vw-cards"><button class="vw-card" type="button" data-say="buh"><b lang="he">בְּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bah"><b lang="he">בָּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bee"><b lang="he">בִּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button></div>
-              <div class="vw-note"><p>💭 <b>איך ידעתם איך לקרוא כל צליל?</b></p><p>נכון! לפי <b class="vw-pink">סימן הניקוד</b> מתחת לאות!</p></div>
+            <!-- קוראים: English has no marks – it uses letters, after the letter -->
+            <article class="vw-step vw-step--pink" id="vw-step-3" role="tabpanel" aria-label="קוראים">
+              <ul class="vw-list">
+                <li><b>באנגלית אין לנו את הסימנים האלו!</b></li>
+                <li><b>במקום זה אנחנו משתמשים באותיות!</b></li>
+                <li>האותיות האלו נקראות <b class="vw-pink">אותיות ניקוד</b></li>
+                <li>במקום שהן יהיו <b>מתחת</b> לאות – הן מגיעות <b class="vw-green">אחריה</b></li>
+              </ul>
+              <div class="vw-compare">
+                <figure class="vw-card vw-card--static"><small>בעברית</small><b lang="he">בָּ</b><small>ניקוד מתחת</small></figure>
+                <span class="vw-arrow-to" aria-hidden="true">←</span>
+                <button class="vw-card" type="button" data-say="bah"><small>באנגלית</small><b lang="en" class="vw-pink">b<span class="vw-green">a</span></b><small>ניקוד אחרי האות</small></button>
+              </div>
             </article>
           </div>
         </div>
