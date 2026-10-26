@@ -191,10 +191,25 @@
     const b = steps.children[at() + d] && steps.children[at() + d].querySelector('[data-step]');
     if (b) b.click();
   };
+  // only SHOW numbers at a time, in a window that slides along with the column you are on
+  const SHOW = 10;
+  const view = document.createElement('div');
+  view.className = 'lp-steps-view';
+  steps.before(view);
+  view.append(steps);
   const paint = () => {
     const i = at();
     prev.disabled = i <= 0;
     next.disabled = i < 0 || i >= steps.children.length - 1;
+    const n = steps.children.length;
+    const a0 = steps.children[0];
+    const a1 = steps.children[1];
+    if (!a1) return;
+    const pitch = Math.abs(a0.offsetLeft - a1.offsetLeft);
+    view.style.width = (pitch * Math.min(SHOW, n) - (pitch - a0.offsetWidth)) + 'px';
+    const first = Math.max(0, Math.min(n - SHOW, i - Math.floor(SHOW / 2) + 1));
+    // right to left: the later numbers are hidden on the left, so the row moves right
+    steps.style.transform = `translateX(${first * pitch}px)`;
   };
   prev.addEventListener('click', () => go(-1));
   next.addEventListener('click', () => go(1));
