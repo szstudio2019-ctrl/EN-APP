@@ -1,0 +1,72 @@
+/* Letters island, stage 2 – the vowel letters lesson (vowels-lesson.html):
+   three coloured steps under the guide's bubble, one at a time */
+.vw-steps { position: relative; display: flex; align-items: center; gap: 26px; margin-top: 26px; direction: rtl; }
+.vw-view { position: relative; width: 980px; height: 390px; }
+.vw-step {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  padding: 26px 40px; border-radius: 28px; border: 3px solid var(--vw-line);
+  background: var(--vw-bg); box-shadow: 0 16px 36px rgba(36, 34, 117, .1);
+  opacity: 0; visibility: hidden; translate: -30px 0;
+  transition: opacity .35s ease, translate .45s cubic-bezier(.22, 1, .36, 1), visibility 0s linear .35s;
+}
+.vw-step.is-on { opacity: 1; visibility: visible; translate: 0 0; transition: opacity .35s ease, translate .45s cubic-bezier(.22, 1, .36, 1), visibility 0s; }
+.vw-step--yellow { --vw-bg: linear-gradient(160deg, #fff8e2, #fff3f6); --vw-line: #ffe08a; }
+.vw-step--blue { --vw-bg: linear-gradient(160deg, #e6f4ff, #eafbf3); --vw-line: #a8dcc9; }
+.vw-step--pink { --vw-bg: linear-gradient(160deg, #fff0f4, #fff7fa); --vw-line: #ffb3c8; }
+.vw-step__title { margin: 0; font: 600 32px 'Rubik', sans-serif; color: var(--pink); }
+.vw-pink { color: var(--pink); }
+.vw-green { color: #3aa86b; }
+
+/* the sound cards */
+.vw-cards, .vw-compare { display: flex; align-items: center; justify-content: center; gap: 30px; }
+.vw-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  width: 150px; height: 150px; margin: 0; padding: 10px; border: 0; border-radius: 20px;
+  background: #fff; box-shadow: 0 10px 22px rgba(36, 34, 117, .12); cursor: pointer;
+  font-family: 'Rubik', sans-serif; transition: transform .2s ease, box-shadow .2s ease;
+}
+.vw-card:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 16px 28px rgba(36, 34, 117, .18); }
+.vw-card--static { cursor: default; }
+.vw-card--static:hover { transform: none; box-shadow: 0 10px 22px rgba(36, 34, 117, .12); }
+.vw-card b { font: 700 70px/1 'Rubik', sans-serif; color: #2a2968; }
+.vw-card b[lang="en"] { font-family: 'Fredoka', 'Rubik', sans-serif; color: var(--pink); }
+.vw-card small { font-size: 16px; color: #6b6f95; }
+.vw-card.is-tapped, .vw-tile.is-tapped { animation: vw-pop .4s ease; }
+@keyframes vw-pop { 40% { scale: 1.12; } }
+
+/* the note under the cards */
+.vw-note { width: 100%; padding: 16px 24px; border-radius: 18px; background: #fff; box-shadow: 0 6px 16px rgba(36, 34, 117, .08); text-align: right; font-size: 21px; line-height: 32px; color: #232a6b; }
+.vw-note p { margin: 0; }
+
+/* b + kamatz = בָּ */
+.vw-sum { display: flex; align-items: flex-start; justify-content: center; gap: 26px; }
+.vw-sum__item { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: 0; width: 210px; text-align: center; font-size: 19px; line-height: 27px; color: #232a6b; }
+.vw-tile {
+  position: relative; display: grid; place-items: center; width: 140px; height: 160px; border: 0; border-radius: 22px;
+  background: #fff; box-shadow: 0 10px 22px rgba(36, 34, 117, .12); color: var(--pink);
+  font: 600 100px/1 'Fredoka', 'Rubik', sans-serif; cursor: pointer;
+}
+.vw-tile--mark { cursor: default; }
+/* the kamatz under the b: a small T */
+.vw-tile--mark i { position: absolute; left: 50%; bottom: 16px; translate: -50% 0; width: 26px; height: 14px; }
+.vw-tile--mark i::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 4px; border-radius: 2px; background: var(--pink); }
+.vw-tile--mark i::after { content: ''; position: absolute; left: 50%; top: 0; width: 4px; height: 14px; translate: -50% 0; border-radius: 2px; background: var(--pink); }
+.vw-tile--result { background: linear-gradient(135deg, #ff7aa8, #6fd3c7); color: #fff; }
+.vw-tile--result b { font: 700 80px/1 'Rubik', sans-serif; }
+.vw-op { align-self: center; margin-top: -40px; font: 700 50px 'Rubik', sans-serif; color: #f3b400; }
+
+/* English uses letters, after the letter */
+.vw-list { width: 100%; margin: 0; padding: 14px 28px; list-style: none; border-radius: 18px; background: #fff; box-shadow: 0 6px 16px rgba(36, 34, 117, .08); font-size: 21px; line-height: 36px; color: #232a6b; }
+.vw-step--pink { gap: 16px; }
+.vw-step--pink .vw-card { width: 140px; height: 130px; }
+.vw-step--pink .vw-card b { font-size: 56px; }
+.vw-arrow-to { font: 700 44px 'Rubik', sans-serif; color: #f3b400; }
+
+/* the arrows and dots */
+.vw-arrow { position: static; flex: none; translate: none; }
+.vw-arrow:disabled { opacity: .35; cursor: default; }
+.vw-dots { position: absolute; left: 50%; bottom: -34px; translate: -50% 0; display: flex; gap: 8px; }
+.vw-dots i { width: 26px; height: 4px; border-radius: 4px; background: #ffd6e2; cursor: pointer; transition: background .3s ease, width .3s ease; }
+.vw-dots i.is-on { width: 40px; background: var(--pink); }
+.vowels-lesson .lesson__go { margin-top: 58px; }

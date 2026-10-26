@@ -250,14 +250,16 @@
       title: 'אי זיהוי האותיות',
       // the island's name on the stage, in the same game-title style as the other islands
       heading: { lines: ['אי זיהוי', 'האותיות'], x: 960, y: 690 },
-      lessonsRange: '1',
+      lessonsRange: '1-2',
       coins: 350,
       progress: 100,
       background: 'assets/world-letters-bg.webp',
       island: { still: 'island-abc' },
-      // the one stage: the ABC song lesson (pin on the stage's dance floor)
+      // stage 1: the ABC song (lesson + practice); stage 2: the vowel letters (a lesson only)
       lessons: [
-        { n: 1, x: 960, y: 540, status: 'current', href: 'letters-lesson.html' },
+        { n: 1, x: 860, y: 540, status: 'done', href: 'letters-lesson.html' },
+        // stage 2: the vowel letters – a lesson only (no practice)
+        { n: 2, x: 1060, y: 540, status: 'current', href: 'vowels-lesson.html' },
       ],
     };
   </script>
