@@ -990,3 +990,10 @@
   .review-practice .rp-main .practice__word.is-long { font-size: 70px; }
 }
 .review-practice .practice__word { font-size: 52px; }
+/* the card's word: bigger, one colour (no hover), not a button */
+.review-practice .practice__word { pointer-events: none; cursor: default; animation: none !important; }
+.review-practice .practice__word:hover { color: inherit; }
+@media (min-width: 900px) {
+  .review-practice .rp-main .practice__word,
+  .review-practice .rp-main .practice__word.is-long { font-size: 86px; }
+}
