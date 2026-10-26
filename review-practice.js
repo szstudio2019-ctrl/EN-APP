@@ -332,7 +332,6 @@
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את ${t.name}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${t.subs.length * COINS_PER_STAGE}</b> מטבעות</p>
         <p class="rp-done__text">תרגלת ${countOf(t)} כרטיסיות</p>
-        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : `<p class="rp-done__next">הבא בתור: <b>${onward.pic ? `<img class="rp-done__next-pic" src="assets/${onward.pic}.webp" alt="">` : ''} ${onward.name || 'מפת האיים'}</b></p>`}
         <div class="rp-done__buttons">
           <button class="rp-done__again" type="button" data-act="again"><span>לתרגל שוב</span>${AGAIN}</button>
           ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`
