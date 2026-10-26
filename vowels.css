@@ -88,3 +88,10 @@
 .vw-step--pink .vw-card:not(.vw-card--static) .vw-green { color: #fff3a8; }
 .vw-note, .vw-list { background: #fff; box-shadow: inset 0 0 0 1px #bebebe; border-radius: 16px; }
 .vw-op, .vw-arrow-to { color: #1d2b7a; }
+
+/* smaller containers: the steps as wide as their content, the arrows close beside it */
+.vw-view { width: 720px; }
+.vw-steps { gap: 18px; }
+.vw-note, .vw-list { width: 640px; }
+.vw-step--blue .vw-sum { gap: 12px; }
+.vw-sum__item { width: 190px; }

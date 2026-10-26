@@ -148,8 +148,8 @@
           <button class="practice__arrow practice__arrow--next vw-arrow" type="button" id="vw-next" aria-label="השלב הבא"><img src="assets/chevron.svg" alt=""></button>
           <div class="vw-dots" id="vw-dots"><i class="is-on"></i><i></i><i></i></div>
         </div>
-        <!-- a lesson only: on to the doctor island's first lesson -->
-        <a class="btn-pill lesson__go" href="lesson.html"><span>לשיעור של הרופאה</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+        <!-- "המשך" to the next step; on the last one it leads on to the doctor island's lesson -->
+        <a class="btn-pill lesson__go" id="vw-go" href="lesson.html"><span>המשך</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </section>
 
 
@@ -339,6 +339,8 @@
       const dots = [...document.querySelectorAll('#vw-dots i')];
       const prev = document.getElementById('vw-prev');
       const next = document.getElementById('vw-next');
+      const go = document.getElementById('vw-go');
+      const goLabel = go.querySelector('span');
       let at = 0;
       const show = (i) => {
         at = Math.max(0, Math.min(steps.length - 1, i));
@@ -346,7 +348,9 @@
         dots.forEach((d, k) => d.classList.toggle('is-on', k === at));
         prev.disabled = at === 0;
         next.disabled = at === steps.length - 1;
+        goLabel.textContent = at === steps.length - 1 ? 'לאותיות של הרופאה' : 'המשך';
       };
+      go.addEventListener('click', (e) => { if (at < steps.length - 1) { e.preventDefault(); show(at + 1); } });
       prev.addEventListener('click', () => show(at - 1));
       next.addEventListener('click', () => show(at + 1));
       dots.forEach((d, k) => d.addEventListener('click', () => show(k)));
