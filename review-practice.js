@@ -34,6 +34,15 @@
   const REVIEW3 = [S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')];
   const REVIEW2 = [S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')];
   const REVIEW1 = [S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')];
+  // the sheet's last three columns (igh, i-e, a-e) for review 5, row by row
+  const LAST3 = {
+    b: ['bigh', 'bike', 'bake'], d: ['digh', 'dice', 'dave'], f: ['figh', 'fine', 'fake'], g: ['gigh', '', 'gate'],
+    h: ['high', 'hive', 'hate'], j: ['jigh', '', 'jade'], k: ['knight', 'kite', 'kate'], l: ['light', 'like', 'late'],
+    m: ['might', 'mile', 'make'], n: ['night', 'nice', 'name'], p: ['pigh', 'pipe', 'page'], q: ['', '', ''],
+    r: ['right', 'ride', 'rate'], s: ['sight', 'side', 'safe'], t: ['tight', 'tide', 'take'], v: ['vight', 'vane', 'vine'],
+    w: ['wight', 'wave', 'wine'], y: ['yight', '', ''], z: ['zight', '', ''],
+    ch: ['chight', 'chase', 'chime'], sh: ['shight', 'shame', 'shine'], ph: ['phight', 'phase', ''],
+  };
   const TOPICS = [
     { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', pic: 'review-infinity',
       subs: rowsOf(REVIEW1, () => '') },
@@ -50,12 +59,14 @@
     // others (the pair alone, cha, chi, chea, chee, cho, chu, che, choo, chai/chay, chou/chow)
     { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling',
       subs: rowsOf([S('', 'review-whistling', 'שורקות'), ...REVIEW1.slice(1), ...REVIEW2, ...REVIEW3], () => '', ['ch', 'sh']) },
-    { name: 'חזרה 5', islands: 'צלילים מיוחדים', pic: 'review-infinity', ico: 'review-sounds', subs: [
-      { label: 'th', text: 'th – הלשון יוצאת קצת בין השיניים', words: ['this', 'that', 'thin', 'them', 'with', 'bath'] },
-      { label: 'ph', text: 'ph – נשמע כמו f', words: ['phone', 'photo', 'graph', 'dolphin', 'elephant', 'phonics'] },
-      { label: 'tion', text: 'tion – בסוף מילה נשמע "שֶן"', words: ['action', 'nation', 'motion', 'lotion', 'station', 'fiction'] },
-      { label: 'igh', text: 'igh – נשמע כמו "אַיי", ה-gh שותקות', words: ['high', 'light', 'night', 'might', 'right', 'knight'] },
-    ] },
+    // review 5 (Einat's table): everything – every row (b … z, then ch, sh, ph), each the
+    // whole row, then the sheet's last three columns (igh, i-e, a-e; its empty cells left out)
+    { name: 'חזרה 5', islands: 'צלילים מיוחדים', pic: 'review-infinity', ico: 'review-sounds',
+      subs: rowsOf([...REVIEW1, ...REVIEW2, ...REVIEW3], () => '', [...C, 'ch', 'sh', 'ph']).map((row) => {
+        if (['ch', 'sh', 'ph'].includes(row.label)) row.words[0].ico = 'review-whistling';
+        (LAST3[row.label] || []).forEach((w) => { if (w) row.words.push({ show: w, say: w, ico: 'review-sounds', tag: 'מיוחדים', c: row.label }); });
+        return row;
+      }) },
   ];
   // every word as { show, say }
   TOPICS.forEach((t) => t.subs.forEach((s) => {
