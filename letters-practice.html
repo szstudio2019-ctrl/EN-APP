@@ -98,14 +98,14 @@
           </a>
           <a class="slide-nav__item is-on" href="letters-practice.html" aria-current="page">
             <span class="slide-nav__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
-            <span class="slide-nav__text"><b>תרגול</b><small>5 שורות · מזהים ומקליטים</small></span>
+            <span class="slide-nav__text"><b>תרגול</b><small>16 טורים · מזהים ומקליטים</small></span>
           </a>
         </nav>
         <h1 class="practice__title" id="practice-title">האי של זיהוי אותיות</h1>
         <p class="slide-kicker">תרגול</p>
         <p class="practice__lead">הסתכלו על האות, אמרו את שמה והקליטו את עצמכם · לחצו על האות כדי לשמוע אותה</p>
         <div class="practice__level">
-          <span class="practice__level-label" id="level-label">שורה</span>
+          <span class="practice__level-label" id="level-label">טור</span>
           <ol class="practice__steps" id="practice-steps" aria-labelledby="level-label"></ol>
         </div>
         <div class="practice__deck">
@@ -339,12 +339,13 @@
   <script src="mobile.js"></script>
   <script src="world.js"></script>
   <script>
-    // the practice cards: Einat's letter table, a level per row (read left to right)
+    // the practice cards: Einat's letter table, a level per column (left to right,
+    // each read top to bottom – 16 columns of 5 letters)
     window.PRACTICE = {
-      key: 'en-app:practice-letters',
+      key: 'en-app:practice-letters-cols', // a new key: the levels were rows before
       // each letter's card from the letter shop
       pic: (l) => 'assets/cards/card-' + l + '.webp',
-      stages: [["b","f","k","l","m","n","p","m","g","t","s","c","c","j","q","w"],["c","b","b","k","b","k","g","n","r","r","z","z","d","k","r","y"],["b","g","d","g","l","m","k","b","m","m","x","t","f","l","s","z"],["f","g","g","c","k","g","l","d","p","p","r","t","h","n","v","z"],["d","f","f","d","g","d","n","f","r","l","t","v","h","p","w","y"]],
+      stages: [["b","c","b","f","d"],["f","b","g","g","f"],["k","b","d","g","f"],["l","k","g","c","d"],["m","b","l","k","g"],["n","k","m","g","d"],["p","g","k","l","n"],["m","n","b","d","f"],["g","r","m","p","r"],["t","r","m","p","l"],["s","z","x","r","t"],["c","z","t","t","v"],["c","d","f","h","h"],["j","k","l","n","p"],["q","r","s","v","w"],["w","y","z","z","y"]],
     };
   </script>
   <script src="practice.js"></script>
