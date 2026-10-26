@@ -3402,3 +3402,10 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 /* "חזרה" on the sentence card: outlined, its arrow pointing back (right), a little narrower */
 .intro__sentence-btns .intro__sentence-back { height: 54px; padding: 0 20px; gap: 8px; }
 .intro__sentence-btns { gap: 10px; }
+
+/* the finale's sentence: letter cards like the sentence game's (white, a thin grey line, navy ?) */
+.finale__sentence { gap: 8px 16px; }
+.finale__word { gap: 5px; }
+.finale__tile { width: 34px; height: 40px; border: 1px solid #bebebe; border-radius: 5px; background: #fff; color: var(--navy); font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 22px; }
+.finale__tile.is-found { border-color: var(--pink); background: var(--pink); color: #fff; }
+.finale__tile--mark { width: auto; border: 0; background: none; }
