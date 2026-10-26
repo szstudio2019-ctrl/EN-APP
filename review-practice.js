@@ -30,12 +30,14 @@
       : { show: c + v, say: c + v, ico, tag, c })),
   }));
   const S = (v, ico, tag) => ({ v, ico, tag });
+  // review 1's sounds: the letter alone, a, i, ea, ee
+  const REVIEW1 = [S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')];
   const TOPICS = [
     { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', pic: 'review-infinity',
-      subs: rowsOf([S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')],
-        () => '') },
+      subs: rowsOf(REVIEW1, () => '') },
+    // review 2: first review 1's sounds, then its own (o, u, e)
     { name: 'חזרה 2', islands: 'האותיות הבודדות', pic: 'review-infinity',
-      subs: rowsOf([S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], () => '') },
+      subs: rowsOf([...REVIEW1, S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], () => '') },
     { name: 'חזרה 3', islands: 'צירופי האותיות', pic: 'review-infinity',
       subs: rowsOf([S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
         () => '') },
@@ -125,7 +127,8 @@
   const subDone = (ti, si) => TOPICS[ti].subs[si].words.every((_, wi) => done[`${ti}.${si}.${wi}`]);
   const topicDone = (ti) => TOPICS[ti].subs.every((_, si) => subDone(ti, si));
   function syncStates() {
-    topicsEl.querySelectorAll('.rp-topic').forEach((b, ti) => b.classList.toggle('is-done', topicDone(ti)));
+    // a review before this one (it was finished to get here) shows as done – green
+    topicsEl.querySelectorAll('.rp-topic').forEach((b, ti) => b.classList.toggle('is-done', ti < PIN - 1 || topicDone(ti)));
     subsEl.querySelectorAll('.rp-sub').forEach((b, si) => b.classList.toggle('is-done', subDone(topic, si)));
   }
 
