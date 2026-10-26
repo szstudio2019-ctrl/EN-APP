@@ -31,6 +31,7 @@
   }));
   const S = (v, ico, tag) => ({ v, ico, tag });
   // review 1's sounds: the letter alone, a, i, ea, ee
+  const REVIEW2 = [S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')];
   const REVIEW1 = [S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')];
   const TOPICS = [
     { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', pic: 'review-infinity',
@@ -38,10 +39,12 @@
     // review 2 (Einat's table): the rows b … m only – each the letter, review 1's sounds
     // (a, i, ea, ee), then its own (o, u, e)
     { name: 'חזרה 2', islands: 'האותיות הבודדות', pic: 'review-infinity',
-      subs: rowsOf([...REVIEW1, S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], () => '').slice(0, C.indexOf('m') + 1) },
+      subs: rowsOf([...REVIEW1, ...REVIEW2], () => '').slice(0, C.indexOf('m') + 1) },
     { name: 'חזרה 3', islands: 'צירופי האותיות', pic: 'review-infinity',
-      subs: rowsOf([S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
-        () => '') },
+      // review 3 (Einat's table): the rows n … z – each the whole row: the letter, a, i, ea, ee,
+      // o, u, e, then oo, ai/ay, ou/ow
+      subs: rowsOf([...REVIEW1, ...REVIEW2, S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
+        () => '').slice(C.indexOf('n')) },
     { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling', subs: [
       { label: 'sh', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['sha', 'she', 'shi', 'sho', 'shu', 'shea', 'shee', 'shay', 'shou', 'show'] },
       { label: 'ch', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow'] },
