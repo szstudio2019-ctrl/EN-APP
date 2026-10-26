@@ -22,7 +22,7 @@
   const ROWS = C;
   // a stage per row: the letter, then the letter with each sound
   // sound = { v: 'a' | ['ai', 'ay'], ico: an icon in assets/icons, tag: its name }
-  const rowsOf = (sounds, text) => ROWS.map((c) => ({
+  const rowsOf = (sounds, text, rows = ROWS) => rows.map((c) => ({
     label: c,
     text: text(c),
     words: sounds.map(({ v, ico, tag }) => (Array.isArray(v)
@@ -30,7 +30,8 @@
       : { show: c + v, say: c + v, ico, tag, c })),
   }));
   const S = (v, ico, tag) => ({ v, ico, tag });
-  // review 1's sounds: the letter alone, a, i, ea, ee
+  // each review's own sounds (review 1: the letter alone, a, i, ea, ee; 2: o, u, e; 3: oo, ai/ay, ou/ow)
+  const REVIEW3 = [S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')];
   const REVIEW2 = [S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')];
   const REVIEW1 = [S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')];
   const TOPICS = [
@@ -43,12 +44,12 @@
     { name: 'חזרה 3', islands: 'צירופי האותיות', pic: 'review-infinity',
       // review 3 (Einat's table): the rows n … z – each the whole row: the letter, a, i, ea, ee,
       // o, u, e, then oo, ai/ay, ou/ow
-      subs: rowsOf([...REVIEW1, ...REVIEW2, S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
+      subs: rowsOf([...REVIEW1, ...REVIEW2, ...REVIEW3],
         () => '').slice(C.indexOf('n')) },
-    { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling', subs: [
-      { label: 'sh', text: 'sh – "שששש", כמו כשמבקשים שקט', words: ['sha', 'she', 'shi', 'sho', 'shu', 'shea', 'shee', 'shay', 'shou', 'show'] },
-      { label: 'ch', text: 'ch – "צ\'" כמו רכבת: צ\'ו-צ\'ו', words: ['cha', 'che', 'chi', 'cho', 'chu', 'chea', 'chee', 'chay', 'chou', 'chow'] },
-    ] },
+    // review 4 (Einat's table): only its last two rows, ch and sh – each the whole row like the
+    // others (the pair alone, cha, chi, chea, chee, cho, chu, che, choo, chai/chay, chou/chow)
+    { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling',
+      subs: rowsOf([S('', 'review-whistling', 'שורקות'), ...REVIEW1.slice(1), ...REVIEW2, ...REVIEW3], () => '', ['ch', 'sh']) },
     { name: 'חזרה 5', islands: 'צלילים מיוחדים', pic: 'review-infinity', ico: 'review-sounds', subs: [
       { label: 'th', text: 'th – הלשון יוצאת קצת בין השיניים', words: ['this', 'that', 'thin', 'them', 'with', 'bath'] },
       { label: 'ph', text: 'ph – נשמע כמו f', words: ['phone', 'photo', 'graph', 'dolphin', 'elephant', 'phonics'] },
