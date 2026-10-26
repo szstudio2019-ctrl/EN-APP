@@ -177,7 +177,8 @@
     }
     setMap(false);
     if (window.journeyGoTo && !island.page) { setTimeout(() => window.journeyGoTo(i), 300); return; }
-    const target = island.page || `index.html#island-${i + 1}`;
+    // a review leads straight to its own practice (its range and number), as in the side menu
+    const target = island.review && reviewNo[i] ? `review-practice.html?r=${island.review}&p=${reviewNo[i]}` : island.page || `index.html#island-${i + 1}`;
     if (target === here) return;
     // through a link, so the page veil (transition.js) plays
     const link = document.createElement('a');
