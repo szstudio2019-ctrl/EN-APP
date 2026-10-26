@@ -31,6 +31,7 @@
   }));
   const S = (v, ico, tag) => ({ v, ico, tag });
   // each review's own sounds (review 1: the letter alone, a, i, ea, ee; 2: o, u, e; 3: oo, ai/ay, ou/ow)
+  const PAIR_ICO = { ch: 'sound-chips', sh: 'sound-shh' };
   const REVIEW3 = [S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')];
   const REVIEW2 = [S('o', 'sound-shock', 'o'), S('u', 'sound-slide', 'u'), S('e', 'sound-sheep', 'e')];
   const REVIEW1 = [S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')];
@@ -58,12 +59,13 @@
     // review 4 (Einat's table): only its last two rows, ch and sh – each the whole row like the
     // others (the pair alone, cha, chi, chea, chee, cho, chu, che, choo, chai/chay, chou/chow)
     { name: 'חזרה 4', islands: 'האותיות השורקות', pic: 'review-infinity', ico: 'review-whistling',
-      subs: rowsOf([S('', 'review-whistling', 'שורקות'), ...REVIEW1.slice(1), ...REVIEW2, ...REVIEW3], () => '', ['ch', 'sh']) },
+      subs: rowsOf([S('', 'review-whistling', 'שורקות'), ...REVIEW1.slice(1), ...REVIEW2, ...REVIEW3], () => '', ['ch', 'sh'])
+        .map((row) => { row.words[0].ico = PAIR_ICO[row.label]; return row; }) },
     // review 5 (Einat's table): everything – every row (b … z, then ch, sh, ph), each the
     // whole row, then the sheet's last three columns (igh, i-e, a-e; its empty cells left out)
     { name: 'חזרה 5', islands: 'צלילים מיוחדים', pic: 'review-infinity', ico: 'review-sounds',
       subs: rowsOf([...REVIEW1, ...REVIEW2, ...REVIEW3], () => '', [...C, 'ch', 'sh', 'ph']).map((row) => {
-        if (['ch', 'sh', 'ph'].includes(row.label)) row.words[0].ico = 'review-whistling';
+        if (['ch', 'sh', 'ph'].includes(row.label)) row.words[0].ico = PAIR_ICO[row.label] || 'review-whistling';
         (LAST3[row.label] || []).forEach((w) => { if (w) row.words.push({ show: w, say: w, ico: 'review-sounds', tag: 'מיוחדים', c: row.label }); });
         return row;
       }) },
@@ -236,7 +238,9 @@
       const w = list[index];
       cueEl.hidden = !w.ico;
       // the hint's icon: its large, background-free copy (cue-…)
-      if (w.ico) cueEl.innerHTML = `<img src="assets/icons/cue-${w.ico}.webp" alt=""><b lang="en" dir="ltr">${w.tag || ''}</b>`;
+      // a word of the ch / sh row: its sound's icon with the pair's own beside it (chips / shh)
+      const badge = PAIR_ICO[w.c] && w.ico !== PAIR_ICO[w.c] ? `<img class="rp-cue__badge" src="assets/icons/cue-${PAIR_ICO[w.c]}.webp" alt="">` : '';
+      if (w.ico) cueEl.innerHTML = `<span class="rp-cue__pic"><img src="assets/icons/cue-${w.ico}.webp" alt="">${badge}</span><b lang="en" dir="ltr">${w.tag || ''}</b>`;
       cueEl.classList.remove('is-new');
       void cueEl.offsetWidth;
       cueEl.classList.add('is-new');

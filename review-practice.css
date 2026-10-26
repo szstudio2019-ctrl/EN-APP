@@ -973,3 +973,7 @@
 .rp-done__go .btn-pill__chevron { width: 8px; height: 13px; flex: none; transform: rotate(180deg); filter: brightness(0) invert(1); }
 /* the hint's icon bigger (its own cropped, background-free copy fills it) */
 .review-practice .rp-cue img { width: 104px; height: 104px; }
+
+/* ch / sh: the sound's icon with the pair's icon (chips / shh) at its corner */
+.rp-cue__pic { position: relative; display: block; }
+.review-practice .rp-cue .rp-cue__badge { position: absolute; right: -14px; bottom: -6px; width: 56px; height: 56px; filter: drop-shadow(0 3px 5px rgba(36, 34, 117, .2)); }
