@@ -963,3 +963,9 @@
 .review-practice .practice__card[data-kind="find"] { background: #e5f2ff; }
 .review-practice .practice__card[data-kind="doctor"] { background: #ffe6ee; }
 .review-practice .practice__card[data-kind="smiles"] { background: #fff6cf; }
+
+/* the stages strip left to right: the first letter (b) on the left, "previous"
+   on the left and "next" on the right, each pointing its way */
+.rp-subs-wrap, .rp-main .rp-subs-wrap .rp-subs { direction: ltr; }
+.review-practice .rp-subs-arrow--next svg { transform: none; }
+.review-practice .rp-subs-arrow--prev svg { transform: rotate(180deg); }

@@ -159,8 +159,9 @@
   subNext.setAttribute('aria-label', 'השלבים הבאים');
   subsWrap.append(subPrev, subsEl, subNext);
   const page = () => subsEl.clientWidth * 0.7;
-  subPrev.addEventListener('click', () => subsEl.scrollBy({ left: page(), behavior: 'smooth' })); // RTL: back = to the right
-  subNext.addEventListener('click', () => subsEl.scrollBy({ left: -page(), behavior: 'smooth' }));
+  // the stages run left to right (b first, on the left): back = to the left, on = to the right
+  subPrev.addEventListener('click', () => subsEl.scrollBy({ left: -page(), behavior: 'smooth' }));
+  subNext.addEventListener('click', () => subsEl.scrollBy({ left: page(), behavior: 'smooth' }));
   function syncSubArrows() {
     const fits = subsEl.scrollWidth <= subsEl.clientWidth + 2;
     subsWrap.classList.toggle('is-fit', fits);
