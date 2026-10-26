@@ -32,7 +32,7 @@
       about: { title: 'אי הקסמים', text: 'אותיות קסומות שמשנות את הצליל של האותיות לידן. (טקסט דמו)' } },
     { name: 'אי החזרות', page: 'review.html?r=1-34', review: '1-34', img: 'island-review', box: [32, -14, 504, 504],
       about: { title: 'זמן לחזרה!', text: 'חוזרים על מה שלמדנו, צוברים תרגולים ומקבלים פרסים. (טקסט דמו)' } },
-    { name: 'אי הצלילים המתקדמים', page: 'sounds.html', lessons: '35-38', coins: 40, img: 'island-sounds-music', box: [8, 26, 540, 392],
+    { name: 'אי הצלילים המיוחדים', page: 'sounds.html', lessons: '35-38', coins: 40, img: 'island-sounds-music', box: [8, 26, 540, 392],
       about: { title: 'צלילים מתקדמים', text: 'צירופים מיוחדים של אותיות ליודעי קריאה אמיצים. (טקסט דמו)' } },
     { name: 'אי החזרות', page: 'review.html?r=1-38', review: '1-38', img: 'island-review', box: [32, -14, 504, 504],
       about: { title: 'זמן לחזרה!', text: 'חוזרים על מה שלמדנו, צוברים תרגולים ומקבלים פרסים. (טקסט דמו)' } },
