@@ -287,3 +287,8 @@ body:not(:has(> script[src="review-practice-v1.js"])) .practice__card.is-in-next
 body:not(:has(> script[src="review-practice-v1.js"])) .practice__card.is-in-prev { animation-name: card-in-from-left; }
 @keyframes card-in-from-right { from { opacity: 0; translate: 40px 0; rotate: 4deg; } }
 @keyframes card-in-from-left { from { opacity: 0; translate: -40px 0; rotate: -4deg; } }
+
+/* the progress bar under the card left to right: the first dash (and "1") on the left */
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__dots,
+body:not(:has(> script[src="review-practice-v1.js"])) .sn-progress,
+body:not(:has(> script[src="review-practice-v1.js"])) .rp-progress { direction: ltr; }
