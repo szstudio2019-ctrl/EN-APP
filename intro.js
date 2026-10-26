@@ -202,6 +202,15 @@
     });
   }
   goBtn.addEventListener('click', close);
+  // "חזרה" on the sentence card: back to the intro's last slide
+  document.getElementById('intro-sentence-back').addEventListener('click', () => {
+    const only = intro.querySelector('.intro__slide--sentence');
+    only.classList.remove('is-current');
+    only.setAttribute('aria-hidden', 'true');
+    intro.classList.remove('is-short');
+    show(slides.length - 1);
+    card.focus({ preventScroll: true });
+  });
   // from the full intro straight to the sentence card
   function toShort() {
     paintSentence();
