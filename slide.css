@@ -569,3 +569,7 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 
 /* room above "ההקלטה תשאר 7 ימים" */
 .slide-page .practice__note { margin-top: 30px; }
+
+/* the popups: the button(s) on their own line, under the coins */
+.pd-finish__card > .pd-finish__go { display: flex; width: fit-content; margin: 24px auto 0; }
+.pd-finish__buttons { width: 100%; }
