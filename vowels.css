@@ -138,3 +138,6 @@
 @keyframes vw-in { from { opacity: 0; translate: -20px 0; } }
 .vw-steps { margin-top: auto; }
 .vowels-lesson .lesson__go { margin-top: auto; }
+/* the tabs stay put (a fixed room under the bubble, whatever the tab's content), and each
+   tab's content starts right under them; the button stays at the bottom */
+.vw-steps { margin-top: 40px; }
