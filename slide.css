@@ -563,3 +563,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .pd-finish__again { display: inline-flex; align-items: center; gap: 8px; height: 60px; padding: 0 26px; border: 2px solid var(--pink); border-radius: 32px; background: #fff; color: var(--pink); font: 600 20px 'Rubik', sans-serif; cursor: pointer; }
 .pd-finish__again:hover { background: #fff0f4; }
 .pd-finish__again svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* the side menu (שיעור / תרגול) higher, level with the title's top – on every lesson and practice page */
+.slide-nav { top: 46px; }
