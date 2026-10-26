@@ -390,3 +390,12 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .ll-letters__grid .abc-tile--small { --c: #e33563; --bg: #ffe6ee; }
 .ll-letters__grid .abc-tile.is-on { animation: abc-jump 1s ease-in-out infinite; position: relative; z-index: 2; }
 .is-mobile .ll-letters { display: none; }
+
+/* "מההתחלה" beside the song's Play: white with a green ring, back to A */
+.abc-play-row { display: flex; align-items: center; justify-content: center; gap: 22px; }
+.abc-restart { display: inline-flex; align-items: center; gap: 10px; height: 64px; padding: 0 24px 0 20px; border: 0; border-radius: 40px; background: #fff; box-shadow: inset 0 0 0 3px #a4c62c, 0 10px 22px rgba(80, 110, 10, .18); color: #6f8c12; font: 700 22px 'Rubik', sans-serif; cursor: pointer; transition: transform .2s ease, background .2s ease; }
+.abc-restart[hidden] { display: none; }
+.abc-restart:hover { transform: scale(1.04); background: #f6fbe6; }
+.abc-restart svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.abc-restart--small { height: 48px; padding: 0 16px 0 14px; font-size: 18px; gap: 8px; }
+.abc-restart--small svg { width: 20px; height: 20px; }

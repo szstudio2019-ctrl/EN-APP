@@ -6,6 +6,7 @@
 (function () {
   const video = document.getElementById('abc-video');
   const play = document.getElementById('abc-play');
+  const restart = document.getElementById('abc-restart');
   const rows = document.getElementById('abc-rows');
   if (!video || !rows) return;
   const TIMES = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27];
@@ -56,8 +57,18 @@
       play.hidden = playing;
       video.controls = playing || video.currentTime > 0;
     }
+    if (restart) restart.hidden = video.ended || (video.paused && video.currentTime === 0);
     cancelAnimationFrame(raf);
     sync();
+  }
+  // "מההתחלה": the song from A again (it plays on)
+  if (restart) {
+    restart.addEventListener('click', () => {
+      if (window.SiteSound && window.SiteSound.stopMusic) window.SiteSound.stopMusic();
+      video.currentTime = 0;
+      last = -2;
+      video.play().catch(() => {});
+    });
   }
   play.addEventListener('click', () => {
     if (play.classList.contains('abc-play-btn') && !video.paused && !video.ended) { video.pause(); return; }
