@@ -175,11 +175,32 @@
     shop.sentences = [{ en: pick.en, he: pick.he, date: Date.now(), found: '' }, ...(shop.sentences || []).filter((x) => isDone(x))];
     try { localStorage.setItem(SHOP, JSON.stringify(shop)); } catch (err) { /* storage blocked */ }
     paintSentence();
-    sBox.classList.remove('is-drawing');
-    void sBox.offsetWidth;
-    sBox.classList.add('is-drawing');
+    rollTiles();
     sText.textContent = 'הוגרל לך משפט חדש!\nקני אותיות בחנות האותיות כדי לגלות אותו';
   });
+  // the draw: every tile runs through random letters like a counter, then stops – one
+  // after another along the sentence – on its ? (a letter already found keeps its letter)
+  const ABC = 'abcdefghijklmnopqrstuvwxyz';
+  function rollTiles() {
+    const tiles = [...sBox.querySelectorAll('.tile:not(.tile--mark)')];
+    if (!tiles.length) return;
+    drawBtn.disabled = true;
+    let left = tiles.length;
+    tiles.forEach((t, k) => {
+      const end = t.textContent;
+      t.classList.add('is-rolling');
+      const spin = setInterval(() => { t.textContent = ABC[Math.floor(Math.random() * ABC.length)]; }, 55);
+      setTimeout(() => {
+        clearInterval(spin);
+        t.textContent = end;
+        t.classList.remove('is-rolling');
+        t.classList.add('is-landed');
+        setTimeout(() => t.classList.remove('is-landed'), 300);
+        left -= 1;
+        if (!left) drawBtn.disabled = false;
+      }, 600 + k * 90);
+    });
+  }
   goBtn.addEventListener('click', close);
   // from the full intro straight to the sentence card
   function toShort() {
