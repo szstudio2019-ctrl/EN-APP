@@ -274,5 +274,16 @@
 .practice__note-clock { flex: none; width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* a note for one level (the doctor practice: ck on level 6) */
-.practice__note { margin: 6px 0 0; padding: 6px 16px; border-radius: 12px; background: #fff0f4; color: var(--pink); font-size: 18px; }
-.practice__note[hidden] { display: none; }
+.practice__tip { margin: 6px 0 0; padding: 6px 16px; border-radius: 12px; background: #fff0f4; color: var(--pink); font-size: 18px; }
+.practice__tip[hidden] { display: none; }
+
+/* the arrows: "next" on the right pointing right, "previous" on the left
+   (the cards come in from the side of the arrow that was pressed) */
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__arrow--next { order: -1; }
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__arrow--prev { order: 1; }
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__arrow--next img { transform: none; }
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__arrow--prev img { transform: rotate(180deg); }
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__card.is-in-next { animation-name: card-in-from-right; }
+body:not(:has(> script[src="review-practice-v1.js"])) .practice__card.is-in-prev { animation-name: card-in-from-left; }
+@keyframes card-in-from-right { from { opacity: 0; translate: 40px 0; rotate: 4deg; } }
+@keyframes card-in-from-left { from { opacity: 0; translate: -40px 0; rotate: -4deg; } }

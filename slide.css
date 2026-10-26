@@ -566,3 +566,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 
 /* the side menu (שיעור / תרגול) higher, level with the title's top – on every lesson and practice page */
 .slide-nav { top: 46px; }
+
+/* room above "ההקלטה תשאר 7 ימים" */
+.slide-page .practice__note { margin-top: 30px; }

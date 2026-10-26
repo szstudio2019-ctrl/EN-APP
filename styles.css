@@ -3384,3 +3384,13 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .intro__sentence-pic .intro__coin { width: 60px; height: 60px; }
 .intro__sentence-pic .intro__coin--a { right: 30px; top: 96px; }
 .intro__sentence-pic .intro__coin--b { left: 36px; top: 20px; }
+
+/* arrows: "next" on the right pointing right, "previous" on the left */
+.intro__arrow--next { left: auto; right: 38px; }
+.intro__arrow--prev { right: auto; left: 38px; }
+.intro__arrow--next img { transform: none; }
+.intro__arrow--prev img { transform: rotate(180deg); }
+.m-pins__arrow--next { order: -1; }
+.m-pins__arrow--prev { order: 1; }
+.m-pins__arrow--next svg { rotate: none; }
+.m-pins__arrow--prev svg { rotate: 180deg; }
