@@ -141,3 +141,9 @@
 /* the tabs stay put (a fixed room under the bubble, whatever the tab's content), and each
    tab's content starts right under them; the button stays at the bottom */
 .vw-steps { margin-top: 40px; }
+/* more room between the elements: tabs → content, and inside each tab (title, cards, note) */
+.vw-steps { gap: 34px; }
+.vw-step { gap: 34px; }
+.vw-step--pink { gap: 28px; }
+.vw-cards, .vw-compare { gap: 40px; }
+.vw-list { line-height: 42px; }
