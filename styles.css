@@ -3409,3 +3409,14 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .finale__tile { width: 34px; height: 40px; border: 1px solid #bebebe; border-radius: 5px; background: #fff; color: var(--navy); font-family: 'Rubik', sans-serif; font-weight: 700; font-size: 22px; }
 .finale__tile.is-found { border-color: var(--pink); background: var(--pink); color: #fff; }
 .finale__tile--mark { width: auto; border: 0; background: none; }
+
+/* the finale's shop button: the shop's icon beside the words */
+.finale__btn[data-finale="shop"] { display: inline-flex; align-items: center; gap: 6px; padding-right: 10px; }
+.finale__shop-icon { width: 34px; height: 34px; object-fit: contain; margin: -6px 0; }
+/* review 5's end: the finale circle in a popup */
+.rp-finale { position: fixed; inset: 0; z-index: 900; display: grid; place-items: center; background: rgba(20, 18, 60, .55); opacity: 0; transition: opacity .3s ease; }
+.rp-finale.is-open { opacity: 1; }
+.rp-finale[hidden] { display: none; }
+.rp-finale .finale { position: relative; left: auto; top: auto; transform: scale(var(--rp-finale-k, 1.15)); }
+.rp-finale__close { position: absolute; top: 24px; left: 24px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 8px 18px rgba(0, 0, 0, .25); }
+.rp-finale__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }

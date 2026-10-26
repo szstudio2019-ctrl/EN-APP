@@ -43,6 +43,40 @@
   // Where the end of a practice leads: its island's next stage (the practice
   // section's data-next-href, with data-next-label), or – after the island's
   // last stage – the next island on the map.
+  // The finale (the home page's last stop, and review 5's end): coins and chests collected, the sentence still to complete
+  // (from the letter shop, or a demo one) and the way to finish it
+  window.finaleCard = function (firstName, confetti) {
+    let sentence = { en: 'Dream big!', found: 'dre' };
+    try {
+      const shop = JSON.parse(localStorage.getItem('en-app:shop'));
+      if (shop && shop.sentences && shop.sentences[0]) sentence = shop.sentences[0];
+    } catch (err) { /* no saved shop */ }
+    const coins = document.querySelector('.stat--coins .stat__value')?.textContent || '350';
+    const chests = document.querySelector('.stat--chest .stat__value')?.textContent || '3';
+    const letters = [...new Set(sentence.en.toLowerCase().replace(/[^a-z]/g, ''))];
+    const missing = letters.filter((l) => !sentence.found.includes(l)).length;
+    const tiles = sentence.en.split(' ').map((w) => `<span class="finale__word">${w.split('').map((ch) => {
+      const l = ch.toLowerCase();
+      if (!/[a-z]/.test(l)) return `<b class="finale__tile finale__tile--mark">${ch}</b>`;
+      return sentence.found.includes(l) ? `<b class="finale__tile is-found">${ch}</b>` : '<b class="finale__tile">?</b>';
+    }).join('')}</span>`).join('');
+    return `<div class="finale">
+      <span class="finale__confetti" aria-hidden="true">${confetti}</span>
+      <img class="finale__trophy" src="assets/trophy.svg" alt="">
+      <p class="finale__en" lang="en" dir="ltr">Very Good!</p>
+      <p class="finale__text">${firstName ? `${firstName}, ` : ''}סיימת את כל השיעורים!</p>
+      <div class="finale__stats">
+        <span class="finale__stat"><img src="assets/coin.webp" alt=""><b>${coins}</b> מטבעות</span>
+        <span class="finale__stat"><img src="assets/chest.webp" alt=""><b>${chests}</b> תיבות אוצר</span>
+      </div>
+      <p class="finale__note">${missing ? `למרות שסיימת את כל השלבים, נשארו לך עוד <b>${missing}</b> אותיות לרכוש ולנחש במשפט:` : 'השלמת את המשפט! אפשר להגריל משפט חדש בחנות:'}</p>
+      <div class="finale__sentence" lang="en" dir="ltr">${tiles}</div>
+      <span class="finale__actions">
+        <button class="finale__btn" type="button" data-finale="shop"><img class="finale__shop-icon" src="assets/shop.webp" alt=""><span>אני רוצה לקנות אותיות</span></button>
+        <button class="finale__btn finale__btn--alt" type="button" data-finale="reviews"><span>רוצה לצבור עוד מטבעות</span><img src="assets/chevron.svg" alt="" class="finale__chevron"></button>
+      </span>
+    </div>`;
+  };
   // after review number n: the next island on the map
   window.afterReview = function (n) {
     const list = window.ISLANDS;

@@ -317,7 +317,25 @@
   const AGAIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
   // the onward buttons' arrow: the site's chevron, on the left (pointing on)
   const ARROW_NEXT = '<img src="assets/chevron.svg" alt="" class="btn-pill__chevron">';
+  // the last review: the home page's finale circle, in a popup
+  const finale = document.createElement('div');
+  finale.className = 'rp-finale';
+  finale.hidden = true;
+  document.body.appendChild(finale);
+  function openFinale() {
+    const confetti = Array.from({ length: 18 }, (_, k) => `<i style="--k:${k}"></i>`).join('');
+    finale.innerHTML = `<button class="rp-finale__close" type="button" aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>${window.finaleCard(firstName, confetti)}`;
+    finale.hidden = false;
+    void finale.offsetWidth;
+    finale.classList.add('is-open');
+  }
+  finale.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-finale]');
+    if (b) { const a = document.createElement('a'); a.href = b.dataset.finale === 'shop' ? 'shop.html' : 'review.html?r=' + RANGE; document.body.appendChild(a); a.click(); return; }
+    if (e.target === finale || e.target.closest('.rp-finale__close')) { finale.classList.remove('is-open'); setTimeout(() => { finale.hidden = true; }, 300); }
+  });
   function openDone() {
+    if (topic === TOPICS.length - 1 && window.finaleCard) { openFinale(); return; }
     const t = TOPICS[topic];
     // a finished review always leads on to the island after it on the map – also an earlier
     // review finished again on a later review's page (review 3 → the whistling island)
@@ -393,6 +411,7 @@
     }).join('');
   }
   function openFinish() {
+    if (PIN === 5 && window.finaleCard) { openFinale(); return; }
     let stages = 0;
     TOPICS.forEach((t, ti) => t.subs.forEach((_, si) => { if (subDone(ti, si)) stages += 1; }));
     // demo: before any stage is recorded, the review's open stages
