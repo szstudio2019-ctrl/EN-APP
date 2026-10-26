@@ -66,7 +66,8 @@
     { name: 'חזרה 5', islands: 'צלילים מיוחדים', pic: 'review-infinity', ico: 'review-sounds',
       subs: rowsOf([...REVIEW1, ...REVIEW2, ...REVIEW3], () => '', [...C, 'ch', 'sh', 'ph']).map((row) => {
         if (['ch', 'sh', 'ph'].includes(row.label)) row.words[0].ico = PAIR_ICO[row.label] || 'review-whistling';
-        (LAST3[row.label] || []).forEach((w) => { if (w) row.words.push({ show: w, say: w, ico: 'review-sounds', tag: 'מיוחדים', c: row.label }); });
+        // igh: the special sounds; i-e and a-e (bike, bake): the magic e – the magic island
+        (LAST3[row.label] || []).forEach((w, k) => { if (w) row.words.push(k ? { show: w, say: w, ico: 'sound-magic', tag: 'magic e', c: row.label } : { show: w, say: w, ico: 'review-sounds', tag: 'מיוחדים', c: row.label }); });
         return row;
       }) },
   ];
