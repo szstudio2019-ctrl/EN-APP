@@ -85,6 +85,8 @@
   // the pin on the island (1-5) this review was opened from; it is the number on the page
   const PIN = Math.min(5, Math.max(1, Number(new URLSearchParams(location.search).get('p')) || 5));
   const REVIEW_NO = PIN;
+  // where this review's finish leads: the next island on the map
+  const onward = window.afterReview ? window.afterReview(PIN) : { href: 'review.html?r=' + RANGE, label: 'לאי החזרות' };
   // the learner's first name (from the header), for "כל הכבוד שירה"
   const firstName = (() => { const n = document.querySelector('.user__name'); return n ? n.textContent.trim().split(' ')[0] : ''; })();
   // each pin is its own review with its own range: pin 1 = 1-10, 2 = 1-16,
@@ -325,7 +327,7 @@
         <div class="rp-done__buttons">
           <button class="rp-done__again" type="button" data-act="again"><span>לתרגל שוב</span>${AGAIN}</button>
           ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`
-            : `<a class="btn-pill rp-done__go" href="review.html?r=${RANGE}"><span>לאי החזרות</span>${ARROW_NEXT}</a>`}
+            : `<a class="btn-pill rp-done__go" href="${onward.href}"><span>${onward.label}</span>${ARROW_NEXT}</a>`}
         </div>
       </div>`;
     pop.hidden = false;
@@ -394,7 +396,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את חזרה ${REVIEW_NO}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
-        <a class="btn-pill pd-finish__go" href="review.html?r=${RANGE}"><span>חזרה לאי החזרות</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+        <a class="btn-pill pd-finish__go" href="${onward.href}"><span>${onward.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </div>`;
     finish.hidden = false;
     void finish.offsetWidth;
