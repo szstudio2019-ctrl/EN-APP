@@ -89,7 +89,7 @@
 
       <!-- Letters island, stage 2: the vowel letters (אותיות הניקוד) – a lesson only, no practice.
            Hebrew shows how to read with marks under the letter; English uses letters after it.
-           Three steps (arrows / dots); at the end on to the doctor island's lesson. -->
+           Three tabs (מגלים / מרכיבים / קוראים); "המשך" goes through them, then on to the doctor island's lesson. -->
       <section class="practice lesson-page vowels-lesson" aria-labelledby="lesson-title">
         <a class="back-home" href="letters.html" aria-label="חזרה לאי זיהוי האותיות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
         <nav class="slide-nav" aria-label="בעמוד הזה">
@@ -111,27 +111,15 @@
         </div>
 
         <div class="vw-steps" id="vw-steps">
-          <button class="practice__arrow practice__arrow--prev vw-arrow" type="button" id="vw-prev" aria-label="השלב הקודם"><img src="assets/chevron.svg" alt=""></button>
+          <!-- three tabs: discover (English has no marks – it uses letters), build (letter + mark = sound), read (the Hebrew sounds alone) -->
+          <div class="sentences__tabs vw-tabs" role="tablist" aria-label="שלבי השיעור">
+            <button class="sentences__tab is-on" type="button" role="tab" aria-selected="true" aria-controls="vw-step-1">מגלים</button>
+            <button class="sentences__tab" type="button" role="tab" aria-selected="false" aria-controls="vw-step-2">מרכיבים</button>
+            <button class="sentences__tab" type="button" role="tab" aria-selected="false" aria-controls="vw-step-3">קוראים</button>
+          </div>
           <div class="vw-view">
-            <!-- 1: the sounds in Hebrew -->
-            <article class="vw-step vw-step--yellow is-on" aria-label="שלב 1">
-              <h2 class="vw-step__title">קראו את הצלילים הבאים בעברית:</h2>
-              <div class="vw-cards"><button class="vw-card" type="button" data-say="buh"><b lang="he">בְּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bah"><b lang="he">בָּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bee"><b lang="he">בִּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button></div>
-              <div class="vw-note"><p>💭 <b>איך ידעתם איך לקרוא כל צליל?</b></p><p>נכון! לפי <b class="vw-pink">סימן הניקוד</b> מתחת לאות!</p></div>
-            </article>
-            <!-- 2: the letter b in English -->
-            <article class="vw-step vw-step--blue" aria-label="שלב 2">
-              <h2 class="vw-step__title">עכשיו בואו נסתכל על האות <span lang="en">b</span> באנגלית:</h2>
-              <div class="vw-sum">
-                <figure class="vw-sum__item"><button class="vw-tile vw-tile--shva" type="button" data-say="buh"><span lang="en">b</span><i aria-hidden="true"></i></button><figcaption>האות <span lang="en">b</span> = כמו <b>ב</b> בעברית<br>עם שווא – הצליל <b>בְּ</b></figcaption></figure>
-                <span class="vw-op">+</span>
-                <figure class="vw-sum__item"><span class="vw-tile vw-tile--mark"><span lang="en">b</span><i aria-hidden="true"></i></span><figcaption>עם קמץ מתחת = <b>בָּ</b></figcaption></figure>
-                <span class="vw-op">=</span>
-                <figure class="vw-sum__item"><button class="vw-tile vw-tile--result" type="button" data-say="bah"><b lang="he">בָּ</b></button><figcaption class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</figcaption></figure>
-              </div>
-            </article>
-            <!-- 3: English has no marks – it uses letters, after the letter -->
-            <article class="vw-step vw-step--pink" aria-label="שלב 3">
+            <!-- מגלים: English has no marks – it uses letters, after the letter -->
+            <article class="vw-step vw-step--pink is-on" id="vw-step-1" role="tabpanel" aria-label="מגלים">
               <ul class="vw-list">
                 <li><b>באנגלית אין לנו את הסימנים האלו!</b></li>
                 <li><b>במקום זה אנחנו משתמשים באותיות!</b></li>
@@ -144,9 +132,24 @@
                 <button class="vw-card" type="button" data-say="bah"><small>באנגלית</small><b lang="en" class="vw-pink">b<span class="vw-green">a</span></b><small>ניקוד אחרי האות</small></button>
               </div>
             </article>
+            <!-- מרכיבים: the letter b + kamatz = בָּ -->
+            <article class="vw-step vw-step--blue" id="vw-step-2" role="tabpanel" aria-label="מרכיבים">
+              <h2 class="vw-step__title">עכשיו בואו נסתכל על האות <span lang="en">b</span> באנגלית:</h2>
+              <div class="vw-sum">
+                <figure class="vw-sum__item"><button class="vw-tile vw-tile--shva" type="button" data-say="buh"><span lang="en">b</span><i aria-hidden="true"></i></button><figcaption>האות <span lang="en">b</span> = כמו <b>ב</b> בעברית<br>עם שווא – הצליל <b>בְּ</b></figcaption></figure>
+                <span class="vw-op">+</span>
+                <figure class="vw-sum__item"><span class="vw-tile vw-tile--mark"><span lang="en">b</span><i aria-hidden="true"></i></span><figcaption>עם קמץ מתחת = <b>בָּ</b></figcaption></figure>
+                <span class="vw-op">=</span>
+                <figure class="vw-sum__item"><button class="vw-tile vw-tile--result" type="button" data-say="bah"><b lang="he">בָּ</b></button><figcaption class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</figcaption></figure>
+              </div>
+            </article>
+            <!-- קוראים: the sounds in Hebrew, read alone -->
+            <article class="vw-step vw-step--yellow" id="vw-step-3" role="tabpanel" aria-label="קוראים">
+              <h2 class="vw-step__title">קראו את הצלילים הבאים בעברית:</h2>
+              <div class="vw-cards"><button class="vw-card" type="button" data-say="buh"><b lang="he">בְּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bah"><b lang="he">בָּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button><button class="vw-card" type="button" data-say="bee"><b lang="he">בִּ</b><small class="vw-say"><svg class="vw-say-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>לחצו לשמיעה</small></button></div>
+              <div class="vw-note"><p>💭 <b>איך ידעתם איך לקרוא כל צליל?</b></p><p>נכון! לפי <b class="vw-pink">סימן הניקוד</b> מתחת לאות!</p></div>
+            </article>
           </div>
-          <button class="practice__arrow practice__arrow--next vw-arrow" type="button" id="vw-next" aria-label="השלב הבא"><img src="assets/chevron.svg" alt=""></button>
-          <div class="vw-dots" id="vw-dots"><i class="is-on"></i><i></i><i></i></div>
         </div>
         <!-- "המשך" to the next step; on the last one it leads on to the doctor island's lesson -->
         <a class="btn-pill lesson__go" id="vw-go" href="lesson.html"><span>המשך</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
@@ -333,27 +336,21 @@
   <script src="world.js"></script>
   <script src="lesson.js"></script>
   <script>
-    // the three steps: arrows and dots
+    // the three tabs; "המשך" moves to the next one, and on the last leads on to the doctor island
     (function () {
       const steps = [...document.querySelectorAll('.vw-step')];
-      const dots = [...document.querySelectorAll('#vw-dots i')];
-      const prev = document.getElementById('vw-prev');
-      const next = document.getElementById('vw-next');
+      const tabs = [...document.querySelectorAll('.vw-tabs [role="tab"]')];
       const go = document.getElementById('vw-go');
       const goLabel = go.querySelector('span');
       let at = 0;
       const show = (i) => {
         at = Math.max(0, Math.min(steps.length - 1, i));
         steps.forEach((s, k) => s.classList.toggle('is-on', k === at));
-        dots.forEach((d, k) => d.classList.toggle('is-on', k === at));
-        prev.disabled = at === 0;
-        next.disabled = at === steps.length - 1;
+        tabs.forEach((t, k) => { t.classList.toggle('is-on', k === at); t.setAttribute('aria-selected', String(k === at)); });
         goLabel.textContent = at === steps.length - 1 ? 'לאותיות של הרופאה' : 'המשך';
       };
+      tabs.forEach((t, k) => t.addEventListener('click', () => show(k)));
       go.addEventListener('click', (e) => { if (at < steps.length - 1) { e.preventDefault(); show(at + 1); } });
-      prev.addEventListener('click', () => show(at - 1));
-      next.addEventListener('click', () => show(at + 1));
-      dots.forEach((d, k) => d.addEventListener('click', () => show(k)));
       show(0);
     })();
   </script>

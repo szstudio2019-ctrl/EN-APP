@@ -112,3 +112,15 @@
 .vw-say-icon { box-sizing: content-box; width: .95em; height: .95em; padding: 5px; border-radius: 50%; background: var(--pink); stroke: #fff; }
 /* step 3: the explanation on its own – no card around it, no icons */
 .vw-list { background: none; box-shadow: none; padding: 0; text-align: center; }
+
+/* tabs in place of the slider: the tabs above, the open one's content under them */
+.vw-steps { flex-direction: column; gap: 18px; margin-top: 22px; }
+.vw-tabs { margin: 0; gap: 14px; }
+.vw-tabs .sentences__tab { height: 50px; padding: 0 30px; border-radius: 14px; font-size: 23px; box-shadow: inset 0 0 0 2px #ffd6e2; }
+.vw-tabs .sentences__tab.is-on { box-shadow: 0 10px 22px rgba(227, 53, 99, .3); }
+.vw-view { height: 360px; }
+/* the tabs' look (as the sentences page's level tabs; that page's css isn't loaded here) */
+.vw-tabs { display: flex; direction: rtl; }
+.vw-tabs .sentences__tab { border: 0; background: none; color: var(--pink); font-family: 'Rubik', sans-serif; font-weight: 700; cursor: pointer; transition: background .2s ease, color .2s ease, box-shadow .2s ease; }
+.vw-tabs .sentences__tab.is-on { background: var(--pink); color: #fff; }
+.vw-tabs .sentences__tab:not(.is-on):hover { background: #ffe8ef; }
