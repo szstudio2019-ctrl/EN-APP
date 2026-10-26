@@ -35,9 +35,10 @@
   const TOPICS = [
     { name: 'חזרה 1', islands: 'זיהוי · הרופא/ה · המחייכות', pic: 'review-infinity',
       subs: rowsOf(REVIEW1, () => '') },
-    // review 2: first review 1's sounds, then its own (o, u, e)
+    // review 2 (Einat's table): the rows b … m only – each the letter, review 1's sounds
+    // (a, i, ea, ee), then its own (o, u, e)
     { name: 'חזרה 2', islands: 'האותיות הבודדות', pic: 'review-infinity',
-      subs: rowsOf([...REVIEW1, S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], () => '') },
+      subs: rowsOf([...REVIEW1, S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'review-abc', 'e')], () => '').slice(0, C.indexOf('m') + 1) },
     { name: 'חזרה 3', islands: 'צירופי האותיות', pic: 'review-infinity',
       subs: rowsOf([S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')],
         () => '') },
