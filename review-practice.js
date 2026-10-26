@@ -32,7 +32,7 @@
   const S = (v, ico, tag) => ({ v, ico, tag });
   // each review's own sounds (review 1: the letter alone, a, i, ea, ee; 2: o, u, e; 3: oo, ai/ay, ou/ow)
   const REVIEW3 = [S('oo', 'sound-cow', 'oo'), S(['ai', 'ay'], 'sound-gamepad', 'ai/ay'), S(['ou', 'ow'], 'sound-smiley-sad-bandage', 'ou/ow')];
-  const REVIEW2 = [S('o', 'review-abc', 'o'), S('u', 'sound-slide', 'u'), S('e', 'sound-laundry', 'e')];
+  const REVIEW2 = [S('o', 'sound-shock', 'o'), S('u', 'sound-slide', 'u'), S('e', 'sound-laundry', 'e')];
   const REVIEW1 = [S('', 'review-find', 'זיהוי'), S('a', 'review-doctor', 'a'), S('i', 'review-smiles', 'i'), S('ea', 'review-smiles', 'ea'), S('ee', 'review-smiles', 'ee')];
   // the sheet's last three columns (igh, i-e, a-e) for review 5, row by row
   const LAST3 = {
