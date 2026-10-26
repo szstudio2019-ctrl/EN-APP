@@ -102,7 +102,9 @@
         </nav>
         <h1 class="practice__title" id="practice-title">האותיות של הרופאה</h1>
         <p class="slide-kicker">תרגול</p>
-        <p class="practice__lead">אמרו את שם האות. הקליטו את עצמכם. והשוו עם ההקלטה</p>
+        <p class="practice__lead">לגבי כל מילה – אמרו קודם את <b>שמות האותיות</b> שמרכיבות אותה, ורק אז קראו את המילה!</p>
+        <!-- shown on level 6 only (see the script at the bottom) -->
+        <p class="practice__note" id="practice-note" hidden>⚠️ <b>שימו לב:</b> הצירוף <b lang="en">ck</b> נותן את הצליל <b>ק</b></p>
         <div class="practice__level">
           <span class="practice__level-label" id="level-label">רמת קושי</span>
           <ol class="practice__steps" id="practice-steps" aria-labelledby="level-label"></ol>
@@ -327,5 +329,16 @@
     };
   </script>
   <script src="practice.js"></script>
+  <script>
+    // the note about ck shows while level 6 is open
+    (function () {
+      const note = document.getElementById('practice-note');
+      const steps = document.getElementById('practice-steps');
+      if (!note || !steps) return;
+      const paint = () => { note.hidden = !(steps.children[5] && steps.children[5].classList.contains('is-current')); };
+      new MutationObserver(paint).observe(steps, { subtree: true, attributes: true, attributeFilter: ['class'] });
+      paint();
+    })();
+  </script>
 </body>
 </html>

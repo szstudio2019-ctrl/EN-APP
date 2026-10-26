@@ -272,3 +272,7 @@
 /* "ההקלטה תשאר 7 ימים" with a small clock before it */
 .practice__note { display: inline-flex; align-items: center; gap: 6px; }
 .practice__note-clock { flex: none; width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* a note for one level (the doctor practice: ck on level 6) */
+.practice__note { margin: 6px 0 0; padding: 6px 16px; border-radius: 12px; background: #fff0f4; color: var(--pink); font-size: 18px; }
+.practice__note[hidden] { display: none; }
