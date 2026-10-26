@@ -997,3 +997,9 @@
   .review-practice .rp-main .practice__word,
   .review-practice .rp-main .practice__word.is-long { font-size: 86px; }
 }
+/* the card wider (room for the big word), more room between it and the arrows, and the hint box */
+.review-practice .practice__stack { width: 480px; }
+.review-practice .practice__card { width: 480px; }
+.review-practice .practice__sheet { width: 480px; }
+.review-practice .rp-main .practice__deck { gap: 34px; }
+.rp-cue { right: calc(100% + 40px); }
