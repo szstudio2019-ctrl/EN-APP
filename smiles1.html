@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>שלב 1 – האותיות המחייכות – מדקדקים באנגלית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="world.css">
+  <link rel="stylesheet" href="practice.css">
+  <link rel="stylesheet" href="slide.css">
+  <!-- stage 3 is a placeholder for now: only the titles and the buttons show (the practice stays in the page, so "סיימתי את התרגול" still opens the finish) -->
+  <style>.practice__lead, .practice__level, .practice__deck, .practice__dots, .practice__note, .practice__status { display: none !important; }</style>
+</head>
+<body class="world-page practice-page slide-page">
+  <!-- Island template page (Figma "האותיות של הרופא עולם 2-4").
+       To make another island page: copy this file and change the WORLD settings
+       in the <script> at the bottom (background, lessons, island artwork). -->
+  <!-- Loader: shown until the islands, background and fonts are ready -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <div class="loader__tiles" aria-hidden="true">
+        <span class="loader__tile loader__tile--a">a</span>
+        <span class="loader__tile loader__tile--b">b</span>
+        <span class="loader__tile loader__tile--c">c</span>
+      </div>
+      <p class="loader__title">מדקדקים באנגלית</p>
+      <div class="loader__bar"><span id="loader-bar"></span></div>
+      <p class="loader__pct" dir="ltr"><span id="loader-pct">0</span></p>
+    </div>
+  </div>
+
+  <div class="viewport world">
+    <main class="stage" id="stage">
+      <!-- Background scene with the big lessons island. Exported from Figma
+           ("רקע אותיות רופא 1"); until the file exists the clouds show instead. -->
+      <img class="world__bg" id="world-bg" alt="" aria-hidden="true">
+
+      <!-- Header -->
+      <header class="topbar">
+        <div class="topbar__stats">
+          <a class="stat stat--chest" href="#bonus">
+            <img src="assets/chest.webp" alt="" class="stat__icon stat__icon--chest">
+            <span class="stat__text"><span class="stat__label">חזרות</span><span class="stat__value">3</span></span>
+          </a>
+          <a class="stat stat--coins" href="#coins">
+            <img src="assets/coin.webp" alt="" class="stat__icon stat__icon--coin">
+            <span class="stat__text"><span class="stat__label">מטבעות</span><span class="stat__value">350</span></span>
+          </a>
+          <a class="stat stat--shop" href="shop.html">
+            <img src="assets/shop.webp" alt="" class="stat__icon stat__icon--shop">
+            <span class="stat__text"><span class="stat__label">פריטים בחנות</span><span class="stat__value">12</span></span>
+          </a>
+        </div>
+
+        <a class="logo" href="index.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית">
+          <span class="logo__text">
+            <span class="logo__title">מדקדקים באנגלית</span>
+            <span class="logo__subtitle">קורס דיגיטלי באנגלית</span>
+          </span>
+          <span class="logo__mark">
+            <img class="logo__ring" src="assets/logo-ring.svg" alt="">
+            <span class="logo__tile logo__tile--a">a</span>
+            <span class="logo__tile logo__tile--c">c</span>
+            <span class="logo__tile logo__tile--b">b</span>
+          </span>
+        </a>
+
+        <div class="topbar__user">
+          <div class="user">
+            <a class="user__greeting" href="profile.html" aria-label="האזור האישי"><span class="user__hello">בקר טוב,</span><span class="user__name">שירה כהן</span></a>
+            <a class="user__avatar" href="profile.html" aria-label="הפרופיל שלי">
+              <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+              <img class="user__photo" src="assets/avatar.webp" alt="">
+              <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+            </a>
+          </div>
+          <a class="home-btn" href="index.html" aria-label="מפת האיים – דף הבית">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+          </a>
+          <button class="menu-btn" id="menu-open" type="button" aria-label="פתיחת התפריט" aria-controls="sidebar" aria-expanded="false">
+            <img src="assets/menu.svg" alt="">
+          </button>
+        </div>
+      </header>
+
+      <!-- Practice (Figma "בואו נתרגל"): listen to each word and record yourself.
+           Built by practice.js. -->
+      <section class="practice" aria-labelledby="practice-title" data-island-name="אי האותיות המחייכות" data-island-page="smiles.html" data-lesson="1" data-next-href="smiles2.html" data-next-label="לשלב הבא">
+        <a class="back-home" href="smiles.html" aria-label="חזרה לאי האותיות המחייכות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+        <!-- right side: the island's two content pages -->
+        <nav class="slide-nav" aria-label="בעמוד הזה">
+          <a class="slide-nav__item is-on" href="smiles1.html" aria-current="page">
+            <span class="slide-nav__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
+            <span class="slide-nav__text"><b>תרגול</b><small>שלב 1 · דמו</small></span>
+          </a>
+        </nav>
+        <h1 class="practice__title" id="practice-title">האותיות המחייכות</h1>
+        <p class="slide-kicker">שלב 1</p>
+        <p class="practice__lead">לגבי כל מילה – אמרו קודם את <b>שמות האותיות</b> שמרכיבות אותה, ורק אז קראו את המילה!</p>
+        <!-- shown on level 6 only (see the script at the bottom) -->
+        
+        <div class="practice__level">
+          <span class="practice__level-label" id="level-label">רמת קושי</span>
+          <ol class="practice__steps" id="practice-steps" aria-labelledby="level-label"></ol>
+        </div>
+        <div class="practice__deck">
+          <button class="practice__arrow practice__arrow--prev" type="button" id="practice-prev" aria-label="המילה הקודמת"><img src="assets/chevron.svg" alt=""></button>
+          <div class="practice__stack">
+            <span class="practice__sheet practice__sheet--a" aria-hidden="true"></span>
+            <span class="practice__sheet practice__sheet--b" aria-hidden="true"></span>
+            <div class="practice__card" id="practice-card">
+              <button class="practice__word" type="button" id="practice-word" lang="en" dir="ltr" aria-label="השמעת המילה"></button>
+              <div class="practice__actions">
+                <button class="practice__action practice__action--rec" type="button" id="practice-rec">
+                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
+                  <span class="practice__label">הקלט</span>
+                </button>
+                <button class="practice__action practice__action--play" type="button" id="practice-play" disabled>
+                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
+                  <span class="practice__label">בדיקה</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <button class="practice__arrow practice__arrow--next" type="button" id="practice-next" aria-label="המילה הבאה"><img src="assets/chevron.svg" alt=""></button>
+        </div>
+        <div class="practice__dots" id="practice-dots" aria-hidden="true"></div>
+        <p class="practice__note"><svg class="practice__note-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ההקלטה תשאר 2 ימים</p>
+        <p class="practice__status" id="practice-status" role="status"></p>
+        <div class="practice__buttons">
+          <a class="practice__btn practice__btn--back" href="smiles.html"><span>חזרה לאי</span><img src="assets/chevron.svg" alt=""></a>
+          <a class="btn-pill practice__btn practice__btn--done" href="smiles.html" id="practice-done"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>סיימתי את התרגול</span></a>
+        </div>
+      </section>
+
+      <nav class="lessons" id="lessons" hidden></nav>
+
+      <!-- Right side: the smiles island -->
+      <div class="slide-island">
+      <!-- the island in its own container above the page, at the screen's left edge -->
+      <a class="island world__island" id="world-island" href="#" data-slot="active" data-state="progress">
+        <div class="island__float">
+          <img class="island__img" id="world-island-still" alt="">
+          <div class="island__card">
+            <p class="island__title" id="world-title"></p>
+            <div class="island__stats">
+              <p class="island__stat"><span>שיעורים</span><b id="world-lessons"></b></p>
+              <div class="island__coins">
+                <img src="assets/coin.webp" alt="">
+                <p class="island__stat"><span>מטבעות</span><b id="world-coins"></b></p>
+              </div>
+            </div>
+            <div class="island__progress"><span id="world-progress"></span></div>
+          </div>
+        </div>
+      </a>
+      </div>
+
+      <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
+      <button class="trophy" type="button" aria-label="המשפט המנצח שלי" aria-describedby="trophy-hint" aria-expanded="false">
+        <img src="assets/trophy.svg" alt="">
+      </button>
+      <div class="trophy-hint" id="trophy-hint" role="tooltip">
+        <p class="tab-hint-title">המשפט המנצח שלי</p>
+        <p class="trophy-hint__text">מופיע לכל מקומות של המשפט.<br>תצטרכו להשיג כרטיסיות של אותיות כדי למצוא את המשפט שקיבלתם</p>
+        <div class="sentence" aria-label="המשפט: b, n, y נמצאו">
+          <span class="sentence__word"><b class="tile is-found">b</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+          <span class="sentence__word"><b class="tile">?</b><b class="tile is-found">n</b></span>
+          <span class="sentence__word"><b class="tile is-found">y</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+        </div>
+        <button class="trophy-hint__redraw" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>
+          <span>להגרלת משפט אחר</span>
+        </button>
+      </div>
+      <a class="cart" href="shop.html" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
+      <div class="hint" id="shop-hint" role="tooltip">
+        <p class="tab-hint-title">לחנות האותיות</p>
+        <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>
+        <a class="btn-pill hint__cta" href="shop.html">
+          <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
+          <span>לחנות האותיות</span>
+        </a>
+      </div>
+      <button class="help-btn" type="button" aria-label="עזרה">?</button>
+
+      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
+           button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
+      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
+        <img class="drawer-handle__icon" src="assets/island-review.webp" alt="">
+        <span class="tab-tip">מעבר לאיים</span>
+      </button>
+      <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer__scroll">
+          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
+            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Side menu (Figma "Sidebar - Open"); the island lists are filled by script.js -->
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+      <aside class="sidebar" id="sidebar" aria-label="תפריט" aria-hidden="true">
+        <button class="sidebar__close" id="menu-close" type="button" aria-label="סגירת התפריט">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+
+        <div class="sidebar__profile sb-item">
+          <div class="sidebar__who">
+            <span class="sidebar__hello">בוקר טוב</span>
+            <span class="sidebar__name">שירה כהן</span>
+          </div>
+          <span class="user__avatar sidebar__avatar">
+            <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+            <img class="user__photo" src="assets/avatar.webp" alt="">
+            <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+          </span>
+        </div>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="index.html">
+            <span>ראשי</span><img src="assets/icons/home.svg" alt="">
+          </a>
+
+          <div class="sb-group is-open sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="true">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>עולמות המשחק</span><img src="assets/icons/island.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-worlds"></div>
+          </div>
+
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>חזרות</span><img src="assets/icons/infinity.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-reviews"></div>
+          </div>
+
+          <a class="sb-link sb-item" href="index.html?intro" id="sb-intro">
+            <span>הסבר על האתר</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-item" href="about.html">
+            <span>אודות</span><img src="assets/icons/page.svg" alt="">
+          </a>
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>אזור אישי</span><img src="assets/icons/user.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-personal">
+              <div class="sb-sub__inner">
+                <a class="sb-sublink" href="profile.html"><span>הפרטים שלי</span></a>
+                <a class="sb-sublink" href="admin.html"><span>מנהל – סטטוס המשתמשים</span></a>
+                <a class="sb-sublink" href="admin.html#stats"><span>נתוני התמדה</span><img class="sb-sub-icon" src="assets/icons/chart.svg" alt=""></a>
+              </div>
+            </div>
+          </div>
+          <a class="sb-link sb-link--bright sb-item" href="shop.html">
+            <span>חנות האותיות</span><img class="sb-pic" src="assets/shop.webp" alt="">
+          </a>
+          <a class="sb-link sb-item" href="profile.html">
+            <span>מה השגתי</span><img class="sb-pic" src="assets/coin.webp" alt="">
+          </a>
+          <a class="sb-link sb-item" href="#sentence" id="sb-sentence">
+            <span>הגרלת המשפטים</span><img class="sb-pic" src="assets/trophy.svg" alt="">
+          </a>
+        </nav>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="#settings">
+            <img class="sb-chevron sb-chevron--side" src="assets/icons/chevron-side.svg" alt="">
+            <span>הגדרות</span><img src="assets/icons/settings.svg" alt="">
+          </a>
+        </nav>
+
+        <nav class="sidebar__nav sidebar__nav--bottom">
+          <a class="sb-link sb-item" href="#help">
+            <span>עזרה</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-link--danger sb-item" href="#logout">
+            <span>התנתקות/ התחברות</span><img src="assets/icons/logout.svg" alt="">
+          </a>
+        </nav>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // Settings for this island page
+    window.WORLD = {
+      title: 'אי האותיות המחייכות',
+      // The name written on the clearing: one entry per line, x/y = its centre
+      lessonsRange: '5-11',
+      coins: 350,
+      progress: 0,
+      background: 'assets/world-smiles-bg.webp',
+      // Island artwork: still image + transparent animation (WebM for Chrome/Edge/Firefox,
+      // animated WebP + WAV for Safari / iPhone). Click = "Ahhh" with sound.
+      island: { still: 'island-smiles', box: [21, 27, 529, 423] },
+      // Lesson pins: x/y = pin centre on the 1920x1080 stage; status: done | current | locked
+      lessons: [],
+    };
+  </script>
+  <script src="transition.js"></script>
+  <script src="sound.js"></script>
+  <script src="islands.js"></script>
+  <script src="sentence.js"></script>
+  <script src="menu.js"></script>
+  <script src="drawer.js"></script>
+  <script src="mobile.js"></script>
+  <script src="world.js"></script>
+  <script>
+    // stage 3 – a placeholder for now: two short levels of demo words
+    window.PRACTICE = {
+      key: 'en-app:practice-smiles-1',
+      stages: [["bad","dad","sad","mad","pad"],["bag","rag","tag","wag","nag"]],
+    };
+  </script>
+  <script src="demo-rec.js"></script>
+  <script src="practice.js"></script>
+</body>
+</html>
