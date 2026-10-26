@@ -116,12 +116,12 @@
         <div class="abc-song">
           <audio id="abc-video" src="assets/abc-song.mp4" preload="metadata"></audio>
           <div class="abc-play-row">
+            <!-- back to the song's start (on the play button's right) -->
+            <button class="abc-restart" type="button" id="abc-restart" aria-label="לתחילת השיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg><span>מההתחלה</span></button>
             <button class="abc-play-btn" type="button" id="abc-play">
               <span class="abc-play-btn__icon" aria-hidden="true"><svg class="abc-play-btn__play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg><svg class="abc-play-btn__pause" viewBox="0 0 24 24"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></span>
               <span class="abc-play-btn__label">השמעת שיר ה-<span lang="en">ABC</span></span>
             </button>
-            <!-- back to the song's start (shown once it has started) -->
-            <button class="abc-restart" type="button" id="abc-restart" hidden aria-label="לתחילת השיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg><span>מההתחלה</span></button>
           </div>
           <div class="abc-slider" dir="ltr" lang="en">
             <div class="abc-rows abc-track" id="abc-rows">

@@ -39,4 +39,17 @@
     // End of the course: a white circle with confetti and a trophy
     { name: 'סיימת את כל השיעורים', finale: true, status: 'finale' },
   ];
+
+  // Where the end of a practice leads: its island's next stage (the practice
+  // section's data-next-href, with data-next-label), or – after the island's
+  // last stage – the next island on the map.
+  window.practiceNext = function (section) {
+    const d = (section && section.dataset) || {};
+    if (d.nextHref) return { href: d.nextHref, label: d.nextLabel || 'לשלב הבא' };
+    const list = window.ISLANDS;
+    const at = list.findIndex((island) => island.page === d.islandPage);
+    const next = at >= 0 ? list[at + 1] : null;
+    if (next && next.page) return { href: next.page, label: 'ל' + next.name };
+    return { href: 'index.html', label: 'למפת האיים' };
+  };
 })();

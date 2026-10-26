@@ -180,6 +180,8 @@
       const rot = Math.round(Math.random() * 360);
       return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
     }).join('');
+    // on to the island's next stage, or the next island
+    const next = window.practiceNext ? window.practiceNext(page) : { href: islandPage, label: 'חזרה ל' + islandName };
     finish.setAttribute('aria-label', 'סיימת את קריאת המשפטים');
     finish.innerHTML = `
       <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
@@ -189,7 +191,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את קריאת המשפטים</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
-        <a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+        <a class="btn-pill pd-finish__go" href="${next.href}"><span>${next.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </div>`;
     finish.hidden = false;
     void finish.offsetWidth;
@@ -202,6 +204,8 @@
   function openLevel(lv) {
     const confetti = Array.from({ length: 46 }, (_, i) => `<i style="left:${Math.round(Math.random() * 100)}%;background:${COLORS[i % COLORS.length]};animation-delay:${(Math.random() * 0.9).toFixed(2)}s;animation-duration:${(2.4 + Math.random() * 1.6).toFixed(2)}s;rotate:${Math.round(Math.random() * 360)}deg"></i>`).join('');
     const next = LEVELS[lv + 1] ? lv + 1 : -1;
+    // the end of the practice leads on: the island's next stage, or the next island
+    const after = window.practiceNext ? window.practiceNext(page) : { href: islandPage, label: 'חזרה ל' + islandName };
     finish.setAttribute('aria-label', `קראת את כל המשפטים ה${lv === 0 ? 'קלים' : 'מאתגרים'}`);
     finish.innerHTML = `
       <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
@@ -212,9 +216,10 @@
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}קראת את כל המשפטים ה${lv === 0 ? 'קלים' : 'מאתגרים'}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>+${COINS_PER_LEVEL}</b> מטבעות</p>
         <div class="pd-finish__buttons">
-          ${next >= 0 ? `<button class="btn-pill pd-finish__go" type="button" data-level="${next}"><span>לשלב המאתגר</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>`
-            : `<button class="pd-finish__again" type="button" data-level="${lv}"><span>לתרגל שוב</span>${AGAIN}</button>`}
-          <a class="pd-finish__again pd-finish__done" href="review.html"><span>סיימתי את התרגול</span></a>
+          ${next >= 0 ? `<button class="btn-pill pd-finish__go" type="button" data-level="${next}"><span>לשלב המאתגר</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>
+          <a class="pd-finish__again pd-finish__done" href="${after.href}"><span>סיימתי את התרגול</span></a>`
+            : `<button class="pd-finish__again" type="button" data-level="${lv}"><span>לתרגל שוב</span>${AGAIN}</button>
+          <a class="btn-pill pd-finish__go" href="${after.href}"><span>${after.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>`}
         </div>
       </div>`;
     finish.hidden = false;

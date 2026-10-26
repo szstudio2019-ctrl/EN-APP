@@ -241,6 +241,8 @@
       const rot = Math.round(Math.random() * 360);
       return `<i style="left:${left}%;background:${COLORS[i % COLORS.length]};animation-delay:${delay}s;animation-duration:${dur}s;rotate:${rot}deg"></i>`;
     }).join('');
+    // on to the island's next stage, or the next island
+    const next = window.practiceNext ? window.practiceNext(page) : { href: islandPage, label: 'חזרה ל' + islandName };
     finish.setAttribute('aria-label', 'סיימת את השיעור והתרגול');
     finish.innerHTML = `
       <div class="pd-finish__confetti" aria-hidden="true">${confetti}</div>
@@ -250,7 +252,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את שיעור ותרגול ${lessonNo}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
-        <a class="btn-pill pd-finish__go" href="${islandPage}"><span>חזרה ל${islandName}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+        <a class="btn-pill pd-finish__go" href="${next.href}"><span>${next.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </div>`;
     finish.hidden = false;
     void finish.offsetWidth;

@@ -57,7 +57,6 @@
       play.hidden = playing;
       video.controls = playing || video.currentTime > 0;
     }
-    if (restart) restart.hidden = video.ended || (video.paused && video.currentTime === 0);
     cancelAnimationFrame(raf);
     sync();
   }
@@ -178,4 +177,27 @@
   head.addEventListener('pointerup', end);
   head.addEventListener('pointercancel', end);
   head.addEventListener('lostpointercapture', end);
+})();
+
+// Letters practice: white arrows beside the column numbers – the previous /
+// next column (they press that column's number; the last / first fades)
+(function () {
+  const steps = document.getElementById('practice-steps');
+  const prev = document.getElementById('lp-step-prev');
+  const next = document.getElementById('lp-step-next');
+  if (!steps || !prev || !next) return;
+  const at = () => [...steps.children].findIndex((li) => li.classList.contains('is-current'));
+  const go = (d) => {
+    const b = steps.children[at() + d] && steps.children[at() + d].querySelector('[data-step]');
+    if (b) b.click();
+  };
+  const paint = () => {
+    const i = at();
+    prev.disabled = i <= 0;
+    next.disabled = i < 0 || i >= steps.children.length - 1;
+  };
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+  new MutationObserver(paint).observe(steps, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  paint();
 })();
