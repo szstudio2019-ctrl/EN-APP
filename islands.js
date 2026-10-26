@@ -54,16 +54,17 @@
   };
   window.practiceNext = function (section) {
     const d = (section && section.dataset) || {};
-    if (d.nextHref) return { href: d.nextHref, label: d.nextLabel || 'לשלב הבא' };
     const list = window.ISLANDS;
     const at = list.findIndex((island) => island.page === d.islandPage);
+    // the next stage of the same island: that island's picture
+    if (d.nextHref) return { href: d.nextHref, label: d.nextLabel || 'לשלב הבא', pic: at >= 0 ? list[at].img : '' };
     const next = at >= 0 ? list[at + 1] : null;
     // a review: straight to its practice (its range and number)
     if (next && next.review) {
       const no = list.slice(0, at + 2).filter((island) => island.review).length;
-      return { href: `review-practice.html?r=${next.review}&p=${no}`, label: 'לחזרה ' + no };
+      return { href: `review-practice.html?r=${next.review}&p=${no}`, label: 'לחזרה ' + no, pic: next.img };
     }
-    if (next && next.page) return { href: next.page, label: 'ל' + next.name };
+    if (next && next.page) return { href: next.page, label: 'ל' + next.name, pic: next.img };
     return { href: 'index.html', label: 'למפת האיים' };
   };
 })();

@@ -191,6 +191,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את קריאת המשפטים</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
+        ${next.pic ? `<img class="pd-finish__island" src="assets/${next.pic}.webp" alt="">` : ''}
         <a class="btn-pill pd-finish__go" href="${next.href}"><span>${next.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </div>`;
     finish.hidden = false;
@@ -215,6 +216,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}קראת את כל המשפטים ה${lv === 0 ? 'קלים' : 'מאתגרים'}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>+${COINS_PER_LEVEL}</b> מטבעות</p>
+        ${next >= 0 || !after.pic ? '' : `<img class="pd-finish__island" src="assets/${after.pic}.webp" alt="">`}
         <div class="pd-finish__buttons">
           ${next >= 0 ? `<button class="btn-pill pd-finish__go" type="button" data-level="${next}"><span>לשלב המאתגר</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></button>
           <a class="pd-finish__again pd-finish__done" href="${after.href}"><span>סיימתי את התרגול</span></a>`

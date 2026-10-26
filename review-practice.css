@@ -980,3 +980,7 @@
 /* the pill runs left to right: the chevron goes first, so it sits on the button's left */
 .rp-done__go .btn-pill__chevron { order: -1; }
 .rp-done__go span { direction: rtl; }
+
+/* the end popups: the island the button leads to, above the button */
+.pd-finish__island { display: block; width: 190px; height: 150px; margin: 16px auto -6px; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(36, 34, 117, .22)); animation: pd-island-bob 3s ease-in-out infinite; }
+@keyframes pd-island-bob { 50% { translate: 0 -6px; } }

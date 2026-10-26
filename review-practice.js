@@ -332,6 +332,7 @@
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את ${t.name}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${t.subs.length * COINS_PER_STAGE}</b> מטבעות</p>
         <p class="rp-done__text">תרגלת ${countOf(t)} כרטיסיות</p>
+        ${onward.pic ? `<img class="pd-finish__island" src="assets/${onward.pic}.webp" alt="">` : ''}
         <div class="rp-done__buttons">
           <button class="rp-done__again" type="button" data-act="again"><span>לתרגל שוב</span>${AGAIN}</button>
           ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`
@@ -404,6 +405,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את חזרה ${REVIEW_NO}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
+        ${onward.pic ? `<img class="pd-finish__island" src="assets/${onward.pic}.webp" alt="">` : ''}
         <a class="btn-pill pd-finish__go" href="${onward.href}"><span>${onward.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </div>`;
     finish.hidden = false;

@@ -252,6 +252,7 @@
         <p class="pd-finish__kicker">כל הכבוד!</p>
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את שיעור ותרגול ${lessonNo}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${coins}</b> מטבעות</p>
+        ${next.pic ? `<img class="pd-finish__island" src="assets/${next.pic}.webp" alt="">` : ''}
         <a class="btn-pill pd-finish__go" href="${next.href}"><span>${next.label}</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </div>`;
     finish.hidden = false;
