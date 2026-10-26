@@ -309,7 +309,8 @@
   }
   // "לתרגל שוב" = round arrows (like the redraw button); "לתרגול הבא" = an arrow
   const AGAIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
-  const ARROW_NEXT = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>';
+  // the onward buttons' arrow: the site's chevron, on the left (pointing on)
+  const ARROW_NEXT = '<img src="assets/chevron.svg" alt="" class="btn-pill__chevron">';
   function openDone() {
     const t = TOPICS[topic];
     const nextT = TOPICS[topic + 1] && isOpen(topic + 1) ? TOPICS[topic + 1] : null;
@@ -323,7 +324,7 @@
         <h2 class="pd-finish__title">${firstName ? firstName + ', ' : ''}סיימת את ${t.name}</h2>
         <p class="pd-finish__coins">${COIN}צברת <b>${t.subs.length * COINS_PER_STAGE}</b> מטבעות</p>
         <p class="rp-done__text">תרגלת ${countOf(t)} כרטיסיות</p>
-        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : `<p class="rp-done__next"><b>${TOPICS[topic + 1] ? `סיימת את חזרה ${REVIEW_NO} 🏆` : 'סיימת את כל החזרות 🏆'}</b></p>`}
+        ${nextT ? `<p class="rp-done__next">הבא בתור: <b>${nextT.pic ? `<img class="rp-done__next-pic" src="assets/icons/${nextT.pic}.webp" alt="">` : nextT.icon} ${nextT.name}</b></p>` : `<p class="rp-done__next">הבא בתור: <b>${onward.pic ? `<img class="rp-done__next-pic" src="assets/${onward.pic}.webp" alt="">` : ''} ${onward.name || 'מפת האיים'}</b></p>`}
         <div class="rp-done__buttons">
           <button class="rp-done__again" type="button" data-act="again"><span>לתרגל שוב</span>${AGAIN}</button>
           ${nextT ? `<button class="btn-pill rp-done__go" type="button" data-act="next"><span>לתרגול הבא</span>${ARROW_NEXT}</button>`

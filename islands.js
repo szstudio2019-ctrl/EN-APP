@@ -49,8 +49,8 @@
     let seen = 0;
     const at = list.findIndex((island) => island.review && ++seen === n);
     const next = at >= 0 ? list[at + 1] : null;
-    if (next && next.page) return { href: next.page, label: 'ל' + next.name };
-    return { href: 'index.html', label: 'למפת האיים' };
+    if (next && next.page) return { href: next.page, label: 'ל' + next.name, name: next.name, pic: next.img };
+    return { href: 'index.html', label: 'למפת האיים', name: 'מפת האיים' };
   };
   window.practiceNext = function (section) {
     const d = (section && section.dataset) || {};

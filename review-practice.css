@@ -969,3 +969,5 @@
 .rp-subs-wrap, .rp-main .rp-subs-wrap .rp-subs { direction: ltr; }
 .review-practice .rp-subs-arrow--next svg { transform: none; }
 .review-practice .rp-subs-arrow--prev svg { transform: rotate(180deg); }
+/* the onward button's chevron on its left, pointing on (left), as on every pill button */
+.rp-done__go .btn-pill__chevron { width: 8px; height: 13px; flex: none; transform: rotate(180deg); filter: brightness(0) invert(1); }
