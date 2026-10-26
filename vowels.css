@@ -95,3 +95,7 @@
 .vw-note, .vw-list { width: 640px; }
 .vw-step--blue .vw-sum { gap: 12px; }
 .vw-sum__item { width: 190px; }
+
+/* "לחצו לשמיעה" with a small speaker, like the words to hear in the sentences */
+.vw-say { display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+.vw-say-icon { flex: none; width: 1.1em; height: 1.1em; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
