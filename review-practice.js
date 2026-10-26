@@ -318,7 +318,10 @@
   const ARROW_NEXT = '<img src="assets/chevron.svg" alt="" class="btn-pill__chevron">';
   function openDone() {
     const t = TOPICS[topic];
-    const nextT = TOPICS[topic + 1] && isOpen(topic + 1) ? TOPICS[topic + 1] : null;
+    // a finished review always leads on to the island after it on the map – also an earlier
+    // review finished again on a later review's page (review 3 → the whistling island)
+    const nextT = null;
+    const onward = window.afterReview ? window.afterReview(topic + 1) : { href: 'review.html?r=' + RANGE, label: 'לאי החזרות' };
     pop.setAttribute('aria-label', `סיימת את ${t.name}`);
     pop.innerHTML = `
       <div class="pd-finish__confetti" aria-hidden="true">${confettiHTML()}</div>
