@@ -110,3 +110,5 @@
 .vw-tile--shva i::after { bottom: 0; }
 /* "לחצו לשמיעה": the speaker in a small pink circle */
 .vw-say-icon { box-sizing: content-box; width: .95em; height: .95em; padding: 5px; border-radius: 50%; background: var(--pink); stroke: #fff; }
+/* step 3: the explanation on its own – no card around it, no icons */
+.vw-list { background: none; box-shadow: none; padding: 0; text-align: center; }
