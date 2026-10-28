@@ -120,3 +120,5 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
 }
 /* no speech tail under the zebra's Play (it belonged to the button's place in the bubble) */
 .slide-page .smiles-lesson .lesson__guide .lesson__listen::after { display: none; }
+/* the tag's icon: the pink 3D exclamation mark (no placeholder circle) */
+.sm-rules__icon { width: 76px; height: 76px; object-fit: contain; background: none; box-shadow: none; border-radius: 0; filter: drop-shadow(0 6px 8px rgba(232, 69, 122, .25)); }
