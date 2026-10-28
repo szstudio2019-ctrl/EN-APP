@@ -23,3 +23,7 @@
 .slide-page .so-sum { margin-top: 26px; gap: 18px; }
 .slide-page .so-sum .lesson__tile { min-width: 116px; height: 118px; padding: 0 20px; font-size: 98px; border-radius: 16px; }
 .slide-page .so-sum .lesson__op { font-size: 84px; }
+
+/* the smiles island's i lesson: the zebra is a video on white – multiply drops its white
+   background into the panel (no drop shadow: it would outline the video's box) */
+.lesson__guide-video { filter: none; mix-blend-mode: multiply; }

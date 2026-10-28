@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="world.css">
   <link rel="stylesheet" href="practice.css">
   <link rel="stylesheet" href="slide.css">
+  <link rel="stylesheet" href="sentences.css">
+  <link rel="stylesheet" href="single.css">
   <!-- stage 3 is a placeholder for now: only the titles and the buttons show (the practice stays in the page, so "סיימתי את התרגול" still opens the finish) -->
   <style>.practice__lead, .practice__level, .practice__deck, .practice__dots, .practice__note, .practice__status { display: none !important; }</style>
 </head>
@@ -89,7 +91,9 @@
 
       <!-- Practice (Figma "בואו נתרגל"): listen to each word and record yourself.
            Built by practice.js. -->
-      <section class="practice" aria-labelledby="practice-title" data-island-name="אי האותיות המחייכות" data-island-page="smiles.html" data-lesson="1" data-next-href="smiles2.html" data-next-label="לשלב הבא">
+      <!-- Stage 1 of the smiles island: the letter i (lesson 6 in the client's file).
+           The cheering zebra (a video) explains; Play = her recorded explanation -->
+      <section class="practice lesson-page sentences-lesson single-lesson smiles-lesson" aria-labelledby="lesson-title">
         <a class="back-home" href="smiles.html" aria-label="חזרה לאי האותיות המחייכות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
         <!-- right side: the island's two content pages -->
         <nav class="slide-nav" aria-label="בעמוד הזה">
@@ -102,43 +106,36 @@
             <span class="slide-nav__text"><b>תרגול</b><small>שלב 1 · דמו</small></span>
           </a>
         </nav>
-        <h1 class="practice__title" id="practice-title">האותיות המחייכות</h1>
+        <h1 class="practice__title" id="lesson-title">האותיות המחייכות</h1>
         <p class="slide-kicker">שיעור · שלב 1</p>
-        <p class="practice__lead">לגבי כל מילה – אמרו קודם את <b>שמות האותיות</b> שמרכיבות אותה, ורק אז קראו את המילה!</p>
-        <!-- shown on level 6 only (see the script at the bottom) -->
-        
-        <div class="practice__level">
-          <span class="practice__level-label" id="level-label">רמת קושי</span>
-          <ol class="practice__steps" id="practice-steps" aria-labelledby="level-label"></ol>
+        <div class="lesson__guide">
+          <video class="lesson__guide-img lesson__guide-video" src="assets/zebra-smiles-i.webm" poster="" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
         </div>
-        <div class="practice__deck">
-          <button class="practice__arrow practice__arrow--prev" type="button" id="practice-prev" aria-label="המילה הקודמת"><img src="assets/chevron.svg" alt=""></button>
-          <div class="practice__stack">
-            <span class="practice__sheet practice__sheet--a" aria-hidden="true"></span>
-            <span class="practice__sheet practice__sheet--b" aria-hidden="true"></span>
-            <div class="practice__card" id="practice-card">
-              <button class="practice__word" type="button" id="practice-word" lang="en" dir="ltr" aria-label="השמעת המילה"></button>
-              <div class="practice__actions">
-                <button class="practice__action practice__action--rec" type="button" id="practice-rec">
-                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg></span>
-                  <span class="practice__label">הקלט</span>
-                </button>
-                <button class="practice__action practice__action--play" type="button" id="practice-play" disabled>
-                  <span class="practice__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></span>
-                  <span class="practice__label">בדיקה</span>
-                </button>
-              </div>
-            </div>
+        <div class="sl-boxes">
+          <div class="sl-box sl-box--read dz-bubble">
+            <button class="lesson__listen" type="button" id="guide-play" aria-label="השמעת ההסבר המלא"></button>
+            <h2 class="sl-box__title">האות <span class="lesson__tile lesson__tile--a so-tile" lang="en">i</span> גורמת לחיוך!</h2>
+            <p class="lesson__story" data-audio="assets/zebra-smiles-i.mp3">השם של האות <b class="so-o" lang="en">i</b> הוא <b>אַיי</b> (כאילו מישהו הכאיב לנו),<br>אבל הצליל שלה נותן לנו חיוך: <b class="so-o" lang="en">i</b> = <b class="so-red">אִי</b>.<br>אז <b lang="en">b</b> לבד היא <b>בְּ</b>, ועם <b class="so-o" lang="en">i</b> אחריה היא הופכת ל<b class="so-red">בִּי</b>.</p>
           </div>
-          <button class="practice__arrow practice__arrow--next" type="button" id="practice-next" aria-label="המילה הבאה"><img src="assets/chevron.svg" alt=""></button>
+          <div class="sl-box sl-box--parents dz-note">
+            <h2 class="sl-box__title sl-box__title--green"><span aria-hidden="true">📝</span> אל תשכחו:</h2>
+            <ol class="sl-box__list">
+              <li>להגיד את <b>שם האותיות</b> בכל מילה, ורק אז לקרוא את המילה</li>
+              <li>לעבוד לפי <b>עמודות</b> – מלמעלה למטה</li>
+              <li>אות כפולה – כמעט תמיד קוראים אותה פעם אחת: <b lang="en">tt</b> = טְ, <b lang="en">pp</b> = פְּ (שימו לב במילה <b lang="en">sitting</b>!)</li>
+              <li>בעמודות 5 ו-6 מחלקים את המילים להברות לפי הצבעים: <b class="so-s1">הצבע הראשון</b> = הברה ראשונה, <b class="so-s2">השני</b> = הברה שנייה</li>
+            </ol>
+          </div>
         </div>
-        <div class="practice__dots" id="practice-dots" aria-hidden="true"></div>
-        <p class="practice__note"><svg class="practice__note-clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ההקלטה תשאר 2 ימים</p>
-        <p class="practice__status" id="practice-status" role="status"></p>
-        <div class="practice__buttons">
-          <a class="practice__btn practice__btn--back" href="smiles.html"><span>חזרה לאי</span><img src="assets/chevron.svg" alt=""></a>
-          <a class="btn-pill practice__btn practice__btn--done" href="smiles1.html"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>לתרגול</span></a>
+        <!-- b + i = bi: the two letters slide together (on entering, and on a tap of "=" or "bi") -->
+        <div class="lesson__sum so-sum" dir="ltr" lang="en">
+          <span class="lesson__tile lesson__tile--b">b</span>
+          <span class="lesson__op" aria-hidden="true">+</span>
+          <span class="lesson__tile lesson__tile--a">i</span>
+          <button class="lesson__op lesson__op--eq" type="button" aria-label="לחבר את האותיות">=</button>
+          <button class="lesson__tile lesson__tile--result" type="button"><span class="c-b">b</span><span class="c-a">i</span></button>
         </div>
+        <a class="btn-pill lesson__go" href="smiles1.html"><span>לתרגול</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
       </section>
 
       <nav class="lessons" id="lessons" hidden></nav>
@@ -323,5 +320,6 @@
   <script src="drawer.js"></script>
   <script src="mobile.js"></script>
   <script src="world.js"></script>
+  <script src="lesson.js"></script>
 </body>
 </html>

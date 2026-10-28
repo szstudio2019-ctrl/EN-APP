@@ -24,7 +24,20 @@
   }
   if (btn && story) {
     set(false);
+    // a recorded explanation (data-audio): played as is
+    const rec = story.dataset.audio ? new Audio(story.dataset.audio) : null;
+    if (rec) {
+      rec.preload = 'auto';
+      rec.addEventListener('ended', () => set(false));
+    }
     btn.addEventListener('click', () => {
+      if (rec) {
+        if (speaking) { rec.pause(); rec.currentTime = 0; set(false); return; }
+        if (canSpeak) speechSynthesis.cancel();
+        rec.currentTime = 0;
+        rec.play().then(() => set(true)).catch(() => set(false));
+        return;
+      }
       if (!canSpeak) return;
       if (speaking) { speechSynthesis.cancel(); set(false); return; }
       const u = new SpeechSynthesisUtterance(story.dataset.full || story.innerText);
