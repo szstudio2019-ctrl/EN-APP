@@ -715,3 +715,12 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .sentences-lesson .sl-box.dz-note { min-height: 140px; display: flex; flex-direction: column; justify-content: center; }
 /* each box and its tag centred together under the text */
 .slide-page .sentences-lesson .sl-box.dz-note { translate: -84px 0; }
+/* the Play's icon and words evenly inside it (the button is laid out left-to-right: icon, words) */
+.slide-page section.practice .guide-ctl .lesson__listen { flex-direction: row; padding: 0 24px 0 8px; gap: 12px; }
+/* "from the start": just its icon, round; its name in a tooltip on hover */
+.slide-page section.practice .guide-ctl__restart { position: relative; width: 58px; padding: 0; justify-content: center; border-radius: 50%; }
+.slide-page section.practice .guide-ctl__restart span { display: none; }
+.slide-page section.practice .guide-ctl__restart svg { width: 26px; height: 26px; }
+.slide-page section.practice .guide-ctl__restart::after { content: 'מההתחלה'; position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 4px; padding: 6px 12px; border-radius: 10px; background: #232a6b; color: #fff; font: 600 16px 'Rubik', sans-serif; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s ease, translate .15s ease; }
+.slide-page section.practice .guide-ctl__restart:hover::after,
+.slide-page section.practice .guide-ctl__restart:focus-visible::after { opacity: 1; translate: -50% 0; }
