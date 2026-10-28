@@ -293,3 +293,6 @@
 /* the words to hear: pink on a light-pink background (and "ורוד" in the lesson marked the same) */
 .sl-pink,
 .sentences__help { padding: 0 6px; border-radius: 8px; background: #ffe1ea; color: #e33563; }
+/* the word with the speaker: a clearer pinkish background, pink like the other marked words */
+.sl-word { background: #ffd6e3; color: #e33563; box-shadow: inset 0 0 0 1.5px #ffb8cf; }
+.sl-word svg { stroke: #e33563; }
