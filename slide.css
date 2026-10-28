@@ -711,3 +711,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* the icons by box, not by side: the challenge's light bulb, the notes' question mark */
 .slide-page .sl-box.dz-note.sl-box--parents > .sl-box__title::before { background-image: url(assets/icons/cue-question.webp); }
 .slide-page .sl-box.dz-note.sl-box--challenge > .sl-box__title::before { background-image: url(assets/icons/cue-bulb.webp); }
+/* the challenge's box as big as the notes' box, its words centred in it */
+.slide-page .sentences-lesson .sl-box.dz-note { min-height: 140px; display: flex; flex-direction: column; justify-content: center; }
