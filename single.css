@@ -129,3 +129,6 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
 .slide-page .smiles-lesson .lesson__guide-talk { opacity: 0; }
 .slide-page .smiles-lesson .lesson__guide.is-speaking .lesson__guide-talk { opacity: 1; }
 .slide-page .smiles-lesson .lesson__guide.is-speaking .lesson__guide-idle { opacity: 0; }
+/* the zebra bigger still: the whole guide (the Play on her pom-pom with her) grows 30% into
+   the empty left column, its right edge kept clear of the words */
+.slide-page .smiles-lesson .lesson__guide { scale: 1.3; transform-origin: 100% 0; }
