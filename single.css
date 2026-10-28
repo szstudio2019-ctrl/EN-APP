@@ -135,3 +135,5 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
 /* everything 90px to the right, so the bigger zebra sits inside the card (the rules' tag still
    clear of the page menu) */
 .slide-page .smiles-lesson > :is(.practice__title, .slide-kicker, .lesson__guide, .sl-boxes, .so-sum, .sm-rules, .lesson__go) { translate: 90px 0; }
+/* the zebra's right edge faded out, so her video's frame never shows against the words */
+.slide-page .smiles-lesson .lesson__guide-video { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 14%); mask-image: linear-gradient(to left, transparent 0, #000 14%); }

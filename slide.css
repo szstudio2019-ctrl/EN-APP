@@ -609,3 +609,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .smiles-practice > :not(.back-home, .slide-nav, .sm-companion) { translate: 90px 0; }
 .sm-companion { position: absolute; left: 22px; top: 100px; z-index: 1; width: 468px; height: 523px; pointer-events: none; }
 .sm-companion__video { position: absolute; left: 0; top: -88px; width: 468px; height: 702px; object-fit: contain; mix-blend-mode: multiply; }
+/* the zebra's right edge faded out, as in the lesson */
+.sm-companion__video { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 14%); mask-image: linear-gradient(to left, transparent 0, #000 14%); }
