@@ -577,3 +577,9 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* the end popups: the island the button leads to, above the button */
 .pd-finish__island { display: block; width: 190px; height: 150px; margin: 16px auto -6px; object-fit: contain; filter: drop-shadow(0 10px 14px rgba(36, 34, 117, .22)); animation: pd-island-bob 3s ease-in-out infinite; }
 @keyframes pd-island-bob { 50% { translate: 0 -6px; } }
+
+/* the island with its coins card: at the bottom-right (mirroring its old place on the left) */
+.slide-page .slide-island .world__island,
+.lesson-body .slide-island .world__island { transform: translate(1603px, 676px) scale(.531); }
+/* the letters island's pages keep it on the left: their alphabet window is on the right */
+body:has(script[src="letters.js"]) .slide-island .world__island { transform: translate(16px, 676px) scale(.531); }
