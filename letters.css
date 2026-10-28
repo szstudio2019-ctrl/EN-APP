@@ -429,3 +429,16 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .lp-step-arrow--prev { order: 1; }
 .lp-step-arrow--next img { transform: none; }
 .lp-step-arrow--prev img { transform: rotate(180deg); }
+
+/* the island moved to the bottom-right, so the letters move to the left:
+   the lesson's "כל האותיות" panel and the practice's help window (narrower, to
+   stay clear of the card) start at the screen's left, under the back arrow's column */
+.ll-letters { left: 125px; }
+.lp-help, .lp-help-open { left: 130px; right: auto; top: 452px; }
+.lp-help { width: 340px; }
+.lp-help__letters { grid-template-columns: repeat(6, 44px); gap: 16px 6px; }
+.lp-help__letters .abc-tile { width: 44px; height: 34px; font-size: 23px; line-height: 34px; }
+/* the zebra's Play: on the zebra, by her raised hand */
+.slide-page .lesson__guide > .lesson__listen { left: 150px; top: 40px; }
+/* the help window: a little tighter, so it ends above the screen's bottom */
+.lp-help__letters { gap: 12px 6px; }

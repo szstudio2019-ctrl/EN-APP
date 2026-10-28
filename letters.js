@@ -102,7 +102,7 @@
   if (!box) return;
   const head = document.getElementById('lp-help-head');
   const openBtn = document.getElementById('lp-help-open');
-  const KEY = 'en-app:letters-help:right';
+  const KEY = 'en-app:letters-help:left'; // a new key: the window moved to the left
   let st = {};
   try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { st = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (err) { /* storage blocked */ } };
@@ -157,9 +157,9 @@
     x = drag.x + (e.clientX - drag.px) / drag.k;
     y = drag.y + (e.clientY - drag.py) / drag.k;
     // anywhere on the stage – over the cards and the side menu too; only its
-    // top bar must stay on screen (the window starts at 1410, 530 on the stage)
-    y = Math.max(-530, Math.min(1080 - 530 - 60, y));
-    x = Math.max(-1410 - 300, Math.min(1920 - 1410 - 80, x));
+    // top bar must stay on screen (the window starts at 130, 452 on the stage)
+    y = Math.max(-452, Math.min(1080 - 452 - 60, y));
+    x = Math.max(-130 - 250, Math.min(1920 - 130 - 80, x));
     place();
     // kept as it moves, so a refresh finds it where it was left (also when the drag is cut off)
     st.x = Math.round(x);
