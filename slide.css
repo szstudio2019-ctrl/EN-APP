@@ -604,3 +604,8 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* ---------- the zebra bigger on every island's lesson page: grown from her corner by the
    content (top-right), so she spreads into the empty left column, not over the content ---------- */
 .slide-page .lesson__guide-img { scale: 1.3; transform-origin: 100% 0; }
+/* the smiles i practice laid out like its lesson: the zebra's column on the left (the lesson's
+   zebra, same size and place, in her idle loop) and the content centred where the lesson's is */
+.slide-page .smiles-practice > :not(.back-home, .slide-nav, .sm-companion) { translate: 90px 0; }
+.sm-companion { position: absolute; left: 22px; top: 100px; z-index: 1; width: 468px; height: 523px; pointer-events: none; }
+.sm-companion__video { position: absolute; left: 0; top: -88px; width: 468px; height: 702px; object-fit: contain; mix-blend-mode: multiply; }

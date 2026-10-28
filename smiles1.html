@@ -89,8 +89,12 @@
 
       <!-- Practice (Figma "בואו נתרגל"): listen to each word and record yourself.
            Built by practice.js. -->
-      <section class="practice" aria-labelledby="practice-title" data-island-name="אי האותיות המחייכות" data-island-page="smiles.html" data-lesson="1" data-next-href="smiles2-lesson.html" data-next-label="לשלב הבא">
+      <section class="practice smiles-practice" aria-labelledby="practice-title" data-island-name="אי האותיות המחייכות" data-island-page="smiles.html" data-lesson="1" data-next-href="smiles2-lesson.html" data-next-label="לשלב הבא">
         <a class="back-home" href="smiles.html" aria-label="חזרה לאי האותיות המחייכות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+        <!-- left column: the lesson's zebra, in her idle loop, keeping the child company -->
+        <div class="sm-companion" aria-hidden="true">
+          <video class="sm-companion__video" src="assets/zebra-smiles-i-idle.mp4" autoplay muted loop playsinline preload="auto"></video>
+        </div>
         <!-- right side: the island's two content pages -->
         <nav class="slide-nav" aria-label="בעמוד הזה">
           <a class="slide-nav__item" href="smiles1-lesson.html">
@@ -329,6 +333,15 @@
       key: 'en-app:practice-smiles-1',
       stages: [["bad","dad","sad","mad","pad"],["bag","rag","tag","wag","nag"]],
     };
+  </script>
+  <script>
+    // the zebra's soft pom-pom sound: browsers start her muted, so it is let in, quietly, on the
+    // child's first touch of the page
+    (function () {
+      const idle = document.querySelector('.sm-companion__video');
+      const unmute = () => { idle.muted = false; idle.volume = 0.3; };
+      if (idle) ['pointerdown', 'keydown'].forEach((t) => document.addEventListener(t, unmute, { once: true, capture: true }));
+    })();
   </script>
   <script src="demo-rec.js"></script>
   <script src="practice.js"></script>
