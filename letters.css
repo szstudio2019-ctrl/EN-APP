@@ -476,3 +476,9 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .slide-page .lp-help .abc-restart--small { width: 46px; height: 46px; }
 .slide-page .lp-help__letters { grid-template-columns: repeat(9, 38px); gap: 6px 6px; }
 .slide-page .lp-help__letters .abc-tile { width: 38px; height: 28px; font-size: 19px; line-height: 28px; }
+/* more room between the rows of letters (the lesson's panel and the practice's help window) */
+.slide-page .ll-letters { top: 788px; }
+.slide-page .ll-letters__grid { row-gap: 14px; }
+.slide-page .lp-help, .slide-page .lp-help-open { top: 732px; }
+.slide-page .lp-help { gap: 10px; }
+.slide-page .lp-help__letters { row-gap: 12px; }

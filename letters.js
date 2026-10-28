@@ -157,8 +157,8 @@
     x = drag.x + (e.clientX - drag.px) / drag.k;
     y = drag.y + (e.clientY - drag.py) / drag.k;
     // anywhere on the stage – over the cards and the side menu too; only its
-    // top bar must stay on screen (the window starts at 130, 748 on the stage)
-    y = Math.max(-748, Math.min(1080 - 748 - 60, y));
+    // top bar must stay on screen (the window starts at 130, 732 on the stage)
+    y = Math.max(-732, Math.min(1080 - 732 - 60, y));
     x = Math.max(-130 - 250, Math.min(1920 - 130 - 80, x));
     place();
     // kept as it moves, so a refresh finds it where it was left (also when the drag is cut off)
