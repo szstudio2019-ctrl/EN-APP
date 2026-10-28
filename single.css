@@ -118,3 +118,5 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
   70% { box-shadow: 0 0 0 18px rgba(141, 182, 21, 0); }
   100% { box-shadow: 0 0 0 0 rgba(141, 182, 21, 0); scale: 1; }
 }
+/* no speech tail under the zebra's Play (it belonged to the button's place in the bubble) */
+.slide-page .smiles-lesson .lesson__guide .lesson__listen::after { display: none; }
