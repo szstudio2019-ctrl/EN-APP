@@ -449,3 +449,13 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 /* the letters practice: the lesson's zebra in the same place (the help window over her) */
 .slide-page section.practice.letters-practice .lesson__guide { left: 110px; top: 106px; width: 229px; height: 353px; }
 .slide-page section.practice.letters-practice .lesson__guide-img { scale: 1.25; transform-origin: 100% 100%; }
+/* the letters lesson in the shared layout: the zebra at the cheerleader's size and place (her
+   Play by her head), and "כל האותיות" across the bottom-left under her, two rows of 13 */
+.slide-page section.practice.letters-lesson .lesson__guide,
+.slide-page section.practice.letters-practice .lesson__guide { left: 81px; top: 118px; width: 318px; height: 476px; z-index: auto; transform: none; overflow: visible; }
+.slide-page section.practice.letters-lesson .lesson__guide-img,
+.slide-page section.practice.letters-practice .lesson__guide-img { position: static; width: 100%; height: 100%; margin: 0; object-fit: contain; scale: none; translate: none; }
+.slide-page section.practice.letters-lesson .lesson__guide > .lesson__listen { left: 236px; top: 24px; pointer-events: auto; }
+.slide-page .ll-letters { left: 130px; top: 792px; width: auto; padding: 10px 14px 12px; gap: 8px; }
+.slide-page .ll-letters__grid { grid-template-columns: repeat(13, 38px); gap: 8px 6px; }
+.slide-page .ll-letters__grid .abc-tile { width: 38px; height: 30px; font-size: 20px; line-height: 30px; }
