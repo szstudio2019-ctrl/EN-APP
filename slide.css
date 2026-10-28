@@ -600,3 +600,7 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .dz-bubble.dz-plain::before,
 .slide-page .dz-bubble.dz-plain::after { display: none; }
 .slide-page .dz-bubble.dz-plain .lesson__story { text-align: center; font-size: 24px; line-height: 36px; }
+
+/* ---------- the zebra bigger on every island's lesson page: grown from her corner by the
+   content (top-right), so she spreads into the empty left column, not over the content ---------- */
+.slide-page .lesson__guide-img { scale: 1.3; transform-origin: 100% 0; }

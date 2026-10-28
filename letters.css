@@ -442,3 +442,5 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .slide-page .lesson__guide > .lesson__listen { left: 150px; top: 40px; }
 /* the help window: a little tighter, so it ends above the screen's bottom */
 .lp-help__letters { gap: 12px 6px; }
+/* the letters lesson's zebra grows upward instead (the letters panel is under her) */
+.slide-page .lesson__guide-img { scale: 1.25; transform-origin: 100% 100%; }
