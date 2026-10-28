@@ -692,3 +692,10 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice .guide-ctl__restart:hover { transform: scale(1.04); background: #f6fbe6; }
 .slide-page section.practice .guide-ctl__restart svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 @media (prefers-reduced-motion: reduce) { .slide-page section.practice .guide-ctl .lesson__listen { animation: none; } }
+/* every lesson and practice in three rows – the words, the cards, the buttons – with the same
+   space between them */
+.slide-page section.practice.practice > :is(.lesson__sum, .vw-steps, .abc-song, .practice__deck, .lesson__go, .practice__buttons) { margin-top: auto; }
+.slide-page section.practice.practice > .lesson__sum ~ .lesson__sum { margin-top: 0; }
+/* the practice arrows close to the card */
+.slide-page .practice__deck { gap: 22px; }
+.slide-page section.practice.sentences-lesson:not(.single-lesson) > .sl-boxes { margin-top: auto; }
