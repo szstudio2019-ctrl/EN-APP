@@ -101,3 +101,10 @@
 .slide-page .smiles-lesson .lesson__guide-video { clip-path: none; pointer-events: none; }
 /* more room between the content and "חשוב לזכור" */
 .sm-rules { margin-top: 64px; }
+/* the three parts (the zebra's words, b + i = bi, the rules) evenly spaced between the
+   title and the button: equal free space above each and above the button */
+.slide-page .smiles-lesson > .sl-boxes,
+.slide-page .smiles-lesson > .so-sum,
+.slide-page .smiles-lesson > .sm-rules,
+body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
+.slide-page .smiles-lesson > .sm-rules { margin-bottom: 0; }
