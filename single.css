@@ -31,3 +31,16 @@
 .slide-page .smiles-lesson .lesson__guide { left: 70px; top: 96px; width: 310px; height: 465px; z-index: 1; }
 .slide-page .smiles-lesson .sl-boxes { position: relative; z-index: 2; }
 .lesson__guide.is-speaking .lesson__guide-video { animation: none; }
+/* the zebra bigger: her video's empty top and bottom cropped, so she fills the box's height */
+.slide-page .smiles-lesson .lesson__guide { left: 40px; top: 100px; width: 360px; height: 402px; overflow: hidden; }
+.slide-page .smiles-lesson .lesson__guide-video { position: absolute; left: 0; top: -68px; width: 360px; height: 540px; object-fit: contain; }
+/* what the zebra says: a light-blue speech bubble, its tail pointing at her; bigger text */
+.slide-page .smiles-lesson .dz-bubble { background: #e3f4fd; border-color: #7cc4ec; box-shadow: 0 8px 18px rgba(60, 150, 210, .14); }
+.slide-page .smiles-lesson .dz-bubble::before { border-right-color: #7cc4ec; }
+.slide-page .smiles-lesson .dz-bubble::after { border-right-color: #e3f4fd; }
+.slide-page .smiles-lesson .dz-bubble .lesson__story { font-size: 25px; line-height: 40px; }
+.slide-page .smiles-lesson .dz-bubble .sl-box__title { font-size: 30px; }
+/* the cards right under the bubble, then the heading over the rules */
+.slide-page .smiles-lesson .so-sum { margin-top: 22px; }
+.slide-page .smiles-lesson .sm-remember { width: 100%; max-width: 740px; margin: 24px 0 8px; text-align: center; justify-content: center; }
+.slide-page .smiles-lesson .sl-box--parents { width: 100%; max-width: 740px; position: relative; z-index: 2; }
