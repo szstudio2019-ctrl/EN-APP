@@ -698,4 +698,13 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice.practice > .lesson__sum ~ .lesson__sum { margin-top: 0; }
 /* the practice arrows close to the card */
 .slide-page .practice__deck { gap: 22px; }
-.slide-page section.practice.sentences-lesson:not(.single-lesson) > .sl-boxes { margin-top: auto; }
+.slide-page section.practice.sentences-lesson:not(.single-lesson) > .sl-boxes { margin-top: 30px; }
+/* the sentences lesson's notes: room between the boxes; the parents' notes and the new challenge
+   both as "חשוב לזכור" boxes, the challenge's tag on the other side with a 3D light bulb */
+.slide-page .sentences-lesson .sl-boxes { gap: 28px; }
+.slide-page .sentences-lesson .sl-box.dz-note { width: 660px; align-self: center; }
+.slide-page .sl-box.dz-note.dz-note--left > .sl-box__title { left: auto; right: calc(100% + 18px); }
+.slide-page .sl-box.dz-note.dz-note--left > .sl-box__title::before { background-image: url(assets/icons/cue-bulb.webp); }
+.slide-page .sl-box.dz-note.dz-note--left > .sl-box__title::after { left: auto; right: -9px; border-width: 9px 0 9px 10px; border-color: transparent transparent transparent #fff; }
+.slide-page .sl-box.dz-note .sl-box__challenge { margin: 0; font-size: 20px; line-height: 29px; color: #232a6b; }
+.slide-page .sl-box.dz-note .sl-box__lead { margin: 0 0 4px; color: #e33563; font-size: 20px; font-weight: 600; }

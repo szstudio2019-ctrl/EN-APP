@@ -290,3 +290,6 @@
 .sentences .sentences__tab { height: 56px; padding: 0 30px; border-radius: 14px; font-size: 25px; box-shadow: inset 0 0 0 2px #ffd6e2; }
 .sentences .sentences__tab.is-on { box-shadow: 0 10px 22px rgba(227, 53, 99, .3); }
 .sn-deck { margin-top: 14px; }
+/* the words to hear: pink on a light-pink background (and "ורוד" in the lesson marked the same) */
+.sl-pink,
+.sentences__help { padding: 0 6px; border-radius: 8px; background: #ffe1ea; color: #e33563; }
