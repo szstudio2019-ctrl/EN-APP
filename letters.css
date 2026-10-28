@@ -464,3 +464,15 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 /* "כל האותיות" taller and narrower: three rows of 9 */
 .slide-page .ll-letters { top: 800px; }
 .slide-page .ll-letters__grid { grid-template-columns: repeat(9, 38px); }
+/* the letters practice like its lesson: the help window under the zebra, compact – the song's
+   buttons, then the letters in three rows of 9 */
+.slide-page .lp-help, .slide-page .lp-help-open { left: 130px; top: 748px; }
+.slide-page .lp-help { width: 440px; gap: 8px; padding-bottom: 12px; }
+.slide-page .lp-help__head { padding: 8px 14px; }
+.slide-page .lp-help__title { font-size: 17px; }
+.slide-page .lp-help .abc-play-row { margin: 0; gap: 12px; }
+.slide-page .lp-help .abc-play-btn--small { height: 46px; font-size: 18px; }
+.slide-page .lp-help .abc-play-btn--small .abc-play-btn__icon { width: 34px; height: 34px; }
+.slide-page .lp-help .abc-restart--small { width: 46px; height: 46px; }
+.slide-page .lp-help__letters { grid-template-columns: repeat(9, 38px); gap: 6px 6px; }
+.slide-page .lp-help__letters .abc-tile { width: 38px; height: 28px; font-size: 19px; line-height: 28px; }
