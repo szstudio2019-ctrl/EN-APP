@@ -67,6 +67,13 @@
     });
   }
 
+  // "from the start" under the zebra: the explanation again from its beginning
+  const restart = document.getElementById('guide-restart');
+  if (restart && btn) restart.addEventListener('click', () => {
+    // (a moment's pause: the stopped voice reports its end before the new one starts)
+    if (speaking) { btn.click(); setTimeout(() => btn.click(), 150); } else btn.click();
+  });
+
   /* say an English sound */
   function say(text) {
     if (!canSpeak || !text) return;
