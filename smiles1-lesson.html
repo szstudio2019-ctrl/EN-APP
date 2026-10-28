@@ -113,8 +113,7 @@
         </div>
         <div class="sl-boxes">
           <div class="sl-box sl-box--read dz-bubble">
-            <button class="lesson__listen" type="button" id="guide-play" aria-label="השמעת ההסבר המלא"></button>
-            <h2 class="sl-box__title">האות <span class="lesson__tile lesson__tile--a so-tile" lang="en">i</span> גורמת לחיוך!</h2>
+            <h2 class="sl-box__title">האות <span class="lesson__tile lesson__tile--a so-tile" lang="en">i</span> גורמת לחיוך!<button class="lesson__listen" type="button" id="guide-play" aria-label="השמעת ההסבר המלא"></button></h2>
             <p class="lesson__story" data-audio="assets/zebra-smiles-i.mp3">השם של האות <b class="so-o" lang="en">i</b> הוא <b>אַיי</b> (כאילו מישהו הכאיב לנו),<br>אבל הצליל שלה נותן לנו חיוך: <b class="so-o" lang="en">i</b> = <b class="so-red">אִי</b>.<br>אז <b lang="en">b</b> לבד היא <b>בְּ</b>, ועם <b class="so-o" lang="en">i</b> אחריה היא הופכת ל<b class="so-red">בִּי</b>.</p>
           </div>
         </div>
@@ -126,16 +125,17 @@
           <button class="lesson__op lesson__op--eq" type="button" aria-label="לחבר את האותיות">=</button>
           <button class="lesson__tile lesson__tile--result" type="button"><span class="c-b">b</span><span class="c-a">i</span></button>
         </div>
-        <h2 class="sl-box__title sm-remember">חשוב לזכור</h2>
-        <div class="sl-box sl-box--parents dz-note">
-            <ol class="sl-box__list">
-              <li>להגיד את <b>שם האותיות</b> בכל מילה, ורק אז לקרוא את המילה</li>
-              <li>לעבוד לפי <b>עמודות</b> – מלמעלה למטה</li>
-              <li>אות כפולה – כמעט תמיד קוראים אותה פעם אחת: <b lang="en">tt</b> = טְ, <b lang="en">pp</b> = פְּ (שימו לב במילה <b lang="en">sitting</b>!)</li>
-              <li>בעמודות 5 ו-6 מחלקים את המילים להברות לפי הצבעים: <b class="so-s1">הצבע הראשון</b> = הברה ראשונה, <b class="so-s2">השני</b> = הברה שנייה</li>
-            </ol>
-        </div>
         <a class="btn-pill lesson__go" href="smiles1.html"><span>לתרגול</span><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"></a>
+        <!-- "חשוב לזכור": the rules, in a window on the right under the page menu; each says itself -->
+        <aside class="sm-rules" aria-labelledby="sm-rules-title">
+          <div class="sm-rules__head"><b class="sm-rules__title" id="sm-rules-title">חשוב לזכור</b></div>
+          <ol class="sm-rules__list">
+            <li><button class="sm-rules__say" type="button" data-say-he="קודם אומרים את שמות האותיות, ואז קוראים את המילה" aria-label="השמעה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></button><span>קודם <b>שמות האותיות</b>, אז המילה</span></li>
+            <li><button class="sm-rules__say" type="button" data-say-he="קוראים לפי עמודות, מלמעלה למטה" aria-label="השמעה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></button><span>לפי <b>עמודות</b>, מלמעלה למטה</span></li>
+            <li><button class="sm-rules__say" type="button" data-say-he="אות כפולה קוראים פעם אחת. למשל, שתי t הן טְ אחת" aria-label="השמעה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></button><span>אות כפולה – פעם אחת: <b lang="en" dir="ltr">tt</b> = טְ</span></li>
+            <li><button class="sm-rules__say" type="button" data-say-he="בעמודות חמש ושש, כל צבע הוא הברה" aria-label="השמעה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M18.5 6.5a8 8 0 0 1 0 11"/></svg></button><span>עמודות 5–6: כל <b>צבע</b> = הברה</span></li>
+          </ol>
+        </aside>
       </section>
 
       <nav class="lessons" id="lessons" hidden></nav>

@@ -69,6 +69,21 @@
     speechSynthesis.speak(u);
   }
   const pop = (el) => { el.classList.remove('is-tapped'); void el.offsetWidth; el.classList.add('is-tapped'); };
+  // a Hebrew line read aloud (the rules' speakers)
+  document.querySelectorAll('[data-say-he]').forEach((el) => {
+    el.addEventListener('click', () => {
+      if (!canSpeak) return;
+      if (speaking) btn.click();
+      const u = new SpeechSynthesisUtterance(el.dataset.sayHe);
+      u.lang = 'he-IL';
+      u.rate = 0.95;
+      const v = voiceFor('he');
+      if (v) u.voice = v;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(u);
+      pop(el);
+    });
+  });
   document.querySelectorAll('[data-say]').forEach((el) => {
     el.addEventListener('click', () => { say(el.dataset.say); pop(el); });
   });

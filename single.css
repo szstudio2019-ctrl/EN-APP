@@ -44,3 +44,23 @@
 .slide-page .smiles-lesson .so-sum { margin-top: 22px; }
 .slide-page .smiles-lesson .sm-remember { width: 100%; max-width: 740px; margin: 24px 0 8px; text-align: center; justify-content: center; }
 .slide-page .smiles-lesson .sl-box--parents { width: 100%; max-width: 740px; position: relative; z-index: 2; }
+/* the zebra's words: no box, centred, tighter lines; Play beside the title */
+.slide-page .smiles-lesson .dz-bubble { padding: 0; border: 0; background: none; box-shadow: none; text-align: center; }
+.slide-page .smiles-lesson .dz-bubble::before,
+.slide-page .smiles-lesson .dz-bubble::after { display: none; }
+.slide-page .smiles-lesson .dz-bubble .lesson__story { text-align: center; line-height: 34px; }
+.slide-page .smiles-lesson .dz-bubble .sl-box__title { gap: 12px; margin-bottom: 6px; }
+.slide-page .smiles-lesson .dz-bubble .lesson__listen { position: static; flex: none; }
+/* "חשוב לזכור": a window on the right under the page menu (the letters practice's help window) */
+.sm-rules { position: absolute; left: 1416px; top: 276px; width: 260px; z-index: 2; padding: 0 0 12px; border-radius: 18px; background: #f4f5fb; box-shadow: inset 0 0 0 1.5px #e4e6f2, 0 10px 24px rgba(36, 34, 117, .08); text-align: right; font-family: 'Rubik', sans-serif; }
+.sm-rules__head { padding: 10px 16px; border-bottom: 1px solid #e4e6f2; border-radius: 18px 18px 0 0; background: #fff; }
+.sm-rules__title { font-size: 20px; color: #e8457a; }
+.sm-rules__list { margin: 0; padding: 8px 12px 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.sm-rules__list li { display: flex; align-items: center; gap: 8px; font-size: 17px; line-height: 22px; color: #232a6b; }
+.sm-rules__list b { color: #e8457a; font-weight: 600; }
+.sm-rules__say { flex: none; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(36, 34, 117, .12); cursor: pointer; transition: transform .15s ease, background .2s ease; }
+.sm-rules__say:hover { background: #ffe1ea; transform: scale(1.06); }
+.sm-rules__say svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* one line per rule: the window widens to the left (clear of the content) */
+.sm-rules { left: 1336px; width: 340px; }
+.sm-rules__list li { white-space: nowrap; }
