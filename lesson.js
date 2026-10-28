@@ -69,6 +69,25 @@
     speechSynthesis.speak(u);
   }
   const pop = (el) => { el.classList.remove('is-tapped'); void el.offsetWidth; el.classList.add('is-tapped'); };
+  // a recorded line (the rules' speakers): one plays at a time, a second tap stops it
+  let clip = null, clipBtn = null;
+  const stopClip = () => { if (clip) { clip.pause(); clip = null; } if (clipBtn) clipBtn.classList.remove('is-playing'); clipBtn = null; };
+  document.querySelectorAll('[data-say-audio]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const again = clipBtn === el;
+      stopClip();
+      if (again) return;
+      if (speaking) btn.click();
+      if (canSpeak) speechSynthesis.cancel();
+      clip = new Audio(el.dataset.sayAudio);
+      clipBtn = el;
+      el.classList.add('is-playing');
+      clip.addEventListener('ended', stopClip);
+      clip.play().catch(stopClip);
+      pop(el);
+    });
+  });
+  if (btn) btn.addEventListener('click', stopClip, true);
   // a Hebrew line read aloud (the rules' speakers)
   document.querySelectorAll('[data-say-he]').forEach((el) => {
     el.addEventListener('click', () => {

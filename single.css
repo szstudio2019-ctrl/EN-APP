@@ -80,3 +80,14 @@
 .sm-rules__head::after { content: ''; position: absolute; top: 50%; right: -9px; translate: 0 -50%; border-style: solid; border-width: 9px 0 9px 10px; border-color: transparent transparent transparent #fff; }
 .sm-rules__title { font-size: 22px; }
 .sm-rules__list { padding: 0 16px; gap: 10px; }
+/* "חשוב לזכור": as wide as the zebra's words, bigger text; the tag on the right, with room
+   for a 3D icon above the title, pointing left at the rules */
+.sm-rules { width: 740px; padding: 14px 0; }
+.sm-rules__head { right: auto; left: calc(100% + 18px); top: 50%; translate: 0 -50%; width: 150px; padding: 12px 10px 14px; }
+.sm-rules__head::after { right: auto; left: -9px; border-width: 9px 10px 9px 0; border-color: transparent #fff transparent transparent; }
+.sm-rules__icon { display: block; width: 76px; height: 76px; margin: 0 auto; border-radius: 50%; background: #f4f5fb; box-shadow: inset 0 0 0 2px #e4e6f2; }
+.sm-rules__title { font-size: 22px; line-height: 1.2; }
+.sm-rules__list { padding: 0 20px; gap: 12px; }
+.sm-rules__list li { font-size: 20px; line-height: 29px; }
+.sm-rules__say.is-playing { background: var(--green); }
+.sm-rules__say.is-playing svg { stroke: #fff; }
