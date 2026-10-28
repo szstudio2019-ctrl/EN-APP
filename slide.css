@@ -658,3 +658,10 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* the card plain white, so a zebra video's white background never shows as a box (some browsers
    don't blend video) */
 .slide-page section.practice.practice { background: #fff; }
+/* the smiles zebra (lesson and practice): centred in the white space left of the content and
+   starting at the title's top line; her video's empty top margin clipped inside the card */
+.slide-page section.practice.smiles-lesson .lesson__guide,
+.slide-page section.practice.smiles-practice .sm-companion { left: 32px; top: -44px; width: 420px; height: 630px; }
+.slide-page section.practice.smiles-lesson .lesson__guide .lesson__guide-video,
+.slide-page section.practice.smiles-practice .sm-companion__video { left: 0; top: 0; clip-path: inset(44px 0 0 0); }
+.slide-page section.practice.smiles-lesson:not(.letters-lesson) .lesson__guide > .lesson__listen { left: 322px; top: 146px; }

@@ -135,5 +135,5 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
    clear of the page menu) */
 /* the zebra's right edge faded out, so her video's frame never shows against the words */
 .slide-page .smiles-lesson .lesson__guide-video { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 14%); mask-image: linear-gradient(to left, transparent 0, #000 14%); }
-/* the rules and their tag centred together in the content column, the tag clear of the island */
-.slide-page .smiles-lesson .sm-rules { translate: -84px 0; }
+/* the rules a little narrower, so their tag stays clear of the island in the tabs column */
+.slide-page .smiles-lesson .sm-rules { width: 660px; }
