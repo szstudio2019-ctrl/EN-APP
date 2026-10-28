@@ -713,3 +713,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .sl-box.dz-note.sl-box--challenge > .sl-box__title::before { background-image: url(assets/icons/cue-bulb.webp); }
 /* the challenge's box as big as the notes' box, its words centred in it */
 .slide-page .sentences-lesson .sl-box.dz-note { min-height: 140px; display: flex; flex-direction: column; justify-content: center; }
+/* each box and its tag centred together under the text */
+.slide-page .sentences-lesson .sl-box.dz-note { translate: -84px 0; }
