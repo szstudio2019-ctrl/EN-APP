@@ -708,3 +708,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .sl-box.dz-note.dz-note--left > .sl-box__title::after { left: auto; right: -9px; border-width: 9px 0 9px 10px; border-color: transparent transparent transparent #fff; }
 .slide-page .sl-box.dz-note .sl-box__challenge { margin: 0; font-size: 20px; line-height: 29px; color: #232a6b; }
 .slide-page .sl-box.dz-note .sl-box__lead { margin: 0 0 4px; color: #e33563; font-size: 20px; font-weight: 600; }
+/* the icons by box, not by side: the challenge's light bulb, the notes' question mark */
+.slide-page .sl-box.dz-note.sl-box--parents > .sl-box__title::before { background-image: url(assets/icons/cue-question.webp); }
+.slide-page .sl-box.dz-note.sl-box--challenge > .sl-box__title::before { background-image: url(assets/icons/cue-bulb.webp); }
