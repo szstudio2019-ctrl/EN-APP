@@ -662,3 +662,14 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice.smiles-lesson .lesson__guide .lesson__guide-video,
 .slide-page section.practice.smiles-practice .sm-companion__video { left: 0; top: 0; clip-path: inset(44px 0 0 0); }
 .slide-page section.practice.smiles-lesson:not(.letters-lesson) .lesson__guide > .lesson__listen { left: 322px; top: 146px; }
+/* the pink notes (the sentences and single lessons) styled as "חשוב לזכור": the practice tab's
+   colour, and their title a tag on the right with a pink 3D question mark */
+.slide-page .sl-box.dz-note { position: relative; width: 740px; max-width: none; padding: 14px 20px; border: 0; border-radius: 18px; background: #f4f5fb; box-shadow: inset 0 0 0 1.5px #e4e6f2; overflow: visible; }
+.slide-page .sl-box.dz-note > .sl-box__title { position: absolute; left: calc(100% + 18px); top: 50%; translate: 0 -50%; width: 150px; margin: 0; padding: 12px 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-radius: 16px; background: #fff; box-shadow: 0 10px 24px rgba(36, 34, 117, .12); color: #e8457a; font-size: 22px; line-height: 1.2; text-align: center; }
+.slide-page .sl-box.dz-note > .sl-box__title::before { content: ''; width: 76px; height: 76px; background: url(assets/icons/cue-question.webp) center / contain no-repeat; }
+.slide-page .sl-box.dz-note > .sl-box__title::after { content: ''; position: absolute; left: -9px; top: 50%; translate: 0 -50%; border-style: solid; border-width: 9px 10px 9px 0; border-color: transparent #fff transparent transparent; }
+.slide-page .sl-box.dz-note > .sl-box__title > span[aria-hidden] { display: none; }
+.slide-page .sl-box.dz-note .sl-box__list { font-size: 20px; line-height: 29px; color: #232a6b; }
+/* every zebra a little lower in her column */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide,
+.slide-page section.practice .sm-companion { margin-top: 80px; }
