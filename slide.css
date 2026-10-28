@@ -726,3 +726,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice .guide-ctl__restart:focus-visible::after { opacity: 1; translate: -50% 0; }
 /* the tooltip white, its words blue */
 .slide-page section.practice .guide-ctl__restart::after { background: #fff; color: #232a6b; box-shadow: 0 6px 18px rgba(36, 34, 117, .16); }
+/* the sentences practice: the level tabs belong with the card – one group, close together */
+.slide-page section.practice.practice.sentences > .sentences__tabs { margin-top: auto; }
+.slide-page section.practice.practice.sentences > .practice__deck { margin-top: 14px; }
