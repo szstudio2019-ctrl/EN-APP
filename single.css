@@ -73,3 +73,10 @@
 .sm-rules { top: 262px; }
 .sm-rules__list { gap: 6px; }
 .sm-rules__list li { font-size: 17px; line-height: 24px; }
+/* "חשוב לזכור" under b + i = bi (in the page's flow, not the right column); the title is a
+   tag on its left, pointing at it (the letters practice's tooltip look) */
+.sm-rules { position: relative; left: auto; top: auto; width: 474px; margin: 26px auto 0; padding: 12px 0; }
+.sm-rules__head { position: absolute; right: calc(100% + 16px); top: 40px; width: 154px; flex-direction: column; gap: 8px; padding: 14px 10px; border: 0; border-radius: 16px; background: #fff; box-shadow: 0 10px 24px rgba(36, 34, 117, .12); text-align: center; }
+.sm-rules__head::after { content: ''; position: absolute; top: 50%; right: -9px; translate: 0 -50%; border-style: solid; border-width: 9px 0 9px 10px; border-color: transparent transparent transparent #fff; }
+.sm-rules__title { font-size: 22px; }
+.sm-rules__list { padding: 0 16px; gap: 10px; }
