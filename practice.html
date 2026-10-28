@@ -87,8 +87,12 @@
 
       <!-- Practice (Figma "בואו נתרגל"): listen to each word and record yourself.
            Built by practice.js. -->
-      <section class="practice" aria-labelledby="practice-title" data-island-name="אי האותיות של הרופאה" data-island-page="doctor.html" data-lesson="1" data-next-href="sentences-lesson.html" data-next-label="לשלב הבא">
+      <section class="practice doctor-zebra" aria-labelledby="practice-title" data-island-name="אי האותיות של הרופאה" data-island-page="doctor.html" data-lesson="1" data-next-href="sentences-lesson.html" data-next-label="לשלב הבא">
         <a class="back-home" href="doctor.html" aria-label="חזרה לעולם האותיות של רופא/ה"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+        <!-- left column: the lesson's zebra doctor, same size and place, keeping the child company -->
+        <div class="lesson__guide" aria-hidden="true">
+          <video class="lesson__guide-img lesson__guide-loop" src="assets/zebra-doctor-idle.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        </div>
         <!-- right side: the island's two content pages -->
         <nav class="slide-nav" aria-label="בעמוד הזה">
           <a class="slide-nav__item" href="lesson.html">

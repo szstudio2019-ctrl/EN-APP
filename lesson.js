@@ -29,9 +29,10 @@
     btn.setAttribute('aria-label', on ? 'עצירת ההסבר' : 'השמעת ההסבר המלא');
     if (guide) guide.classList.toggle('is-speaking', on);
     // a video guide moves and talks only while the explanation plays
-    const film = guide && guide.querySelector('video:not(.lesson__guide-idle)');
+    const film = guide && guide.querySelector('video:not(.lesson__guide-idle, .lesson__guide-loop)');
     if (film) { if (on) film.play().catch(() => {}); else film.pause(); }
-    // an idle loop (the smiles i lesson) waits in her place while she is quiet
+    // an idle loop (the smiles i lesson) waits in her place while she is quiet; a plain loop
+    // (the zebra doctor) just keeps moving
     if (idle) { if (on) idle.pause(); else idle.play().catch(() => {}); }
   }
   if (btn && story) {

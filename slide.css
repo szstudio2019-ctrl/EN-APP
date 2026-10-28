@@ -611,3 +611,10 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .sm-companion__video { position: absolute; left: 0; top: -88px; width: 468px; height: 702px; object-fit: contain; mix-blend-mode: multiply; }
 /* the zebra's right edge faded out, as in the lesson */
 .sm-companion__video { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 14%); mask-image: linear-gradient(to left, transparent 0, #000 14%); }
+/* the doctor island's lesson and practice laid out alike, as in the smiles island: the zebra
+   doctor big in the left column on both, the practice's content centred where the lesson's is */
+.slide-page .doctor-zebra .lesson__guide { left: 70px; top: 110px; width: 420px; height: 650px; z-index: 1; pointer-events: none; }
+.slide-page .doctor-zebra .lesson__guide-img { scale: none; }
+.slide-page .practice.doctor-zebra:not(.lesson-page) > :not(.back-home, .slide-nav, .lesson__guide) { translate: 100px 0; }
+/* the zebra doctor's video: its white background melts into the card */
+.slide-page .doctor-zebra .lesson__guide-loop { mix-blend-mode: multiply; filter: none; }
