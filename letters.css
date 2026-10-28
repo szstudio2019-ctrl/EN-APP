@@ -461,3 +461,6 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .slide-page .ll-letters__grid .abc-tile { width: 38px; height: 30px; font-size: 20px; line-height: 30px; }
 /* "כל האותיות" lower, at the card's bottom-left */
 .slide-page .ll-letters { top: 866px; }
+/* "כל האותיות" taller and narrower: three rows of 9 */
+.slide-page .ll-letters { top: 800px; }
+.slide-page .ll-letters__grid { grid-template-columns: repeat(9, 38px); }
