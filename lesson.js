@@ -12,10 +12,10 @@
   const canSpeak = 'speechSynthesis' in window;
   let speaking = false;
   const idle = guide && guide.querySelector('.lesson__guide-idle');
-  // the idle loop's soft pom-pom sound: browsers start it muted, so it is let in, quietly,
+  // the idle loop's soft pom-pom sound: browsers start it muted, so it is let in, very quietly,
   // on the child's first touch of the page
   if (idle) {
-    const unmute = () => { idle.muted = false; idle.volume = 0.3; };
+    const unmute = () => { idle.muted = false; idle.volume = 0.12; };
     ['pointerdown', 'keydown'].forEach((t) => document.addEventListener(t, unmute, { once: true, capture: true }));
   }
 
