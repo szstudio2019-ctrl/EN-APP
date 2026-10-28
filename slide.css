@@ -633,7 +633,7 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
    - the zebra column: x 24–364 in the card; the zebra is centred in it, and centred
      vertically on the content (not at the top)
    - the content column: the card's padding (364px each side) centres it at the card's middle
-   - the tabs column: x 1336–1676, the tabs at its right; the island under them, inside it
+   - the tabs column: x 1336–1676, the tabs at its right; the island under them, half out of the card
    The zebra has no z-index or transform of her own, so her video's white background
    multiplies straight into the card's gradient (no white box around her). */
 .slide-page section.practice.practice { padding-left: 364px; padding-right: 364px; }
@@ -648,9 +648,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* her Play, on her: by her head, or on the smiles zebra's pom-pom */
 .slide-page section.practice:not(.letters-lesson) .lesson__guide > .lesson__listen { left: 262px; top: 30px; pointer-events: auto; }
 .slide-page section.practice.smiles-lesson:not(.letters-lesson) .lesson__guide > .lesson__listen { left: 302px; top: 131px; }
-/* the island and its coins card inside the tabs column, clear of the card's edge */
-.slide-page .slide-island .world__island,
-.lesson-body .slide-island .world__island { transform: translate(1470px, 676px) scale(.531); }
 /* the sentences practice's wide card a little smaller, to stay in the content column */
 .slide-page:not(.lesson-body) .sentences .practice__deck { zoom: 1.12; }
 /* for now the zebras stay still while the explanation plays (their talking videos are on the way) */
