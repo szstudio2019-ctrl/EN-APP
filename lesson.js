@@ -21,6 +21,9 @@
     btn.classList.toggle('is-stop', on);
     btn.setAttribute('aria-label', on ? 'עצירת ההסבר' : 'השמעת ההסבר המלא');
     if (guide) guide.classList.toggle('is-speaking', on);
+    // a video guide moves and talks only while the explanation plays
+    const film = guide && guide.querySelector('video');
+    if (film) { if (on) film.play().catch(() => {}); else film.pause(); }
   }
   if (btn && story) {
     set(false);

@@ -27,3 +27,7 @@
 /* the smiles island's i lesson: the zebra is a video on white – multiply drops its white
    background into the panel (no drop shadow: it would outline the video's box) */
 .lesson__guide-video { filter: none; mix-blend-mode: multiply; }
+/* the zebra: bigger, left of the boxes and behind them (they don't cover her), no sway */
+.slide-page .smiles-lesson .lesson__guide { left: 70px; top: 96px; width: 310px; height: 465px; z-index: 1; }
+.slide-page .smiles-lesson .sl-boxes { position: relative; z-index: 2; }
+.lesson__guide.is-speaking .lesson__guide-video { animation: none; }
