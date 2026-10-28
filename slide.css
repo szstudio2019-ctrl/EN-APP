@@ -606,7 +606,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .lesson__guide-img { scale: 1.3; transform-origin: 100% 0; }
 /* the smiles i practice laid out like its lesson: the zebra's column on the left (the lesson's
    zebra, same size and place, in her idle loop) and the content centred where the lesson's is */
-.slide-page .smiles-practice > :not(.back-home, .slide-nav, .sm-companion) { translate: 90px 0; }
 .sm-companion { position: absolute; left: 22px; top: 100px; z-index: 1; width: 468px; height: 523px; pointer-events: none; }
 .sm-companion__video { position: absolute; left: 0; top: -88px; width: 468px; height: 702px; object-fit: contain; mix-blend-mode: multiply; }
 /* the zebra's right edge faded out, as in the lesson */
@@ -615,7 +614,6 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
    doctor big in the left column on both, the practice's content centred where the lesson's is */
 .slide-page .doctor-zebra .lesson__guide { left: 70px; top: 110px; width: 420px; height: 650px; z-index: 1; pointer-events: none; }
 .slide-page .doctor-zebra .lesson__guide-img { scale: none; }
-.slide-page .practice.doctor-zebra:not(.lesson-page) > :not(.back-home, .slide-nav, .lesson__guide) { translate: 160px 0; }
 /* the zebra doctor's video: its white background melts into the card */
 .slide-page .doctor-zebra .lesson__guide-loop { mix-blend-mode: multiply; filter: none; }
 /* every lesson's explanation as in the smiles i lesson: centred, the same font sizes */
@@ -627,4 +625,36 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page .lesson-page:not(.smiles-lesson, .letters-lesson) .lesson__guide { left: 70px; top: 110px; width: 420px; height: 650px; z-index: 1; pointer-events: none; }
 .slide-page .lesson-page:not(.smiles-lesson, .letters-lesson) .lesson__guide-img { scale: none; translate: none; margin: 0; width: 100%; height: 100%; }
 .slide-page .lesson-page:not(.smiles-lesson, .letters-lesson) .lesson__guide > .lesson__listen { left: 300px; top: 30px; }
-.slide-page .lesson-page:not(.smiles-lesson, .letters-lesson) > :not(.back-home, .slide-nav, .lesson__guide) { translate: 60px 0; }
+
+/* ===== The shared lesson / practice layout (every island, every letter) =====
+   The card is three columns: the zebra on the left and the page's tabs on the right, both
+   340px wide, and the content in the middle, centred on the card, so nothing moves when
+   switching between "שיעור" and "תרגול".
+   - the zebra column: x 24–364 in the card; the zebra is centred in it, and centred
+     vertically on the content (not at the top)
+   - the content column: the card's padding (364px each side) centres it at the card's middle
+   - the tabs column: x 1336–1676, the tabs at its right; the island under them, inside it
+   The zebra has no z-index or transform of her own, so her video's white background
+   multiplies straight into the card's gradient (no white box around her). */
+.slide-page section.practice.practice { padding-left: 364px; padding-right: 364px; }
+.slide-page section.practice:not(.letters-lesson) .lesson__guide,
+.slide-page section.practice .sm-companion { left: 4px; top: 160px; width: 380px; height: 600px; z-index: auto; scale: none; translate: none; transform: none; overflow: visible; pointer-events: none; }
+.slide-page section.practice:not(.letters-lesson) .lesson__guide-img { position: static; width: 100%; height: 100%; margin: 0; object-fit: contain; scale: none; translate: none; }
+/* the smiles videos have wide white margins: a bigger frame, its edges faded inside the card */
+.slide-page section.practice .lesson__guide .lesson__guide-video,
+.slide-page section.practice .sm-companion__video { position: absolute; left: -20px; top: -15px; width: 420px; height: 630px; mix-blend-mode: multiply; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%); }
+/* the zebra doctor's video: multiplied into the card, and turned to face the words */
+.slide-page section.practice .lesson__guide .lesson__guide-loop { mix-blend-mode: multiply; filter: none; scale: -1 1; transform-origin: 50% 50%; }
+/* her Play, on her: by her head, or on the smiles zebra's pom-pom */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide > .lesson__listen { left: 262px; top: 30px; pointer-events: auto; }
+.slide-page section.practice.smiles-lesson:not(.letters-lesson) .lesson__guide > .lesson__listen { left: 302px; top: 131px; }
+/* the island and its coins card inside the tabs column, clear of the card's edge */
+.slide-page .slide-island .world__island,
+.lesson-body .slide-island .world__island { transform: translate(1470px, 676px) scale(.531); }
+/* the sentences practice's wide card a little smaller, to stay in the content column */
+.slide-page:not(.lesson-body) .sentences .practice__deck { zoom: 1.12; }
+/* for now the zebras stay still while the explanation plays (their talking videos are on the way) */
+.slide-page .lesson__guide.is-speaking .lesson__guide-img { animation: none; }
+/* the card plain white, so a zebra video's white background never shows as a box (some browsers
+   don't blend video) */
+.slide-page section.practice.practice { background: #fff; }

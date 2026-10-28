@@ -444,3 +444,8 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .lp-help__letters { gap: 12px 6px; }
 /* the letters lesson's zebra grows upward instead (the letters panel is under her) */
 .slide-page .lesson__guide-img { scale: 1.25; transform-origin: 100% 100%; }
+/* the shared layout: the zebra in the left column, over the letters panel */
+.slide-page .letters-lesson .lesson__guide { left: 110px; }
+/* the letters practice: the lesson's zebra in the same place (the help window over her) */
+.slide-page section.practice.letters-practice .lesson__guide { left: 110px; top: 106px; width: 229px; height: 353px; }
+.slide-page section.practice.letters-practice .lesson__guide-img { scale: 1.25; transform-origin: 100% 100%; }

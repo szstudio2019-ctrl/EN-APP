@@ -128,12 +128,12 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
 .slide-page .smiles-lesson .lesson__guide-video { transition: opacity .2s ease; }
 .slide-page .smiles-lesson .lesson__guide-talk { opacity: 0; }
 .slide-page .smiles-lesson .lesson__guide.is-speaking .lesson__guide-talk { opacity: 1; }
-.slide-page .smiles-lesson .lesson__guide.is-speaking .lesson__guide-idle { opacity: 0; }
 /* the zebra bigger still: the whole guide (the Play on her pom-pom with her) grows 30% into
    the empty left column, its right edge kept clear of the words */
 .slide-page .smiles-lesson .lesson__guide { scale: 1.3; transform-origin: 100% 0; }
 /* everything 90px to the right, so the bigger zebra sits inside the card (the rules' tag still
    clear of the page menu) */
-.slide-page .smiles-lesson > :is(.practice__title, .slide-kicker, .lesson__guide, .sl-boxes, .so-sum, .sm-rules, .lesson__go) { translate: 90px 0; }
 /* the zebra's right edge faded out, so her video's frame never shows against the words */
 .slide-page .smiles-lesson .lesson__guide-video { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 14%); mask-image: linear-gradient(to left, transparent 0, #000 14%); }
+/* the rules and their tag centred together in the content column, the tag clear of the island */
+.slide-page .smiles-lesson .sm-rules { translate: -84px 0; }
