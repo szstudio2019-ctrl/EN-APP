@@ -11,6 +11,13 @@
   const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="play-tri" x="6" y="6" width="12" height="12" rx="3"/></svg><span>עצירה</span>';
   const canSpeak = 'speechSynthesis' in window;
   let speaking = false;
+  const idle = guide && guide.querySelector('.lesson__guide-idle');
+  // the idle loop's soft pom-pom sound: browsers start it muted, so it is let in, quietly,
+  // on the child's first touch of the page
+  if (idle) {
+    const unmute = () => { idle.muted = false; idle.volume = 0.3; };
+    ['pointerdown', 'keydown'].forEach((t) => document.addEventListener(t, unmute, { once: true, capture: true }));
+  }
 
   function voiceFor(lang) {
     return speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith(lang));
@@ -22,8 +29,10 @@
     btn.setAttribute('aria-label', on ? 'עצירת ההסבר' : 'השמעת ההסבר המלא');
     if (guide) guide.classList.toggle('is-speaking', on);
     // a video guide moves and talks only while the explanation plays
-    const film = guide && guide.querySelector('video');
+    const film = guide && guide.querySelector('video:not(.lesson__guide-idle)');
     if (film) { if (on) film.play().catch(() => {}); else film.pause(); }
+    // an idle loop (the smiles i lesson) waits in her place while she is quiet
+    if (idle) { if (on) idle.pause(); else idle.play().catch(() => {}); }
   }
   if (btn && story) {
     set(false);

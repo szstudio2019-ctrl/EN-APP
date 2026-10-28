@@ -124,3 +124,8 @@ body.slide-page .smiles-lesson > .lesson__go { margin-top: auto; }
 .sm-rules__icon { width: 76px; height: 76px; object-fit: contain; background: none; box-shadow: none; border-radius: 0; filter: drop-shadow(0 6px 8px rgba(232, 69, 122, .25)); }
 /* the i lesson's zebra (a video) is already sized for her page */
 .slide-page .smiles-lesson .lesson__guide-img { scale: none; }
+/* the idle loop and the talking video in the same place; a quick crossfade between them */
+.slide-page .smiles-lesson .lesson__guide-video { transition: opacity .2s ease; }
+.slide-page .smiles-lesson .lesson__guide-talk { opacity: 0; }
+.slide-page .smiles-lesson .lesson__guide.is-speaking .lesson__guide-talk { opacity: 1; }
+.slide-page .smiles-lesson .lesson__guide.is-speaking .lesson__guide-idle { opacity: 0; }
