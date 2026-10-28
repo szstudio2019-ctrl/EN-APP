@@ -724,3 +724,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice .guide-ctl__restart::after { content: 'מההתחלה'; position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 4px; padding: 6px 12px; border-radius: 10px; background: #232a6b; color: #fff; font: 600 16px 'Rubik', sans-serif; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s ease, translate .15s ease; }
 .slide-page section.practice .guide-ctl__restart:hover::after,
 .slide-page section.practice .guide-ctl__restart:focus-visible::after { opacity: 1; translate: -50% 0; }
+/* the tooltip white, its words blue */
+.slide-page section.practice .guide-ctl__restart::after { background: #fff; color: #232a6b; box-shadow: 0 6px 18px rgba(36, 34, 117, .16); }
