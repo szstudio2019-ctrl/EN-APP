@@ -1033,3 +1033,6 @@
 .review-practice .rp-bubble::before,
 .review-practice .rp-bubble::after { display: none; }
 .review-practice .rp-bubble__text { padding: 0; text-align: center; white-space: normal; font-size: 25px; line-height: 1.5; color: #232a6b; }
+/* the sound's cue on the card's right, past the next arrow, pointing back at the card */
+.rp-cue { right: auto; left: calc(100% + 16px); }
+.rp-cue::after { right: auto; left: -12px; border-left: 0; border-right: 12px solid #fff; border-top-color: transparent; border-bottom-color: transparent; filter: drop-shadow(-2px 0 0 #ececf5); }
