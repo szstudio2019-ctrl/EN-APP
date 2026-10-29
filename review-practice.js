@@ -538,12 +538,13 @@
 // The zebra's green Play reads the explanation aloud (the browser's Hebrew
 // voice) and turns into Stop while it speaks
 (function () {
-  const btn = document.getElementById('rp-guide-play');
+  const btn = document.getElementById('guide-play');
+  const restart = document.getElementById('guide-restart');
   const intro = document.querySelector('.rp-bubble__text'); // only what the zebra says, not the parents' note
   if (!btn || !intro) return;
   const guide = document.querySelector('.rp-guide');
-  const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="rp-play-tri" d="M9 6.5v11l9-5.5z"/></svg>';
-  const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2.5"/></svg>';
+  const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path class="play-tri" d="M8 5.5v13l10.5-6.5z"/></svg><span>האזינו להסבר</span>';
+  const STOP = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect class="play-tri" x="6" y="6" width="12" height="12" rx="3"/></svg><span>עצירה</span>';
   const canSpeak = 'speechSynthesis' in window;
   let speaking = false;
   const set = (on) => {
@@ -567,6 +568,11 @@
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
     set(true);
+  });
+  // from the start: stop what is playing and read it again from the top
+  if (restart) restart.addEventListener('click', () => {
+    // (a moment's pause: the stopped voice reports its end before the new one starts)
+    if (speaking) { btn.click(); setTimeout(() => btn.click(), 150); } else btn.click();
   });
   window.addEventListener('pagehide', () => { if (canSpeak) speechSynthesis.cancel(); });
 })();

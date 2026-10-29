@@ -679,19 +679,19 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(img[src*="zebra-doctor.webp"]) { left: 103px; top: 120px; width: 309px; height: 477px; }
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(img[src*="zebra-hoop.webp"]) { left: 81px; top: 118px; width: 318px; height: 476px; }
 /* under her: the explanation's Play and "from the start", as the letters island's song buttons */
-.slide-page section.practice .guide-ctl { position: absolute; left: 240px; top: 604px; translate: -50% 0; z-index: 3; display: flex; align-items: center; gap: 14px; direction: rtl; white-space: nowrap; }
-.slide-page section.practice .guide-ctl .lesson__listen { position: static; inset: auto; translate: none; transform: none; display: inline-flex; flex-direction: row-reverse; align-items: center; gap: 10px; width: auto; height: 58px; margin: 0; padding: 0 22px 0 8px; border: 0; border-radius: 50px; background: linear-gradient(180deg, #a4c62c 0%, #86a81a 100%); box-shadow: 0 0 0 4px #fff, 0 0 0 6px #cfe39a, 0 12px 24px rgba(80, 110, 10, .3); color: #fff; font: 700 20px 'Rubik', sans-serif; cursor: pointer; animation: guide-btn-pulse 2.2s ease-in-out infinite; transition: transform .2s ease; }
-.slide-page section.practice .guide-ctl .lesson__listen::before,
-.slide-page section.practice .guide-ctl .lesson__listen::after { display: none; }
-.slide-page section.practice .guide-ctl .lesson__listen:hover { transform: scale(1.04); }
-.slide-page section.practice .guide-ctl .lesson__listen span { display: inline; position: static; opacity: 1; visibility: visible; }
-.slide-page section.practice .guide-ctl .lesson__listen svg { width: 42px; height: 42px; padding: 10px; border-radius: 50%; background: rgba(255, 255, 255, .25); fill: #fff; box-sizing: border-box; }
-.slide-page section.practice .guide-ctl .lesson__listen.is-stop { background: linear-gradient(180deg, #ff6b9d 0%, #e33563 100%); box-shadow: 0 0 0 4px #fff, 0 0 0 6px #ffc2d4, 0 12px 24px rgba(227, 53, 99, .3); animation: none; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl { position: absolute; left: 240px; top: 604px; translate: -50% 0; z-index: 3; display: flex; align-items: center; gap: 14px; direction: rtl; white-space: nowrap; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen { position: static; inset: auto; translate: none; transform: none; display: inline-flex; flex-direction: row-reverse; align-items: center; gap: 10px; width: auto; height: 58px; margin: 0; padding: 0 22px 0 8px; border: 0; border-radius: 50px; background: linear-gradient(180deg, #a4c62c 0%, #86a81a 100%); box-shadow: 0 0 0 4px #fff, 0 0 0 6px #cfe39a, 0 12px 24px rgba(80, 110, 10, .3); color: #fff; font: 700 20px 'Rubik', sans-serif; cursor: pointer; animation: guide-btn-pulse 2.2s ease-in-out infinite; transition: transform .2s ease; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen::before,
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen::after { display: none; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen:hover { transform: scale(1.04); }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen span { display: inline; position: static; opacity: 1; visibility: visible; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen svg { width: 42px; height: 42px; padding: 10px; border-radius: 50%; background: rgba(255, 255, 255, .25); fill: #fff; box-sizing: border-box; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen.is-stop { background: linear-gradient(180deg, #ff6b9d 0%, #e33563 100%); box-shadow: 0 0 0 4px #fff, 0 0 0 6px #ffc2d4, 0 12px 24px rgba(227, 53, 99, .3); animation: none; }
 @keyframes guide-btn-pulse { 50% { box-shadow: 0 0 0 4px #fff, 0 0 0 12px rgba(164, 198, 44, .25), 0 12px 24px rgba(80, 110, 10, .3); } }
-.slide-page section.practice .guide-ctl__restart { display: inline-flex; align-items: center; gap: 8px; height: 58px; padding: 0 18px 0 16px; border: 0; border-radius: 40px; background: #fff; box-shadow: inset 0 0 0 3px #a4c62c, 0 8px 18px rgba(80, 110, 10, .16); color: #6f8c12; font: 700 20px 'Rubik', sans-serif; cursor: pointer; transition: transform .2s ease, background .2s ease; }
-.slide-page section.practice .guide-ctl__restart:hover { transform: scale(1.04); background: #f6fbe6; }
-.slide-page section.practice .guide-ctl__restart svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-@media (prefers-reduced-motion: reduce) { .slide-page section.practice .guide-ctl .lesson__listen { animation: none; } }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart { display: inline-flex; align-items: center; gap: 8px; height: 58px; padding: 0 18px 0 16px; border: 0; border-radius: 40px; background: #fff; box-shadow: inset 0 0 0 3px #a4c62c, 0 8px 18px rgba(80, 110, 10, .16); color: #6f8c12; font: 700 20px 'Rubik', sans-serif; cursor: pointer; transition: transform .2s ease, background .2s ease; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart:hover { transform: scale(1.04); background: #f6fbe6; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+@media (prefers-reduced-motion: reduce) { :is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen { animation: none; } }
 /* every lesson and practice in three rows – the words, the cards, the buttons – with the same
    space between them */
 .slide-page section.practice.practice > :is(.lesson__sum, .vw-steps, .abc-song, .practice__deck, .lesson__go, .practice__buttons) { margin-top: auto; }
@@ -716,16 +716,16 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* each box and its tag centred together under the text */
 .slide-page .sentences-lesson .sl-box.dz-note { translate: -84px 0; }
 /* the Play's icon and words evenly inside it (the button is laid out left-to-right: icon, words) */
-.slide-page section.practice .guide-ctl .lesson__listen { flex-direction: row; padding: 0 24px 0 8px; gap: 12px; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl .lesson__listen { flex-direction: row; padding: 0 24px 0 8px; gap: 12px; }
 /* "from the start": just its icon, round; its name in a tooltip on hover */
-.slide-page section.practice .guide-ctl__restart { position: relative; width: 58px; padding: 0; justify-content: center; border-radius: 50%; }
-.slide-page section.practice .guide-ctl__restart span { display: none; }
-.slide-page section.practice .guide-ctl__restart svg { width: 26px; height: 26px; }
-.slide-page section.practice .guide-ctl__restart::after { content: 'מההתחלה'; position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 4px; padding: 6px 12px; border-radius: 10px; background: #232a6b; color: #fff; font: 600 16px 'Rubik', sans-serif; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s ease, translate .15s ease; }
-.slide-page section.practice .guide-ctl__restart:hover::after,
-.slide-page section.practice .guide-ctl__restart:focus-visible::after { opacity: 1; translate: -50% 0; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart { position: relative; width: 58px; padding: 0; justify-content: center; border-radius: 50%; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart span { display: none; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart svg { width: 26px; height: 26px; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart::after { content: 'מההתחלה'; position: absolute; left: 50%; bottom: calc(100% + 12px); translate: -50% 4px; padding: 6px 12px; border-radius: 10px; background: #232a6b; color: #fff; font: 600 16px 'Rubik', sans-serif; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s ease, translate .15s ease; }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart:hover::after,
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart:focus-visible::after { opacity: 1; translate: -50% 0; }
 /* the tooltip white, its words blue */
-.slide-page section.practice .guide-ctl__restart::after { background: #fff; color: #232a6b; box-shadow: 0 6px 18px rgba(36, 34, 117, .16); }
+:is(.slide-page section.practice, .review-practice) .guide-ctl__restart::after { background: #fff; color: #232a6b; box-shadow: 0 6px 18px rgba(36, 34, 117, .16); }
 /* the sentences practice: the level tabs belong with the card – one group, close together */
 .slide-page section.practice.practice.sentences > .sentences__tabs { margin-top: auto; }
 .slide-page section.practice.practice.sentences > .practice__deck { margin-top: 14px; }

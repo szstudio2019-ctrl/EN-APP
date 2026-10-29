@@ -1009,3 +1009,20 @@
 }
 /* the zebra at the size of the other lessons' zebras (the hoop zebra's 318x476 box) */
 .review-practice .rp-say .rp-guide { width: 318px; height: 476px; }
+/* the zebra's words bigger, as on the lessons */
+.review-practice .rp-bubble__text { font-size: 25px; line-height: 1.5; }
+/* under the zebra, as on every lesson: "from the start" and the green Play */
+.review-practice .rp-say .rp-guide { overflow: visible; }
+.review-practice .rp-guide .guide-ctl { left: 50%; top: calc(100% + 10px); }
+/* the parents' note at the bottom: the light-blue box of the lessons, its tag on the right */
+.review-practice .rp-parents { position: relative; align-self: center; width: 660px; margin: 18px 0 0; padding: 14px 20px; border-radius: 18px; background: #f4f5fb; box-shadow: inset 0 0 0 1.5px #e4e6f2; translate: -84px 0; box-sizing: border-box; }
+.review-practice .rp-parents__text { margin: 0; font: 400 20px/29px 'Rubik', sans-serif; color: #232a6b; text-align: center; }
+.review-practice .rp-parents__tag { position: absolute; left: calc(100% + 18px); top: 50%; translate: 0 -50%; width: 150px; margin: 0; padding: 12px 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-radius: 16px; background: #fff; box-shadow: 0 10px 24px rgba(36, 34, 117, .12); color: #e8457a; font: 600 22px/1.2 'Rubik', sans-serif; text-align: center; box-sizing: border-box; }
+.review-practice .rp-parents__tag::before { content: ''; width: 76px; height: 76px; background: url(assets/icons/cue-question.webp) center / contain no-repeat; }
+.review-practice .rp-parents__tag::after { content: ''; position: absolute; left: -9px; top: 50%; translate: 0 -50%; border-style: solid; border-width: 9px 10px 9px 0; border-color: transparent #fff transparent transparent; }
+.review-practice .rp-say .rp-guide .guide-ctl { left: 50%; top: calc(100% + 10px); }
+.review-practice .rp-parents { width: 760px; margin-top: 12px; padding: 10px 20px; translate: -84px 0; }
+.review-practice .rp-parents__tag { width: 130px; padding: 8px 10px 10px; gap: 2px; font-size: 20px; }
+.review-practice .rp-parents__tag::before { width: 54px; height: 54px; }
+/* the sound's cue closer to the card, just clear of the arrow */
+.rp-cue { right: calc(100% + 16px); }
