@@ -294,7 +294,11 @@
     doneBtn.classList.toggle('is-complete', all);
   }
 
-  const pickTopic = (i) => { topic = i; sub = 0; renderTopic(); renderSub(); show(0, 1); };
+  const pickTopic = (i) => {
+    topic = i; sub = 0; renderTopic(); renderSub(); show(0, 1);
+    // the title shows the review now open (the list's "חזרה 4" opens review 4)
+    if (noEl) { noEl.textContent = i + 1; noEl.setAttribute('aria-label', 'מספר ' + (i + 1)); }
+  };
   const pickSub = (i, at = 0, dir = 1) => {
     sub = i;
     renderSub();
