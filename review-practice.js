@@ -6,6 +6,7 @@
 (function () {
   // icons for a done stage: a check, and round arrows (practise again)
   const CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const PLAY_ICON = '<svg viewBox="0 0 24 24"><path d="M9 6.5v11l9-5.5z"/></svg>';
   const AGAIN_ICON = '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>';
   // the consonant rows of the course's table (Einat's sheet)
   const C = ['b', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'y', 'z'];
@@ -139,7 +140,7 @@
       <span class="rp-topic__name">${t.name}</span>
       <span class="rp-topic__count">${t.islands} · ${countOf(t)} כרטיסיות</span>
       <span class="rp-check" aria-hidden="true">${CHECK}</span>
-      <span class="rp-again" aria-hidden="true">${AGAIN_ICON}</span>
+      ${isOpen(i) ? `<span class="rp-play" aria-hidden="true">${PLAY_ICON}</span>` : ''}
       ${isOpen(i) ? '' : `<span class="rp-lock" aria-hidden="true">${LOCK}</span>`}
     </button>`).join('');
 
