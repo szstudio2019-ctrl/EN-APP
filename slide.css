@@ -729,3 +729,7 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* the sentences practice: the level tabs belong with the card – one group, close together */
 .slide-page section.practice.practice.sentences > .sentences__tabs { margin-top: auto; }
 .slide-page section.practice.practice.sentences > .practice__deck { margin-top: 14px; }
+/* the single letters island's builder zebra (a looping video): she already faces the words;
+   her box from where she sits in her video, at the cheerleader's size and place */
+.slide-page section.practice .lesson__guide .lesson__guide-loop--front { scale: none; }
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-single-idle"]) { left: 80px; top: 113px; width: 320px; height: 480px; }
