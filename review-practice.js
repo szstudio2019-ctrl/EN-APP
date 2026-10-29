@@ -184,14 +184,36 @@
   subsWrap.append(subPrev, subsEl, subNext);
   const page = () => subsEl.clientWidth * 0.7;
   // the stages run left to right (b first, on the left): back = to the left, on = to the right
-  subPrev.addEventListener('click', () => subsEl.scrollBy({ left: -page(), behavior: 'smooth' }));
-  subNext.addEventListener('click', () => subsEl.scrollBy({ left: page(), behavior: 'smooth' }));
+  // a gentle glide (ease in and out) from letter to letter, instead of the browser's quick jump
+  let glide = 0;
+  function glideBy(dx) {
+    cancelAnimationFrame(glide);
+    const from = subsEl.scrollLeft;
+    const max = subsEl.scrollWidth - subsEl.clientWidth;
+    const to = Math.max(0, Math.min(max, from + dx));
+    if (Math.abs(to - from) < 1) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { subsEl.scrollLeft = to; return; }
+    const dur = Math.min(900, 420 + Math.abs(to - from) * 0.8);
+    const t0 = performance.now();
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / dur);
+      subsEl.scrollLeft = from + (to - from) * ease(t);
+      if (t < 1) glide = requestAnimationFrame(step);
+    };
+    glide = requestAnimationFrame(step);
+  }
+  subPrev.addEventListener('click', () => glideBy(-page()));
+  subNext.addEventListener('click', () => glideBy(page()));
   function syncSubArrows() {
     const fits = subsEl.scrollWidth <= subsEl.clientWidth + 2;
     subsWrap.classList.toggle('is-fit', fits);
     const x = Math.abs(subsEl.scrollLeft);
     subPrev.disabled = x < 2;
     subNext.disabled = x + subsEl.clientWidth >= subsEl.scrollWidth - 2;
+    // the sides fade out where more letters wait beyond them
+    subsWrap.classList.toggle('has-before', !fits && !subPrev.disabled);
+    subsWrap.classList.toggle('has-after', !fits && !subNext.disabled);
   }
   subsEl.addEventListener('scroll', syncSubArrows, { passive: true });
   window.addEventListener('resize', syncSubArrows);
@@ -213,7 +235,7 @@
     if (on) {
       const a = on.getBoundingClientRect();
       const b = subsEl.getBoundingClientRect();
-      subsEl.scrollBy({ left: (a.left + a.width / 2) - (b.left + b.width / 2), behavior: 'smooth' });
+      glideBy((a.left + a.width / 2) - (b.left + b.width / 2));
     }
     syncSubArrows();
   }

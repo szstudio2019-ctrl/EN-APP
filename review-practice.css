@@ -1038,3 +1038,16 @@
 .rp-cue::after { right: auto; left: -12px; border-left: 0; border-right: 12px solid #fff; border-top-color: transparent; border-bottom-color: transparent; filter: drop-shadow(-2px 0 0 #ececf5); }
 /* the parents' note above the done button; the box itself (not its tag) centred */
 .review-practice .rp-parents { translate: none; margin: 14px 0 0; }
+/* the letters' row fades out at its sides where more letters wait beyond them; the fades
+   grow and shrink softly as the row glides */
+@property --rp-fade-l { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --rp-fade-r { syntax: '<length>'; inherits: false; initial-value: 0px; }
+.review-practice .rp-subs-wrap .rp-subs {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--rp-fade-l), #000 calc(100% - var(--rp-fade-r)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--rp-fade-l), #000 calc(100% - var(--rp-fade-r)), transparent 100%);
+  transition: --rp-fade-l .35s ease, --rp-fade-r .35s ease;
+}
+.review-practice .rp-subs-wrap.has-before .rp-subs { --rp-fade-l: 70px; }
+.review-practice .rp-subs-wrap.has-after .rp-subs { --rp-fade-r: 70px; }
+/* the letters' row halfway between the zebra's words and the cards */
+.review-practice .rp-main .rp-subs-wrap { translate: 0 -22px; }
