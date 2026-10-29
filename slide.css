@@ -733,3 +733,7 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
    her box from where she sits in her video, at the cheerleader's size and place */
 .slide-page section.practice .lesson__guide .lesson__guide-loop--front { scale: none; }
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-single-idle"]) { left: 80px; top: 113px; width: 320px; height: 480px; }
+/* the whistling letters island's zebra (on her cloud, a looping video): her wide frame starts
+   above the card and past its left edge, so its top is clipped and its sides faded */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-whistling-idle"]) { left: -25px; top: -46px; width: 532px; height: 798px; }
+.slide-page section.practice .lesson__guide video[src*="zebra-whistling-idle"] { clip-path: inset(46px 0 0 0); -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%); }
