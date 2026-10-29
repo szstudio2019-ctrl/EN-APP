@@ -1007,3 +1007,5 @@
 @media (min-width: 900px) {
   .review-practice .rp-side .rp-isl-unit { position: absolute; top: 540px; right: 0; left: auto; width: 300px; transform: translateX(50%); }
 }
+/* the zebra at the size of the other lessons' zebras (the hoop zebra's 318x476 box) */
+.review-practice .rp-say .rp-guide { width: 318px; height: 476px; }
