@@ -1003,3 +1003,7 @@
 .review-practice .practice__sheet { width: 480px; }
 .review-practice .rp-main .practice__deck { gap: 34px; }
 .rp-cue { right: calc(100% + 40px); }
+/* the island and its card: on the panel's right, under the review list, half of it out in the sky */
+@media (min-width: 900px) {
+  .review-practice .rp-side .rp-isl-unit { position: absolute; top: 540px; right: 0; left: auto; width: 300px; transform: translateX(50%); }
+}
