@@ -1026,3 +1026,5 @@
 .review-practice .rp-parents__tag::before { width: 54px; height: 54px; }
 /* the sound's cue closer to the card, just clear of the arrow */
 .rp-cue { right: calc(100% + 16px); }
+/* a practice: only the zebra, no Play under her; her top at the lessons' zebras' height */
+.review-practice .rp-say .rp-guide { top: 18px; }
