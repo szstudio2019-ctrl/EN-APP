@@ -1051,3 +1051,5 @@
 .review-practice .rp-subs-wrap.has-after .rp-subs { --rp-fade-r: 70px; }
 /* the letters' row halfway between the zebra's words and the cards */
 .review-practice .rp-main .rp-subs-wrap { translate: 0 -22px; }
+/* room around the letters, so the chosen one can swell (and wear its ring) without being cut */
+.review-practice .rp-main .rp-subs-wrap .rp-subs { padding: 16px 14px; margin: -8px 0; }
