@@ -91,6 +91,11 @@
            Built by practice.js. -->
       <section class="practice" aria-labelledby="practice-title" data-island-name="אי האותיות המחייכות" data-island-page="smiles.html" data-lesson="3">
         <a class="back-home" href="smiles.html" aria-label="חזרה לאי האותיות המחייכות"><span class="back-home__label">ראשי</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+        <!-- under the zebra's place: her explanation's Play and "from the start" (they come alive once the explanation is added) -->
+        <div class="guide-ctl">
+          <button class="guide-ctl__restart" type="button" id="guide-restart" aria-label="ההסבר מההתחלה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4.5h4.5"/></svg><span>מההתחלה</span></button>
+          <button class="lesson__listen guide-ctl__play" type="button" id="guide-play" aria-label="השמעת ההסבר המלא"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="play-tri" d="M8 5.5v13l10.5-6.5z"/></svg><span>האזינו להסבר</span></button>
+        </div>
         <!-- right side: the island's two content pages -->
         <nav class="slide-nav" aria-label="בעמוד הזה">
           <a class="slide-nav__item is-on" href="smiles3-lesson.html" aria-current="page">
@@ -323,5 +328,6 @@
   <script src="drawer.js"></script>
   <script src="mobile.js"></script>
   <script src="world.js"></script>
+  <script src="lesson.js"></script>
 </body>
 </html>
