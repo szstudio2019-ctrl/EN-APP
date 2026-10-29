@@ -1028,3 +1028,8 @@
 .rp-cue { right: calc(100% + 16px); }
 /* a practice: only the zebra, no Play under her; her top at the lessons' zebras' height */
 .review-practice .rp-say .rp-guide { top: 18px; }
+/* the zebra's words as on the lessons: no bubble, centred, 25px */
+.review-practice .rp-bubble { border: 0; background: none; box-shadow: none; padding: 0; }
+.review-practice .rp-bubble::before,
+.review-practice .rp-bubble::after { display: none; }
+.review-practice .rp-bubble__text { padding: 0; text-align: center; white-space: normal; font-size: 25px; line-height: 1.5; color: #232a6b; }
