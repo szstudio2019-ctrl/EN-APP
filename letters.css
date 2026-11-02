@@ -482,3 +482,5 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .slide-page .lp-help, .slide-page .lp-help-open { top: 732px; }
 .slide-page .lp-help { gap: 10px; }
 .slide-page .lp-help__letters { row-gap: 12px; }
+/* the letters lesson's detective zebra at the cheerleader's height, growing upward (her feet stay over "כל האותיות") */
+.slide-page section.practice.letters-lesson .lesson__guide:has(.lesson__guide-still) { left: 47px; top: 21px; width: 385px; height: 573px; }
