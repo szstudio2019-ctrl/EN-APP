@@ -741,3 +741,8 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
    video no faint frame shows against the white card */
 .slide-page section.practice.practice .lesson__guide video,
 .slide-page section.practice.practice .sm-companion video { filter: brightness(1.04); }
+/* the magic island's wizard zebra: as tall as the smiles cheerleader, her feet on the same line */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-magic-idle"]) { left: 47px; top: 64px; width: 373px; height: 559px; }
+/* the whistling zebra a little smaller (8%), her cloud on the same line */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-whistling-idle"]) { left: -4px; top: -6px; width: 489px; height: 734px; }
+.slide-page section.practice .lesson__guide video[src*="zebra-whistling-idle"] { clip-path: inset(52px 0 0 0); }

@@ -1086,3 +1086,6 @@
 
 /* the zebra is a looping video on white: multiplied into the card, no shadow box */
 .review-practice .rp-guide__zebra { filter: none; mix-blend-mode: multiply; }
+/* the hula-hoop zebra as tall as the smiles cheerleader; Play and "from the start" stay where they were */
+.review-practice .rp-say .rp-guide { left: -371px; top: -78px; width: 391px; height: 585px; }
+.review-practice .rp-say .rp-guide .guide-ctl { top: calc(100% - 3px); }
