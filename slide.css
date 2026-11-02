@@ -742,8 +742,8 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice.practice .lesson__guide video,
 .slide-page section.practice.practice .sm-companion video { filter: brightness(1.04); }
 /* the magic island's wizard zebra: as tall as the smiles cheerleader, her feet on the same line */
-.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-magic-idle"]) { left: 26px; top: 13px; width: 416px; height: 624px; }
-/* (her size by the user's mark, then 10% larger; her feet where they were, her Play under them) */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-magic-idle"]) { left: 37px; top: 42px; width: 395px; height: 593px; }
+/* (her size by the user's mark, then 10% larger and 5% back; her feet where they were, her Play under them) */
 .slide-page section.practice:has(video[src*="zebra-magic-idle"]) .guide-ctl { top: 611px; }
 /* the whistling zebra a little smaller (8%), her cloud on the same line */
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-whistling-idle"]) { left: -4px; top: -6px; width: 489px; height: 734px; }
