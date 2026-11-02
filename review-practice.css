@@ -1091,3 +1091,7 @@
 .review-practice .rp-say .rp-guide .guide-ctl { top: calc(100% - 3px); }
 /* the coach still sits a hair past the card's left edge: trim that white strip (only white there, the figure starts further in) */
 .review-practice .rp-say .rp-guide .rp-guide__zebra { clip-path: inset(0 0 0 14px); }
+/* the coach's loop (3:4, her mane to her feet ~84% of the frame) at the cheerleader's height; her feet on the others' line */
+.review-practice .rp-say .rp-guide:has(video[src*="zebra-review-coach"]) { left: -385px; top: -27px; width: 420px; height: 560px; }
+.review-practice .rp-say .rp-guide .rp-guide__zebra[src*="zebra-review-coach"] { clip-path: inset(0 0 0 40px); }
+.review-practice .rp-say .rp-guide:has(video[src*="zebra-review-coach"]) .guide-ctl { top: calc(100% - 34px); }
