@@ -484,3 +484,6 @@ span.abc-slide__card img { display: block; width: 100%; height: 100%; object-fit
 .slide-page .lp-help__letters { row-gap: 12px; }
 /* the letters lesson's detective zebra at the cheerleader's height, growing upward (her feet stay over "כל האותיות") */
 .slide-page section.practice.letters-lesson .lesson__guide:has(.lesson__guide-still) { left: 47px; top: 21px; width: 385px; height: 573px; }
+/* the lesson's zebra has her explanation's Play under her, so "כל האותיות" spreads wide and low: two rows of 13 */
+.slide-page .ll-letters { top: 868px; }
+.slide-page .ll-letters__grid { grid-template-columns: repeat(13, 38px); }
