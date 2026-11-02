@@ -14,6 +14,10 @@
   let musicGain = null;
   let on = true;
   try { on = localStorage.getItem(KEY) !== 'off'; } catch (err) { /* blocked */ }
+  // the music plays only on the main screens: the home page (the islands map) and an island's
+  // world screen; lessons, practices and the other pages keep just the button sounds
+  const b = document.body.classList;
+  const MUSIC_PAGE = /(^|\/)(index\.html)?$/.test(location.pathname) || (b.contains('world-page') && !b.contains('practice-page'));
 
   function audio() {
     if (!ctx) {
@@ -152,6 +156,7 @@
     }
   }
   function startMusic() {
+    if (!MUSIC_PAGE) return;
     audio();
     if (timer) return;
     nextTime = ctx.currentTime + 0.1;
@@ -249,7 +254,7 @@
   const NOTE_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/><path d="M3 3l18 18"/></svg>';
   const home = document.querySelector('.topbar .home-btn');
   let btn = null;
-  if (home) {
+  if (home && MUSIC_PAGE) {
     btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'home-btn music-btn';
