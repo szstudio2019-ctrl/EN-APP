@@ -742,9 +742,11 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice.practice .lesson__guide video,
 .slide-page section.practice.practice .sm-companion video { filter: brightness(1.04); }
 /* the magic island's wizard zebra: as tall as the smiles cheerleader, her feet on the same line */
-.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-magic-idle"]) { left: 13px; top: -32px; width: 440px; height: 660px; }
-/* (her hat and wand add height, so her body matches the cheerleader at this size; the white above the card is trimmed) */
-.slide-page section.practice .lesson__guide video[src*="zebra-magic-idle"] { clip-path: inset(34px 0 0 0); }
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-magic-idle"]) { left: -9px; top: -79px; width: 484px; height: 726px; }
+/* (sized by her head, not her hat: ear tip to chin as the cheerleader's; the hat's tip and the white past the card
+   are trimmed, and her Play sits a little lower, under her feet) */
+.slide-page section.practice .lesson__guide video[src*="zebra-magic-idle"] { clip-path: inset(79px 0 0 9px); }
+.slide-page section.practice:has(video[src*="zebra-magic-idle"]) .guide-ctl { top: 618px; }
 /* the whistling zebra a little smaller (8%), her cloud on the same line */
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-whistling-idle"]) { left: -4px; top: -6px; width: 489px; height: 734px; }
 .slide-page section.practice .lesson__guide video[src*="zebra-whistling-idle"] { clip-path: inset(52px 0 0 0); }
