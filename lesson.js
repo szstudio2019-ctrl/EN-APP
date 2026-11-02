@@ -26,10 +26,9 @@
     // a video guide moves and talks only while the explanation plays
     const film = guide && guide.querySelector('video:not(.lesson__guide-idle, .lesson__guide-loop)');
     if (film) { if (on) film.play().catch(() => {}); else film.pause(); }
-    // an idle loop (the smiles i lesson) waits in her place while she is quiet; a plain loop
-    // (the zebra doctor) just keeps moving
-    // (for now she keeps her idle loop while she speaks too, until her talking videos are made)
-    if (idle) idle.play().catch(() => {});
+    // an idle loop (the smiles i lesson) waits in her place while she is quiet, and gives way
+    // to her talking video while the explanation plays; a plain loop (the zebra doctor) just keeps moving
+    if (idle) { if (on) idle.pause(); else idle.play().catch(() => {}); }
   }
   if (btn && story) {
     set(false);
