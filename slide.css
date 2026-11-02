@@ -751,3 +751,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 /* still zebras on white (the postman, the diver with headphones): multiply drops the white, no mirroring */
 .slide-page .lesson__guide .lesson__guide-still { filter: none; mix-blend-mode: multiply; animation: none; }
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(.lesson__guide-still) { left: 41px; top: 32px; width: 385px; height: 573px; }
+/* the postman's loop (3:4, her ears to her feet ~84% of the frame) at the cheerleader's height and place */
+.slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-single-idle"]) { left: 24px; top: 74px; width: 420px; height: 560px; }
