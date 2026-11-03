@@ -757,3 +757,5 @@ body.slide-page .practice.lesson-page { justify-content: flex-start; }
 .slide-page section.practice:not(.letters-lesson) .lesson__guide:has(video[src*="zebra-sounds-idle"]) { left: 24px; top: 74px; width: 420px; height: 560px; }
 /* the doctor's loop (3:4, her ears to her feet ~78% of the frame) at the cheerleader's height and place, on every doctor page */
 .slide-page section.practice .lesson__guide.lesson__guide:has(video[src*="zebra-doctor-loop"]) { left: 10px; top: 56px; width: 447px; height: 596px; }
+/* the builder zebra (the blending island) faces the other way: mirrored */
+.slide-page section.practice .lesson__guide video[src*="zebra-blending-idle"] { scale: -1 1; }
