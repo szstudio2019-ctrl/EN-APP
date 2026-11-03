@@ -1094,3 +1094,5 @@
 /* the coach's loop (3:4, her mane to her feet ~84% of the frame) at the cheerleader's height and place */
 .review-practice .rp-say .rp-guide:has(video[src*="zebra-review-coach"]) { left: -374px; right: auto; top: -27px; width: 420px; height: 560px; }
 .review-practice .rp-say .rp-guide:has(video[src*="zebra-review-coach"]) .guide-ctl { top: calc(100% - 34px); }
+/* the explanation's Play under the coach laid out as on every lesson: the icon on the left, the label after it */
+.review-practice .rp-guide .guide-ctl__play { direction: ltr; }
