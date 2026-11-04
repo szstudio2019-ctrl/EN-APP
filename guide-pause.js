@@ -18,7 +18,7 @@
 .guide-freeze.is-frozen svg { fill: #fff; }
 .guide-ctl--solo { gap: 0; }
 .is-frozen-guide, .is-frozen-guide * { animation-play-state: paused !important; }
-.guide-tip { position: fixed; z-index: 9999; max-width: 260px; padding: 6px 12px; border-radius: 10px; background: #fff; color: #242275; font: 400 13px/1.35 'Rubik', sans-serif; direction: rtl; text-align: center; white-space: normal; pointer-events: none; box-shadow: 0 6px 18px rgba(36, 34, 117, .22), 0 1px 3px rgba(36, 34, 117, .12); opacity: 0; translate: -50% -100%; transition: opacity .15s ease; }
+.guide-tip { position: fixed; z-index: 9999; width: max-content; padding: 6px 12px; border-radius: 10px; background: #fff; color: #242275; font: 400 13px/1.35 'Rubik', sans-serif; direction: rtl; text-align: center; white-space: nowrap; pointer-events: none; box-shadow: 0 6px 18px rgba(36, 34, 117, .22), 0 1px 3px rgba(36, 34, 117, .12); opacity: 0; translate: -50% -100%; transition: opacity .15s ease; }
 .guide-tip.is-on { opacity: 1; }
 .guide-tip::after { content: ''; position: absolute; left: 50%; top: 100%; translate: -50% 0; border: 6px solid transparent; border-top-color: #fff; filter: drop-shadow(0 2px 1px rgba(36, 34, 117, .1)); }`;
   document.head.appendChild(css);
