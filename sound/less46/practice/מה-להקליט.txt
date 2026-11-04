@@ -1,0 +1,23 @@
+שיעור 46 – חזרה סופית על כל הצלילים · תרגול (משבצות צהובות במסמך)
+הצלילים החדשים בעמודות oo, ai/ay, ou/ow. כל צליל בקובץ נפרד בשם שלו.
+ai ו-ay הם אותו צליל (כמו day), ולכן שני הקבצים זהים. כך גם ou ו-ow (כמו cow).
+
+boo.mp3  bai.mp3  bay.mp3  bou.mp3  bow.mp3
+doo.mp3  dai.mp3  day.mp3  dou.mp3  dow.mp3
+foo.mp3  fai.mp3  fay.mp3  fou.mp3  fow.mp3
+goo.mp3  gai.mp3  gay.mp3  gou.mp3  gow.mp3
+hoo.mp3  hai.mp3  hay.mp3  hou.mp3  how.mp3
+joo.mp3  jai.mp3  jay.mp3  jou.mp3  jow.mp3
+koo.mp3  kai.mp3  kay.mp3  kou.mp3  kow.mp3
+loo.mp3  lai.mp3  lay.mp3  lou.mp3  low.mp3
+moo.mp3  mai.mp3  may.mp3  mou.mp3  mow.mp3
+noo.mp3  nai.mp3  nay.mp3  nou.mp3  now.mp3
+poo.mp3  pai.mp3  pay.mp3  pou.mp3  pow.mp3
+qoo.mp3  qai.mp3  qay.mp3  qou.mp3  qow.mp3
+roo.mp3  rai.mp3  ray.mp3  rou.mp3  row.mp3
+soo.mp3  sai.mp3  say.mp3  sou.mp3  sow.mp3
+too.mp3  tai.mp3  tay.mp3  tou.mp3  tow.mp3
+voo.mp3  vai.mp3  vay.mp3  vou.mp3  vow.mp3
+woo.mp3  wai.mp3  way.mp3  wou.mp3  wow.mp3
+yoo.mp3  yai.mp3  yay.mp3  you.mp3  yow.mp3
+zoo.mp3  zai.mp3  zay.mp3  zou.mp3  zow.mp3

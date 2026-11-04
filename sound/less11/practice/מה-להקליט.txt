@@ -1,0 +1,79 @@
+שיעור 11 – חזרה על הצלילים · תרגול (משבצות צהובות במסמך)
+כל מילה/צליל בקובץ נפרד בשם שלו; משפטים וסיפורים ממוספרים.
+
+ba.mp3 – Bah.
+bi.mp3 – Bih.
+bee.mp3 – Bee.
+da.mp3 – Dah.
+di.mp3 – Dih.
+dee.mp3 – Dee.
+fa.mp3 – Fah.
+fi.mp3 – Fih.
+fee.mp3 – Fee.
+ga.mp3 – Gah.
+gi.mp3 – Gih.
+gee.mp3 – Ghee.
+ha.mp3 – Hah.
+hi.mp3 – Hih.
+hee.mp3 – Hee.
+ja.mp3 – Jah.
+ji.mp3 – Jih.
+jee.mp3 – Jee.
+ka.mp3 – Kah.
+ki.mp3 – Kih.
+kee.mp3 – Kee.
+la.mp3 – Lah.
+li.mp3 – Lih.
+lee.mp3 – Lee.
+ma.mp3 – Mah.
+mi.mp3 – Mih.
+mee.mp3 – Mee.
+na.mp3 – Nah.
+ni.mp3 – Nih.
+nee.mp3 – Nee.
+pa.mp3 – Pah.
+pi.mp3 – Pih.
+pee.mp3 – Pee.
+qa.mp3 – Kwah.
+qi.mp3 – Kwih.
+qee.mp3 – Kwee.
+ra.mp3 – Rah.
+ri.mp3 – Rih.
+ree.mp3 – Ree.
+sa.mp3 – Sah.
+si.mp3 – Sih.
+see.mp3 – See.
+ta.mp3 – Tah.
+ti.mp3 – Tih.
+tee.mp3 – Tee.
+va.mp3 – Vah.
+vi.mp3 – Vih.
+vee.mp3 – Vee.
+wa.mp3 – Wah.
+wi.mp3 – Wih.
+wee.mp3 – Wee.
+ya.mp3 – Yah.
+yi.mp3 – Yih.
+yee.mp3 – Yee.
+za.mp3 – Zah.
+zi.mp3 – Zih.
+zee.mp3 – Zee.
+bea.mp3 – אותו צליל כמו bee.mp3 (עותק)
+dea.mp3 – אותו צליל כמו dee.mp3 (עותק)
+fea.mp3 – אותו צליל כמו fee.mp3 (עותק)
+gea.mp3 – אותו צליל כמו gee.mp3 (עותק)
+hea.mp3 – אותו צליל כמו hee.mp3 (עותק)
+jea.mp3 – אותו צליל כמו jee.mp3 (עותק)
+kea.mp3 – אותו צליל כמו kee.mp3 (עותק)
+lea.mp3 – אותו צליל כמו lee.mp3 (עותק)
+mea.mp3 – אותו צליל כמו mee.mp3 (עותק)
+nea.mp3 – אותו צליל כמו nee.mp3 (עותק)
+pea.mp3 – אותו צליל כמו pee.mp3 (עותק)
+qea.mp3 – אותו צליל כמו qee.mp3 (עותק)
+rea.mp3 – אותו צליל כמו ree.mp3 (עותק)
+sea.mp3 – אותו צליל כמו see.mp3 (עותק)
+tea.mp3 – אותו צליל כמו tee.mp3 (עותק)
+vea.mp3 – אותו צליל כמו vee.mp3 (עותק)
+wea.mp3 – אותו צליל כמו wee.mp3 (עותק)
+yea.mp3 – אותו צליל כמו yee.mp3 (עותק)
+zea.mp3 – אותו צליל כמו zee.mp3 (עותק)

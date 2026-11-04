@@ -1,0 +1,47 @@
+less1  ·  סרגל ה-abc
+less2  ·  מה זה אותיות ניקוד?
+less3  ·  האות של הרופא - a
+less4  ·  קריאת משפטים - a
+less5  ·  האותיות המחייכות
+less6  ·  האותיות המחייכות - i
+less7  ·  קריאת משפטים - i
+less8  ·  קריאת משפטים - i + a
+less9  ·  חיוך עם ea
+less10  ·  חיוך עם ee
+less11  ·  חזרה על הצלילים
+less12  ·  קריאת משפטים - a, i, ea, ee
+less13  ·  העיגול - o
+less14  ·  קריאת משפטים - o
+less15  ·  המגלשה - u
+less16  ·  קריאת משפטים - u
+less17  ·  הכבשה החושבת - e
+less18  ·  קריאת משפטים - e
+less19  ·  חזרה על כל הצלילים
+less20  ·  מילים של גדולים
+less21  ·  הפרה - oo
+less22  ·  קריאת משפטים - oo
+less23  ·  בואו נשחק - ai/ay
+less24  ·  קריאת משפטים - ai/ay
+less25  ·  האותיות שכואב להן - ou/ow
+less26  ·  חזרה על הצלילים
+less27  ·  קריאת משפטים - חזרה
+less28  ·  שששש - sh
+less29  ·  קריאת משפטים - sh
+less30  ·  צ'יפס - ch
+less31  ·  קריאת משפטים - ch
+less32  ·  הקדמה ל-Magic E
+less33  ·  Magic e - האות a
+less34  ·  קריאת משפטים - Magic e (a)
+less35  ·  Magic e - האות i
+less36  ·  קריאת משפטים - Magic e (i)
+less37  ·  Magic e - האות o
+less38  ·  קריאת משפטים - Magic e (o)
+less39  ·  Magic e - האות u
+less40  ·  קריאת משפטים - Magic e (u)
+less41  ·  חזרה - Magic E
+less42  ·  מוציאים לשון - th
+less43  ·  טלפון - ph
+less44  ·  שן - tion
+less45  ·  לילה - igh
+less46  ·  חזרה סופית על כל הצלילים!
+less47  ·  סיפורים מהנים
