@@ -253,7 +253,6 @@
         const swap = () => {
           if (!running) return;
           // the sound pass finished after the mouse had already left: rest on the still
-          if (soundPass && !touchOnly && !a.classList.contains('is-hot')) { soundPass = false; island.stop(); return; }
           soundPass = false;
           back.play().catch(() => {});
           back.classList.remove('is-standby');
@@ -266,7 +265,7 @@
         back.addEventListener('ended', swap);
 
         island.start = (withSound) => {
-          if (running) return;
+          if (running) { if (withSound) playSound(); return; }
           running = true;
           front.currentTime = 0;
           front.play().then(() => a.classList.add('is-playing')).catch(() => {});
@@ -284,7 +283,8 @@
         };
         a.addEventListener('island-hot', () => island.start(true));
         // touch screens fire mouseleave after a tap; there the island keeps playing
-        a.addEventListener('island-cold', () => { if (!soundPass && !touchOnly) island.stop(); });
+        // the island in front keeps moving; leaving it only stops the sound
+        a.addEventListener('island-cold', () => { if (!soundPass) stopSound(); });
         // Browsers pause silent video in a background tab; pick up again on return
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'visible' && running && front.paused) front.play().catch(() => {});
@@ -302,10 +302,11 @@
         anim.style.cssText = boxCss;
         still.after(anim);
         const restart = () => { anim.src = `assets/${island.video}.webp?${Date.now()}`; };
-        island.start = (withSound) => { restart(); a.classList.add('is-playing'); if (withSound) playSound(); };
-        island.stop = () => { a.classList.remove('is-playing'); anim.removeAttribute('src'); stopSound(); };
+        let animOn = false;
+        island.start = (withSound) => { if (!animOn) { animOn = true; restart(); a.classList.add('is-playing'); } if (withSound) playSound(); };
+        island.stop = () => { animOn = false; a.classList.remove('is-playing'); anim.removeAttribute('src'); stopSound(); };
         a.addEventListener('island-hot', () => island.start(true));
-        a.addEventListener('island-cold', () => { if (!touchOnly) island.stop(); });
+        a.addEventListener('island-cold', () => stopSound());
         a.addEventListener('click', (e) => {
           if (a.dataset.slot !== 'active') return;
           if (island.page) return; // the island opens its own page
@@ -525,11 +526,11 @@
       el.dataset.state = status;
       el.setAttribute('aria-disabled', status === 'locked' ? 'true' : 'false');
       el.tabIndex = offset === 0 ? 0 : -1;
-      // Animated islands stop when they leave the front. On touch screens
-      // (no hover) the island in front plays on its own instead.
+      // The island in front plays its animation on its own, silently, from the
+      // moment it arrives; it stops when it leaves the front. Hovering adds its sound.
       if (ISLANDS[i].stop) {
         if (offset !== 0) ISLANDS[i].stop();
-        else if (touchOnly) setTimeout(() => { if (current === i) ISLANDS[i].start(); }, 900);
+        else setTimeout(() => { if (current === i) ISLANDS[i].start(); }, 900);
       }
       // The bar fills when the island arrives in front
       el.querySelector('.island__progress span').style.width =

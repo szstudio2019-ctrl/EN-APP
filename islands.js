@@ -18,7 +18,7 @@
       about: { title: 'האותיות המחייכות', text: 'כאן נכיר אותיות שמחות שמשנות את הצליל של המילה. (טקסט דמו)' } },
     { name: 'אי החזרות', page: 'review.html?r=1-10', review: '1-10', img: 'island-review-still', box: [1.8, -44.2, 564.5, 564.5], video: 'island-review-anim', videoBox: [1.8, -44.2, 564.5, 564.5], status: 'done', earned: 520,
       about: { title: 'זמן לחזרה!', text: 'חוזרים על מה שלמדנו, צוברים תרגולים ומקבלים פרסים. (טקסט דמו)' } },
-    { name: 'אי האותיות הבודדות', page: 'single.html', lessons: '11-16', img: 'island-single', box: [49, 0, 493, 493],
+    { name: 'אי האותיות הבודדות', page: 'single.html', lessons: '11-16', img: 'island-single-still', box: [19.4, -29.6, 552.2, 552.2], video: 'island-single-anim', videoBox: [19.4, -29.6, 552.2, 552.2],
       about: { title: 'האותיות הבודדות', text: 'אותיות שאוהבות לעמוד לבד – ונלמד איך הן נשמעות. (טקסט דמו)' } },
     { name: 'אי החזרות', page: 'review.html?r=1-16', review: '1-16', img: 'island-review-still', box: [1.8, -44.2, 564.5, 564.5], video: 'island-review-anim', videoBox: [1.8, -44.2, 564.5, 564.5], status: 'progress', progress: 40, earned: 180,
       about: { title: 'זמן לחזרה!', text: 'חוזרים על מה שלמדנו, צוברים תרגולים ומקבלים פרסים. (טקסט דמו)' } },
