@@ -257,3 +257,9 @@ body.a-body {
 .u-photo__btns { display: flex; gap: 8px; margin-bottom: 4px; }
 .u-photo__pick { cursor: pointer; }
 .u-photo:has(input:focus-visible) .u-photo__pick { box-shadow: var(--a-focus); }
+
+/* the save area sits in the title row, opposite the heading */
+.a-head .a-save { margin: 0; margin-inline-start: auto; }
+.a-head .a-save__in { max-width: none; margin: 0; padding: 0; gap: 16px; }
+.a-head .a-save__actions { margin-inline-start: 0; }
+@media (max-width: 760px) { .a-head .a-save { width: 100%; } .a-head .a-save__in { padding: 0; } }

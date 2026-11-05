@@ -15,7 +15,7 @@
     onSave: () => { Worlds.save(list); saved = JSON.parse(JSON.stringify(list)); },
     onCancel: () => { list = JSON.parse(JSON.stringify(saved)); if (!list.some((w) => w.id === pickedId)) pickedId = (list[0] || {}).id; drawAll(); },
   });
-  document.body.appendChild(bar.el);
+  document.querySelector('.a-head').appendChild(bar.el);
   const changed = () => bar.setDirty(JSON.stringify(list) !== JSON.stringify(saved));
   const picked = () => list.find((w) => w.id === pickedId);
   const subOf = (w) => (w.review ? (w.kicker || 'עולם חזרה') : `${w.written} מתוך ${w.planned} שיעורים`);

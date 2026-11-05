@@ -73,7 +73,7 @@
         onSave: () => { saved = { ...cur }; Coins.save(saved); },
         onCancel: () => { cur = { ...saved }; draw(); refresh(); },
       });
-      document.body.appendChild(bar.el);
+      document.querySelector('.a-head').appendChild(bar.el);
       const dirty = () => Object.keys(cur).some((k) => cur[k] !== saved[k]);
       const refresh = UI.wireSteppers(document.getElementById('c-box'), (id, v) => { cur[id.slice(2)] = v; bar.setDirty(dirty()); });
     })();
