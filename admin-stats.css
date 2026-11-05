@@ -1,5 +1,9 @@
 /* Admin – persistence, styled like the old "נתוני התמדה" popup */
-.st-filters { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+/* the two filters beside the title, on the left; tighter pills */
+.a-head { align-items: center; }
+.st-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 32px; }
+.st-filters .a-seg { gap: 6px; }
+.st-filters .a-seg button { min-height: 40px; padding: 0 14px; font-size: 14px; }
 /* two halves: the overall persistence (right), per child (left) */
 .st-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 24px; align-items: start; }
 .st-col { min-width: 0; }
