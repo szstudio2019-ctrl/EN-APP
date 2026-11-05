@@ -40,6 +40,16 @@
   const DAY = 24 * 60 * 60 * 1000;
   const iso = (t) => new Date(t).toISOString().slice(0, 10);
   const now = Date.now();
+  const MORE_DEMO = [
+    ['ליה', 'שמעוני', 'lia.s', '054-1112233', 'lia@example.com', 200, 160, true],
+    ['רועי', 'גולן', 'roy.g', '052-2223344', 'roy@example.com', 90, 270, true],
+    ['נגה', 'אלון', 'noga.a', '050-3334455', 'noga@example.com', 250, 110, true],
+    ['עידו', 'כץ', 'ido.k', '053-4445566', 'ido@example.com', 330, 25, true],
+    ['הדר', 'ברק', 'hadar.b', '058-5556677', 'hadar@example.com', 420, -60, false],
+    ['אלה', 'רוזן', 'ella.r', '054-6667788', 'ella@example.com', 45, 320, true],
+    ['דניאל', 'סויסה', 'daniel.s', '052-7778899', 'daniel@example.com', 150, 215, true],
+    ['יעל', 'חדד', 'yael.h', '050-8889900', 'yael@example.com', 280, 85, true],
+  ];
   const demoUsers = () => [
     ['שירה', 'כהן', 'shira.cohen', '050-1234567', 'shira@example.com', 120, 245, true, 'assets/avatar.webp'],
     ['נועם', 'לוי', 'noam.levi', '052-2345678', 'noam@example.com', 300, 65, true],
@@ -48,12 +58,20 @@
     ['תמר', 'אברהם', 'tamar.a', '058-5678901', 'tamar@example.com', 350, 12, true],
     ['יונתן', 'ביטון', 'yoni.b', '050-6789012', 'yoni@example.com', 500, -135, false],
     ['אורי', 'דהן', 'uri.d', '052-7890123', 'uri@example.com', 60, 300, true],
+    ...MORE_DEMO,
   ].map(([first, last, user, phone, email, ago, left, active, photo]) => ({
     id: user, first, last, user, phone, email, active, photo: photo || '',
     start: iso(now - ago * DAY), end: iso(now + left * DAY),
   }));
   let users = read('en-app:users', null);
   if (!Array.isArray(users)) users = demoUsers();
+  // more demo children (added once to a list saved before they existed)
+  if (!read('en-app:users-more', false)) {
+    const have = new Set(users.map((u) => u.id));
+    demoUsers().forEach((u) => { if (!have.has(u.id) && MORE_DEMO.some((m) => m[2] === u.id)) users.push(u); });
+    write('en-app:users', users);
+    write('en-app:users-more', true);
+  }
   const Users = {
     all: () => users,
     save: () => write('en-app:users', users),

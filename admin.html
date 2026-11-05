@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css">
+  <link rel="stylesheet" href="admin-stats.css">
+  <link rel="stylesheet" href="admin-users.css">
   <script>
     // the old "נתוני התמדה" link (admin.html#stats) now has its own page
     if (location.hash === '#stats') location.replace('admin-stats.html');
@@ -39,10 +41,10 @@
           <input type="search" id="u-search" placeholder="חיפוש לפי שם, משתמש, טלפון או אימייל">
         </label>
       </div>
-      <div class="a-table-wrap">
+      <div class="a-table-wrap u-scroll">
         <table class="a-table">
           <thead>
-            <tr><th>משתמש</th><th>שם משתמש</th><th>טלפון</th><th>אימייל</th><th>הרשמה</th><th>המנוי פג</th><th>פעיל</th><th>פעולות</th></tr>
+            <tr><th>משתמש</th><th>שם משתמש</th><th>טלפון</th><th>אימייל</th><th>הרשמה</th><th>המנוי פג</th><th>נתונים</th><th>פעיל</th><th>עריכה</th></tr>
           </thead>
           <tbody id="u-rows"></tbody>
         </table>
