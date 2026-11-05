@@ -60,3 +60,7 @@
   .w-layout { grid-template-columns: minmax(0, 1fr); }
   .w-preview { grid-column: auto; }
 }
+
+/* הוספת עולם in the title row, beside the save area */
+.a-head .w-add-top { margin-inline-start: auto; }
+.a-head .w-add-top ~ .a-save { margin-inline-start: 0; }
