@@ -35,17 +35,21 @@
   let kidsNow = [];
   let barsNow = [];
 
-  // the bars, oldest first: { label, v, days (days-ago indexes), long (for the tooltip) }
+  // each child's colour in the chart (navy, pink, yellow, then more)
+  const KID_COLORS = ['#2A2577', '#E33563', '#EEB741', '#2F7CF2', '#4C8A1E', '#8E4FE0', '#0E7468', '#D9661F'];
+  const colorOf = (k) => KID_COLORS[k % KID_COLORS.length];
+
+  // the bars, oldest first: { label, long, days (days-ago indexes), parts: minutes per child, v: total minutes }
   function series(kids) {
     const acts = kids.map(({ u }) => activityOf(u));
-    const playedOn = (d) => acts.filter((a) => a[d] && a[d].min).length;
+    const minutesOn = (days) => acts.map((a) => days.reduce((s, d) => s + ((a[d] && a[d].min) || 0), 0));
     const today = new Date();
+    const mk = (label, long, days) => { const parts = minutesOn(days); return { label, long, days, parts, v: parts.reduce((s, x) => s + x, 0) }; };
     if (period === 'year') {
       return Array.from({ length: 12 }, (_, k) => {
         const m = 11 - k; // months ago
-        const days = Array.from({ length: 30 }, (_, j) => m * 30 + j);
         const month = MONTHS_HE[(today.getMonth() - m + 12) % 12];
-        return { label: month.slice(0, 3), long: month, days, v: Math.round(days.reduce((s, d) => s + playedOn(d), 0) / days.length) };
+        return mk(month.slice(0, 3), month, Array.from({ length: 30 }, (_, j) => m * 30 + j));
       });
     }
     const n = PERIODS[period][1];
@@ -54,30 +58,38 @@
       const date = new Date(today.getTime() - d * 86400000);
       const label = period === 'week' ? DAYS_HE[date.getDay()] : String(date.getDate());
       const long = period === 'week' ? `יום ${DAYS_HE[date.getDay()]}` : date.toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric' });
-      return { label, long, days: [d], v: playedOn(d) };
+      return mk(label, long, [d]);
     });
   }
 
+  // a nice whole step for the minutes axis
+  const niceMax = (v) => { const m = Math.max(10, v); const p = 10 ** Math.floor(Math.log10(m)); const f = m / p; return (f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
+
   function chart(data) {
     const box = document.getElementById('s-chart');
-    const max = Math.max(1, ...data.map((b) => b.v));
+    const max = niceMax(Math.max(0, ...data.map((b) => b.v)));
     const W = Math.max(box.clientWidth || 600, data.length * 30);
-    const H = 250, top = 16, bottom = 34, axis = 64;
+    const H = Math.max(220, box.clientHeight || 260), top = 16, bottom = 34, axis = 70;
     const plotW = W - axis;
     const step = plotW / data.length;
     const bw = Math.min(58, step * 0.56);
     const y = (v) => H - bottom - (v / max) * (H - top - bottom);
-    // whole numbers on the axis only
-    const ticks = [...new Set([0, Math.ceil(max / 2), max])].filter((t) => t === 0 || t === Math.round(t));
+    const ticks = [0, max / 2, max];
     const grid = ticks.map((t) => `<line x1="0" x2="${plotW}" y1="${y(t)}" y2="${y(t)}" stroke="#E6E4F2" ${t ? 'stroke-dasharray="4 4"' : ''}/>
-      ${t ? `<text x="${W - 4}" y="${y(t) + 4}" text-anchor="start" font-size="13" font-weight="600" fill="#5B5780">${t} ${t === 1 ? 'ילד/ה' : 'ילדים'}</text>` : ''}`).join('');
-    // RTL: the most recent on the left
+      ${t ? `<text x="${W - 4}" y="${y(t) + 4}" text-anchor="start" font-size="13" font-weight="600" fill="#5B5780">${t} דק׳</text>` : ''}`).join('');
+    // RTL: the most recent on the left; each bar stacked by child, the first child at the bottom
     const bars = data.map((b, k) => {
       const x = plotW - step * (k + 0.5);
-      const h = H - bottom - y(b.v);
-      return `<g class="st-bar" data-k="${k}" tabindex="0" role="img" aria-label="${b.long}: ${b.v} ${b.v === 1 ? 'ילד/ה שיחק/ה' : 'ילדים שיחקו'}">
+      let acc = 0;
+      const segs = b.parts.map((m, j) => {
+        if (!m) return '';
+        const y0 = y(acc), y1 = y(acc + m);
+        acc += m;
+        return `<rect class="st-seg" x="${x - bw / 2}" y="${y1}" width="${bw}" height="${Math.max(1, y0 - y1)}" fill="${colorOf(j)}"/>`;
+      }).join('');
+      return `<g class="st-bar" data-k="${k}" tabindex="0" role="img" aria-label="${b.long}: ${b.v} דקות">
         <rect x="${x - step / 2}" y="${top}" width="${step}" height="${H - top - bottom}" fill="transparent"/>
-        ${b.v ? `<rect class="st-bar__fill" x="${x - bw / 2}" y="${y(b.v)}" width="${bw}" height="${h}" rx="4"/>` : `<rect x="${x - bw / 2}" y="${H - bottom - 3}" width="${bw}" height="3" rx="1.5" fill="#E6E4F2"/>`}
+        ${b.v ? `<g class="st-bar__fill">${segs}</g>` : `<rect x="${x - bw / 2}" y="${H - bottom - 3}" width="${bw}" height="3" rx="1.5" fill="#E6E4F2"/>`}
         <text x="${x}" y="${H - 10}" text-anchor="middle" font-size="13" fill="#5B5780">${b.label}</text>
       </g>`;
     }).join('');
@@ -90,7 +102,7 @@
         <span class="st-pod__who">${Users.avatar(r.u, r.i)}<small>${r.pct}%</small>${place === 1 ? '<img class="st-pod__cup" src="assets/trophy.svg" alt="">' : ''}</span>
         <span class="st-pod__step"><b>${place}</b><span>${UI.esc(r.u.first)}</span></span>
       </div>` : '<div class="st-pod__place"></div>');
-    return `<div class="st-tile st-pod" aria-label="המתמידים ביותר"><p class="st-tile__label">המתמידים ביותר</p><div class="st-pod__row">${step(top[1], 2)}${step(top[0], 1)}${step(top[2], 3)}</div></div>`;
+    return `<h2 class="st-col__title">המתמידים ביותר</h2><div class="st-pod__row">${step(top[1], 2)}${step(top[0], 1)}${step(top[2], 3)}</div>`;
   }
 
   function render() {
@@ -114,11 +126,11 @@
       tile('coins', 'מטבעות שנצברו', coins.toLocaleString('he-IL'), `${who === 'one' ? 'הילד/ה' : 'כל הילדים'} · ${pname}`) +
       tile('persist', 'התמדה ממוצעת', `${avg}%`, 'מהימים בתקופה') +
       tile('kids', 'ילדים ששיחקו', playing, `מתוך ${rowsData.length}`) +
-      tile('reviews', 'חזרות', reviews, who === 'one' ? 'הילד/ה' : 'כל הילדים') +
-      podium(rowsData.slice(0, 3));
+      tile('reviews', 'חזרות', reviews, who === 'one' ? 'הילד/ה' : 'כל הילדים');
+    document.getElementById('s-podium').innerHTML = podium(rowsData.slice(0, 3));
 
     barsNow = series(kids);
-    document.getElementById('s-chart-title').textContent = period === 'year' ? 'כמה ילדים שיחקו · ממוצע ליום בכל חודש' : 'כמה ילדים שיחקו בכל יום';
+    document.getElementById('s-chart-title').textContent = period === 'year' ? 'כמה דקות שיחקו בכל חודש' : 'כמה דקות שיחקו בכל יום';
     document.getElementById('s-chart').innerHTML = chart(barsNow);
 
     document.getElementById('s-rank').innerHTML = rowsData.map((r) => `<li>
@@ -137,15 +149,12 @@
   function showTip(g, x, y) {
     const b = barsNow[Number(g.dataset.k)];
     if (!b) return;
-    const year = period === 'year';
-    const list = kidsNow.map(({ u, i }) => {
-      const a = activityOf(u);
-      const v = year ? b.days.filter((d) => a[d] && a[d].min).length : b.days.reduce((s, d) => s + ((a[d] && a[d].min) || 0), 0);
-      return { u, i, v };
-    }).filter((r) => r.v).sort((p, q) => q.v - p.v);
+    // each child's minutes then, with the child's colour from the bar
+    const list = kidsNow.map(({ u, i }, j) => ({ u, i, v: b.parts[j] || 0, c: colorOf(j) }))
+      .filter((r) => r.v).sort((p, q) => q.v - p.v);
     const count = list.length;
-    tip.innerHTML = `<b class="st-tip__title">${b.long} · ${count} ${count === 1 ? 'ילד/ה שיחק/ה' : 'ילדים שיחקו'}</b>
-      ${count ? list.map((r) => `<span class="st-tip__row">${Users.avatar(r.u, r.i)}<span>${UI.esc(`${r.u.first} ${r.u.last}`)}</span><b>${r.v} ${year ? 'ימים' : 'דק׳'}</b></span>`).join('') : '<span class="a-muted">אף אחד לא שיחק</span>'}`;
+    tip.innerHTML = `<b class="st-tip__title">${b.long} · ${count} ${count === 1 ? 'ילד/ה שיחק/ה' : 'ילדים שיחקו'} · ${b.v} דק׳</b>
+      ${count ? list.map((r) => `<span class="st-tip__row"><i class="st-tip__dot" style="background:${r.c}"></i>${Users.avatar(r.u, r.i)}<span>${UI.esc(`${r.u.first} ${r.u.last}`)}</span><b>${r.v} דק׳</b></span>`).join('') : '<span class="a-muted">אף אחד לא שיחק</span>'}`;
     tip.hidden = false;
     const w = tip.offsetWidth, h = tip.offsetHeight;
     let left = x - w / 2, top = y - h - 16;

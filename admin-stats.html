@@ -26,13 +26,18 @@
 
     <section>
       <div class="st-cols">
-        <div class="st-col a-card">
-          <h2 class="st-col__title">התמדה כללית</h2>
-          <div class="st-tiles" id="s-tiles"></div>
-          <h3 class="st-col__sub" id="s-chart-title">כמה ילדים שיחקו בכל יום</h3>
-          <div class="a-chart" id="s-chart"></div>
+        <div class="st-col st-col--main">
+          <div class="a-card st-box">
+            <h2 class="st-col__title">התמדה כללית</h2>
+            <div class="st-tiles" id="s-tiles"></div>
+          </div>
+          <div class="a-card st-box" id="s-podium"></div>
+          <div class="a-card st-box st-box--chart">
+            <h2 class="st-col__title" id="s-chart-title">כמה דקות שיחקו בכל יום</h2>
+            <div class="a-chart" id="s-chart"></div>
+          </div>
         </div>
-        <div class="st-col a-card">
+        <div class="st-col a-card st-box st-box--list">
           <h2 class="st-col__title">התמדה לפי ילד</h2>
           <ul class="st-list" id="s-rank"></ul>
         </div>

@@ -5,13 +5,22 @@
 .st-filters .a-seg { gap: 6px; }
 .st-filters .a-seg button { min-height: 40px; padding: 0 14px; font-size: 14px; }
 /* two halves: the overall persistence (right), per child (left) */
-.st-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 24px; align-items: start; }
+/* the two columns fill the page down to the bottom */
+.st-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 24px; align-items: stretch; height: calc(100vh - 64px - 140px); min-height: 680px; }
+.st-col--main { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.st-box { margin: 0; padding: 20px 24px; }
+.a-card + .a-card.st-box { margin-top: 0; }
+.st-box--chart { flex: 1; min-height: 260px; display: flex; flex-direction: column; }
+.st-box--chart .a-chart { flex: 1; min-height: 0; overflow: hidden; }
+.st-box--list { display: flex; flex-direction: column; min-height: 0; }
+.st-box--list .st-list { flex: 1; min-height: 0; overflow-y: auto; margin-inline-end: -12px; padding-inline-end: 12px; }
 .st-col { min-width: 0; }
 .a-card + .a-card.st-col { margin-top: 0; }
-.st-col__title { margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #232A6B; }
+.st-col__title { margin: 0 0 12px; font-size: 18px; font-weight: 600; color: #232A6B; }
 .st-col__sub { margin: 24px 0 8px; font-size: 15px; font-weight: 600; color: #232A6B; }
 .st-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.st-tiles .st-pod { grid-column: 1 / -1; min-height: 190px; margin-top: 4px; }
+#s-podium { padding-bottom: 0; overflow: hidden; }
+#s-podium .st-pod__row { height: 150px; }
 .st-tile { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 92px; padding: 14px 16px; border-radius: 16px; background: #F3F3FA; }
 .st-tile > div { order: -1; }
 .st-tile__label { margin: 0; font-size: 14px; font-weight: 500; color: var(--a-text-2); }
@@ -69,3 +78,7 @@
 
 @media (max-width: 1100px) { .st-cols { grid-template-columns: minmax(0, 1fr); } .st-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .st-tiles { grid-template-columns: 1fr; } }
+.st-seg { transition: opacity .15s ease; }
+.st-bar.is-hot .st-seg, .st-bar:focus .st-seg { opacity: .82; }
+.st-tip__dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
+@media (max-width: 1100px) { .st-cols { height: auto; min-height: 0; } .st-box--list .st-list { max-height: 520px; } .st-box--chart { min-height: 300px; } }
