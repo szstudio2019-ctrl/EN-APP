@@ -1,19 +1,19 @@
 /* Admin – persistence, styled like the old "נתוני התמדה" popup */
 .st-filters { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
 /* two halves: the overall persistence (right), per child (left) */
-.st-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start; }
+.st-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 24px; align-items: start; }
 .st-col { min-width: 0; }
-.st-col + .st-col { padding-inline-start: 32px; border-inline-start: 1px solid var(--a-line); }
+.a-card + .a-card.st-col { margin-top: 0; }
 .st-col__title { margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #232A6B; }
 .st-col__sub { margin: 24px 0 8px; font-size: 15px; font-weight: 600; color: #232A6B; }
-.st-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.st-tiles .st-pod { grid-column: 1 / -1; min-height: 190px; }
-.st-tile { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 120px; padding: 18px 20px; border-radius: 16px; background: #F3F3FA; }
+.st-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.st-tiles .st-pod { grid-column: 1 / -1; min-height: 190px; margin-top: 4px; }
+.st-tile { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 92px; padding: 14px 16px; border-radius: 16px; background: #F3F3FA; }
 .st-tile > div { order: -1; }
-.st-tile__label { margin: 0; font-size: 15px; font-weight: 500; color: var(--a-text-2); }
-.st-tile__value { margin: 6px 0 4px; font-size: 34px; line-height: 1.05; font-weight: 700; color: #232A6B; }
+.st-tile__label { margin: 0; font-size: 14px; font-weight: 500; color: var(--a-text-2); }
+.st-tile__value { margin: 2px 0 2px; font-size: 26px; line-height: 1.05; font-weight: 700; color: #232A6B; }
 .st-tile__sub { margin: 0; font-size: 13px; color: var(--a-text-2); }
-.st-tile__icon { flex: none; width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%; }
+.st-tile__icon { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; }
 .st-tile__icon svg { width: 22px; height: 22px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .st-tile__icon img { width: 32px; height: 32px; object-fit: contain; }
 .st-tile__icon--coins { background: #FFF1CC; }
@@ -51,17 +51,17 @@
 
 /* per child */
 .st-list { list-style: none; margin: 0; padding: 0; }
-.st-list li { display: grid; grid-template-columns: minmax(120px, 170px) minmax(60px, 1fr) 46px auto; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--a-line); }
+.st-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px 12px; padding: 12px 0; border-bottom: 1px solid var(--a-line); }
 .st-list li:last-child { border-bottom: 0; }
-.st-bar-line { height: 12px; border-radius: 6px; background: #EDEDF5; overflow: hidden; }
+.st-list .a-user { grid-row: 1; grid-column: 1; }
+.st-list .st-pct { grid-row: 1; grid-column: 2; }
+.st-list .st-bar-line { grid-row: 2; grid-column: 1 / -1; }
+.st-list .st-meta { grid-row: 3; grid-column: 1 / -1; }
+.st-bar-line { height: 10px; border-radius: 6px; background: #EDEDF5; overflow: hidden; }
 .st-bar-line i { display: block; height: 100%; border-radius: 6px; background: #E33563; }
 .st-pct { font-size: 16px; color: #232A6B; text-align: end; }
 .st-meta { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--a-text-2); white-space: nowrap; }
 .st-meta img { width: 16px; height: 16px; }
 
-@media (max-width: 1100px) { .st-cols { grid-template-columns: minmax(0, 1fr); } .st-col + .st-col { padding-inline-start: 0; border-inline-start: 0; } }
-@media (max-width: 760px) {
-  .st-list li { grid-template-columns: minmax(0, 1fr) 48px; }
-  .st-list li .st-bar-line, .st-list li .st-meta { grid-column: 1 / -1; }
-}
+@media (max-width: 1100px) { .st-cols { grid-template-columns: minmax(0, 1fr); } .st-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 420px) { .st-tiles { grid-template-columns: 1fr; } }
