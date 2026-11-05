@@ -104,17 +104,18 @@
   };
 
   /* coins */
+  const COIN = '<img src="assets/coin.webp" alt="">';
   const COINS = {
+    // [key, title, description, default, icon, unit]
     earn: [
-      ['lesson', 'סיום שיעור', 'כשהילד/ה מסיים/ת לצפות בשיעור עד הסוף', 10],
-      ['practice', 'סיום תרגול', 'כשכל המילים בתרגול הוקלטו', 10],
-      ['review', 'השלמת חזרה', 'על כל עולם חזרה שהושלם', 20],
-      ['streak', 'יום רצוף', 'בונוס על כל יום ברצף שבו הילד/ה שיחק/ה', 5],
-      ['world', 'עולם שהושלם', 'כשכל השיעורים והתרגולים בעולם הושלמו', 50],
+      ['lesson', 'סיום מסך לימוד', 'מסך הסבר בשיעור (פעם אחת לכל מסך)', 10, COIN],
+      ['practice', 'סיום מסך תרגול', 'מסך תרגול בשיעור (פעם אחת לכל מסך)', 20, COIN],
+      ['review', 'סיום שלב בחזרה', 'כל שלב באיי החזרות (פעם אחת לכל שלב)', 20, COIN],
+      ['chest', 'תיבת אוצר', 'על סיום אי חזרות שלם (פעם אחת לכל אי)', 100, '<img src="assets/chest.webp" alt="">'],
+      ['streak', 'התמדה', 'יום שבו התלמיד תרגל או למד (פעם אחת ביום)', 5, '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5.3 1.6 1.2 2.6 2.3 3C11 9 11.5 6 12 3z" fill="#F2672E"/><path d="M12 12.5c.6 1.6 2 2.3 2 4a2 2 0 0 1-4 0c0-.9.4-1.6 1-2.1.2.6.6 1 1 1.1-.3-1.2-.3-2.1 0-3z" fill="#FFC24A"/></svg>'],
     ],
     shop: [
-      ['letter', 'מחיר אות', 'כמה עולה אות אחת בחנות האותיות', 10],
-      ['redraw', 'הגרלת משפט חדש', 'החלפת המשפט המנצח במשפט אחר', 30],
+      ['letter', 'מחיר כרטיסיית אות', 'כמה מטבעות עולה אות בחנות', 10, '<img src="assets/shop.webp" alt="">', 'מטבעות לאות'],
     ],
   };
   const Coins = {
@@ -134,9 +135,9 @@
     esc,
     switchHtml: (id, on, label) => `<label class="a-switch"><input type="checkbox" id="${id}" ${on ? 'checked' : ''} aria-label="${esc(label)}"><span class="a-switch__track" aria-hidden="true"></span></label>`,
     stepperHtml: (id, value, label, min = 0, max = 999) => `<span class="a-stepper" data-stepper="${id}">
-        <button type="button" data-step="1" aria-label="הוספה – ${esc(label)}">+</button>
-        <input type="number" id="${id}" value="${value}" min="${min}" max="${max}" inputmode="numeric" aria-label="${esc(label)}">
         <button type="button" data-step="-1" aria-label="הפחתה – ${esc(label)}">−</button>
+        <input type="number" id="${id}" value="${value}" min="${min}" max="${max}" inputmode="numeric" aria-label="${esc(label)}">
+        <button type="button" data-step="1" aria-label="הוספה – ${esc(label)}">+</button>
       </span>`,
     // + and − on every stepper inside root; onChange(id, value)
     wireSteppers(root, onChange) {
@@ -190,9 +191,11 @@
         </div>`;
       let dirty = false;
       const status = el.querySelector('.a-save__status');
+      const saveBtn = el.querySelector('[data-save]');
       const setDirty = (d) => {
         dirty = d;
         el.classList.toggle('is-dirty', d);
+        saveBtn.disabled = !d;
         status.textContent = d ? 'יש שינויים שלא נשמרו' : 'כל השינויים נשמרו';
       };
       el.querySelector('[data-save]').addEventListener('click', () => { onSave(); setDirty(false); });
@@ -205,6 +208,7 @@
         if (!confirm('יש שינויים שלא נשמרו. לצאת בלי לשמור?')) e.preventDefault();
         else dirty = false;
       }, true);
+      setDirty(false);
       return { el, setDirty, isDirty: () => dirty };
     },
     ICON: {

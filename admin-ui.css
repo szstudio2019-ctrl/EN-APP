@@ -120,12 +120,13 @@ body.a-body {
 .a-switch input:checked + .a-switch__track::after { transform: translateX(-18px); }
 .a-switch input:focus-visible + .a-switch__track { box-shadow: var(--a-focus); }
 
-/* ---------- stepper ---------- */
-.a-stepper { display: inline-flex; align-items: center; border: 1.5px solid var(--a-field); border-radius: var(--a-radius); background: #fff; overflow: hidden; }
-.a-stepper button { width: 44px; height: 44px; border: 0; background: transparent; font-size: 20px; line-height: 1; cursor: pointer; color: var(--a-text); }
-.a-stepper button:hover { background: var(--a-picked); }
-.a-stepper button:disabled { color: #B5B2CC; cursor: default; background: transparent; }
-.a-stepper input { width: 56px; height: 44px; border: 0; border-inline: 1.5px solid var(--a-line); text-align: center; font-weight: 600; background: #fff; -moz-appearance: textfield; }
+/* ---------- stepper: − [value] + ---------- */
+.a-stepper { display: inline-flex; align-items: center; gap: 10px; }
+.a-stepper button { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 1.5px solid #D9D7EA; border-radius: 50%; background: #fff; color: var(--a-text); font-size: 22px; line-height: 1; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
+.a-stepper button:hover { background: var(--a-picked); border-color: var(--a-field); }
+.a-stepper button:disabled { color: #B5B2CC; cursor: default; background: #fff; border-color: #E6E4F2; }
+.a-stepper input { width: 84px; height: 46px; border: 1.5px solid #D9D7EA; border-radius: 10px; text-align: center; font-size: 22px; font-weight: 700; color: #232A6B; background: #fff; -moz-appearance: textfield; }
+.a-stepper input:focus-visible { border-color: var(--a-bar); box-shadow: 0 0 0 3px rgba(80, 65, 146, .25); }
 .a-stepper input::-webkit-outer-spin-button, .a-stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
 /* ---------- status tag ---------- */
@@ -140,16 +141,17 @@ body.a-body {
 .a-note--warn svg { stroke: #8A5A00; }
 .a-note p { margin: 0; }
 
-/* ---------- sticky save bar ---------- */
-.a-save { position: sticky; bottom: 0; z-index: 40; margin-top: 24px; background: #fff; border-top: 1px solid var(--a-line); box-shadow: 0 -6px 18px rgba(42, 37, 97, .08); }
-.a-save__in { max-width: 1392px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 12px; min-height: 68px; }
+/* ---------- save row: under the content, no white bar; the save button on the left ---------- */
+.a-save { margin-top: 24px; }
+.a-save__in { max-width: 1392px; margin: 0 auto; padding: 0 24px 32px; display: flex; align-items: center; gap: 12px; }
 .a-save__status { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; color: var(--a-green); }
 .a-save__status::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: currentColor; }
 /* #C77700 on white is under 4.5:1, so the orange is the dot; the words stay dark */
 .a-save.is-dirty .a-save__status { color: var(--a-text); }
 .a-save.is-dirty .a-save__status::before { background: var(--a-orange); }
 .a-save__actions { margin-inline-start: auto; display: flex; gap: 10px; }
-.a-save:not(.is-dirty) .a-save__actions { display: none; }
+.a-save:not(.is-dirty) [data-cancel] { display: none; }
+.a-body .a-btn--primary:disabled { opacity: .45; cursor: default; background: var(--a-pink); }
 
 /* ---------- table ---------- */
 .a-table-wrap { overflow-x: auto; margin: 0 -24px; padding: 0 24px; }
@@ -209,9 +211,7 @@ body.a-body {
   .a-table-wrap { margin: 0 -16px; padding: 0 16px; }
   .a-head h1 { font-size: 26px; }
   .a-grid { grid-template-columns: 1fr; }
-  .a-save__in { padding: 10px 16px; flex-wrap: wrap; }
-  .a-save__actions { width: 100%; }
-  .a-save__actions .a-btn { flex: 1; }
+  .a-save__in { padding: 0 16px 24px; flex-wrap: wrap; }
   .a-rank li { grid-template-columns: 24px minmax(0, 1fr) 44px; }
   .a-rank li .a-bar { grid-column: 2 / -1; grid-row: 2; }
   .a-rank li .a-rank__meta { grid-column: 2 / -1; grid-row: 3; }
