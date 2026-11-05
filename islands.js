@@ -14,7 +14,7 @@
         title: 'האות a היא הרופא/ה!',
         text: 'בעולם הזה נכיר את האות a – שאומרת לאות שלפניה להגיד אַה, כמו אצל הרופא/ה.',
       } },
-    { name: 'אי האותיות המחייכות', page: 'smiles.html', lessons: '5-11', img: 'island-smiles', box: [21, 27, 529, 423],
+    { name: 'אי האותיות המחייכות', page: 'smiles.html', lessons: '5-11', img: 'island-smiles-still', box: [-10.8, 1.1, 592.5, 474.9], video: 'island-smiles-anim', videoBox: [-10.8, 1.1, 592.5, 474.9],
       about: { title: 'האותיות המחייכות', text: 'כאן נכיר אותיות שמחות שמשנות את הצליל של המילה. (טקסט דמו)' } },
     { name: 'אי החזרות', page: 'review.html?r=1-10', review: '1-10', img: 'island-review-still', box: [1.8, -44.2, 564.5, 564.5], video: 'island-review-anim', videoBox: [1.8, -44.2, 564.5, 564.5], status: 'done', earned: 520,
       about: { title: 'זמן לחזרה!', text: 'חוזרים על מה שלמדנו, צוברים תרגולים ומקבלים פרסים. (טקסט דמו)' } },
