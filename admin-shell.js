@@ -4,10 +4,10 @@
 // (switch, stepper, segmented filter, sticky save bar).
 (function () {
   const PAGES = [
-    ['content', 'admin-content.html', 'עריכת תוכן'],
-    ['users', 'admin.html', 'משתמשים'],
-    ['stats', 'admin-stats.html', 'התמדה'],
-    ['coins', 'admin-coins.html', 'מטבעות'],
+    ['content', 'admin-content.html', 'עריכת תוכן', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>'],
+    ['users', 'admin.html', 'משתמשים', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></svg>'],
+    ['stats', 'admin-stats.html', 'התמדה', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'],
+    ['coins', 'admin-coins.html', 'מטבעות', '<img src="assets/coin.webp" alt="">'],
   ];
   const page = document.body.dataset.page;
 
@@ -23,7 +23,7 @@
         </span>
       </a>
       <nav class="a-nav" aria-label="ניהול">
-        ${PAGES.map(([k, href, name]) => `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${name}</a>`).join('')}
+        ${PAGES.map(([k, href, name, icon]) => `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`).join('')}
       </nav>
       <div class="a-top__end">
         <a class="a-top__site" href="index.html">לאתר התלמידים<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
