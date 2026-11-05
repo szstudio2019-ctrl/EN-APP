@@ -16,9 +16,11 @@
   top.className = 'a-top';
   top.innerHTML = `
     <div class="a-top__in">
-      <a class="a-logo" href="admin-content.html" aria-label="מדקדקים באנגלית – ניהול">
-        <span class="a-logo__mark" aria-hidden="true"><span>a</span><span>b</span><span>c</span></span>
-        <span>ניהול</span>
+      <a class="a-logo" href="admin-content.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית · ניהול">
+        <span class="logo">
+          <span class="logo__text"><span class="logo__title">מדקדקים באנגלית</span><span class="logo__subtitle">קורס דיגיטלי באנגלית</span></span>
+          <span class="logo__mark"><img class="logo__ring" src="assets/logo-ring.svg" alt=""><span class="logo__tile logo__tile--a">a</span><span class="logo__tile logo__tile--c">c</span><span class="logo__tile logo__tile--b">b</span></span>
+        </span>
       </a>
       <nav class="a-nav" aria-label="ניהול">
         ${PAGES.map(([k, href, name]) => `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${name}</a>`).join('')}

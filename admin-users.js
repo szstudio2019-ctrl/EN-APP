@@ -11,11 +11,12 @@
   let filter = 'all';
   const fmt = (d) => new Date(d).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' });
 
-  // 🏆 played on most days of the last 30, 🏅 keeps trying
+  // the trophy: played on most days of the last 30; the medal: keeps trying
+  const MEDAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#f4b73b" stroke="#d08a00" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg>';
   function badgeOf(u) {
     const pct = (activityOf(u).slice(0, 30).filter((d) => d.min).length / 30) * 100;
-    if (pct >= 70) return '<span title="מצטיין/ת" aria-label="מצטיין/ת">🏆</span>';
-    if (pct >= 40) return '<span title="מתמיד/ה" aria-label="מתמיד/ה">🏅</span>';
+    if (pct >= 70) return '<span class="a-badge" title="מצטיין/ת"><img src="assets/trophy.svg" alt="מצטיין/ת"></span>';
+    if (pct >= 40) return `<span class="a-badge" title="מתמיד/ה">${MEDAL}<span class="sr-only">מתמיד/ה</span></span>`;
     return '';
   }
 

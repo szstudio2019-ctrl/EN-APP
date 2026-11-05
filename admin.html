@@ -6,7 +6,7 @@
   <title>משתמשים – ניהול</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css">
   <script>
@@ -27,13 +27,17 @@
     </div>
 
     <section class="a-card" aria-label="רשימת המשתמשים">
-      <div class="a-filters">
+      <div class="a-filters" style="margin-bottom:16px">
         <div id="u-filter"></div>
-        <label class="a-field" style="flex:1;min-width:220px;max-width:420px">
-          <span class="sr-only">חיפוש</span>
-          <input type="search" id="u-search" placeholder="חיפוש לפי שם, משתמש, טלפון או אימייל">
-        </label>
+        <p class="a-legend" style="margin-top:0;margin-bottom:0">
+          <span><img src="assets/trophy.svg" alt=""><span><b>מצטיינים</b><small>שיחקו ברוב הימים בחודש האחרון</small></span></span>
+          <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#f4b73b" stroke="#d08a00" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg><span><b>מתמידים</b><small>משתדלים לשחק באופן קבוע</small></span></span>
+        </p>
       </div>
+      <label class="a-field" style="max-width:420px;margin-bottom:16px">
+        <span class="sr-only">חיפוש</span>
+        <input type="search" id="u-search" placeholder="חיפוש לפי שם, משתמש, טלפון או אימייל">
+      </label>
       <div class="a-table-wrap">
         <table class="a-table">
           <thead>
@@ -42,9 +46,7 @@
           <tbody id="u-rows"></tbody>
         </table>
       </div>
-      <p class="a-muted" id="u-empty" hidden style="text-align:center;padding:32px 0;margin:0">לא נמצאו משתמשים</p>
-      <p class="a-small a-muted" style="margin:16px 0 0">🏆 מצטיינים – שיחקו ברוב הימים בחודש האחרון · 🏅 מתמידים – משתדלים לשחק באופן קבוע</p>
-    </section>
+      <p class="a-muted" id="u-empty" hidden style="text-align:center;padding:32px 0;margin:0">לא נמצאו משתמשים</p>    </section>
   </main>
 
   <!-- add / edit a user -->
