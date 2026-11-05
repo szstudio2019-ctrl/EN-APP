@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css">
+  <link rel="stylesheet" href="admin-stats.css">
 </head>
 <body class="a-body" data-page="stats">
   <main class="a-main">
@@ -19,21 +20,16 @@
       </div>
     </div>
 
-    <div class="a-filters">
-      <div><span class="a-label" id="lbl-who">ילדים</span><span id="s-who"></span></div>
-      <div><span class="a-label" id="lbl-period">תקופה</span><span id="s-period"></span></div>
-    </div>
-
-    <div class="a-tiles" id="s-tiles"></div>
-
     <section class="a-card">
-      <h2 class="a-card__title" id="s-chart-title">כמה ילדים שיחקו בכל יום</h2>
+      <div class="st-filters">
+        <span id="s-period"></span>
+        <span id="s-who"></span>
+      </div>
+      <div class="st-tiles" id="s-tiles"></div>
+      <h2 class="a-card__title" id="s-chart-title" style="font-size:15px">כמה ילדים שיחקו בכל יום</h2>
       <div class="a-chart" id="s-chart"></div>
-    </section>
-
-    <section class="a-card">
-      <h2 class="a-card__title">התמדה לפי ילד</h2>
-      <ol class="a-rank" id="s-rank"></ol>
+      <h2 class="a-card__title" style="font-size:15px;margin-top:24px">התמדה לפי ילד</h2>
+      <ul class="st-list" id="s-rank"></ul>
     </section>
   </main>
 
