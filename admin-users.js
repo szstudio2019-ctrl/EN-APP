@@ -17,7 +17,7 @@
     const pct = (activityOf(u).slice(0, 30).filter((d) => d.min).length / 30) * 100;
     if (pct >= 70) return '<span class="a-badge" title="מצטיין/ת"><img src="assets/trophy.svg" alt="מצטיין/ת"></span>';
     if (pct >= 40) return `<span class="a-badge" title="מתמיד/ה">${MEDAL}<span class="sr-only">מתמיד/ה</span></span>`;
-    return '';
+    return '<span class="a-badge" aria-hidden="true"></span>';
   }
 
   function drawFilter() {
@@ -42,7 +42,7 @@
       const note = left < 0 ? ' <span class="a-late">(פג)</span>' : left <= 30 ? ` <span class="a-soon">(עוד ${left} ימים)</span>` : '';
       const name = UI.esc(`${u.first} ${u.last}`);
       return `<tr class="${u.active ? '' : 'is-off'}">
-        <td><span class="a-user">${Users.avatar(u, i)}<span>${name}</span> ${badgeOf(u)}</span></td>
+        <td><span class="a-user">${badgeOf(u)}${Users.avatar(u, i)}<span>${name}</span></span></td>
         <td dir="ltr" style="text-align:right">${UI.esc(u.user)}</td>
         <td dir="ltr" style="text-align:right">${UI.esc(u.phone) || '–'}</td>
         <td dir="ltr" style="text-align:right">${UI.esc(u.email) || '–'}</td>

@@ -32,6 +32,14 @@
     kids: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></svg>',
     reviews: '<svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
   };
+  // the trophy (played on most days of the last 30) or the medal (keeps trying), as on the users page
+  const MEDAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#f4b73b" stroke="#d08a00" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg>';
+  function badgeOf(u) {
+    const pct = (activityOf(u).slice(0, 30).filter((d) => d.min).length / 30) * 100;
+    if (pct >= 70) return '<span class="a-badge" title="מצטיין/ת"><img src="assets/trophy.svg" alt="מצטיין/ת"></span>';
+    if (pct >= 40) return '<span class="a-badge" title="מתמיד/ה">' + MEDAL + '<span class="sr-only">מתמיד/ה</span></span>';
+    return '<span class="a-badge" aria-hidden="true"></span>';
+  }
   let kidsNow = [];
   let barsNow = [];
 
@@ -134,7 +142,7 @@
     document.getElementById('s-chart').innerHTML = chart(barsNow);
 
     document.getElementById('s-rank').innerHTML = rowsData.map((r) => `<li>
-        <span class="a-user">${Users.avatar(r.u, r.i)}<b>${UI.esc(`${r.u.first} ${r.u.last}`)}</b></span>
+        <span class="a-user">${badgeOf(r.u)}${Users.avatar(r.u, r.i)}<b>${UI.esc(`${r.u.first} ${r.u.last}`)}</b></span>
         <span class="st-bar-line"><i style="width:${r.pct}%"></i></span>
         <b class="st-pct">${r.pct}%</b>
         <span class="st-meta">${r.played} ימים · <img src="assets/coin.webp" alt="מטבעות">${r.coins}</span>
