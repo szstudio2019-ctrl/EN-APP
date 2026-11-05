@@ -82,3 +82,10 @@
 .st-bar.is-hot .st-seg, .st-bar:focus .st-seg { opacity: .82; }
 .st-tip__dot { flex: none; width: 10px; height: 10px; border-radius: 50%; }
 @media (max-width: 1100px) { .st-cols { height: auto; min-height: 0; } .st-box--list .st-list { max-height: 520px; } .st-box--chart { min-height: 300px; } }
+
+/* the per-child list's scrollbar: thin, pink, on the right (the list runs ltr so the bar sits right; its rows stay rtl) */
+.st-box--list .st-list { direction: ltr; scrollbar-width: thin; scrollbar-color: #E33563 transparent; margin-inline-end: 0; padding-inline-end: 0; padding-right: 10px; margin-right: -12px; }
+.st-box--list .st-list > li { direction: rtl; }
+.st-box--list .st-list::-webkit-scrollbar { width: 6px; }
+.st-box--list .st-list::-webkit-scrollbar-track { background: transparent; }
+.st-box--list .st-list::-webkit-scrollbar-thumb { background: #E33563; border-radius: 3px; }
