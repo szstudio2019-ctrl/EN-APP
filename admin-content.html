@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>עריכת תוכן – ניהול</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin-ui.css">
+  <link rel="stylesheet" href="admin-content.css">
+</head>
+<body class="a-body" data-page="content">
+  <main class="a-main">
+    <div class="a-head">
+      <div>
+        <h1>עריכת תוכן</h1>
+        <p>העולמות במפה: הסדר, השמות, חלון ה"אודות" והשיעורים בכל עולם.</p>
+      </div>
+    </div>
+
+    <div class="w-layout">
+      <!-- the worlds, in map order -->
+      <aside class="a-card w-list" aria-labelledby="w-list-title">
+        <h2 class="sr-only" id="w-list-title">העולמות</h2>
+        <p class="w-count" id="w-count"></p>
+        <p class="a-small a-muted w-howto" id="w-howto">לשינוי הסדר: גוררים בידית, או מתמקדים בידית ולוחצים על החצים למעלה ולמטה.</p>
+        <ol class="w-items" id="w-items"></ol>
+        <button class="a-btn a-btn--ghost w-add" type="button" id="w-add">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת עולם
+        </button>
+        <p class="sr-only" id="w-live" role="status" aria-live="polite"></p>
+      </aside>
+
+      <!-- the picked world -->
+      <section class="w-edit" id="w-edit" aria-labelledby="w-title"></section>
+
+      <!-- how it looks on the map -->
+      <aside class="a-card w-preview" aria-labelledby="w-prev-title">
+        <h2 class="a-card__title" id="w-prev-title">כך זה נראה במפה</h2>
+        <div class="w-map" id="w-map"></div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="islands.js"></script>
+  <script src="admin-shell.js"></script>
+  <script src="admin-content.js"></script>
+</body>
+</html>

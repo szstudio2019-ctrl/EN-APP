@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>התמדה – ניהול</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin-ui.css">
+</head>
+<body class="a-body" data-page="stats">
+  <main class="a-main">
+    <div class="a-head">
+      <div>
+        <h1>התמדה</h1>
+        <p>כמה הילדים משחקים, כמה מטבעות צברו ומי מתמיד/ה במיוחד.</p>
+      </div>
+    </div>
+
+    <div class="a-filters">
+      <div><span class="a-label" id="lbl-who">ילדים</span><span id="s-who"></span></div>
+      <div><span class="a-label" id="lbl-period">תקופה</span><span id="s-period"></span></div>
+    </div>
+
+    <div class="a-tiles" id="s-tiles"></div>
+
+    <section class="a-card">
+      <h2 class="a-card__title" id="s-chart-title">כמה ילדים שיחקו בכל יום</h2>
+      <div class="a-chart" id="s-chart"></div>
+    </section>
+
+    <section class="a-card">
+      <h2 class="a-card__title">התמדה לפי ילד</h2>
+      <ol class="a-rank" id="s-rank"></ol>
+    </section>
+  </main>
+
+  <script src="islands.js"></script>
+  <script src="child-stats.js"></script>
+  <script src="admin-shell.js"></script>
+  <script src="admin-stats.js"></script>
+</body>
+</html>

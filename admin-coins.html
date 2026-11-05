@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מטבעות – ניהול</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Fredoka:wght@700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin-ui.css">
+  <style>
+    .c-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+    .c-list { list-style: none; margin: 0; padding: 0; }
+    .c-row { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--a-line); }
+    .c-row:first-child { padding-top: 0; }
+    .c-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .c-row__text { flex: 1; min-width: 0; }
+    .c-row__text b { display: block; font-weight: 600; }
+    .c-row__text span { font-size: 13px; color: var(--a-text-2); }
+    .c-row__val { display: flex; align-items: center; gap: 8px; flex: none; }
+    .c-unit { font-size: 13px; color: var(--a-text-2); min-width: 48px; }
+    @media (max-width: 900px) { .c-cols { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) { .c-row { flex-wrap: wrap; } .c-row__val { width: 100%; } }
+  </style>
+</head>
+<body class="a-body" data-page="coins">
+  <main class="a-main">
+    <div class="a-head">
+      <div>
+        <h1>מטבעות</h1>
+        <p>כמה מטבעות הילדים מקבלים על כל פעולה, וכמה עולים הדברים בחנות האותיות.</p>
+      </div>
+    </div>
+
+    <div class="a-note" style="margin-bottom:24px">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+      <p>השינויים חלים מרגע השמירה, על פעולות חדשות בלבד. מטבעות שהילדים כבר צברו לא משתנים.</p>
+    </div>
+
+    <div class="c-cols">
+      <section class="a-card" aria-labelledby="earn-title">
+        <h2 class="a-card__title" id="earn-title">צבירת מטבעות</h2>
+        <ul class="c-list" id="c-earn"></ul>
+      </section>
+      <section class="a-card" aria-labelledby="shop-title">
+        <h2 class="a-card__title" id="shop-title">חנות האותיות</h2>
+        <ul class="c-list" id="c-shop"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script src="islands.js"></script>
+  <script src="admin-shell.js"></script>
+  <script>
+    (function () {
+      const { Coins, UI } = window.Admin;
+      let saved = Coins.load();
+      let cur = { ...saved };
+      const row = ([k, title, desc]) => `<li class="c-row">
+          <div class="c-row__text"><b id="t-${k}">${title}</b><span>${desc}</span></div>
+          <div class="c-row__val">${UI.stepperHtml(`c-${k}`, cur[k], title, 0, 500)}<span class="c-unit">מטבעות</span></div>
+        </li>`;
+      const draw = () => {
+        document.getElementById('c-earn').innerHTML = Coins.defs.earn.map(row).join('');
+        document.getElementById('c-shop').innerHTML = Coins.defs.shop.map(row).join('');
+      };
+      draw();
+      const bar = UI.saveBar({
+        onSave: () => { saved = { ...cur }; Coins.save(saved); },
+        onCancel: () => { cur = { ...saved }; draw(); refresh(); },
+      });
+      document.body.appendChild(bar.el);
+      const dirty = () => Object.keys(cur).some((k) => cur[k] !== saved[k]);
+      const refresh = UI.wireSteppers(document.querySelector('.c-cols'), (id, v) => { cur[id.slice(2)] = v; bar.setDirty(dirty()); });
+    })();
+  </script>
+</body>
+</html>
