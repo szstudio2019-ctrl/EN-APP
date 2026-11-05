@@ -1,7 +1,14 @@
 /* Admin – persistence, styled like the old "נתוני התמדה" popup */
 .st-filters { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
-.st-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.6fr); gap: 16px; margin-bottom: 24px; }
-.st-tile { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 160px; padding: 20px 24px; border-radius: 16px; background: #F3F3FA; }
+/* two halves: the overall persistence (right), per child (left) */
+.st-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start; }
+.st-col { min-width: 0; }
+.st-col + .st-col { padding-inline-start: 32px; border-inline-start: 1px solid var(--a-line); }
+.st-col__title { margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #232A6B; }
+.st-col__sub { margin: 24px 0 8px; font-size: 15px; font-weight: 600; color: #232A6B; }
+.st-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.st-tiles .st-pod { grid-column: 1 / -1; min-height: 190px; }
+.st-tile { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 120px; padding: 18px 20px; border-radius: 16px; background: #F3F3FA; }
 .st-tile > div { order: -1; }
 .st-tile__label { margin: 0; font-size: 15px; font-weight: 500; color: var(--a-text-2); }
 .st-tile__value { margin: 6px 0 4px; font-size: 34px; line-height: 1.05; font-weight: 700; color: #232A6B; }
@@ -44,7 +51,7 @@
 
 /* per child */
 .st-list { list-style: none; margin: 0; padding: 0; }
-.st-list li { display: grid; grid-template-columns: minmax(150px, 220px) minmax(80px, 1fr) 52px auto; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--a-line); }
+.st-list li { display: grid; grid-template-columns: minmax(120px, 170px) minmax(60px, 1fr) 46px auto; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--a-line); }
 .st-list li:last-child { border-bottom: 0; }
 .st-bar-line { height: 12px; border-radius: 6px; background: #EDEDF5; overflow: hidden; }
 .st-bar-line i { display: block; height: 100%; border-radius: 6px; background: #E33563; }
@@ -52,7 +59,7 @@
 .st-meta { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: var(--a-text-2); white-space: nowrap; }
 .st-meta img { width: 16px; height: 16px; }
 
-@media (max-width: 1200px) { .st-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .st-pod { grid-column: 1 / -1; min-height: 190px; } }
+@media (max-width: 1100px) { .st-cols { grid-template-columns: minmax(0, 1fr); } .st-col + .st-col { padding-inline-start: 0; border-inline-start: 0; } }
 @media (max-width: 760px) {
   .st-list li { grid-template-columns: minmax(0, 1fr) 48px; }
   .st-list li .st-bar-line, .st-list li .st-meta { grid-column: 1 / -1; }

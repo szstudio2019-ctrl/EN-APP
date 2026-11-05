@@ -70,7 +70,7 @@
     // whole numbers on the axis only
     const ticks = [...new Set([0, Math.ceil(max / 2), max])].filter((t) => t === 0 || t === Math.round(t));
     const grid = ticks.map((t) => `<line x1="0" x2="${plotW}" y1="${y(t)}" y2="${y(t)}" stroke="#E6E4F2" ${t ? 'stroke-dasharray="4 4"' : ''}/>
-      ${t ? `<text x="${W - 4}" y="${y(t) + 4}" text-anchor="end" font-size="13" font-weight="600" fill="#5B5780">${t} ${t === 1 ? 'ילד/ה' : 'ילדים'}</text>` : ''}`).join('');
+      ${t ? `<text x="${W - 4}" y="${y(t) + 4}" text-anchor="start" font-size="13" font-weight="600" fill="#5B5780">${t} ${t === 1 ? 'ילד/ה' : 'ילדים'}</text>` : ''}`).join('');
     // RTL: the most recent on the left
     const bars = data.map((b, k) => {
       const x = plotW - step * (k + 0.5);
