@@ -72,6 +72,35 @@
   const $ = (id) => document.getElementById(id);
   let editing = -1;
   let opener = null;
+
+  // the photo: shrunk to a 160px square (JPEG) so it stays light in storage
+  let photo = '';
+  const setPhoto = (src) => {
+    photo = src || '';
+    $('f-photo-img').hidden = !photo;
+    if (photo) $('f-photo-img').src = photo; else $('f-photo-img').removeAttribute('src');
+    $('f-photo-remove').hidden = !photo;
+    $('f-photo-pick').textContent = photo ? 'החלפת תמונה' : 'הוספת תמונה';
+  };
+  $('f-photo').addEventListener('change', () => {
+    const file = $('f-photo').files && $('f-photo').files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const S = 160;
+      const side = Math.min(img.width, img.height);
+      const c = document.createElement('canvas');
+      c.width = S; c.height = S;
+      c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
+      setPhoto(c.toDataURL('image/jpeg', 0.85));
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+    $('f-photo').value = '';
+  });
+  $('f-photo-remove').addEventListener('click', () => setPhoto(''));
+
   function open(i) {
     editing = i;
     opener = document.activeElement;
@@ -87,10 +116,19 @@
     $('f-start').value = u ? u.start : iso(now);
     $('f-end').value = u ? u.end : iso(now + 365 * DAY);
     $('f-active').checked = u ? u.active : true;
+    setPhoto(u ? u.photo : '');
+    dialog.classList.remove('is-closing');
     dialog.hidden = false;
     $('f-first').focus();
   }
-  function close() { dialog.hidden = true; if (opener) opener.focus(); }
+  // a gentle close: fade out, then hide
+  let closing = null;
+  function close() {
+    if (dialog.hidden || closing) return;
+    dialog.classList.add('is-closing');
+    const done = () => { clearTimeout(closing); closing = null; dialog.hidden = true; dialog.classList.remove('is-closing'); if (opener) opener.focus(); };
+    closing = setTimeout(done, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200);
+  }
   $('u-add').addEventListener('click', () => open(-1));
   rows.addEventListener('click', (e) => { const b = e.target.closest('[data-edit]'); if (b) open(Number(b.dataset.edit)); });
   $('u-close').addEventListener('click', close);
@@ -100,9 +138,9 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const v = (id) => $(id).value.trim();
-    const data = { first: v('f-first'), last: v('f-last'), user: v('f-user'), phone: v('f-phone'), email: v('f-email'), start: v('f-start'), end: v('f-end'), active: $('f-active').checked };
+    const data = { first: v('f-first'), last: v('f-last'), user: v('f-user'), phone: v('f-phone'), email: v('f-email'), start: v('f-start'), end: v('f-end'), active: $('f-active').checked, photo };
     if (editing >= 0) Object.assign(users[editing], data);
-    else users.unshift({ id: `${data.user}-${Date.now()}`, photo: '', ...data });
+    else users.unshift({ id: `${data.user}-${Date.now()}`, ...data });
     Users.save();
     close();
     if (editing < 0) { filter = 'all'; search.value = ''; }

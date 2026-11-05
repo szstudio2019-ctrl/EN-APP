@@ -57,6 +57,21 @@
         <h2 id="u-dialog-title">משתמש חדש</h2>
         <button class="a-icon-btn" type="button" id="u-close" aria-label="סגירה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
+      <!-- the child's photo (optional): a round preview, tap to pick one -->
+      <div class="u-photo">
+        <label class="u-photo__pic" for="f-photo" aria-label="בחירת תמונה">
+          <img id="f-photo-img" alt="" hidden>
+          <svg class="u-photo__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+        </label>
+        <div class="u-photo__text">
+          <span class="u-photo__btns">
+            <label class="a-btn a-btn--ghost u-photo__pick" for="f-photo" id="f-photo-pick">הוספת תמונה</label>
+            <button class="a-btn a-btn--ghost" type="button" id="f-photo-remove" hidden>הסרה</button>
+          </span>
+          <small class="a-help">לא חובה · JPG או PNG</small>
+        </div>
+        <input id="f-photo" type="file" accept="image/*" class="sr-only">
+      </div>
       <div class="a-grid">
         <label class="a-field"><span>שם פרטי</span><input id="f-first" required></label>
         <label class="a-field"><span>שם משפחה</span><input id="f-last"></label>
