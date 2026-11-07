@@ -398,3 +398,8 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* the bar in the dark navy of the filters; the picked filters a touch darker */
 .a-top .a-top__in { background: #2A2577; }
 .a-seg button[aria-pressed="true"], .a-multi__btn.is-on { background: #1E1A5C; }
+
+/* every admin scrollbar: even thinner, in blue */
+html::-webkit-scrollbar, .a-body *::-webkit-scrollbar { width: 2px !important; height: 2px !important; }
+html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: #2A2577 !important; border-radius: 1px !important; }
+@supports not selector(::-webkit-scrollbar) { html, .a-body * { scrollbar-width: thin !important; scrollbar-color: #2A2577 transparent !important; } }
