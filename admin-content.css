@@ -199,3 +199,16 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-delete:hover { background: #FDEBF0; }
 .w-delete svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .w-plus .w-plus__btn, .w-plus .w-plus__btn span { color: #fff !important; }
+
+/* the preview: a 'צפייה' folder tab with an eye (in place of 'כך זה נראה…') */
+.pv-col { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.pv-tab { display: flex; position: relative; z-index: 1; }
+.pv-tab h2 { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; margin: 0; padding: 0 20px; border-radius: 16px 16px 0 0; background: #fff; color: #E33563; font-size: 16px; font-weight: 600; box-shadow: 0 -1px 0 var(--a-line), 1px 0 0 var(--a-line), -1px 0 0 var(--a-line); }
+.pv-tab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pv-col > .a-card { border-top-right-radius: 0; }
+/* the + tab: white, pink plus */
+.t-tabs__add, .w-tabs__add { background: #fff !important; color: #E33563 !important; box-shadow: inset 0 0 0 1.5px #E33563; }
+.t-tabs__add:hover, .w-tabs__add:hover { background: #FDEBF0 !important; }
+@media (max-width: 1240px) { .pv-col { grid-column: 2; } }
+@media (max-width: 860px) { .pv-col { grid-column: auto; } }
+@media (min-width: 861px) { .pv-col { max-height: 100%; } .pv-col > .w-preview { flex: 1; min-height: 0; max-height: none; } }

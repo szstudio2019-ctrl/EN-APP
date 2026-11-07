@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin-ui.css?v=20261108t">
-  <link rel="stylesheet" href="admin-edit.css?v=20261108t">
+  <link rel="stylesheet" href="admin-ui.css?v=20261108v">
+  <link rel="stylesheet" href="admin-edit.css?v=20261108v">
 </head>
 <body class="a-body" data-page="content" data-sub="intro">
   <main class="a-main">
@@ -26,10 +26,12 @@
     </div>
     <div class="t-layout">
       <div class="t-form" id="t-form"></div>
-      <aside class="t-side a-card" aria-label="תצוגה מקדימה">
-        <h2 class="t-side__title">כך זה נראה לילדים</h2>
-        <div id="t-preview"></div>
-      </aside>
+      <div class="pv-col">
+        <div class="pv-tab"><h2 id="t-prev-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</h2></div>
+        <aside class="t-side a-card" aria-labelledby="t-prev-title">
+          <div id="t-preview"></div>
+        </aside>
+      </div>
     </div>
   </main>
   <script>
@@ -71,7 +73,7 @@
     };
   </script>
   <script src="islands.js"></script>
-  <script src="admin-shell.js?v=20261108t"></script>
-  <script src="admin-texts.js?v=20261108t"></script>
+  <script src="admin-shell.js?v=20261108v"></script>
+  <script src="admin-texts.js?v=20261108v"></script>
 </body>
 </html>

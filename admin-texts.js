@@ -128,7 +128,7 @@
   // the preview's own buttons (the intro's slides) redraw it
   window.__pvDraw = () => { if (P.preview) document.getElementById('t-preview').innerHTML = P.preview(cur, UI.esc); };
   const layout = box.closest('.t-layout');
-  const side = layout.querySelector('.t-side');
+  const side = layout.querySelector('.pv-col') || layout.querySelector('.t-side');
   const tabs = document.createElement('div');
   tabs.className = 't-tabs';
   tabs.setAttribute('role', 'tablist');
