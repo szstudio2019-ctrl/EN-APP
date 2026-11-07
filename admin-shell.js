@@ -61,6 +61,7 @@
           ? `<div class="a-sub"><button class="a-sub__btn" type="button" aria-expanded="false" aria-haspopup="true"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span><svg class="a-sub__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="a-sub__list" hidden>${CONTENT_SUB.map((x) => subLink(x, '')).join('')}</div></div>`
           : `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`)).join('')}
       </nav>
+      <a class="a-back" href="index.html?view=admin"><span>לאתר התלמידים</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
     </div>`;
   document.body.prepend(top);
   // the menu button opens the pages (handy on a phone, where the nav is hidden)

@@ -386,3 +386,9 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 
 /* the pages are reached from the menu only: no page buttons on the left of the bar */
 .a-top .a-nav { display: none !important; }
+
+/* on the left of the bar: back to the student site */
+.a-top .a-back { justify-self: end; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 22px; background: #fff; color: #2A2577; text-decoration: none; font-weight: 600; white-space: nowrap; box-shadow: 0 4px 12px rgba(20, 18, 74, .15); }
+.a-top .a-back:hover { background: #F4F3FA; }
+.a-top .a-back svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 760px) { .a-top .a-back span { display: none; } .a-top .a-back { padding: 0 12px; } }
