@@ -64,3 +64,8 @@
 /* הוספת עולם in the title row, beside the save area */
 .a-head .w-add-top { margin-inline-start: auto; }
 .a-head .w-add-top ~ .a-save { margin-inline-start: 0; }
+
+/* publishing and the demo-text warning, under the map preview */
+.w-pubbox { margin-top: 16px; }
+.w-pubbox .w-pub__text { max-width: none; margin: 0; }
+.w-pubbox .w-warn { margin-top: 12px; }

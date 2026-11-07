@@ -114,12 +114,7 @@
         <p class="w-crumbs"><a href="admin-content.html">עריכת תוכן</a> / <span>${UI.esc(w.name)}</span></p>
         <div class="w-top">
           <h2 id="w-title">${UI.esc(w.name) || 'עולם בלי שם'}</h2>
-          <div class="w-pub">
-            ${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}
-            <p class="w-pub__text"><b>${w.published ? 'מפורסם' : 'טיוטה'}</b>${w.published ? 'העולם מופיע לתלמידים במפה' : 'העולם מוסתר מהתלמידים עד שיפורסם'}</p>
-          </div>
         </div>
-        ${w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : ''}
       </div>
       <div class="a-card w-sections">
         <section aria-labelledby="sec-names">
@@ -171,11 +166,11 @@
     drawPreview();
     changed();
   });
-  edit.addEventListener('change', (e) => {
+  // publishing: under the map preview
+  $('w-pubbox').addEventListener('change', (e) => {
     if (e.target.id !== 'f-pub') return;
     picked().published = e.target.checked;
     drawList();
-    drawEdit();
     drawPreview();
     changed();
     $('f-pub').focus();
@@ -185,7 +180,13 @@
   function drawPreview() {
     const w = picked();
     const map = $('w-map');
-    if (!w) { map.innerHTML = ''; return; }
+    const pub = $('w-pubbox');
+    if (!w) { map.innerHTML = ''; pub.innerHTML = ''; return; }
+    pub.innerHTML = `<div class="w-pub">
+        ${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}
+        <p class="w-pub__text"><b>${w.published ? 'מפורסם' : 'טיוטה'}</b>${w.published ? 'העולם מופיע לתלמידים במפה' : 'העולם מוסתר מהתלמידים עד שיפורסם'}</p>
+      </div>
+      ${w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : ''}`;
     map.innerHTML = `${w.published ? '' : '<span class="a-tag a-tag--draft w-map__draft">טיוטה – לא מופיע לתלמידים</span>'}
       ${w.img ? `<img class="w-map__island" src="assets/${w.img}.webp" alt="">` : '<div class="w-map__none">אין עדיין תמונה לעולם</div>'}
       <div class="w-map__bubble">
