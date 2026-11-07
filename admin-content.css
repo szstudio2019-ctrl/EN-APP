@@ -90,7 +90,7 @@
 .w-item { flex-wrap: wrap; }
 .w-open { flex: none; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 10px; background: #fff; box-shadow: 0 1px 3px rgba(42, 37, 97, .12); color: var(--a-text); cursor: pointer; }
 .w-open svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
-.w-open[aria-expanded="true"] svg { transform: rotate(180deg); }
+.w-open[aria-expanded="true"] svg { transform: rotate(-90deg); }
 .w-sub { flex-basis: 100%; list-style: none; margin: 4px 0 2px; padding: 0 44px 0 6px; }
 .w-sub__item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 6px 8px; border-radius: 10px; color: var(--a-text); text-decoration: none; }
 a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
@@ -108,8 +108,8 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 
 /* the pink + beside it, and its menu on a white card */
 .w-plus { position: relative; flex: none; }
-.w-plus__btn { width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #E33563; color: #fff; box-shadow: 0 6px 16px rgba(227, 53, 99, .3); cursor: pointer; transition: transform .15s ease, background .15s ease; }
-.w-plus__btn:hover { background: #C81E55; }
+.w-plus__btn { width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 2px solid #E33563; border-radius: 50%; background: #fff; color: #E33563; box-shadow: 0 4px 12px rgba(227, 53, 99, .15); cursor: pointer; transition: transform .15s ease, background .15s ease; }
+.w-plus__btn:hover { background: #FDEBF0; }
 .w-plus__btn[aria-expanded="true"] { transform: rotate(45deg); }
 .w-plus__btn svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
 .w-plus__menu { position: absolute; top: calc(100% + 8px); left: 0; z-index: 60; min-width: 220px; padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px rgba(42, 37, 97, .18), 0 0 0 1px var(--a-line); animation: a-rise .18s ease both; }
@@ -129,3 +129,20 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-new select { width: 100%; min-height: 46px; padding: 0 12px; border: 1.5px solid var(--a-field); border-radius: var(--a-radius); background: #fff; color: var(--a-text); }
 .w-new__foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 28px; }
 .w-sections section .a-field + .a-field, .w-sections section .a-grid + .a-field, .w-sections section .a-field + .a-grid { margin-top: 16px; }
+
+/* list item: the name across the whole width, under it the status (right) and the opening arrow (left) */
+.w-item { align-items: flex-start; }
+.w-item > .w-grip, .w-item > .w-n, .w-item > .w-pic { align-self: center; }
+.w-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.w-body .w-pick { flex: none; width: 100%; min-height: 0; }
+.w-body .w-pick b { white-space: normal; }
+.w-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.w-row .w-open { width: 30px; height: 30px; }
+.w-item > .w-sub { flex-basis: 100%; }
+/* a small, thin pink scrollbar (Chrome/Edge/Safari use the webkit one; Firefox the standard one) */
+@supports selector(::-webkit-scrollbar) {
+  .w-list, .w-edit, .w-preview { scrollbar-width: auto; scrollbar-color: auto; }
+}
+.w-list::-webkit-scrollbar, .w-edit::-webkit-scrollbar, .w-preview::-webkit-scrollbar { width: 4px; }
+.w-list::-webkit-scrollbar-button, .w-edit::-webkit-scrollbar-button, .w-preview::-webkit-scrollbar-button { display: none; height: 0; }
+.w-list::-webkit-scrollbar-thumb, .w-edit::-webkit-scrollbar-thumb, .w-preview::-webkit-scrollbar-thumb { background: #E33563; border-radius: 2px; }

@@ -52,3 +52,7 @@
 
 @media (max-width: 1200px) { .u-data__tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } .u-editor__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .u-scroll { max-height: none; min-height: 0; } .u-data__tiles, .u-editor__grid { grid-template-columns: minmax(0, 1fr); } }
+
+/* the search on the left of the filter row, the legend under it */
+.a-filters .a-search { margin-inline-start: auto; }
+.a-legend.u-legend { flex-basis: 100%; justify-content: flex-end; }
