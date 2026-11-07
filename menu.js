@@ -1,3 +1,39 @@
+// Einat viewing the student site from the admin area (?view=admin, kept for
+// the tab): a pink bar on top – "מצב ניהול" – with the way back. The page
+// fits below it (the scale scripts read window.innerHeight).
+(function () {
+  const KEY = 'en-app:admin-view';
+  const q = new URLSearchParams(location.search).get('view');
+  try {
+    if (q === 'admin') sessionStorage.setItem(KEY, '1');
+    if (q === 'off') sessionStorage.removeItem(KEY);
+    if (sessionStorage.getItem(KEY) !== '1') return;
+  } catch (e) { if (q !== 'admin') return; }
+  const BAR = 40;
+  try { Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => document.documentElement.clientHeight - BAR }); } catch (e) { /* keep */ }
+  const css = document.createElement('style');
+  css.textContent = `
+    .adm-view { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; height: ${BAR}px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px; background: #E33563; color: #fff; font: 600 15px 'Rubik', 'Assistant', sans-serif; direction: rtl; box-shadow: 0 2px 8px rgba(120, 10, 50, .25); }
+    .adm-view__txt { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .adm-view__txt b { font-weight: 700; }
+    .adm-view svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .adm-view__back { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 14px; background: #fff; color: #E33563; text-decoration: none; font-size: 14px; font-weight: 600; }
+    .adm-view__back:hover { background: #FDEBF0; }
+    html.is-adm-view .viewport { top: ${BAR}px; }
+    @media (max-width: 560px) { .adm-view__more { display: none; } }`;
+  document.head.appendChild(css);
+  document.documentElement.classList.add('is-adm-view');
+  const bar = document.createElement('div');
+  bar.className = 'adm-view';
+  bar.setAttribute('role', 'region');
+  bar.setAttribute('aria-label', 'מצב ניהול');
+  bar.innerHTML = '<span class="adm-view__txt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><b>מצב ניהול</b><span class="adm-view__more">· את צופה באתר כמו תלמידה</span></span>'
+    + '<a class="adm-view__back" href="admin-content.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>חזרה לניהול</a>';
+  const put = () => { document.body.prepend(bar); window.dispatchEvent(new Event('resize')); };
+  if (document.body) put(); else document.addEventListener('DOMContentLoaded', put);
+  bar.querySelector('.adm-view__back').addEventListener('click', () => { try { sessionStorage.removeItem(KEY); } catch (e) { /* none */ } });
+})();
+
 // Side menu, shared by every page (map and island pages). Needs islands.js.
 // - "ראשי" and the logo go to the home page (plain links in the markup)
 // - Game worlds / reviews lists: an island with its own page opens that page;

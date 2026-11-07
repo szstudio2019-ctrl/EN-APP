@@ -358,3 +358,18 @@ a.a-sub__item:hover, a.a-sub__item:focus-visible { background: rgba(255, 255, 25
 .a-menu__sub { margin: 0 0 4px; padding-inline-start: 28px; }
 .a-menu__sub .a-sub__item { min-height: 38px; font-size: 14px; font-weight: 500; }
 @media (max-width: 1240px) { .a-top .a-sub__btn > span { display: none; } .a-top .a-sub__btn { padding: 0 12px; } }
+
+/* the greeting opens Einat's menu */
+.a-me-wrap { position: relative; }
+.a-top .a-me { padding: 4px 6px 4px 10px; border: 0; border-radius: 26px; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.a-top .a-me:hover { background: rgba(255, 255, 255, .12); }
+.a-me__chev { flex: none; width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+.a-me[aria-expanded="true"] .a-me__chev { transform: rotate(180deg); }
+.a-me__menu { position: absolute; top: calc(100% + 12px); right: 0; z-index: 70; min-width: 220px; padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 14px 34px rgba(20, 18, 74, .22), 0 0 0 1px var(--a-line); animation: a-rise .18s ease both; }
+.a-me__item { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 12px; border-radius: 10px; color: var(--a-text); text-decoration: none; font-weight: 500; white-space: nowrap; }
+.a-me__item > span { flex: 1; }
+.a-me__item:hover, .a-me__item:focus-visible { background: var(--a-picked); }
+.a-me__item--main { background: #F4F3FA; font-weight: 600; color: #2A2577; }
+.a-me__item svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.a-me__item--out { color: #E33563; }
+@media (max-width: 760px) { .a-me__chev { display: none; } }

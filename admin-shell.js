@@ -36,11 +36,18 @@
           <div class="a-menu__list" id="a-menu" role="menu" hidden>
             ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>${k === 'content' ? `<div class="a-menu__sub">${CONTENT_SUB.map((x) => subLink(x, ' role="menuitem"')).join('')}</div>` : ''}`).join('')}
             <hr class="a-menu__line">
-            <a role="menuitem" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
+            <a role="menuitem" href="index.html?view=admin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
           </div>
         </div>
-        <a class="a-home" href="index.html" aria-label="לאתר התלמידים – מפת האיים" title="לאתר התלמידים"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></a>
-        <span class="a-me"><img src="assets/team-einat.webp" alt=""><span class="a-me__text"><span class="a-me__hello">${hello}</span><b class="a-me__name">עינת</b></span></span>
+        <div class="a-me-wrap">
+          <button class="a-me" type="button" id="a-me-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-me-menu"><img src="assets/team-einat.webp" alt=""><span class="a-me__text"><span class="a-me__hello">${hello}</span><b class="a-me__name">עינת</b></span><svg class="a-me__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <div class="a-me__menu" id="a-me-menu" role="menu" hidden>
+            <a role="menuitem" class="a-me__item a-me__item--main" href="index.html?view=admin"><span>לאתר התלמידים</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+            <a role="menuitem" class="a-me__item" href="profile.html?view=admin"><span>הפרופיל שלי</span></a>
+            <a role="menuitem" class="a-me__item" href="index.html?intro&amp;view=admin"><span>הסבר על האתר</span></a>
+            <a role="menuitem" class="a-me__item a-me__item--out" href="index.html?view=off"><span>התנתקות</span></a>
+          </div>
+        </div>
       </div>
       <a class="a-logo" href="admin-content.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית · ניהול">
         <span class="logo">
@@ -62,6 +69,13 @@
   menuBtn.addEventListener('click', () => setMenu(menuList.hidden));
   document.addEventListener('click', (e) => { if (!menuList.hidden && !e.target.closest('.a-menu')) setMenu(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menuList.hidden) { setMenu(false); menuBtn.focus(); } });
+  // the greeting opens Einat's menu
+  const meBtn = top.querySelector('#a-me-btn');
+  const meList = top.querySelector('#a-me-menu');
+  const setMe = (on) => { meList.hidden = !on; meBtn.setAttribute('aria-expanded', String(on)); };
+  meBtn.addEventListener('click', () => setMe(meList.hidden));
+  document.addEventListener('click', (e) => { if (!meList.hidden && !e.target.closest('.a-me-wrap')) setMe(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !meList.hidden) { setMe(false); meBtn.focus(); } });
   // 'עריכת תוכן' in the bar opens to its four parts
   const sub = top.querySelector('.a-sub');
   const subBtn = sub.querySelector('.a-sub__btn');
