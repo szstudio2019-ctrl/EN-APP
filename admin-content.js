@@ -273,78 +273,62 @@
     if (first) first.focus();
   }
 
-  // tabs over the middle column: the island, then each of its lessons (+ adds one)
-  let lessonTab = -1;
-  let tabsOf = null;
-  function wTabs(w) {
-    const lessons = w.review ? [] : Array.from({ length: w.planned }, (_, k) => k);
-    return `<div class="w-tabs" role="tablist" aria-label="האי והשיעורים שלו">
-        <button type="button" role="tab" id="w-title" class="w-tabs__island" data-wtab="-1" aria-selected="${lessonTab < 0}">${UI.esc(w.name) || 'אי בלי שם'}</button>
-        ${lessons.map((k) => `<button type="button" role="tab" data-wtab="${k}" aria-selected="${lessonTab === k}">שיעור ${(w.firstLesson || 1) + k}</button>`).join('')}
-        ${w.review ? '' : '<button type="button" class="w-tabs__add" data-wtab-add aria-label="הוספת שיעור">+</button>'}
+  // the picked island's name joins the page title: "עריכת איים – <name>"
+  function setH1(name) {
+    const h1 = document.querySelector('.a-head h1');
+    if (!h1) return;
+    let span = h1.querySelector('.a-h1-island');
+    if (!span) { span = document.createElement('span'); span.className = 'a-h1-island'; h1.appendChild(span); }
+    span.textContent = name ? ` – ${name}` : '';
+  }
+  // tabs over the middle column: its parts (the island's details, media, the map's "about", lessons)
+  const SECS = [['details', 'פרטי האי'], ['media', 'מדיה'], ['about', 'חלון "אודות" במפה'], ['lessons', 'שיעורים']];
+  let secTab = 'details';
+  function wTabs() {
+    return `<div class="w-tabs" role="tablist" aria-label="חלקי העריכה">
+        ${SECS.map(([k, t]) => `<button type="button" role="tab" data-wtab="${k}" aria-selected="${secTab === k}">${t}</button>`).join('')}
       </div>`;
   }
-  function drawLesson(w, k) {
-    const n = (w.firstLesson || 1) + k;
-    const page = (w.lessonPages || [])[k];
-    const name = (w.lessonNames || [])[k] || '';
-    edit.innerHTML = wTabs(w) + `<div class="a-card w-sections w-tabbed">
-        <section aria-labelledby="sec-lesson">
-          <h3 id="sec-lesson">שיעור ${n}</h3>
-          <label class="a-field"><span>שם השיעור (לא חובה)</span><input id="f-lname" value="${UI.esc(name)}" placeholder="למשל: האות a"></label>
-          <div class="w-lesson-state">
-            ${page
-              ? `<span class="a-tag a-tag--live">נכתב</span><a class="a-btn a-btn--ghost" href="${page}?view=admin" target="_blank" rel="noopener">פתיחת השיעור</a>`
-              : '<span class="a-tag a-tag--draft">טרם נכתב</span><small class="a-help">השיעור יופיע במפה כשייכתב</small>'}
-          </div>
-          ${page ? '' : `<button class="w-lesson-del" type="button" data-lesson-del="${k}">מחיקת שיעור ${n}</button>`}
-        </section>
-      </div>`;
+  function lessonsPart(w) {
+    if (w.review) return `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>`;
+    const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
+    const rows = Array.from({ length: w.planned }, (_, k) => {
+      const n = (w.firstLesson || 1) + k;
+      const page = (w.lessonPages || [])[k];
+      return `<li class="w-lrow">
+          <b class="w-lrow__n">שיעור ${n}</b>
+          <input data-lname="${k}" value="${UI.esc((w.lessonNames || [])[k] || '')}" placeholder="שם השיעור (לא חובה)" aria-label="השם של שיעור ${n}">
+          ${page ? `<span class="a-tag a-tag--live">נכתב</span><a class="w-lrow__open" href="${page}?view=admin" target="_blank" rel="noopener" aria-label="פתיחת שיעור ${n} (בלשונית חדשה)" title="פתיחת השיעור"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>`
+            : `<span class="a-tag a-tag--draft">טרם נכתב</span><button class="w-lrow__del" type="button" data-lesson-del="${k}" aria-label="מחיקת שיעור ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>`}
+        </li>`;
+    }).join('');
+    return `<div class="w-progress">
+          <p>נכתבו ${w.written} מתוך ${w.planned}</p>
+          <div class="a-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${w.planned}" aria-valuenow="${w.written}" aria-label="שיעורים שנכתבו"><i style="width:${pct}%"></i></div>
+        </div>
+        <ol class="w-lrows">${rows}</ol>
+        <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שיעור</button>`;
   }
   function drawEdit() {
-    if (mode === 'world') return drawNewWorld();
-    if (mode === 'review') return drawNewReview();
-    if (mode === 'lesson') return drawNewLesson();
+    if (mode === 'world') { setH1(''); return drawNewWorld(); }
+    if (mode === 'review') { setH1(''); return drawNewReview(); }
+    if (mode === 'lesson') { setH1(''); return drawNewLesson(); }
     const w = picked();
-    if (!w) { edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם בכפתור +.</p></div>'; return; }
-    if (tabsOf !== w.id) { tabsOf = w.id; lessonTab = -1; }
-    if (lessonTab >= w.planned) lessonTab = -1;
-    if (lessonTab >= 0) return drawLesson(w, lessonTab);
-    const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
-    edit.innerHTML = wTabs(w) + `<div class="a-card w-sections w-tabbed">
-        <section aria-labelledby="w-title">
-          <h3 class="w-sub-title">פרטי האי</h3>
-          <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
+    if (!w) { setH1(''); edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם בכפתור +.</p></div>'; return; }
+    setH1(w.name);
+    const part = {
+      details: `<label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
             <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
-          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
-        </section>
-        <section aria-labelledby="sec-media">
-          <h3 id="sec-media">מדיה</h3>
-          ${mediaField(w)}
-          ${bgField(w)}
-        </section>
-        <section aria-labelledby="sec-about">
-          <h3 id="sec-about">חלון "אודות" במפה</h3>
-          <label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
-          <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
-        </section>
-        <section aria-labelledby="sec-lessons">
-          <h3 id="sec-lessons">שיעורים</h3>
-          ${w.review ? `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>` : `
-          <div class="w-lessons">
-            <div class="a-field"><span id="lbl-planned">כמה שיעורים מתוכננים בעולם</span>${UI.stepperHtml('f-planned', w.planned, 'כמה שיעורים מתוכננים בעולם', Math.max(1, w.written), 60)}<small class="a-help">למספור במפה, עד שכל השיעורים ייכתבו</small></div>
-            <div class="w-progress">
-              <p>נכתבו ${w.written} מתוך ${w.planned}</p>
-              <div class="a-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${w.planned}" aria-valuenow="${w.written}" aria-label="שיעורים שנכתבו"><i style="width:${pct}%"></i></div>
-            </div>
-          </div>
-          ${w.page ? `<p style="margin:16px 0 0"><a class="a-link" href="${w.page}" target="_blank" rel="noopener">עריכת השיעורים</a> <span class="a-small a-muted">(נפתח בלשונית חדשה)</span></p>` : ''}`}
-        </section>
-      </div>`;
-    refreshSteppers();
+          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>`,
+      media: `${mediaField(w)}${bgField(w)}`,
+      about: `<label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
+          <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>`,
+      lessons: lessonsPart(w),
+    }[secTab];
+    edit.innerHTML = wTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><section>${part}</section></div>`;
   }
 
   function newFoot(label) {
@@ -439,15 +423,14 @@
     const w = picked();
     if (!w) return;
     const t = e.target.closest('[data-wtab]');
-    if (t) { lessonTab = Number(t.dataset.wtab); drawEdit(); const b = edit.querySelector(`[data-wtab="${lessonTab}"]`); if (b) b.focus(); return; }
+    if (t) { secTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${secTab}"]`); if (b) b.focus(); return; }
     if (e.target.closest('[data-wtab-add]')) {
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
       w.planned += 1;
       w.lessonNames.push('');
-      lessonTab = w.planned - 1;
       drawList(); drawEdit(); drawPreview(); changed();
-      const f = $('f-lname'); if (f) f.focus();
+      const f = edit.querySelector(`[data-lname="${w.planned - 1}"]`); if (f) f.focus();
       return;
     }
     const del = e.target.closest('[data-lesson-del]');
@@ -457,18 +440,17 @@
       w.lessonNames = w.lessonNames || [];
       w.lessonNames.splice(k, 1);
       w.planned = Math.max(w.written, w.planned - 1);
-      lessonTab = -1;
       drawList(); drawEdit(); drawPreview(); changed();
     }
   });
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
-    if (id === 'f-lname' && mode === 'edit' && lessonTab >= 0) {
+    if (e.target.dataset.lname != null && mode === 'edit') {
       const w = picked();
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
-      w.lessonNames[lessonTab] = e.target.value;
+      w.lessonNames[Number(e.target.dataset.lname)] = e.target.value;
       drawList(); changed();
       return;
     }
@@ -485,7 +467,7 @@
     if (!w || !key) return;
     w[key] = e.target.value;
     if (key === 'reviewOf') w.kicker = `חזרה על שיעורים ${w.reviewOf}`;
-    if (key === 'name') $('w-title').textContent = w.name || 'עולם בלי שם';
+    if (key === 'name') setH1(w.name);
     drawList();
     drawPreview();
     changed();

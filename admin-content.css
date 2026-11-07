@@ -212,3 +212,19 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 @media (max-width: 1240px) { .pv-col { grid-column: 2; } }
 @media (max-width: 860px) { .pv-col { grid-column: auto; } }
 @media (min-width: 861px) { .pv-col { max-height: 100%; } .pv-col > .w-preview { flex: 1; min-height: 0; max-height: none; } }
+
+/* the island's name joins the page title */
+.a-h1-island { color: #2A2577; }
+/* the lessons tab: one row per lesson */
+.w-lrows { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 8px; }
+.w-lrow { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto 36px; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 12px; background: var(--a-page); }
+.w-lrow__n { font-weight: 600; color: #2A2577; white-space: nowrap; }
+.w-lrow input { width: 100%; min-height: 40px; padding: 6px 12px; border: 1.5px solid var(--a-field); border-radius: 10px; background: #fff; color: var(--a-text); }
+.w-lrow__open, .w-lrow__del { width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #fff; color: #2A2577; box-shadow: inset 0 0 0 1.5px var(--a-line); cursor: pointer; }
+.w-lrow__del { color: #C81E55; }
+.w-lrow__open:hover { background: #EFEFF8; }
+.w-lrow__del:hover { background: #FDEBF0; }
+.w-lrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.w-ladd { margin-top: 14px; }
+.w-tabs [data-wtab] { font-size: 15px; }
+@media (max-width: 640px) { .w-lrow { grid-template-columns: minmax(0, 1fr) auto 36px; } .w-lrow__n { grid-column: 1 / -1; } }
