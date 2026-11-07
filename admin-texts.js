@@ -9,6 +9,7 @@
   const read = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } };
   const clone = (v) => JSON.parse(JSON.stringify(v));
   let saved = Object.assign(clone(P.defaults), read() || {});
+  if (P.fill) P.fill(saved, P.defaults);
   let cur = clone(saved);
   const box = document.getElementById('t-form');
 
