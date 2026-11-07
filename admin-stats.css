@@ -96,3 +96,7 @@
 .st-box--list .st-list::-webkit-scrollbar { width: 4px; }
 .st-box--list .st-list::-webkit-scrollbar-button { display: none; height: 0; }
 .st-box--list .st-list::-webkit-scrollbar-thumb { background: #E33563; border-radius: 2px; }
+
+/* the filters sit on the light blue page: the unpicked ones are white */
+.st-filters .a-seg button:not([aria-pressed="true"]) { background: #fff; }
+.st-filters .a-seg button:not([aria-pressed="true"]):hover { background: #F3F2FB; }
