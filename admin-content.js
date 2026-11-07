@@ -105,9 +105,7 @@
       const page = (w.lessonPages || [])[k];
       const name = (w.lessonNames || [])[k];
       const label = `שיעור ${n}${name ? ` · ${UI.esc(name)}` : ''}`;
-      return page
-        ? `<li><a class="w-sub__item" href="${page}" target="_blank" rel="noopener"><span><b>${label}</b><small>נכתב · נפתח בלשונית חדשה</small></span>${ARROW}</a></li>`
-        : `<li><span class="w-sub__item is-empty"><span><b>${label}</b><small>טרם נכתב</small></span></span></li>`;
+      return `<li><button class="w-sub__item${page ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b><small>${page ? 'נכתב' : 'טרם נכתב'} · עריכה</small></span>${ARROW}</button></li>`;
     }).join('');
     return `<ul class="w-sub">${rows}<li><button class="w-sub__add" type="button" data-add-lesson>+ הוספת שלב</button></li></ul>`;
   }
@@ -123,6 +121,17 @@
       return;
     }
     if (e.target.closest('[data-add-lesson]')) { startNew('lesson', li.dataset.id); return; }
+    const sub = e.target.closest('[data-sub-lesson]');
+    if (sub) {
+      mode = 'edit'; draft = null;
+      pickedId = li.dataset.id;
+      secTab = 'lessons';
+      lessonOpen = Number(sub.dataset.subLesson);
+      drawAll();
+      const t = edit.querySelector(`[data-ldesc="${lessonOpen}"]`);
+      if (t) t.focus();
+      return;
+    }
     pickedId = li.dataset.id;
     mode = 'edit';
     drawAll();
