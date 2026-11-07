@@ -87,3 +87,24 @@
 .t-layout.is-tabs .pv__card { max-width: 760px; margin: 0 auto; }
 .t-layout.is-tabs .pv__nav { max-width: 760px; margin: 14px auto 0; }
 .t-layout.is-tabs .pv-about__cards { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+/* folder tabs on the white card: the picked one white with pink words, the other navy words on no background */
+.t-tabs { display: flex; gap: 4px; margin: 0; padding-inline-start: 0; position: relative; z-index: 1; }
+.t-tabs [data-tab] { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px; border: 0; border-radius: 16px 16px 0 0; background: transparent; color: #2A2577; font: inherit; font-weight: 600; cursor: pointer; }
+.t-tabs [data-tab]:hover { color: #E33563; }
+.t-tabs [data-tab][aria-selected="true"] { background: #fff; color: #E33563; box-shadow: 0 -1px 0 var(--a-line), 1px 0 0 var(--a-line), -1px 0 0 var(--a-line); }
+.t-tabs svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.t-layout.is-tabs .t-form > .t-sec:first-child, .t-layout.is-tabs[data-tab="view"] .t-side { border-top-right-radius: 0; }
+/* the intro: editing 70 / preview 30 */
+.t-layout.is-tabs.is-split { grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); }
+.t-layout.is-tabs.is-split .t-side { position: sticky; top: 16px; }
+.t-layout.is-tabs.is-split .pv { padding: 20px; }
+@media (max-width: 1100px) { .t-layout.is-tabs.is-split { grid-template-columns: minmax(0, 1fr); } }
+/* a picture field */
+.t-img { display: flex; align-items: center; gap: 16px; }
+.t-img__pic { flex: none; width: 120px; height: 90px; display: grid; place-items: center; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--a-line); overflow: hidden; cursor: pointer; color: #8E89B5; }
+.t-img__pic img { width: 100%; height: 100%; object-fit: contain; }
+.t-img__pic svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.t-img__btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.pv__img { display: block; max-width: 100%; max-height: 180px; margin: 0 auto 12px; object-fit: contain; }
+.t-img__del { min-height: 32px; padding: 0 4px; border: 0; background: none; color: var(--a-text-2); font: inherit; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }

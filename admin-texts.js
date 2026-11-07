@@ -13,6 +13,18 @@
   const box = document.getElementById('t-form');
 
   const field = (id, f, v) => {
+    if (f.image) {
+      return `<div class="a-field t-wide"><span>${f.label}</span>
+        <div class="t-img">
+          <label class="t-img__pic" for="${id}" aria-label="בחירת תמונה">${v ? `<img src="${v}" alt="">` : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg>'}</label>
+          <div class="t-img__btns">
+            <label class="a-btn a-btn--ghost" for="${id}">${v ? 'החלפת תמונה' : 'הוספת תמונה'}</label>
+            ${v ? `<button class="u-editor__link u-editor__link--muted t-img__del" type="button" data-img-del="${id}">הסרה</button>` : ''}
+            <small class="a-help" style="display:block">${f.help || 'לא חובה · PNG או WEBP'}</small>
+          </div>
+          <input id="${id}" data-img="${id}" type="file" accept="image/*" class="sr-only">
+        </div></div>`;
+    }
     const input = f.long
       ? `<textarea id="${id}" data-path="${id}">${UI.esc(v || '')}</textarea>`
       : `<input id="${id}" data-path="${id}" value="${UI.esc(v || '')}"${f.ltr ? ' dir="ltr"' : ''}>`;
@@ -55,15 +67,33 @@
   document.querySelector('.a-head').appendChild(bar.el);
   const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
 
+  const setAt = (path, v) => { const p = path.split('.'); if (p.length === 3) cur[p[0]][Number(p[1])][p[2]] = v; else cur[path] = v; };
+  box.addEventListener('change', (e) => {
+    const path = e.target.dataset.img;
+    const file = path && e.target.files && e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const W = Math.min(600, img.width), H = Math.round(img.height * (W / img.width));
+      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      c.getContext('2d').drawImage(img, 0, 0, W, H);
+      setAt(path, c.toDataURL('image/webp', 0.85));
+      URL.revokeObjectURL(url);
+      draw(); changed();
+    };
+    img.src = url;
+  });
   box.addEventListener('input', (e) => {
     const path = e.target.dataset.path;
     if (!path) return;
-    const p = path.split('.');
-    if (p.length === 3) cur[p[0]][Number(p[1])][p[2]] = e.target.value; else cur[path] = e.target.value;
+    setAt(path, e.target.value);
     if (P.preview) document.getElementById('t-preview').innerHTML = P.preview(cur, UI.esc);
     changed();
   });
   box.addEventListener('click', (e) => {
+    const del = e.target.closest('[data-img-del]');
+    if (del) { setAt(del.dataset.imgDel, ''); draw(); changed(); return; }
     const b = e.target.closest('[data-up],[data-down],[data-del],[data-add]');
     if (!b) return;
     if (b.dataset.add) {
@@ -93,11 +123,20 @@
   const side = layout.querySelector('.t-side');
   const tabs = document.createElement('div');
   tabs.className = 't-tabs';
-  tabs.innerHTML = UI.segHtml('תצוגה', [['edit', 'עריכה'], ['view', 'צפייה']], 'edit');
+  tabs.setAttribute('role', 'tablist');
+  tabs.innerHTML = `<button type="button" role="tab" data-tab="edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button>
+    <button type="button" role="tab" data-tab="view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</button>`;
   layout.before(tabs);
   layout.classList.add('is-tabs');
-  const showTab = (k) => { box.hidden = k !== 'edit'; side.hidden = k !== 'view'; if (k === 'view') window.__pvDraw(); };
-  UI.wireSeg(tabs, showTab);
+  const showTab = (k) => {
+    tabs.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === k)));
+    layout.dataset.tab = k;
+    box.hidden = k !== 'edit';
+    side.hidden = k === 'edit' && !P.split;
+    layout.classList.toggle('is-split', k === 'edit' && !!P.split);
+    window.__pvDraw();
+  };
+  tabs.addEventListener('click', (e) => { const b = e.target.closest('[data-tab]'); if (b) showTab(b.dataset.tab); });
   showTab('edit');
   draw();
 })();
