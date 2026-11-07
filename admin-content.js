@@ -182,6 +182,41 @@
           <input id="f-media" type="file" accept="image/*,video/webm,video/mp4" class="sr-only">
         </div></div>`;
   }
+  // the island page's background picture
+  const BG = {
+    'letters.html': 'assets/world-letters-bg.webp', 'doctor.html': 'assets/doctor-world-bg.jpg', 'smiles.html': 'assets/world-smiles-bg.webp',
+    'single.html': 'assets/world-single-bg.webp', 'blending.html': 'assets/world-blending-bg.webp', 'whistling.html': 'assets/world-whistling-bg.webp',
+    'magic.html': 'assets/world-magic-bg.webp', 'sounds.html': 'assets/world-sounds-bg.webp', 'review.html': 'assets/world-review-bg-hd.webp',
+  };
+  const bgOf = (w) => w.bgData || BG[w.page] || '';
+  function bgField(w) {
+    const src = bgOf(w);
+    return `<div class="a-field w-bgfield"><span>תמונת הרקע של דף האי</span>
+        <div class="w-media">
+          <label class="w-media__pic w-media__pic--bg" for="f-bg" aria-label="בחירת תמונת רקע">${src ? `<img src="${src}" alt="">` : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg>'}</label>
+          <div>
+            <label class="a-btn a-btn--ghost" for="f-bg">${src ? 'החלפה' : 'הוספת תמונת רקע'}</label>
+            <small class="a-help" style="display:block;margin-top:6px">תמונה רחבה, 1920×1080 · JPG או WEBP</small>
+          </div>
+          <input id="f-bg" type="file" accept="image/*" class="sr-only">
+        </div></div>`;
+  }
+  function readBg(file, target, done) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const W = Math.min(1280, img.width);
+      const H = Math.round(img.height * (W / img.width));
+      const c = document.createElement('canvas');
+      c.width = W; c.height = H;
+      c.getContext('2d').drawImage(img, 0, 0, W, H);
+      target.bgData = c.toDataURL('image/webp', 0.8);
+      URL.revokeObjectURL(url);
+      done();
+    };
+    img.src = url;
+  }
   function readMedia(file, target, done) {
     if (!file) return;
     if (file.type.startsWith('video/')) {
@@ -233,15 +268,19 @@
     const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
     edit.innerHTML = `<div class="a-card w-sections">
         <section aria-labelledby="w-title">
-          <p class="w-kind w-kind--island">${w.review ? 'אי חזרה' : 'אי'}</p>
-          <h2 class="w-name" id="w-title">${UI.esc(w.name) || 'עולם בלי שם'}</h2>
+          <h2 class="w-name" id="w-title">${UI.esc(w.name) || 'אי בלי שם'}</h2>
+          <h3 class="w-sub-title">פרטי האי</h3>
           <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
             <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
           <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
+        </section>
+        <section aria-labelledby="sec-media">
+          <h3 id="sec-media">מדיה</h3>
           ${mediaField(w)}
+          ${bgField(w)}
         </section>
         <section aria-labelledby="sec-about">
           <h3 id="sec-about">חלון "אודות" במפה</h3>
@@ -280,6 +319,7 @@
           </div>
           ${where('n-at')}
           ${mediaField(d)}
+          ${bgField(d)}
         </section>
         <section aria-labelledby="sec-about">
           <h3 id="sec-about">חלון "אודות" במפה</h3>
@@ -372,9 +412,18 @@
     changed();
   });
   edit.addEventListener('change', (e) => {
-    if (e.target.id === 'f-media' || e.target.id === 'n-media') return;
+    if (e.target.id === 'f-media' || e.target.id === 'n-media' || e.target.id === 'f-bg') return;
     if (e.target.id === 'n-world') { draft.worldId = e.target.value; draft.at = null; drawNewLesson(); $('n-world').focus(); }
     if (e.target.id === 'n-at' && mode === 'lesson') draft.at = Number(e.target.value);
+  });
+  edit.addEventListener('change', (e) => {
+    if (e.target.id !== 'f-bg') return;
+    const target = mode === 'edit' ? picked() : draft;
+    readBg(e.target.files && e.target.files[0], target, () => {
+      if (mode === 'edit') changed();
+      drawEdit();
+      const b = $('f-bg'); if (b) b.focus();
+    });
   });
   edit.addEventListener('change', (e) => {
     if (e.target.id !== 'f-media') return;

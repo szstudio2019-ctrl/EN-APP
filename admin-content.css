@@ -168,3 +168,12 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* no place numbers in the list; a bigger island picture */
 .w-n { display: none; }
 .w-item > .w-pic { width: 64px; height: 64px; }
+
+/* the edit form: the island's name in blue; the section titles in pink */
+.w-sections .w-name { color: #2A2577; margin-bottom: 6px; }
+.w-sections h3, .w-sections .w-sub-title { color: #E33563; }
+.w-sections .w-sub-title { margin: 0 0 16px; font-size: 18px; font-weight: 600; }
+.w-sections .w-heads { align-items: end; }
+.w-bgfield { margin-top: 20px; }
+.w-media__pic--bg { width: 160px; height: 90px; }
+.w-media__pic--bg img { width: 100%; height: 100%; object-fit: cover; }
