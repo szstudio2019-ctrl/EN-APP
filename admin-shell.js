@@ -95,6 +95,12 @@
     'magic.html': ['magic1-lesson.html', 'magic2-lesson.html', 'magic3-lesson.html'],
     'sounds.html': ['sounds1-lesson.html', 'sounds2-lesson.html', 'sounds3-lesson.html'],
   };
+  // the big two-line title on each world's page
+  const HEADINGS = {
+    'letters.html': ['אי זיהוי', 'האותיות'], 'doctor.html': ['אי האותיות', 'של הרופא/ה'], 'smiles.html': ['אי האותיות', 'המחייכות'],
+    'single.html': ['אי האותיות', 'הבודדות'], 'blending.html': ['אי צירוף', 'האותיות'], 'whistling.html': ['אי האותיות', 'השורקות'],
+    'magic.html': ['אי הקסמים', ''], 'sounds.html': ['אי הצלילים', 'המיוחדים'],
+  };
   const span = (r) => { const m = String(r || '').match(/^(\d+)(?:-(\d+))?$/); return m ? (m[2] ? +m[2] - +m[1] + 1 : 1) : 0; };
   function baseWorlds() {
     let review = 0;
@@ -110,7 +116,10 @@
         img: i.img || '',
         page: i.page || '',
         review: isReview,
+        head1: (HEADINGS[i.page] || [isReview ? 'אי החזרות' : i.name, ''])[0],
+        head2: (HEADINGS[i.page] || ['', ''])[1],
         lessonPages: isReview ? [] : (LESSON_PAGES[i.page] || []),
+        lessonNames: [],
         firstLesson: parseInt(String(i.lessons || '1'), 10) || 1,
         reviewOf: i.review || '',
         planned: isReview ? 0 : Math.max(span(i.lessons), (LESSON_PAGES[i.page] || []).length),

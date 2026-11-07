@@ -100,3 +100,32 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-sub__item.is-empty b { color: var(--a-text-2); font-weight: 500; }
 .w-sub__add { min-height: 40px; margin-top: 4px; padding: 0 8px; border: 0; background: none; color: #E33563; font-weight: 600; cursor: pointer; }
 .w-sub__add:hover { text-decoration: underline; }
+
+/* the save button: white with a pink border and pink text */
+.a-head .a-save [data-save] { background: #fff; color: #E33563; border: 1.5px solid #E33563; }
+.a-head .a-save [data-save]:hover { background: #FFF1F5; }
+.a-head .a-save [data-save]:disabled { opacity: .5; background: #fff; }
+
+/* the pink + beside it, and its menu on a white card */
+.w-plus { position: relative; flex: none; }
+.w-plus__btn { width: 48px; height: 48px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #E33563; color: #fff; box-shadow: 0 6px 16px rgba(227, 53, 99, .3); cursor: pointer; transition: transform .15s ease, background .15s ease; }
+.w-plus__btn:hover { background: #C81E55; }
+.w-plus__btn[aria-expanded="true"] { transform: rotate(45deg); }
+.w-plus__btn svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+.w-plus__menu { position: absolute; top: calc(100% + 8px); left: 0; z-index: 60; min-width: 220px; padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px rgba(42, 37, 97, .18), 0 0 0 1px var(--a-line); animation: a-rise .18s ease both; }
+.w-plus__menu button { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 10px; background: none; color: var(--a-text); font-weight: 500; text-align: start; cursor: pointer; }
+.w-plus__menu button:hover, .w-plus__menu button:focus-visible { background: var(--a-picked); }
+.w-plus__ic { font-size: 18px; }
+.a-head .a-save + .w-plus { margin-inline-start: 0; }
+
+/* the form's kind ("עולם") over the pink name; the two title lines; the picture */
+.w-sections .w-kind { margin: 0 0 2px; font-size: 13px; font-weight: 600; color: #E33563; }
+.w-sections .w-heads { margin-top: 16px; }
+.w-media { display: flex; align-items: center; gap: 16px; }
+.w-media__pic { position: relative; flex: none; width: 120px; height: 96px; display: grid; place-items: center; border-radius: 14px; background: var(--a-page); box-shadow: inset 0 0 0 1.5px var(--a-line); overflow: hidden; cursor: pointer; }
+.w-media__pic img, .w-media__pic video { position: absolute; inset: 6px; width: calc(100% - 12px); height: calc(100% - 12px); object-fit: contain; }
+.w-media__pic svg { width: 28px; height: 28px; fill: none; stroke: var(--a-text-2); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.w-media:has(input:focus-visible) .w-media__pic { box-shadow: var(--a-focus); }
+.w-new select { width: 100%; min-height: 46px; padding: 0 12px; border: 1.5px solid var(--a-field); border-radius: var(--a-radius); background: #fff; color: var(--a-text); }
+.w-new__foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 28px; }
+.w-sections section .a-field + .a-field, .w-sections section .a-grid + .a-field, .w-sections section .a-field + .a-grid { margin-top: 16px; }
