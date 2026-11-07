@@ -403,3 +403,11 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 html::-webkit-scrollbar, .a-body *::-webkit-scrollbar { width: 2px !important; height: 2px !important; }
 html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: #2A2577 !important; border-radius: 1px !important; }
 @supports not selector(::-webkit-scrollbar) { html, .a-body * { scrollbar-width: thin !important; scrollbar-color: #2A2577 transparent !important; } }
+
+/* back to the student site: a round arrow that opens to its words on hover (as the lesson's 'ראשי') */
+.a-top .a-back { height: 46px; min-width: 46px; min-height: 0; padding: 0 11px; gap: 0; border-radius: 30px; background: #fff; color: #2A2577; overflow: hidden; transition: background .25s ease, color .25s ease, padding .3s ease, box-shadow .25s ease; }
+.a-top .a-back svg { width: 24px; height: 24px; stroke-width: 2.4; }
+.a-top .a-back .a-back__label { display: inline-block; max-width: 0; opacity: 0; font-size: 17px; font-weight: 500; white-space: nowrap; transition: max-width .3s ease, opacity .2s ease, margin .3s ease; }
+.a-top .a-back:hover, .a-top .a-back:focus-visible { background: #E33563; color: #fff; padding: 0 18px 0 16px; box-shadow: 0 10px 20px rgba(227, 53, 99, .3); }
+.a-top .a-back:hover .a-back__label, .a-top .a-back:focus-visible .a-back__label { max-width: 160px; opacity: 1; margin-left: 10px; }
+@media (max-width: 760px) { .a-top .a-back .a-back__label { display: inline-block; } .a-top .a-back { padding: 0 11px; } }

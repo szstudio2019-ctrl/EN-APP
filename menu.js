@@ -18,7 +18,11 @@
     .adm-view__txt b { font-weight: 700; }
     .adm-view svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .adm-view__back { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 14px; border-radius: 14px; background: #fff; color: #E33563; text-decoration: none; font-size: 14px; font-weight: 600; }
-    .adm-view__back:hover { background: #FDEBF0; }
+    .adm-view__back { height: 30px; min-width: 30px; padding: 0 6px; gap: 0; overflow: hidden; transition: background .25s ease, color .25s ease, padding .3s ease; }
+    .adm-view__back svg { width: 18px; height: 18px; stroke-width: 2.4; }
+    .adm-view__label { display: inline-block; max-width: 0; opacity: 0; white-space: nowrap; transition: max-width .3s ease, opacity .2s ease, margin .3s ease; }
+    .adm-view__back:hover, .adm-view__back:focus-visible { background: #2A2577; color: #fff; padding: 0 14px 0 12px; }
+    .adm-view__back:hover .adm-view__label, .adm-view__back:focus-visible .adm-view__label { max-width: 120px; opacity: 1; margin-left: 8px; }
     html.is-adm-view .viewport { top: ${BAR}px; }
     @media (max-width: 560px) { .adm-view__more { display: none; } }`;
   document.head.appendChild(css);
@@ -28,7 +32,7 @@
   bar.setAttribute('role', 'region');
   bar.setAttribute('aria-label', 'מצב ניהול');
   bar.innerHTML = '<span class="adm-view__txt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><b>מצב ניהול</b><span class="adm-view__more">· את צופה באתר כמו תלמידה</span></span>'
-    + '<a class="adm-view__back" href="admin-content.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>חזרה לניהול</a>';
+    + '<a class="adm-view__back" href="admin-content.html" aria-label="חזרה לניהול"><span class="adm-view__label">חזרה לניהול</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>';
   const put = () => { document.body.prepend(bar); window.dispatchEvent(new Event('resize')); };
   if (document.body) put(); else document.addEventListener('DOMContentLoaded', put);
   bar.querySelector('.adm-view__back').addEventListener('click', () => { try { sessionStorage.removeItem(KEY); } catch (e) { /* none */ } });
