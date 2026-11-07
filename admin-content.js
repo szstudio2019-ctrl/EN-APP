@@ -284,6 +284,7 @@
   // tabs over the middle column: its parts (the island's details, media, the map's "about", lessons)
   const SECS = [['details', 'פרטי האי'], ['media', 'מדיה'], ['about', 'חלון "אודות" במפה'], ['lessons', 'שיעורים']];
   let secTab = 'details';
+  let lessonOpen = -1;
   function wTabs() {
     return `<div class="w-tabs" role="tablist" aria-label="חלקי העריכה">
         ${SECS.map(([k, t]) => `<button type="button" role="tab" data-wtab="${k}" aria-selected="${secTab === k}">${t}</button>`).join('')}
@@ -295,11 +296,18 @@
     const rows = Array.from({ length: w.planned }, (_, k) => {
       const n = (w.firstLesson || 1) + k;
       const page = (w.lessonPages || [])[k];
-      return `<li class="w-lrow">
+      const open = lessonOpen === k;
+      const desc = (w.lessonDescs || [])[k] || '';
+      return `<li class="w-lrow${open ? ' is-open' : ''}">
           <b class="w-lrow__n">שיעור ${n}</b>
           <input data-lname="${k}" value="${UI.esc((w.lessonNames || [])[k] || '')}" placeholder="שם השיעור (לא חובה)" aria-label="השם של שיעור ${n}">
           ${page ? `<span class="a-tag a-tag--live">נכתב</span><a class="w-lrow__open" href="${page}?view=admin" target="_blank" rel="noopener" aria-label="פתיחת שיעור ${n} (בלשונית חדשה)" title="פתיחת השיעור"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>`
             : `<span class="a-tag a-tag--draft">טרם נכתב</span><button class="w-lrow__del" type="button" data-lesson-del="${k}" aria-label="מחיקת שיעור ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>`}
+          <button class="w-lrow__edit" type="button" data-lesson-edit="${k}" aria-expanded="${open}" aria-label="עריכת שיעור ${n}" title="עריכה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>
+          ${open ? `<div class="w-lrow__more">
+              <label class="a-field"><span>תיאור השיעור</span><textarea data-ldesc="${k}" placeholder="מה לומדים בשיעור הזה">${UI.esc(desc)}</textarea></label>
+              ${page ? `<div class="w-lrow__links"><a class="a-btn a-btn--ghost" href="${page}?view=admin" target="_blank" rel="noopener">פתיחת השיעור</a></div>` : '<small class="a-help">השיעור עוד לא נכתב – הוא יופיע במפה כשייכתב</small>'}
+            </div>` : ''}
         </li>`;
     }).join('');
     return `<div class="w-progress">
@@ -433,12 +441,23 @@
       const f = edit.querySelector(`[data-lname="${w.planned - 1}"]`); if (f) f.focus();
       return;
     }
+    const ed = e.target.closest('[data-lesson-edit]');
+    if (ed) {
+      const k = Number(ed.dataset.lessonEdit);
+      lessonOpen = lessonOpen === k ? -1 : k;
+      drawEdit();
+      const t = edit.querySelector(`[data-ldesc="${k}"]`) || edit.querySelector(`[data-lesson-edit="${k}"]`);
+      if (t) t.focus();
+      return;
+    }
     const del = e.target.closest('[data-lesson-del]');
     if (del) {
       const k = Number(del.dataset.lessonDel);
       if (!confirm(`למחוק את שיעור ${(w.firstLesson || 1) + k}?`)) return;
       w.lessonNames = w.lessonNames || [];
       w.lessonNames.splice(k, 1);
+      if (w.lessonDescs) w.lessonDescs.splice(k, 1);
+      lessonOpen = -1;
       w.planned = Math.max(w.written, w.planned - 1);
       drawList(); drawEdit(); drawPreview(); changed();
     }
@@ -446,6 +465,14 @@
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
+    if (e.target.dataset.ldesc != null && mode === 'edit') {
+      const w = picked();
+      w.lessonDescs = w.lessonDescs || [];
+      while (w.lessonDescs.length < w.planned) w.lessonDescs.push('');
+      w.lessonDescs[Number(e.target.dataset.ldesc)] = e.target.value;
+      changed();
+      return;
+    }
     if (e.target.dataset.lname != null && mode === 'edit') {
       const w = picked();
       w.lessonNames = w.lessonNames || [];

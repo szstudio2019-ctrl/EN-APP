@@ -248,3 +248,13 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-lesson__list li { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; background: #fff; font-size: 14px; color: #2A2577; }
 .w-lesson__list li small { margin-inline-start: auto; font-size: 12px; color: var(--a-text-2); }
 .w-lesson__list li.is-done small { color: #1F7A4D; font-weight: 600; }
+
+/* the pencil on each lesson row opens its details under it */
+.w-lrow { grid-template-columns: 70px minmax(0, 1fr) auto 36px 36px; }
+.w-lrow__edit { width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #fff; color: #2A2577; box-shadow: inset 0 0 0 1.5px var(--a-line); cursor: pointer; }
+.w-lrow__edit:hover, .w-lrow__edit[aria-expanded="true"] { background: #2A2577; color: #fff; }
+.w-lrow.is-open { box-shadow: inset 0 0 0 1.5px #E33563; }
+.w-lrow__more { grid-column: 1 / -1; display: grid; gap: 12px; padding: 6px 2px 4px; }
+.w-lrow__more textarea { min-height: 80px; }
+.w-lrow__links { display: flex; flex-wrap: wrap; gap: 10px; }
+@media (max-width: 640px) { .w-lrow { grid-template-columns: minmax(0, 1fr) auto 36px 36px; } }
