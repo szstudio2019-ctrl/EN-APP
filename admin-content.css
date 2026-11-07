@@ -150,3 +150,11 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* the picked world: the page background (lighter than the lavender) */
 .w-item[aria-current="true"] { background: var(--a-page); }
 .w-item:hover:not([aria-current="true"]) { background: #F9F8FC; }
+
+/* 'אי' in blue above the name; an eye beside the publish switch opens the island as a student sees it */
+.w-sections .w-kind--island { color: #2F7CF2; }
+.w-pub { display: flex; align-items: center; gap: 12px; }
+.w-pub .w-pub__text { flex: 1; }
+.w-eye { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: #fff; box-shadow: inset 0 0 0 1.5px var(--a-field); color: #2A2577; }
+.w-eye:hover { background: var(--a-page); color: #E33563; }
+.w-eye svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }

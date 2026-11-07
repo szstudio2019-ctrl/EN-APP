@@ -233,7 +233,7 @@
     const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
     edit.innerHTML = `<div class="a-card w-sections">
         <section aria-labelledby="w-title">
-          <p class="w-kind">${w.review ? 'עולם חזרה' : 'עולם'}</p>
+          <p class="w-kind w-kind--island">${w.review ? 'אי חזרה' : 'אי'}</p>
           <h2 class="w-name" id="w-title">${UI.esc(w.name) || 'עולם בלי שם'}</h2>
           <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
@@ -441,6 +441,7 @@
     pub.innerHTML = mode !== 'edit' ? '' : `<div class="w-pub">
         ${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}
         <p class="w-pub__text"><b>${w.published ? 'מפורסם' : 'טיוטה'}</b>${w.published ? 'העולם מופיע לתלמידים במפה' : 'העולם מוסתר מהתלמידים עד שיפורסם'}</p>
+        ${w.page ? `<a class="w-eye" href="${w.page}?view=admin" target="_blank" rel="noopener" title="צפייה באי כמו תלמיד/ה" aria-label="צפייה ב${UI.esc(w.name)} כמו תלמיד/ה (בלשונית חדשה)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>` : ''}
       </div>
       ${w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : ''}`;
     const src = imgSrc(w, false);
