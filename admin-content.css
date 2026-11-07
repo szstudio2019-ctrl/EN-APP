@@ -164,3 +164,7 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-plus__btn:hover { background: #C81E55; }
 .w-plus__ic { flex: none; width: 22px; height: 22px; display: grid; place-items: center; font-size: 0; color: #2A2577; }
 .w-plus__ic svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* no place numbers in the list; a bigger island picture */
+.w-n { display: none; }
+.w-item > .w-pic { width: 64px; height: 64px; }
