@@ -84,7 +84,17 @@
     : `<span class="a-avatar" style="background:${COLORS[i % COLORS.length]}" aria-hidden="true">${(u.first[0] || '') + (u.last[0] || '')}</span>`);
 
   /* worlds: built from the islands list (islands.js); the admin's edits are kept apart */
-  const WRITTEN = { 'letters.html': 1, 'doctor.html': 3, 'smiles.html': 4, 'single.html': 3, 'blending.html': 3, 'whistling.html': 3, 'magic.html': 3, 'sounds.html': 3 };
+  // the lessons already written in each world: their pages, in order
+  const LESSON_PAGES = {
+    'letters.html': ['letters-lesson.html', 'vowels-lesson.html'],
+    'doctor.html': ['lesson.html', 'sentences-lesson.html', 'doctor3-lesson.html'],
+    'smiles.html': ['smiles1-lesson.html', 'smiles2-lesson.html', 'smiles3-lesson.html'],
+    'single.html': ['single-lesson.html', 'single2-lesson.html', 'single3-lesson.html'],
+    'blending.html': ['blending1-lesson.html', 'blending2-lesson.html', 'blending3-lesson.html'],
+    'whistling.html': ['whistling1-lesson.html', 'whistling2-lesson.html', 'whistling3-lesson.html'],
+    'magic.html': ['magic1-lesson.html', 'magic2-lesson.html', 'magic3-lesson.html'],
+    'sounds.html': ['sounds1-lesson.html', 'sounds2-lesson.html', 'sounds3-lesson.html'],
+  };
   const span = (r) => { const m = String(r || '').match(/^(\d+)(?:-(\d+))?$/); return m ? (m[2] ? +m[2] - +m[1] + 1 : 1) : 0; };
   function baseWorlds() {
     let review = 0;
@@ -100,8 +110,11 @@
         img: i.img || '',
         page: i.page || '',
         review: isReview,
-        planned: isReview ? 0 : span(i.lessons),
-        written: isReview ? 0 : (WRITTEN[i.page] || 0),
+        lessonPages: isReview ? [] : (LESSON_PAGES[i.page] || []),
+        firstLesson: parseInt(String(i.lessons || '1'), 10) || 1,
+        reviewOf: i.review || '',
+        planned: isReview ? 0 : Math.max(span(i.lessons), (LESSON_PAGES[i.page] || []).length),
+        written: isReview ? 0 : (LESSON_PAGES[i.page] || []).length,
         published: i.status === 'done' || i.status === 'progress',
       };
     });

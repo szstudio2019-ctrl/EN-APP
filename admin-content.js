@@ -31,11 +31,46 @@
         ${pic(w, 'w-pic')}
         <button class="w-pick" type="button" data-pick aria-current="${w.id === pickedId}"><b>${UI.esc(w.name) || 'עולם בלי שם'}</b><small>${UI.esc(subOf(w))}</small></button>
         <span class="a-tag ${w.published ? 'a-tag--live' : 'a-tag--draft'}">${w.published ? 'מפורסם' : 'טיוטה'}</span>
+        <button class="w-open" type="button" data-open aria-expanded="${opened.has(w.id)}" aria-label="${opened.has(w.id) ? 'סגירת' : 'פתיחת'} השיעורים של ${UI.esc(w.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        ${opened.has(w.id) ? subList(w) : ''}
       </li>`).join('');
+  }
+  // a world opens to its lessons (a review world: what it goes over)
+  const opened = new Set();
+  const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+  function subList(w) {
+    if (w.review) {
+      return `<ul class="w-sub">
+          <li><a class="w-sub__item" href="${w.page || 'review.html'}" target="_blank" rel="noopener"><span><b>${UI.esc(w.name)}</b><small>חזרה על שיעורים ${UI.esc(w.reviewOf || '')}</small></span>${ARROW}</a></li>
+        </ul>`;
+    }
+    const rows = Array.from({ length: w.planned }, (_, k) => {
+      const n = (w.firstLesson || 1) + k;
+      const page = (w.lessonPages || [])[k];
+      return page
+        ? `<li><a class="w-sub__item" href="${page}" target="_blank" rel="noopener"><span><b>שיעור ${n}</b><small>נכתב · נפתח בלשונית חדשה</small></span>${ARROW}</a></li>`
+        : `<li><span class="w-sub__item is-empty"><span><b>שיעור ${n}</b><small>טרם נכתב</small></span></span></li>`;
+    }).join('');
+    return `<ul class="w-sub">${rows}<li><button class="w-sub__add" type="button" data-add-lesson>+ הוספת שיעור</button></li></ul>`;
   }
   items.addEventListener('click', (e) => {
     const li = e.target.closest('.w-item');
     if (!li || e.target.closest('[data-grip]')) return;
+    if (e.target.closest('.w-sub a')) return; // a lesson link opens its page
+    if (e.target.closest('[data-open]')) {
+      if (opened.has(li.dataset.id)) opened.delete(li.dataset.id); else opened.add(li.dataset.id);
+      drawList();
+      const b = items.querySelector(`.w-item[data-id="${li.dataset.id}"] [data-open]`);
+      if (b) b.focus();
+      return;
+    }
+    if (e.target.closest('[data-add-lesson]')) {
+      const w = list.find((x) => x.id === li.dataset.id);
+      w.planned += 1;
+      pickedId = w.id;
+      drawList(); drawEdit(); drawPreview(); changed();
+      return;
+    }
     pickedId = li.dataset.id;
     drawList();
     drawEdit();
