@@ -13,6 +13,7 @@
   <style>
     .c-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
     .c-section h2 { margin: 0 0 14px; font-size: 18px; font-weight: 600; color: #E33563; }
+    .c-side { display: grid; gap: 24px; }
     .c-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
     .c-item { display: flex; align-items: center; gap: 16px; min-height: 96px; padding: 18px 20px; border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(42, 37, 97, .05), 0 0 0 1px var(--a-line); }
     .c-icon { flex: none; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 50%; background: #F4F3FA; }
@@ -46,10 +47,20 @@
         <h2 id="earn-title">צבירת מטבעות</h2>
         <ul class="c-grid" id="c-earn"></ul>
       </section>
-      <section class="c-section" aria-labelledby="shop-title">
-        <h2 id="shop-title">בחנות האותיות</h2>
-        <ul class="c-grid" id="c-shop"></ul>
-      </section>
+      <div class="c-side">
+        <section class="c-section" aria-labelledby="shop-title">
+          <h2 id="shop-title">בחנות האותיות</h2>
+          <ul class="c-grid" id="c-shop"></ul>
+        </section>
+        <section class="c-section" aria-labelledby="review-title">
+          <h2 id="review-title">חזרות</h2>
+          <ul class="c-grid" id="c-chest"></ul>
+        </section>
+        <section class="c-section" aria-labelledby="streak-title">
+          <h2 id="streak-title">התמדה</h2>
+          <ul class="c-grid" id="c-streak"></ul>
+        </section>
+      </div>
     </div>
   </main>
 
@@ -66,7 +77,11 @@
           <div class="c-val">${UI.stepperHtml(`c-${k}`, cur[k], title, 0, 1000)}<span class="c-unit">${unit || 'מטבעות'}</span></div>
         </li>`;
       const draw = () => {
-        document.getElementById('c-earn').innerHTML = Coins.defs.earn.map(row).join('');
+        // the chest goes under 'חזרות' and the daily streak under 'התמדה' (the left column)
+        const SIDE = ['chest', 'streak'];
+        document.getElementById('c-earn').innerHTML = Coins.defs.earn.filter(([k]) => !SIDE.includes(k)).map(row).join('');
+        document.getElementById('c-chest').innerHTML = Coins.defs.earn.filter(([k]) => k === 'chest').map(row).join('');
+        document.getElementById('c-streak').innerHTML = Coins.defs.earn.filter(([k]) => k === 'streak').map(row).join('');
         document.getElementById('c-shop').innerHTML = Coins.defs.shop.map(row).join('');
       };
       draw();
