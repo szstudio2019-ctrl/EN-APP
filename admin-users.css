@@ -63,3 +63,8 @@
 .u-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
 .u-scroll::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 .u-scroll::-webkit-scrollbar-thumb { background: #E33563; border-radius: 2px; }
+
+/* one row: the filters, the legend, then a shorter rounded search on the left */
+.a-filters .a-search { margin-inline-start: 0; flex: 0 1 240px; min-width: 180px; }
+.a-filters .a-search input { border-radius: 999px; min-height: 44px; }
+.a-legend.u-legend { flex-basis: auto; margin-inline-start: auto; gap: 8px 20px; }
