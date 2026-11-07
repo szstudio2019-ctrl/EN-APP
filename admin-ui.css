@@ -373,3 +373,13 @@ a.a-sub__item:hover, a.a-sub__item:focus-visible { background: rgba(255, 255, 25
 .a-me__item svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .a-me__item--out { color: #E33563; }
 @media (max-width: 760px) { .a-me__chev { display: none; } }
+
+/* every scrollbar in the admin: a really small pink one, no arrows */
+@supports selector(::-webkit-scrollbar) {
+  html, .a-body * { scrollbar-width: auto !important; scrollbar-color: auto !important; }
+}
+html::-webkit-scrollbar, .a-body *::-webkit-scrollbar { width: 3px !important; height: 3px !important; }
+html::-webkit-scrollbar-button, .a-body *::-webkit-scrollbar-button { display: none !important; width: 0 !important; height: 0 !important; }
+html::-webkit-scrollbar-track, .a-body *::-webkit-scrollbar-track { background: transparent !important; }
+html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: #E33563 !important; border-radius: 2px !important; }
+.a-nav::-webkit-scrollbar { display: none !important; }
