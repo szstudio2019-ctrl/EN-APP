@@ -64,6 +64,9 @@
       <a class="a-back" href="index.html?view=admin"><span>לאתר התלמידים</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
     </div>`;
   document.body.prepend(top);
+  // every page title starts with 'מערכת ניהול –'
+  const h1 = document.querySelector('.a-head h1');
+  if (h1 && !h1.querySelector('.a-h1-pre')) h1.insertAdjacentHTML('afterbegin', '<span class="a-h1-pre">מערכת ניהול – </span>');
   // the menu button opens the pages (handy on a phone, where the nav is hidden)
   const menuBtn = top.querySelector('#a-menu-btn');
   const menuList = top.querySelector('#a-menu');
