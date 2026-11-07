@@ -159,15 +159,21 @@
   tip.className = 'st-tip';
   tip.hidden = true;
   document.body.appendChild(tip);
+  // each child's minutes on that bar, with the child's colour from the bar
+  const whoOn = (b) => kidsNow.map(({ u, i }, j) => ({ u, i, v: b.parts[j] || 0, c: colorOf(j) }))
+    .filter((r) => r.v).sort((p, q) => q.v - p.v);
+  const tipRow = (r) => `<span class="st-tip__row"><i class="st-tip__dot" style="background:${r.c}"></i>${Users.avatar(r.u, r.i)}<span>${UI.esc(`${r.u.first} ${r.u.last}`)}</span><b>${r.v} דק׳</b></span>`;
+  const tipTitle = (b, count) => `${b.long} · ${count} ${count === 1 ? 'ילד/ה שיחק/ה' : 'ילדים שיחקו'} · ${b.v} דק׳`;
+  const TIP_MAX = 6;
   function showTip(g, x, y) {
     const b = barsNow[Number(g.dataset.k)];
     if (!b) return;
-    // each child's minutes then, with the child's colour from the bar
-    const list = kidsNow.map(({ u, i }, j) => ({ u, i, v: b.parts[j] || 0, c: colorOf(j) }))
-      .filter((r) => r.v).sort((p, q) => q.v - p.v);
+    const list = whoOn(b);
     const count = list.length;
-    tip.innerHTML = `<b class="st-tip__title">${b.long} · ${count} ${count === 1 ? 'ילד/ה שיחק/ה' : 'ילדים שיחקו'} · ${b.v} דק׳</b>
-      ${count ? list.map((r) => `<span class="st-tip__row"><i class="st-tip__dot" style="background:${r.c}"></i>${Users.avatar(r.u, r.i)}<span>${UI.esc(`${r.u.first} ${r.u.last}`)}</span><b>${r.v} דק׳</b></span>`).join('') : '<span class="a-muted">אף אחד לא שיחק</span>'}`;
+    const more = count - TIP_MAX;
+    tip.innerHTML = `<b class="st-tip__title">${tipTitle(b, count)}</b>
+      ${count ? list.slice(0, TIP_MAX).map(tipRow).join('') : '<span class="a-muted">אף אחד לא שיחק</span>'}
+      ${more > 0 ? `<span class="st-tip__more">ועוד ${more} · לחיצה על העמודה לרשימה המלאה</span>` : ''}`;
     tip.hidden = false;
     const w = tip.offsetWidth, h = tip.offsetHeight;
     let left = x - w / 2, top = y - h - 16;
@@ -192,6 +198,29 @@
     showTip(g, r.left + r.width / 2, r.top + 20);
   });
   chartBox.addEventListener('focusout', () => { tip.hidden = true; });
+  // a click (or Enter) on a bar opens everyone who played then, in a window that scrolls
+  const pop = document.createElement('div');
+  pop.className = 'a-dialog st-pop';
+  pop.hidden = true;
+  pop.innerHTML = '<div class="a-dialog__card" role="dialog" aria-modal="true" aria-labelledby="st-pop-title"><div class="a-dialog__head"><h2 id="st-pop-title"></h2><button class="st-pop__x" type="button" aria-label="סגירה">×</button></div><div class="st-pop__list"></div></div>';
+  document.body.appendChild(pop);
+  let popFrom = null;
+  const closePop = () => { if (pop.hidden) return; pop.hidden = true; if (popFrom) popFrom.focus(); };
+  function openPop(g) {
+    const b = barsNow[Number(g.dataset.k)];
+    if (!b) return;
+    const list = whoOn(b);
+    popFrom = g;
+    tip.hidden = true;
+    pop.querySelector('#st-pop-title').textContent = tipTitle(b, list.length);
+    pop.querySelector('.st-pop__list').innerHTML = list.length ? list.map(tipRow).join('') : '<p class="a-muted">אף אחד לא שיחק</p>';
+    pop.hidden = false;
+    pop.querySelector('.st-pop__x').focus();
+  }
+  chartBox.addEventListener('click', (e) => { const g = e.target.closest('.st-bar'); if (g) openPop(g); });
+  chartBox.addEventListener('keydown', (e) => { const g = e.target.closest('.st-bar'); if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openPop(g); } });
+  pop.addEventListener('click', (e) => { if (e.target === pop || e.target.closest('.st-pop__x')) closePop(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
 
   render();
   let t;
