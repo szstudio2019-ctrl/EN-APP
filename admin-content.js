@@ -110,15 +110,9 @@
     const w = picked();
     if (!w) { edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם מהרשימה.</p></div>'; return; }
     const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
-    edit.innerHTML = `<div class="a-card">
-        <p class="w-crumbs"><a href="admin-content.html">עריכת תוכן</a> / <span>${UI.esc(w.name)}</span></p>
-        <div class="w-top">
-          <h2 id="w-title">${UI.esc(w.name) || 'עולם בלי שם'}</h2>
-        </div>
-      </div>
-      <div class="a-card w-sections">
-        <section aria-labelledby="sec-names">
-          <h3 id="sec-names">שם וכותרות</h3>
+    edit.innerHTML = `<div class="a-card w-sections">
+        <section aria-labelledby="w-title">
+          <h2 class="w-name" id="w-title">${UI.esc(w.name) || 'עולם בלי שם'}</h2>
           <label class="a-field"><span>שם העולם</span><input id="f-name" value="${UI.esc(w.name)}"><small class="a-help">מופיע ברשימות, בתפריט ובחלון ה"אודות"</small></label>
           <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
         </section>
@@ -161,7 +155,7 @@
     const key = map[e.target.id];
     if (!w || !key) return;
     w[key] = e.target.value;
-    if (key === 'name') { $('w-title').textContent = w.name || 'עולם בלי שם'; edit.querySelector('.w-crumbs span').textContent = w.name; }
+    if (key === 'name') $('w-title').textContent = w.name || 'עולם בלי שם';
     drawList();
     drawPreview();
     changed();
