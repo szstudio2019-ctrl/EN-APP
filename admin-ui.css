@@ -265,7 +265,7 @@ body.a-body {
 @media (max-width: 760px) { .a-head .a-save { width: 100%; } .a-head .a-save__in { padding: 0; } }
 
 /* ---------- the header, as on the student site: an opaque blue bar on a light blue page ---------- */
-:root { --a-page: #EAF3FC; }
+:root { --a-page: #F4F3FA; }
 body.a-body, html { background: var(--a-page); }
 .a-top { position: sticky; top: 0; z-index: 50; height: auto; padding: 14px 24px 0; background: var(--a-page); color: #fff; }
 .a-top .a-top__in { max-width: 1392px; height: 80px; margin: 0 auto; padding: 0 18px 0 22px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; border-radius: 40px; background: #4A3F9A; box-shadow: 0 10px 26px rgba(42, 37, 97, .22); }
@@ -335,3 +335,6 @@ html { scrollbar-gutter: stable; }
 .a-menu__soon small { padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .12); color: rgba(255, 255, 255, .75); font-size: 12px; font-weight: 600; }
 .a-menu__soon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .a-menu__line { height: 1px; margin: 6px 4px; border: 0; background: rgba(255, 255, 255, .15); }
+
+/* the notes are white (on the light blue page) */
+.a-note:not(.a-note--warn) { background: #fff; box-shadow: 0 1px 3px rgba(42, 37, 97, .06), 0 0 0 1px var(--a-line); }
