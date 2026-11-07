@@ -383,3 +383,6 @@ html::-webkit-scrollbar-button, .a-body *::-webkit-scrollbar-button { display: n
 html::-webkit-scrollbar-track, .a-body *::-webkit-scrollbar-track { background: transparent !important; }
 html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: #E33563 !important; border-radius: 2px !important; }
 .a-nav::-webkit-scrollbar { display: none !important; }
+
+/* the pages are reached from the menu only: no page buttons on the left of the bar */
+.a-top .a-nav { display: none !important; }
