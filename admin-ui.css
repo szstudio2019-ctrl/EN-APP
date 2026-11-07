@@ -394,3 +394,7 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 @media (max-width: 760px) { .a-top .a-back span { display: none; } .a-top .a-back { padding: 0 12px; } }
 
 .a-h1-pre { color: #E33563; }
+
+/* the bar in the dark navy of the filters; the picked filters a touch darker */
+.a-top .a-top__in { background: #2A2577; }
+.a-seg button[aria-pressed="true"], .a-multi__btn.is-on { background: #1E1A5C; }
