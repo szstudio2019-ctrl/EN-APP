@@ -295,7 +295,9 @@
       const picked = () => boxes().filter((b) => b.checked).map((b) => b.value);
       const label = () => {
         const p = boxes().filter((b) => b.checked).map((b) => b.value);
-        box.querySelector('.a-multi__text').textContent = p.length ? `${box.dataset.name}: ${p.join(', ')}` : box.dataset.all;
+        // the button names no picks, only how many were picked
+        box.querySelector('.a-multi__text').innerHTML = p.length ? `${box.dataset.name} <b class="a-multi__n">${p.length}</b>` : box.dataset.all;
+        btn.setAttribute('aria-label', p.length ? `${box.dataset.name}: ${p.join(', ')}` : box.dataset.all);
         btn.classList.toggle('is-on', p.length > 0);
       };
       const setOpen = (on) => { list.hidden = !on; btn.setAttribute('aria-expanded', String(on)); };
