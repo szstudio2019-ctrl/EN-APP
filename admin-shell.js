@@ -9,12 +9,16 @@
     ['stats', 'admin-stats.html', 'התמדה', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'],
     ['coins', 'admin-coins.html', 'מטבעות', '<img src="assets/coin.webp" alt="">'],
   ];
-  // pages still to be built: in the menu, marked 'בקרוב'
-  const SOON = [
-    ['עריכת אודות', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'],
-    ['עריכת חנות', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9M4 9h16v11H4zM4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M10 20v-5h4v5"/></svg>'],
-    ['כרטיסים', '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>'],
+  // what 'עריכת תוכן' opens to (the pages not built yet are marked 'בקרוב')
+  const CONTENT_SUB = [
+    ['islands', 'admin-content.html', 'עריכת תוכן לאיים'],
+    ['about', '', 'עריכת תוכן לאודות'],
+    ['cards', '', 'עריכת תוכן לחנות כרטיסים'],
+    ['raffle', '', 'עריכת תוכן למשפטי הגרלה'],
   ];
+  const subLink = ([k, href, name], role) => (href
+    ? `<a${role} class="a-sub__item" href="${href}"${page === 'content' && k === 'islands' ? ' aria-current="page"' : ''}><span>${name}</span></a>`
+    : `<span${role} class="a-sub__item a-sub__item--soon" aria-disabled="true"><span>${name}</span><small>בקרוב</small></span>`);
   const page = document.body.dataset.page;
 
   /* ---------- top bar ---------- */
@@ -30,8 +34,7 @@
         <div class="a-menu">
           <button class="a-menu__btn" type="button" id="a-menu-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-menu" aria-label="תפריט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M8 12h12M4 17h16"/></svg></button>
           <div class="a-menu__list" id="a-menu" role="menu" hidden>
-            ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`).join('')}
-            ${SOON.map(([name, icon]) => `<span class="a-menu__soon" role="menuitem" aria-disabled="true">${icon}<span>${name}</span><small>בקרוב</small></span>`).join('')}
+            ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>${k === 'content' ? `<div class="a-menu__sub">${CONTENT_SUB.map((x) => subLink(x, ' role="menuitem"')).join('')}</div>` : ''}`).join('')}
             <hr class="a-menu__line">
             <a role="menuitem" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
           </div>
@@ -46,7 +49,9 @@
         </span>
       </a>
       <nav class="a-nav" aria-label="ניהול">
-        ${PAGES.map(([k, href, name, icon]) => `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`).join('')}
+        ${PAGES.map(([k, href, name, icon]) => (k === 'content'
+          ? `<div class="a-sub"><button class="a-sub__btn" type="button" aria-expanded="false" aria-haspopup="true"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span><svg class="a-sub__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="a-sub__list" hidden>${CONTENT_SUB.map((x) => subLink(x, '')).join('')}</div></div>`
+          : `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`)).join('')}
       </nav>
     </div>`;
   document.body.prepend(top);
@@ -57,6 +62,14 @@
   menuBtn.addEventListener('click', () => setMenu(menuList.hidden));
   document.addEventListener('click', (e) => { if (!menuList.hidden && !e.target.closest('.a-menu')) setMenu(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menuList.hidden) { setMenu(false); menuBtn.focus(); } });
+  // 'עריכת תוכן' in the bar opens to its four parts
+  const sub = top.querySelector('.a-sub');
+  const subBtn = sub.querySelector('.a-sub__btn');
+  const subList = sub.querySelector('.a-sub__list');
+  const setSub = (on) => { subList.hidden = !on; subBtn.setAttribute('aria-expanded', String(on)); };
+  subBtn.addEventListener('click', () => setSub(subList.hidden));
+  document.addEventListener('click', (e) => { if (!subList.hidden && !sub.contains(e.target)) setSub(false); });
+  sub.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !subList.hidden) { setSub(false); subBtn.focus(); } });
 
   /* ---------- storage (per browser, demo) ---------- */
   const read = (k, fallback) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } };

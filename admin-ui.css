@@ -338,3 +338,23 @@ html { scrollbar-gutter: stable; }
 
 /* the notes are white (on the light blue page) */
 .a-note:not(.a-note--warn) { background: #fff; box-shadow: 0 1px 3px rgba(42, 37, 97, .06), 0 0 0 1px var(--a-line); }
+
+/* 'עריכת תוכן' in the bar: a drop-down (dark, as the menu) */
+.a-top .a-nav { overflow: visible; }
+.a-sub { position: relative; flex: none; }
+.a-sub__btn { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 14px; border: 0; border-radius: 21px; background: transparent; color: #fff; font: inherit; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.a-sub__btn:hover { background: rgba(255, 255, 255, .14); }
+.a-sub__btn[aria-current="page"] { background: #fff; color: #2A2577; }
+.a-sub__btn svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.a-sub__btn .a-sub__chev { width: 14px; height: 14px; transition: transform .2s ease; }
+.a-sub__btn[aria-expanded="true"] .a-sub__chev { transform: rotate(180deg); }
+.a-sub__list { position: absolute; top: calc(100% + 12px); right: 0; z-index: 70; min-width: 250px; padding: 8px; border-radius: 14px; background: rgba(36, 34, 117, .96); backdrop-filter: blur(10px); box-shadow: 0 14px 34px rgba(20, 18, 74, .35); animation: a-rise .18s ease both; }
+.a-sub__item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: rgba(255, 255, 255, .8); text-decoration: none; font-weight: 600; white-space: nowrap; }
+.a-sub__item > span { flex: 1; }
+a.a-sub__item:hover, a.a-sub__item:focus-visible { background: rgba(255, 255, 255, .1); color: #fff; }
+.a-sub__item[aria-current="page"] { background: rgba(255, 255, 255, .16); color: #fff; }
+.a-sub__item--soon { color: rgba(255, 255, 255, .45); cursor: default; }
+.a-sub__item small { padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .12); color: rgba(255, 255, 255, .75); font-size: 12px; font-weight: 600; }
+.a-menu__sub { margin: 0 0 4px; padding-inline-start: 28px; }
+.a-menu__sub .a-sub__item { min-height: 38px; font-size: 14px; font-weight: 500; }
+@media (max-width: 1240px) { .a-top .a-sub__btn > span { display: none; } .a-top .a-sub__btn { padding: 0 12px; } }
