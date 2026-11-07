@@ -146,3 +146,7 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-list::-webkit-scrollbar, .w-edit::-webkit-scrollbar, .w-preview::-webkit-scrollbar { width: 4px; }
 .w-list::-webkit-scrollbar-button, .w-edit::-webkit-scrollbar-button, .w-preview::-webkit-scrollbar-button { display: none; height: 0; }
 .w-list::-webkit-scrollbar-thumb, .w-edit::-webkit-scrollbar-thumb, .w-preview::-webkit-scrollbar-thumb { background: #E33563; border-radius: 2px; }
+
+/* the picked world: the page background (lighter than the lavender) */
+.w-item[aria-current="true"] { background: var(--a-page); }
+.w-item:hover:not([aria-current="true"]) { background: #F9F8FC; }
