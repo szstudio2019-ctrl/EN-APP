@@ -423,7 +423,7 @@
     const w = picked();
     if (!w) return;
     const t = e.target.closest('[data-wtab]');
-    if (t) { secTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${secTab}"]`); if (b) b.focus(); return; }
+    if (t) { secTab = t.dataset.wtab; drawEdit(); drawPreview(); const b = edit.querySelector(`[data-wtab="${secTab}"]`); if (b) b.focus(); return; }
     if (e.target.closest('[data-wtab-add]')) {
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
@@ -555,8 +555,38 @@
       </div>
       ${w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : ''}`;
     const src = imgSrc(w, false);
-    map.innerHTML = `${w.published ? '' : '<span class="a-tag a-tag--draft w-map__draft">טיוטה – לא מופיע לתלמידים</span>'}
-      ${w.animUrl ? `<video class="w-map__island" src="${w.animUrl}" autoplay muted loop playsinline></video>` : src ? `<img class="w-map__island" src="${src}" alt="">` : '<div class="w-map__none">אין עדיין תמונה לעולם</div>'}
+    const pic = (cls) => (w.animUrl ? `<video class="${cls}" src="${w.animUrl}" autoplay muted loop playsinline></video>` : src ? `<img class="${cls}" src="${src}" alt="">` : '<div class="w-map__none">אין עדיין תמונה לאי</div>');
+    const draftTag = w.published ? '' : '<span class="a-tag a-tag--draft w-map__draft">טיוטה – לא מופיע לתלמידים</span>';
+    // what the preview shows follows the tab: the island's page, the map, or the lessons with the zebra
+    const view = mode !== 'edit' ? 'map' : ({ details: 'page', media: 'page', about: 'map', lessons: 'lesson' })[secTab];
+    $('w-prev-title').lastChild.textContent = ({ map: 'תצוגת מפה', page: 'דף האי', lesson: 'שיעור ותרגול' })[view];
+    map.className = `w-map w-map--${view}`;
+    if (view === 'page') {
+      const bg = bgOf(w);
+      map.innerHTML = `${draftTag}<div class="w-page"${bg ? ` style="background-image:url('${bg}')"` : ''}>
+          <p class="w-page__h"><span>${UI.esc(w.head1 || '')}</span><b>${UI.esc(w.head2 || '')}</b></p>
+          ${w.kicker ? `<p class="w-page__k">${UI.esc(w.kicker)}</p>` : ''}
+          ${pic('w-page__island')}
+        </div>`;
+      return;
+    }
+    if (view === 'lesson') {
+      const rows = w.review ? `<li>חזרה על שיעורים ${UI.esc(w.reviewOf || '')}</li>` : Array.from({ length: w.planned }, (_, k) => {
+        const name = (w.lessonNames || [])[k];
+        const done = !!(w.lessonPages || [])[k];
+        return `<li class="${done ? 'is-done' : ''}"><b>שיעור ${(w.firstLesson || 1) + k}</b>${name ? ` · ${UI.esc(name)}` : ''}<small>${done ? 'נכתב' : 'טרם נכתב'}</small></li>`;
+      }).join('');
+      map.innerHTML = `<div class="w-lesson">
+          <img class="w-lesson__zebra" src="assets/zebra.webp" alt="">
+          <p class="w-lesson__name">${UI.esc(w.name)}</p>
+          <ol class="w-lesson__list">${rows}</ol>
+        </div>`;
+      return;
+    }
+    // the map: the island on the dashed wavy path, its "about" bubble under it
+    map.innerHTML = `${draftTag}
+      <svg class="w-map__path" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 70 C 40 20, 90 20, 150 62 S 260 110, 310 50"/></svg>
+      ${pic('w-map__island')}
       <div class="w-map__bubble">
         <p class="w-map__name">${UI.esc(w.name) || '<span class="a-muted">(בלי שם)</span>'}</p>
         ${w.kicker ? `<p class="w-map__kicker">${UI.esc(w.kicker)}</p>` : ''}

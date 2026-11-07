@@ -228,3 +228,23 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-ladd { margin-top: 14px; }
 .w-tabs [data-wtab] { font-size: 15px; }
 @media (max-width: 640px) { .w-lrow { grid-template-columns: minmax(0, 1fr) auto 36px; } .w-lrow__n { grid-column: 1 / -1; } }
+
+/* the preview follows the tab */
+.w-map__path { position: absolute; inset: 22% 0 auto; width: 100%; height: 34%; overflow: visible; pointer-events: none; }
+.w-map__path path { fill: none; stroke: #fff; stroke-width: 3; stroke-dasharray: 2 9; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: .95; }
+.w-map--map .w-map__island { position: relative; }
+.w-map--page { padding: 0; background: none; }
+.w-page { position: relative; display: flex; flex-direction: column; align-items: center; min-height: 380px; padding: 22px 14px 14px; border-radius: 12px; background: #2A2577 url(assets/bg-clouds.webp) center / cover no-repeat; text-align: center; }
+.w-page__h { margin: 0; display: flex; flex-direction: column; line-height: 1.1; text-shadow: 0 2px 8px rgba(20, 18, 74, .45); }
+.w-page__h span { font-size: 24px; font-weight: 700; color: #fff; }
+.w-page__h b { font-size: 28px; font-weight: 800; color: #FFD34D; }
+.w-page__k { margin: 6px 0 0; padding: 2px 12px; border-radius: 12px; background: rgba(255, 255, 255, .85); color: #2A2577; font-size: 13px; font-weight: 600; }
+.w-page__island { width: 82%; margin-top: auto; aspect-ratio: 1.2; object-fit: contain; }
+.w-map--lesson { padding: 0; background: none; }
+.w-lesson { padding: 18px 14px; border-radius: 12px; background: linear-gradient(180deg, #F4F3FA, #FCE3EA); text-align: center; }
+.w-lesson__zebra { width: 58%; max-height: 220px; object-fit: contain; }
+.w-lesson__name { margin: 6px 0 10px; font-size: 17px; font-weight: 700; color: #E33563; }
+.w-lesson__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; text-align: start; }
+.w-lesson__list li { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; background: #fff; font-size: 14px; color: #2A2577; }
+.w-lesson__list li small { margin-inline-start: auto; font-size: 12px; color: var(--a-text-2); }
+.w-lesson__list li.is-done small { color: #1F7A4D; font-weight: 600; }
