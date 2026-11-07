@@ -23,6 +23,10 @@
     render();
   });
   UI.wireSeg(periodBox, (k) => { period = k; render(); });
+  let grades = [];
+  const gradeBox = document.getElementById('s-grade');
+  gradeBox.innerHTML = UI.multiHtml('כיתות', 'כל הכיתות', Users.GRADES.map((g) => [g, `כיתה ${g}`]));
+  UI.wireMulti(gradeBox, (p) => { grades = p; render(); });
 
   const DAYS_HE = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
   const MONTHS_HE = ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'];
@@ -116,7 +120,8 @@
   function render() {
     const n = PERIODS[period][1];
     const kids = users.map((u, i) => ({ u, i }))
-      .filter(({ u }) => who === 'all' || (who === 'active' && u.active) || (who === 'inactive' && !u.active) || (who === 'one' && u.id === one));
+      .filter(({ u }) => who === 'all' || (who === 'active' && u.active) || (who === 'inactive' && !u.active) || (who === 'one' && u.id === one))
+      .filter(({ u }) => who === 'one' || !grades.length || grades.includes(Users.gradeOf(u)));
     kidsNow = kids;
     const rowsData = kids.map(({ u, i }) => {
       const part = activityOf(u).slice(0, n);

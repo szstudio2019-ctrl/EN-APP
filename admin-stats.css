@@ -100,3 +100,7 @@
 /* the filters sit on the light blue page: the unpicked ones are white */
 .st-filters .a-seg button:not([aria-pressed="true"]) { background: #fff; }
 .st-filters .a-seg button:not([aria-pressed="true"]):hover { background: #F3F2FB; }
+
+.st-filters .a-multi__btn:not(.is-on) { background: #fff; }
+.st-filters .a-multi__btn:not(.is-on):hover { background: #F3F2FB; }
+.st-filters .a-multi__list { inset-inline-start: auto; inset-inline-end: 0; }

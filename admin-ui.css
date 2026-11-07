@@ -306,3 +306,32 @@ body.a-body, html { background: var(--a-page); }
 
 /* keep the page from jumping sideways when its scrollbar comes and goes */
 html { scrollbar-gutter: stable; }
+
+/* a drop-down with check boxes (the grades filter) */
+.a-multi { position: relative; display: inline-block; }
+.a-multi__btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; max-width: 280px; padding: 0 16px; border: 0; border-radius: 22px; background: #EFEFF8; color: var(--a-text); font-weight: 600; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.a-multi__text { overflow: hidden; text-overflow: ellipsis; }
+.a-multi__btn:hover { background: #E4E3F3; }
+.a-multi__btn.is-on { background: #2A2577; color: #fff; }
+.a-multi__btn svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+.a-multi__btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+.a-multi__list { position: absolute; top: calc(100% + 8px); inset-inline-start: 0; z-index: 60; min-width: 180px; padding: 8px; border-radius: 14px; background: #fff; box-shadow: 0 12px 32px rgba(42, 37, 97, .18), 0 0 0 1px var(--a-line); animation: a-rise .18s ease both; }
+.a-multi__opt { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border-radius: 10px; cursor: pointer; font-weight: 500; }
+.a-multi__opt:hover { background: var(--a-picked); }
+.a-multi__opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.a-multi__box { flex: none; width: 20px; height: 20px; border: 2px solid #B9B6D9; border-radius: 6px; background: #fff; display: grid; place-items: center; }
+.a-multi__opt input:checked + .a-multi__box { border-color: #E33563; background: #E33563; }
+.a-multi__opt input:checked + .a-multi__box::after { content: ""; width: 5px; height: 10px; border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: translateY(-1px) rotate(45deg); }
+.a-multi__opt input:focus-visible + .a-multi__box { box-shadow: 0 0 0 3px rgba(227, 53, 99, .3); }
+.a-multi__clear { width: 100%; margin-top: 6px; min-height: 38px; border: 0; border-top: 1px solid var(--a-line); background: none; color: #E33563; font-weight: 600; cursor: pointer; }
+
+/* the menu: dark, as the student site's side menu */
+.a-menu__list { background: rgba(36, 34, 117, .96); backdrop-filter: blur(10px); box-shadow: 0 14px 34px rgba(20, 18, 74, .35); min-width: 240px; }
+.a-menu__list a, .a-menu__soon { color: rgba(255, 255, 255, .72); font-weight: 600; }
+.a-menu__list a:hover, .a-menu__list a:focus-visible { background: rgba(255, 255, 255, .1); color: #fff; }
+.a-menu__list a[aria-current="page"] { background: rgba(255, 255, 255, .16); color: #fff; }
+.a-menu__soon { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: rgba(255, 255, 255, .45); cursor: default; }
+.a-menu__soon > span { flex: 1; }
+.a-menu__soon small { padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .12); color: rgba(255, 255, 255, .75); font-size: 12px; font-weight: 600; }
+.a-menu__soon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.a-menu__line { height: 1px; margin: 6px 4px; border: 0; background: rgba(255, 255, 255, .15); }

@@ -9,6 +9,12 @@
     ['stats', 'admin-stats.html', 'התמדה', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'],
     ['coins', 'admin-coins.html', 'מטבעות', '<img src="assets/coin.webp" alt="">'],
   ];
+  // pages still to be built: in the menu, marked 'בקרוב'
+  const SOON = [
+    ['עריכת אודות', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'],
+    ['עריכת חנות', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l1.5-5h13L20 9M4 9h16v11H4zM4 9a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M10 20v-5h4v5"/></svg>'],
+    ['כרטיסים', '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></svg>'],
+  ];
   const page = document.body.dataset.page;
 
   /* ---------- top bar ---------- */
@@ -25,6 +31,8 @@
           <button class="a-menu__btn" type="button" id="a-menu-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-menu" aria-label="תפריט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M8 12h12M4 17h16"/></svg></button>
           <div class="a-menu__list" id="a-menu" role="menu" hidden>
             ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`).join('')}
+            ${SOON.map(([name, icon]) => `<span class="a-menu__soon" role="menuitem" aria-disabled="true">${icon}<span>${name}</span><small>בקרוב</small></span>`).join('')}
+            <hr class="a-menu__line">
             <a role="menuitem" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
           </div>
         </div>
@@ -95,6 +103,9 @@
     save: () => write('en-app:users', users),
     daysLeft: (u) => Math.ceil((new Date(u.end) - now) / DAY),
   };
+  // the child's grade (כיתה); demo children get a steady one until it is set
+  Users.GRADES = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳'];
+  Users.gradeOf = (u) => u.grade || Users.GRADES[Math.max(0, users.indexOf(u)) % Users.GRADES.length];
   Users.expiring = (u) => { const n = Users.daysLeft(u); return n >= 0 && n <= 30; };
   const COLORS = ['#B0234F', '#1F5FBF', '#8A5A00', '#4C6A0B', '#5B34B8', '#0E7468'];
   Users.avatar = (u, i) => (u.photo
@@ -234,6 +245,34 @@
         b.parentElement.querySelectorAll('[data-seg]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
         onPick(b.dataset.seg, b);
       });
+    },
+    // a drop-down with check boxes (several may be picked; none = all):
+    // multiHtml(name, allLabel, items [[key, label]], picked []) · wireMulti(root, onChange(picked[]))
+    multiHtml: (name, allLabel, items, picked = []) => `<div class="a-multi" data-all="${esc(allLabel)}" data-name="${esc(name)}">
+        <button class="a-multi__btn" type="button" aria-haspopup="true" aria-expanded="false"><span class="a-multi__text"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="a-multi__list" role="group" aria-label="${esc(name)}" hidden>
+          ${items.map(([k, label]) => `<label class="a-multi__opt"><input type="checkbox" value="${esc(k)}"${picked.includes(k) ? ' checked' : ''}><span class="a-multi__box" aria-hidden="true"></span><span>${esc(label)}</span></label>`).join('')}
+          <button class="a-multi__clear" type="button">${esc(allLabel)}</button>
+        </div>
+      </div>`,
+    wireMulti(root, onChange) {
+      const box = root.querySelector('.a-multi');
+      const btn = box.querySelector('.a-multi__btn');
+      const list = box.querySelector('.a-multi__list');
+      const boxes = () => [...list.querySelectorAll('input')];
+      const picked = () => boxes().filter((b) => b.checked).map((b) => b.value);
+      const label = () => {
+        const p = boxes().filter((b) => b.checked).map((b) => b.value);
+        box.querySelector('.a-multi__text').textContent = p.length ? `${box.dataset.name}: ${p.join(', ')}` : box.dataset.all;
+        btn.classList.toggle('is-on', p.length > 0);
+      };
+      const setOpen = (on) => { list.hidden = !on; btn.setAttribute('aria-expanded', String(on)); };
+      btn.addEventListener('click', () => setOpen(list.hidden));
+      list.addEventListener('change', () => { label(); onChange(picked()); });
+      list.querySelector('.a-multi__clear').addEventListener('click', () => { boxes().forEach((b) => { b.checked = false; }); label(); onChange([]); setOpen(false); btn.focus(); });
+      document.addEventListener('click', (e) => { if (!list.hidden && !box.contains(e.target)) setOpen(false); });
+      box.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !list.hidden) { e.stopPropagation(); setOpen(false); btn.focus(); } });
+      label();
     },
     // the sticky save bar: { el, setDirty(bool) }; buttons only while there are changes;
     // leaving the page with unsaved changes asks first

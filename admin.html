@@ -32,6 +32,7 @@
     <section class="a-card" aria-label="רשימת המשתמשים">
       <div class="a-filters" style="margin-bottom:16px">
         <div id="u-filter"></div>
+        <div id="u-grade"></div>
         <label class="a-search">
           <span class="sr-only">חיפוש</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
@@ -45,7 +46,7 @@
       <div class="a-table-wrap u-scroll">
         <table class="a-table">
           <thead>
-            <tr><th>משתמש</th><th>שם משתמש</th><th>טלפון</th><th>אימייל</th><th>הרשמה</th><th>המנוי פג</th><th>נתונים</th><th>פעיל</th><th>עריכה</th></tr>
+            <tr><th>משתמש</th><th>כיתה</th><th>שם משתמש</th><th>טלפון</th><th>אימייל</th><th>הרשמה</th><th>המנוי פג</th><th>נתונים</th><th>פעיל</th><th>עריכה</th></tr>
           </thead>
           <tbody id="u-rows"></tbody>
         </table>
@@ -79,6 +80,7 @@
         <label class="a-field"><span>שם פרטי</span><input id="f-first" required></label>
         <label class="a-field"><span>שם משפחה</span><input id="f-last"></label>
         <label class="a-field"><span>שם משתמש</span><input id="f-user" dir="ltr" required></label>
+        <label class="a-field"><span>כיתה</span><select id="f-grade"></select></label>
         <label class="a-field"><span>טלפון</span><input id="f-phone" type="tel" dir="ltr"></label>
         <label class="a-field a-wide"><span>אימייל</span><input id="f-email" type="email" dir="ltr"></label>
         <label class="a-field"><span>תאריך הרשמה</span><input id="f-start" type="date" required></label>
