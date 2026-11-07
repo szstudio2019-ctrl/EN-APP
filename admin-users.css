@@ -56,3 +56,10 @@
 /* the search on the left of the filter row, the legend under it */
 .a-filters .a-search { margin-inline-start: auto; }
 .a-legend.u-legend { flex-basis: 100%; justify-content: flex-end; }
+
+/* the table's place stays put whether or not its list scrolls; a small thin pink bar, no arrows */
+.u-scroll { scrollbar-gutter: stable; }
+@supports selector(::-webkit-scrollbar) { .u-scroll { scrollbar-width: auto; scrollbar-color: auto; } }
+.u-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+.u-scroll::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+.u-scroll::-webkit-scrollbar-thumb { background: #E33563; border-radius: 2px; }

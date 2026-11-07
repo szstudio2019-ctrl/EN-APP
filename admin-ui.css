@@ -303,3 +303,6 @@ body.a-body, html { background: var(--a-page); }
 
 /* visually hidden stays 1px even inside a field (the file inputs) */
 .a-body .sr-only { width: 1px !important; height: 1px !important; min-height: 0 !important; padding: 0 !important; border: 0 !important; }
+
+/* keep the page from jumping sideways when its scrollbar comes and goes */
+html { scrollbar-gutter: stable; }

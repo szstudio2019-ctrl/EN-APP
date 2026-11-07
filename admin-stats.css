@@ -89,3 +89,10 @@
 .st-box--list .st-list::-webkit-scrollbar { width: 6px; }
 .st-box--list .st-list::-webkit-scrollbar-track { background: transparent; }
 .st-box--list .st-list::-webkit-scrollbar-thumb { background: #E33563; border-radius: 3px; }
+
+/* a small thin pink bar, no arrows */
+.st-box--list .st-list { scrollbar-gutter: stable; }
+@supports selector(::-webkit-scrollbar) { .st-box--list .st-list { scrollbar-width: auto; scrollbar-color: auto; } }
+.st-box--list .st-list::-webkit-scrollbar { width: 4px; }
+.st-box--list .st-list::-webkit-scrollbar-button { display: none; height: 0; }
+.st-box--list .st-list::-webkit-scrollbar-thumb { background: #E33563; border-radius: 2px; }
