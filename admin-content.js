@@ -30,13 +30,27 @@
   /* ---------- the + menu, beside the save area ---------- */
   const plus = document.createElement('div');
   plus.className = 'w-plus';
-  plus.innerHTML = `<button class="w-plus__btn" type="button" id="w-plus" aria-haspopup="menu" aria-expanded="false" aria-controls="w-plus-menu" aria-label="הוספה" title="הוספה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+  plus.innerHTML = `<button class="w-plus__btn" type="button" id="w-plus" aria-haspopup="menu" aria-expanded="false" aria-controls="w-plus-menu" ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>הוספה</span></button>
     <div class="w-plus__menu" id="w-plus-menu" role="menu" hidden>
       <button type="button" role="menuitem" data-new="world"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 15h18l-3 3.5H6z"/><path d="M9 21l1-2.5M15 21l-1-2.5"/><path d="M12 15V8"/><path d="M12 8c-1.5-2-4-2.3-5.5-1.2M12 8c1.5-2 4-2.3 5.5-1.2M12 8c-.6-2.2.4-4 2-4.8"/></svg></span>הוספת עולם</button>
       <button type="button" role="menuitem" data-new="lesson"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"/><path d="M12 6.5v13"/></svg></span>הוספת שלב</button>
       <button type="button" role="menuitem" data-new="review"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></span>הוספת חזרה</button>
     </div>`;
   head.appendChild(plus);
+  const delBtn = document.createElement('button');
+  delBtn.type = 'button';
+  delBtn.className = 'a-btn w-delete';
+  delBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg><span>מחיקה</span>';
+  plus.after(delBtn);
+  delBtn.addEventListener('click', () => {
+    const w = mode === 'edit' && picked();
+    if (!w) return;
+    if (!confirm(`למחוק את "${w.name || 'האי'}"? אפשר לבטל עד השמירה.`)) return;
+    const at = list.findIndex((x) => x.id === w.id);
+    list.splice(at, 1);
+    pickedId = (list[Math.min(at, list.length - 1)] || {}).id;
+    drawAll(); changed();
+  });
   const plusBtn = $('w-plus');
   const menu = $('w-plus-menu');
   const menuItems = () => [...menu.querySelectorAll('[role="menuitem"]')];

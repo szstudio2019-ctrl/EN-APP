@@ -412,3 +412,6 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 .a-top .a-back:hover .a-back__label, .a-top .a-back:focus-visible .a-back__label { max-width: 160px; opacity: 1; margin-left: 10px; }
 @media (max-width: 760px) { .a-top .a-back .a-back__label { display: inline-block; } .a-top .a-back { padding: 0 11px; } }
 .a-multi__n { display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin-inline-start: 4px; padding: 0 6px; border-radius: 11px; background: #fff; color: #1E1A5C; font-size: 12px; font-weight: 700; }
+
+/* no 'all changes saved' note beside the save button (screen readers still hear it) */
+.a-save__status { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }

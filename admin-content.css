@@ -189,3 +189,13 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tabbed { border-top-right-radius: 0 !important; }
 .w-lesson-state { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 20px; }
 .w-lesson-del { margin-top: 24px; min-height: 36px; padding: 0 4px; border: 0; background: none; color: #C81E55; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* the add button with its word in white; a white 'מחיקה' beside it */
+.w-plus__btn { width: auto; min-width: 48px; padding: 0 20px 0 18px; gap: 6px; display: inline-flex; border-radius: 24px; font: inherit; font-weight: 600; font-size: 16px; }
+.w-plus__btn svg { width: 22px; height: 22px; }
+.w-plus__btn[aria-expanded="true"] { transform: none; }
+.w-plus__btn[aria-expanded="true"] svg { transform: rotate(45deg); transition: transform .15s ease; }
+.w-delete { height: 48px; background: #fff; color: #C81E55; border-color: #F1C5D2; font-weight: 600; }
+.w-delete:hover { background: #FDEBF0; }
+.w-delete svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.w-plus .w-plus__btn, .w-plus .w-plus__btn span { color: #fff !important; }
