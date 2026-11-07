@@ -259,16 +259,46 @@
     if (first) first.focus();
   }
 
+  // tabs over the middle column: the island, then each of its lessons (+ adds one)
+  let lessonTab = -1;
+  let tabsOf = null;
+  function wTabs(w) {
+    const lessons = w.review ? [] : Array.from({ length: w.planned }, (_, k) => k);
+    return `<div class="w-tabs" role="tablist" aria-label="האי והשיעורים שלו">
+        <button type="button" role="tab" id="w-title" class="w-tabs__island" data-wtab="-1" aria-selected="${lessonTab < 0}">${UI.esc(w.name) || 'אי בלי שם'}</button>
+        ${lessons.map((k) => `<button type="button" role="tab" data-wtab="${k}" aria-selected="${lessonTab === k}">שיעור ${(w.firstLesson || 1) + k}</button>`).join('')}
+        ${w.review ? '' : '<button type="button" class="w-tabs__add" data-wtab-add aria-label="הוספת שיעור">+</button>'}
+      </div>`;
+  }
+  function drawLesson(w, k) {
+    const n = (w.firstLesson || 1) + k;
+    const page = (w.lessonPages || [])[k];
+    const name = (w.lessonNames || [])[k] || '';
+    edit.innerHTML = wTabs(w) + `<div class="a-card w-sections w-tabbed">
+        <section aria-labelledby="sec-lesson">
+          <h3 id="sec-lesson">שיעור ${n}</h3>
+          <label class="a-field"><span>שם השיעור (לא חובה)</span><input id="f-lname" value="${UI.esc(name)}" placeholder="למשל: האות a"></label>
+          <div class="w-lesson-state">
+            ${page
+              ? `<span class="a-tag a-tag--live">נכתב</span><a class="a-btn a-btn--ghost" href="${page}?view=admin" target="_blank" rel="noopener">פתיחת השיעור</a>`
+              : '<span class="a-tag a-tag--draft">טרם נכתב</span><small class="a-help">השיעור יופיע במפה כשייכתב</small>'}
+          </div>
+          ${page ? '' : `<button class="w-lesson-del" type="button" data-lesson-del="${k}">מחיקת שיעור ${n}</button>`}
+        </section>
+      </div>`;
+  }
   function drawEdit() {
     if (mode === 'world') return drawNewWorld();
     if (mode === 'review') return drawNewReview();
     if (mode === 'lesson') return drawNewLesson();
     const w = picked();
     if (!w) { edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם בכפתור +.</p></div>'; return; }
+    if (tabsOf !== w.id) { tabsOf = w.id; lessonTab = -1; }
+    if (lessonTab >= w.planned) lessonTab = -1;
+    if (lessonTab >= 0) return drawLesson(w, lessonTab);
     const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
-    edit.innerHTML = `<div class="a-card w-sections">
+    edit.innerHTML = wTabs(w) + `<div class="a-card w-sections w-tabbed">
         <section aria-labelledby="w-title">
-          <h2 class="w-name" id="w-title">${UI.esc(w.name) || 'אי בלי שם'}</h2>
           <h3 class="w-sub-title">פרטי האי</h3>
           <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
@@ -390,9 +420,44 @@
     b.querySelector('i').style.width = `${pct}%`;
   }
 
+  edit.addEventListener('click', (e) => {
+    if (mode !== 'edit') return;
+    const w = picked();
+    if (!w) return;
+    const t = e.target.closest('[data-wtab]');
+    if (t) { lessonTab = Number(t.dataset.wtab); drawEdit(); const b = edit.querySelector(`[data-wtab="${lessonTab}"]`); if (b) b.focus(); return; }
+    if (e.target.closest('[data-wtab-add]')) {
+      w.lessonNames = w.lessonNames || [];
+      while (w.lessonNames.length < w.planned) w.lessonNames.push('');
+      w.planned += 1;
+      w.lessonNames.push('');
+      lessonTab = w.planned - 1;
+      drawList(); drawEdit(); drawPreview(); changed();
+      const f = $('f-lname'); if (f) f.focus();
+      return;
+    }
+    const del = e.target.closest('[data-lesson-del]');
+    if (del) {
+      const k = Number(del.dataset.lessonDel);
+      if (!confirm(`למחוק את שיעור ${(w.firstLesson || 1) + k}?`)) return;
+      w.lessonNames = w.lessonNames || [];
+      w.lessonNames.splice(k, 1);
+      w.planned = Math.max(w.written, w.planned - 1);
+      lessonTab = -1;
+      drawList(); drawEdit(); drawPreview(); changed();
+    }
+  });
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
+    if (id === 'f-lname' && mode === 'edit' && lessonTab >= 0) {
+      const w = picked();
+      w.lessonNames = w.lessonNames || [];
+      while (w.lessonNames.length < w.planned) w.lessonNames.push('');
+      w.lessonNames[lessonTab] = e.target.value;
+      drawList(); changed();
+      return;
+    }
     if (mode !== 'edit') {
       const key = { 'n-name': 'name', 'n-head1': 'head1', 'n-head2': 'head2', 'n-title': 'title', 'n-text': 'text', 'n-reviewof': 'reviewOf' }[id];
       if (!key) return;

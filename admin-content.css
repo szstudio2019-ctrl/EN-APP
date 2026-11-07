@@ -177,3 +177,15 @@ a.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-bgfield { margin-top: 20px; }
 .w-media__pic--bg { width: 160px; height: 90px; }
 .w-media__pic--bg img { width: 100%; height: 100%; object-fit: cover; }
+
+/* tabs over the middle column: the island, then its lessons, + adds one */
+.w-tabs { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2px; position: relative; z-index: 1; }
+.w-tabs [data-wtab] { display: inline-flex; align-items: center; min-height: 46px; max-width: 260px; padding: 0 18px; border: 0; border-radius: 16px 16px 0 0; background: transparent; color: #2A2577; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-tabs [data-wtab]:hover { color: #E33563; }
+.w-tabs [data-wtab][aria-selected="true"] { background: #fff; color: #E33563; box-shadow: 0 -1px 0 var(--a-line), 1px 0 0 var(--a-line), -1px 0 0 var(--a-line); }
+.w-tabs .w-tabs__island { font-size: 18px; font-weight: 700; }
+.w-tabs__add { width: 34px; height: 34px; margin: 0 6px 6px; padding: 0; border: 0; border-radius: 50%; background: #E33563; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+.w-tabs__add:hover { background: #C81E55; }
+.w-tabbed { border-top-right-radius: 0 !important; }
+.w-lesson-state { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 20px; }
+.w-lesson-del { margin-top: 24px; min-height: 36px; padding: 0 4px; border: 0; background: none; color: #C81E55; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
