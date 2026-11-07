@@ -108,3 +108,20 @@
 .t-img__btns { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .pv__img { display: block; max-width: 100%; max-height: 180px; margin: 0 auto 12px; object-fit: contain; }
 .t-img__del { min-height: 32px; padding: 0 4px; border: 0; background: none; color: var(--a-text-2); font: inherit; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* the site explanation: a tab for each slide, the form beside a bigger preview */
+.t-layout.is-slides.is-split { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+.t-layout.is-slides .t-form > .t-sec:first-child { border-top-right-radius: 0; }
+.t-layout.is-slides .t-item { padding: 0; background: none; }
+.t-tabs [data-slide] { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border: 0; border-radius: 16px 16px 0 0; background: transparent; color: #2A2577; font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.t-tabs [data-slide]:hover { color: #E33563; }
+.t-tabs [data-slide][aria-selected="true"] { background: #fff; color: #E33563; box-shadow: 0 -1px 0 var(--a-line), 1px 0 0 var(--a-line), -1px 0 0 var(--a-line); }
+.t-tabs { flex-wrap: wrap; align-items: flex-end; }
+.t-tabs__add { width: 36px; height: 36px; margin: 0 6px 6px; border: 0; border-radius: 50%; background: #E33563; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+.t-tabs__add:hover { background: #C81E55; }
+.pv-plain { padding: 28px 12px 12px; text-align: center; }
+.pv-plain .pv__title { font-size: 30px; }
+.pv-plain .pv__text { font-size: 19px; }
+.pv-plain .pv__img { max-height: 260px; }
+.pv-plain .pv__dots { margin-top: 22px; }
+.pv-plain .pv__dots i { width: 26px; height: 6px; }

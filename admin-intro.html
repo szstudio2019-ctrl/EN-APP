@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin-ui.css?v=20261108o">
-  <link rel="stylesheet" href="admin-edit.css?v=20261108o">
+  <link rel="stylesheet" href="admin-ui.css?v=20261108p">
+  <link rel="stylesheet" href="admin-edit.css?v=20261108p">
 </head>
 <body class="a-body" data-page="content" data-sub="intro">
   <main class="a-main">
@@ -35,7 +35,7 @@
   <script>
     window.TEXT_PAGE = {
       key: 'intro',
-      split: true,
+      slideTabs: true,
       defaults: {
         slides: [
           { title: 'ברוכים הבאים,', pink: '[שם הילד/ה]', text: 'הגעתם למדקדקים באנגלית\nתוכלו ללמוד אנגלית בכיף.' },
@@ -52,7 +52,7 @@
       sections: [
         { list: 'slides', title: 'השקופיות', itemName: 'שקופית', note: 'הסדר כאן הוא סדר השקופיות. מה שבסוגריים מרובעים מתמלא לבד (השם של הילד/ה, מספר האיים).',
           fields: [{ key: 'title', label: 'כותרת' }, { key: 'pink', label: 'המשך הכותרת בוורוד' }, { key: 'text', label: 'טקסט', long: true }, { key: 'img', label: 'תמונה בשקופית', image: true }] },
-        { id: 'sentence', title: 'כרטיס משחק המשפטים', note: 'מופיע אחרי השקופיות, ובכל כניסה מהשנייה ואילך.',
+        { id: 'sentence', title: 'כרטיס משחק המשפטים', tab: 'כרטיס המשפטים', note: 'מופיע אחרי השקופיות, ובכל כניסה מהשנייה ואילך.',
           fields: [{ key: 'sTitle', label: 'כותרת' }, { key: 'sPink', label: 'המשך הכותרת בוורוד' },
             { key: 'sNew', label: 'כשהוגרל משפט חדש', long: true }, { key: 'sGoing', label: 'כשיש משפט בתהליך', long: true },
             { key: 'sDone', label: 'כשהמשפט הושלם', long: true }, { key: 'sNone', label: 'כשאין משפט', long: true }] },
@@ -61,18 +61,17 @@
         const n = d.slides.length;
         const at = Math.min(window.__pv || 0, n);
         const s = at < n ? d.slides[at] : { title: d.sTitle, pink: d.sPink, text: d.sNew };
-        return `<div class="pv"><div class="pv__card">
+        return `<div class="pv-plain">
             ${s.img ? `<img class="pv__img" src="${s.img}" alt="">` : ''}
             <p class="pv__title">${esc(s.title)} <span class="pv__pink">${esc(s.pink)}</span></p>
             <p class="pv__text">${esc(s.text)}</p>
-            <div class="pv__dots">${d.slides.map((_, k) => `<i class="${k === at ? 'is-on' : ''}"></i>`).join('')}</div>
-          </div>
-          <div class="pv__nav"><button type="button" onclick="window.__pv=Math.max(0,(window.__pv||0)-1);window.__pvDraw()" ${at === 0 ? 'disabled' : ''}>הקודם</button><span class="a-help" style="align-self:center">${at < n ? `שקופית ${at + 1} מתוך ${n}` : 'כרטיס המשפטים'}</span><button type="button" onclick="window.__pv=Math.min(${n},(window.__pv||0)+1);window.__pvDraw()" ${at >= n ? 'disabled' : ''}>הבא</button></div></div>`;
+            ${at < n ? `<div class="pv__dots">${d.slides.map((_, k) => `<i class="${k === at ? 'is-on' : ''}"></i>`).join('')}</div>` : ''}
+          </div>`;
       },
     };
   </script>
   <script src="islands.js"></script>
-  <script src="admin-shell.js?v=20261108o"></script>
-  <script src="admin-texts.js?v=20261108o"></script>
+  <script src="admin-shell.js?v=20261108p"></script>
+  <script src="admin-texts.js?v=20261108p"></script>
 </body>
 </html>

@@ -31,14 +31,20 @@
     return `<label class="a-field${f.wide ? ' t-wide' : ''}"><span>${f.label}</span>${input}${f.help ? `<small class="a-help">${f.help}</small>` : ''}</label>`;
   };
 
+  const listSec = P.sections.find((x) => x.list);
+  const nSlides = () => (listSec ? cur[listSec.list].length : 0);
+  const pick = () => Math.min(window.__pv || 0, nSlides());
   function draw() {
+    if (P.slideTabs) drawTabs();
     box.innerHTML = P.sections.map((s) => {
+      if (P.slideTabs && !s.list && pick() < nSlides()) return '';
       if (s.list) {
+        if (P.slideTabs && pick() >= nSlides()) return '';
         const items = cur[s.list] || [];
         return `<section class="a-card t-sec" aria-labelledby="t-${s.list}">
           <h2 class="t-h" id="t-${s.list}">${s.title}</h2>
           ${s.note ? `<p class="a-help t-note">${s.note}</p>` : ''}
-          <ol class="t-items">${items.map((it, k) => `<li class="t-item">
+          <ol class="t-items">${items.map((it, k) => (P.slideTabs && k !== pick() ? '' : `<li class="t-item">
             <div class="t-item__head"><b>${s.itemName} ${k + 1}</b>
               <span class="t-item__tools">
                 <button class="t-round" type="button" data-up="${s.list}:${k}" aria-label="הזזה למעלה"${k === 0 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
@@ -47,8 +53,8 @@
               </span>
             </div>
             <div class="t-grid">${s.fields.map((f) => field(`${s.list}.${k}.${f.key}`, f, it[f.key])).join('')}</div>
-          </li>`).join('')}</ol>
-          ${s.fixed ? '' : `<button class="a-btn a-btn--ghost t-add" type="button" data-add="${s.list}">+ הוספת ${s.itemName}</button>`}
+          </li>`)).join('')}</ol>
+          ${s.fixed || P.slideTabs ? '' : `<button class="a-btn a-btn--ghost t-add" type="button" data-add="${s.list}">+ הוספת ${s.itemName}</button>`}
         </section>`;
       }
       return `<section class="a-card t-sec" aria-labelledby="t-${s.id}">
@@ -99,6 +105,7 @@
     if (b.dataset.add) {
       const s = P.sections.find((x) => x.list === b.dataset.add);
       cur[s.list].push(Object.fromEntries(s.fields.map((f) => [f.key, ''])));
+      window.__pv = cur[s.list].length - 1;
       draw(); changed();
       const items = box.querySelectorAll(`[data-path^="${s.list}.${cur[s.list].length - 1}."]`);
       if (items[0]) items[0].focus();
@@ -110,20 +117,49 @@
     if (b.dataset.del) {
       if (!confirm('למחוק את הפריט הזה?')) return;
       arr.splice(i, 1);
+      window.__pv = Math.max(0, Math.min(i, arr.length - 1));
     } else {
       const j = b.dataset.up ? i - 1 : i + 1;
       [arr[i], arr[j]] = [arr[j], arr[i]];
+      window.__pv = j;
     }
     draw(); changed();
   });
   // the preview's own buttons (the intro's slides) redraw it
   window.__pvDraw = () => { if (P.preview) document.getElementById('t-preview').innerHTML = P.preview(cur, UI.esc); };
-  // full width, two tabs on top: editing and viewing
   const layout = box.closest('.t-layout');
   const side = layout.querySelector('.t-side');
   const tabs = document.createElement('div');
   tabs.className = 't-tabs';
   tabs.setAttribute('role', 'tablist');
+  function drawTabs() {
+    const n = nSlides();
+    const other = P.sections.find((x) => !x.list);
+    tabs.innerHTML = cur[listSec.list].map((_, k) => `<button type="button" role="tab" data-slide="${k}" aria-selected="${k === pick()}">${listSec.itemName} ${k + 1}</button>`).join('')
+      + `<button type="button" role="tab" data-slide="${n}" aria-selected="${pick() === n}">${other ? other.tab || other.title : ''}</button>`
+      + `<button type="button" class="t-tabs__add" data-add-slide aria-label="הוספת ${listSec.itemName}">+</button>`;
+  }
+  if (P.slideTabs) {
+    layout.before(tabs);
+    layout.classList.add('is-tabs', 'is-split', 'is-slides');
+    tabs.addEventListener('click', (e) => {
+      if (e.target.closest('[data-add-slide]')) {
+        cur[listSec.list].push(Object.fromEntries(listSec.fields.map((f) => [f.key, ''])));
+        window.__pv = cur[listSec.list].length - 1;
+        draw(); changed();
+        const first = box.querySelector('input, textarea'); if (first) first.focus();
+        return;
+      }
+      const b = e.target.closest('[data-slide]');
+      if (!b) return;
+      window.__pv = Number(b.dataset.slide);
+      draw();
+      tabs.querySelector(`[data-slide="${window.__pv}"]`).focus();
+    });
+    draw();
+    return;
+  }
+  // full width, two tabs on top: editing and viewing
   tabs.innerHTML = `<button type="button" role="tab" data-tab="edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button>
     <button type="button" role="tab" data-tab="view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</button>`;
   layout.before(tabs);
