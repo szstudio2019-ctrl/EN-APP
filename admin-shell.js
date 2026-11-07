@@ -12,13 +12,13 @@
   // what 'עריכת תוכן' opens to (the pages not built yet are marked 'בקרוב')
   const CONTENT_SUB = [
     ['islands', 'admin-content.html', 'עריכת תוכן לאיים'],
-    ['about', '', 'עריכת תוכן לאודות'],
-    ['intro', '', 'עריכת תוכן להסבר על האתר'],
-    ['cards', '', 'עריכת תוכן לחנות כרטיסים'],
-    ['raffle', '', 'עריכת תוכן למשפטי הגרלה'],
+    ['about', 'admin-about.html', 'עריכת תוכן לאודות'],
+    ['intro', 'admin-intro.html', 'עריכת תוכן להסבר על האתר'],
+    ['cards', 'admin-cards.html', 'עריכת תוכן לחנות כרטיסים'],
+    ['raffle', 'admin-sentences.html', 'עריכת תוכן למשפטי הגרלה'],
   ];
   const subLink = ([k, href, name], role) => (href
-    ? `<a${role} class="a-sub__item" href="${href}"${page === 'content' && k === 'islands' ? ' aria-current="page"' : ''}><span>${name}</span></a>`
+    ? `<a${role} class="a-sub__item" href="${href}"${page === 'content' && k === (document.body.dataset.sub || 'islands') ? ' aria-current="page"' : ''}><span>${name}</span></a>`
     : `<span${role} class="a-sub__item a-sub__item--soon" aria-disabled="true"><span>${name}</span><small>בקרוב</small></span>`);
   const page = document.body.dataset.page;
 

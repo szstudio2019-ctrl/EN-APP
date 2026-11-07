@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>עריכת כרטיסיות בחנות – ניהול</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin-ui.css?v=20261108l">
+  <link rel="stylesheet" href="admin-edit.css?v=20261108l">
+</head>
+<body class="a-body" data-page="content" data-sub="cards">
+  <main class="a-main">
+    <div class="a-head">
+      <div>
+        <h1>כרטיסיות בחנות</h1>
+        <p>כרטיסיות האותיות בחנות האותיות: התמונה של כל אות, ואם היא נמכרת בחנות.</p>
+      </div>
+    </div>
+    <div class="a-note" style="margin-bottom:24px">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+      <p>בשלב הזה (דמו) השינויים נשמרים בדפדפן הזה בלבד. כשהאתר יחובר לשרת, הם יופיעו לכל התלמידים.</p>
+    </div>
+    <section class="a-card">
+      <div class="c-tools">
+        <h2 class="t-h" style="margin:0">26 כרטיסיות</h2>
+        <span class="a-help" id="c-sum"></span>
+        <span class="a-help">· מחיר כרטיסייה נקבע ב<a class="a-link" href="admin-coins.html">הגדרות המטבעות</a></span>
+      </div>
+      <div class="c-cards" id="c-cards"></div>
+    </section>
+  </main>
+  <script src="islands.js"></script>
+  <script src="admin-shell.js?v=20261108l"></script>
+  <script>
+    (function () {
+      const { UI } = window.Admin;
+      const KEY = 'en-app:admin-cards';
+      const ABC = 'abcdefghijklmnopqrstuvwxyz'.split('');
+      const base = () => Object.fromEntries(ABC.map((l) => [l, { on: true, img: '' }]));
+      let saved;
+      try { saved = Object.assign(base(), JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) { saved = base(); }
+      let cur = JSON.parse(JSON.stringify(saved));
+      const box = document.getElementById('c-cards');
+      const draw = () => {
+        box.innerHTML = ABC.map((l) => {
+          const c = cur[l];
+          return `<div class="c-card${c.on ? '' : ' is-off'}">
+            <label class="c-card__art" for="c-img-${l}" aria-label="החלפת התמונה של האות ${l}"><img src="${c.img || `assets/cards/card-${l}.webp`}" alt="כרטיסיית האות ${l}"><span class="c-card__swap">החלפת תמונה</span></label>
+            <input id="c-img-${l}" data-img="${l}" type="file" accept="image/*" class="sr-only">
+            <div class="c-card__row"><span class="c-card__letter" dir="ltr">${l.toUpperCase()} ${l}</span>${UI.switchHtml(`c-on-${l}`, c.on, `האות ${l} נמכרת בחנות`)}</div>
+            <span class="c-card__state">${c.on ? 'נמכרת בחנות' : 'מוסתרת מהחנות'}${c.img ? ' · תמונה חדשה' : ''}</span>
+          </div>`;
+        }).join('');
+        document.getElementById('c-sum').textContent = `${ABC.filter((l) => cur[l].on).length} נמכרות בחנות`;
+      };
+      const bar = UI.saveBar({
+        onSave: () => { saved = JSON.parse(JSON.stringify(cur)); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { alert('אין מספיק מקום בדפדפן לשמירת התמונות'); } },
+        onCancel: () => { cur = JSON.parse(JSON.stringify(saved)); draw(); },
+      });
+      document.querySelector('.a-head').appendChild(bar.el);
+      const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
+      box.addEventListener('change', (e) => {
+        const t = e.target;
+        if (t.id && t.id.startsWith('c-on-')) { const l = t.id.slice(5); cur[l].on = t.checked; draw(); changed(); document.getElementById(t.id).focus(); return; }
+        if (t.dataset.img) {
+          const f = t.files && t.files[0];
+          if (!f || !f.type.startsWith('image/')) return;
+          const url = URL.createObjectURL(f);
+          const img = new Image();
+          img.onload = () => {
+            const W = Math.min(360, img.width), H = Math.round(img.height * (W / img.width));
+            const c = document.createElement('canvas'); c.width = W; c.height = H;
+            c.getContext('2d').drawImage(img, 0, 0, W, H);
+            cur[t.dataset.img].img = c.toDataURL('image/webp', 0.85);
+            URL.revokeObjectURL(url); draw(); changed();
+          };
+          img.src = url;
+        }
+      });
+      draw();
+    })();
+  </script>
+</body>
+</html>

@@ -68,3 +68,6 @@
 .a-filters .a-search { margin-inline-start: 0; flex: 0 1 240px; min-width: 180px; }
 .a-filters .a-search input { border-radius: 999px; min-height: 44px; }
 .a-legend.u-legend { flex-basis: auto; margin-inline-start: auto; gap: 8px 20px; }
+
+/* the opened row (edit or data) on the page background */
+.a-table tr.is-open > td, .u-editor-row > td, .u-panel-row > td { background: var(--a-page); }

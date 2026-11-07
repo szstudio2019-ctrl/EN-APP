@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>עריכת משפטי הגרלה – ניהול</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin-ui.css?v=20261108l">
+  <link rel="stylesheet" href="admin-edit.css?v=20261108l">
+</head>
+<body class="a-body" data-page="content" data-sub="raffle">
+  <main class="a-main">
+    <div class="a-head">
+      <div>
+        <h1>משפטי הגרלה</h1>
+        <p>המשפטים שהילדים מגרילים בחנות האותיות: המשפט באנגלית והתרגום. אפשר להוסיף, לערוך ולמחוק.</p>
+      </div>
+    </div>
+    <div class="a-note" style="margin-bottom:24px">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+      <p>בשלב הזה (דמו) השינויים נשמרים בדפדפן הזה בלבד. כשהאתר יחובר לשרת, הם יופיעו לכל התלמידים.</p>
+    </div>
+    <section class="a-card">
+      <div class="s-tools">
+        <h2 class="t-h" style="margin:0" id="s-count"></h2>
+        <label class="a-search" style="flex:0 1 260px"><span class="sr-only">חיפוש משפט</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="s-search" placeholder="חיפוש משפט" style="border-radius:999px"></label>
+      </div>
+      <ol class="s-list" id="s-list"></ol>
+      <form class="s-new" id="s-new" novalidate>
+        <label class="a-field"><span>משפט חדש באנגלית</span><input id="s-en" dir="ltr" lang="en" placeholder="You can do it!" required></label>
+        <label class="a-field"><span>התרגום לעברית</span><input id="s-he" placeholder="אתה יכול לעשות את זה!"></label>
+        <button class="a-btn a-btn--primary" type="submit">+ הוספת משפט</button>
+      </form>
+    </section>
+  </main>
+  <script src="islands.js"></script>
+  <script src="admin-shell.js?v=20261108l"></script>
+  <script>
+    (function () {
+      const { UI } = window.Admin;
+      const KEY = 'en-app:admin-sentences';
+      const POOL = [
+        ['You can do it!', 'אתה יכול לעשות את זה!'], ['Believe in yourself!', 'תאמין בעצמך!'], ['You are amazing!', 'אתה מדהים!'],
+        ['Your best is enough.', 'הכי טוב שלך זה מספיק.'], ['Mistakes help you grow.', 'טעויות עוזרות לך לצמוח.'], ['Never give up!', 'לעולם אל תוותר!'],
+        ['Every day is a fresh start.', 'כל יום הוא התחלה חדשה.'], ['Practice makes progress.', 'תרגול מביא התקדמות.'], ['Dream big!', 'חלום בגדול!'],
+        ['Keep shining!', 'תמשיך להאיר!'], ['Be brave!', 'תהיה אמיץ!'], ['Choose to be kind.', 'בחר להיות נחמד.'],
+      ].map(([en, he]) => ({ en, he }));
+      let saved;
+      try { saved = JSON.parse(localStorage.getItem(KEY)); } catch (e) { saved = null; }
+      if (!Array.isArray(saved)) saved = POOL;
+      let cur = JSON.parse(JSON.stringify(saved));
+      const list = document.getElementById('s-list');
+      const search = document.getElementById('s-search');
+      const letters = (t) => new Set(t.toLowerCase().replace(/[^a-z]/g, '')).size;
+      const draw = () => {
+        const q = search.value.trim().toLowerCase();
+        const rows = cur.map((s, i) => [s, i]).filter(([s]) => !q || `${s.en} ${s.he}`.toLowerCase().includes(q));
+        document.getElementById('s-count').textContent = `${cur.length} משפטים`;
+        list.innerHTML = rows.length ? rows.map(([s, i]) => `<li class="s-row">
+            <span class="s-row__n">${i + 1}</span>
+            <input data-en="${i}" dir="ltr" lang="en" value="${UI.esc(s.en)}" aria-label="משפט ${i + 1} באנגלית">
+            <input data-he="${i}" value="${UI.esc(s.he)}" aria-label="משפט ${i + 1} בעברית">
+            <span class="s-row__meta" data-meta="${i}">${letters(s.en)} אותיות שונות</span>
+            <button class="t-round t-round--del" type="button" data-del="${i}" aria-label="מחיקת המשפט ${UI.esc(s.en)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>
+          </li>`).join('') : '<li class="s-empty">לא נמצאו משפטים</li>';
+      };
+      const bar = UI.saveBar({
+        onSave: () => { cur = cur.filter((s) => s.en.trim()); saved = JSON.parse(JSON.stringify(cur)); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* blocked */ } draw(); },
+        onCancel: () => { cur = JSON.parse(JSON.stringify(saved)); draw(); },
+      });
+      document.querySelector('.a-head').appendChild(bar.el);
+      const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
+      list.addEventListener('input', (e) => {
+        const t = e.target;
+        if (t.dataset.en != null) { cur[t.dataset.en].en = t.value; list.querySelector(`[data-meta="${t.dataset.en}"]`).textContent = `${letters(t.value)} אותיות שונות`; }
+        if (t.dataset.he != null) cur[t.dataset.he].he = t.value;
+        changed();
+      });
+      list.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-del]');
+        if (!b) return;
+        if (!confirm(`למחוק את המשפט "${cur[b.dataset.del].en}"?`)) return;
+        cur.splice(Number(b.dataset.del), 1);
+        draw(); changed();
+      });
+      search.addEventListener('input', draw);
+      document.getElementById('s-new').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const en = document.getElementById('s-en'), he = document.getElementById('s-he');
+        if (!/[a-z]/i.test(en.value)) { en.focus(); return; }
+        cur.push({ en: en.value.trim(), he: he.value.trim() });
+        en.value = ''; he.value = ''; search.value = '';
+        draw(); changed(); en.focus();
+      });
+      draw();
+    })();
+  </script>
+</body>
+</html>

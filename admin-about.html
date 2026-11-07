@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>עריכת אודות – ניהול</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="admin-ui.css?v=20261108l">
+  <link rel="stylesheet" href="admin-edit.css?v=20261108l">
+</head>
+<body class="a-body" data-page="content" data-sub="about">
+  <main class="a-main">
+    <div class="a-head">
+      <div>
+        <h1>אודות</h1>
+        <p>עמוד "אודות" באתר: מי עומדת מאחורי האתר, הציטוט והשיטה.</p>
+      </div>
+    </div>
+    <div class="a-note" style="margin-bottom:24px">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>
+      <p>בשלב הזה (דמו) השינויים נשמרים בדפדפן הזה בלבד. כשהאתר יחובר לשרת, הם יופיעו לכל התלמידים.</p>
+    </div>
+    <div class="t-layout">
+      <div class="t-form" id="t-form"></div>
+      <aside class="t-side a-card" aria-label="תצוגה מקדימה">
+        <h2 class="t-side__title">כך זה נראה באתר</h2>
+        <div id="t-preview"></div>
+      </aside>
+    </div>
+  </main>
+  <script>
+    window.TEXT_PAGE = {
+      key: 'about',
+      defaults: {
+        kicker: 'מי עומדת מאחורי מדקדקים באנגלית',
+        name: 'ד"ר עינת ודעי רונן',
+        role: 'מייסדת השיטה · קרוב ל-30 שנות הוראה',
+        p1: 'עינת מביאה איתה ניסיון של קרוב ל-30 שנה ומחויבות בלתי מתפשרת לאיכות. אבל מעבר לתארים ולניסיון, היא קודם כל מורה בלב ובנפש. האהבה שלה להוראה החלה כמש"קית הוראה בבסיס מחווה אלון, שם גילתה את השילוב המנצח שבין שיטות לימוד ייחודיות, קשר אישי ומשמעת.',
+        p2: 'מתוך התשוקה הזו היא בוחרת להישאר תמיד "בשטח", בתוך הכיתה, כי היא פשוט אוהבת ללמד. היא שומרת על קשר אישי וארוך טווח עם התלמידים שלה, גם הרבה אחרי שהם מסיימים ללמוד.',
+        quote: '"אין תלמיד שלא יכול, יש רק תלמיד שלא ניסה מספיק פעמים."',
+        cite: '– ד"ר עינת ודעי רונן',
+        mTitle: 'השיטה',
+        mLead: 'עינת וצוות המורים שלה מפתחים תוכניות לימוד ושיטות מיוחדות שמתמקדות בנקודות התורפה של דוברי העברית, כשהמטרה היא להפוך את הכללים המורכבים ביותר לפשוטים ונגישים.',
+        cards: [
+          { icon: '🎭', title: 'לכל אות יש דמות', text: 'האות a היא הרופאה שאומרת לאות שלפניה להגיד "אָה". כללים מסובכים הופכים לסיפור שזוכרים.' },
+          { icon: '🇮🇱', title: 'בנוי לדוברי עברית', text: 'השיעורים מתמקדים בדיוק במקומות שבהם דוברי עברית מתבלבלים, צעד אחר צעד.' },
+          { icon: '🏝️', title: 'לומדים דרך משחק', text: 'איים, מטבעות, תיבות אוצר ומשפט סודי. כל שיעור מקדם את הילד במסע.' },
+          { icon: '💪', title: 'לא מוותרים', text: 'חזרות קבועות ותרגול בקול רם, עד שכל אות וכל צליל יושבים בביטחון.' },
+        ],
+      },
+      sections: [
+        { id: 'who', title: 'מי עומדת מאחורי האתר', fields: [
+          { key: 'kicker', label: 'שורה מעל השם', wide: true }, { key: 'name', label: 'השם' }, { key: 'role', label: 'התפקיד' },
+          { key: 'p1', label: 'פסקה ראשונה', long: true }, { key: 'p2', label: 'פסקה שנייה', long: true }] },
+        { id: 'quote', title: 'הציטוט', fields: [{ key: 'quote', label: 'הציטוט', long: true }, { key: 'cite', label: 'מי אמר/ה' }] },
+        { id: 'method', title: 'השיטה', fields: [{ key: 'mTitle', label: 'כותרת' }, { key: 'mLead', label: 'פסקת פתיחה', long: true }] },
+        { list: 'cards', title: 'כרטיסי השיטה', itemName: 'כרטיס',
+          fields: [{ key: 'icon', label: 'אייקון (אימוג׳י)' }, { key: 'title', label: 'כותרת' }, { key: 'text', label: 'טקסט', long: true }] },
+      ],
+      preview: (d, esc) => `<div class="pv"><div class="pv__card pv-about">
+          <p class="pv-about__kicker">${esc(d.kicker)}</p>
+          <p class="pv-about__name">${esc(d.name)}</p>
+          <p class="pv-about__role">${esc(d.role)}</p>
+          <p>${esc(d.p1)}</p><p>${esc(d.p2)}</p>
+          <blockquote>${esc(d.quote)}<cite>${esc(d.cite)}</cite></blockquote>
+          <p class="pv-about__name" style="font-size:18px">${esc(d.mTitle)}</p>
+          <p>${esc(d.mLead)}</p>
+          <div class="pv-about__cards">${d.cards.map((c) => `<div>${esc(c.icon)} <b>${esc(c.title)}</b>${esc(c.text)}</div>`).join('')}</div>
+        </div></div>`,
+    };
+  </script>
+  <script src="islands.js"></script>
+  <script src="admin-shell.js?v=20261108l"></script>
+  <script src="admin-texts.js?v=20261108l"></script>
+</body>
+</html>
