@@ -88,5 +88,16 @@
   });
   // the preview's own buttons (the intro's slides) redraw it
   window.__pvDraw = () => { if (P.preview) document.getElementById('t-preview').innerHTML = P.preview(cur, UI.esc); };
+  // full width, two tabs on top: editing and viewing
+  const layout = box.closest('.t-layout');
+  const side = layout.querySelector('.t-side');
+  const tabs = document.createElement('div');
+  tabs.className = 't-tabs';
+  tabs.innerHTML = UI.segHtml('תצוגה', [['edit', 'עריכה'], ['view', 'צפייה']], 'edit');
+  layout.before(tabs);
+  layout.classList.add('is-tabs');
+  const showTab = (k) => { box.hidden = k !== 'edit'; side.hidden = k !== 'view'; if (k === 'view') window.__pvDraw(); };
+  UI.wireSeg(tabs, showTab);
+  showTab('edit');
   draw();
 })();
