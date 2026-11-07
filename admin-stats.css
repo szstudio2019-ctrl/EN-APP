@@ -6,7 +6,7 @@
 .st-filters .a-seg button { min-height: 40px; padding: 0 14px; font-size: 14px; }
 /* two halves: the overall persistence (right), per child (left) */
 /* the two columns fill the page down to the bottom */
-.st-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 24px; align-items: stretch; height: calc(100vh - 64px - 140px); min-height: 680px; }
+.st-cols { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 24px; align-items: stretch; height: calc(100vh - 94px - 140px); min-height: 680px; }
 .st-col--main { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
 .st-box { margin: 0; padding: 20px 24px; }
 .a-card + .a-card.st-box { margin-top: 0; }

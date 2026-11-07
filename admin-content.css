@@ -76,7 +76,7 @@
 /* no page scroll: the three columns fill the screen and each scrolls inside
    (a thin pink bar on the right – the box runs ltr, its content stays rtl) */
 @media (min-width: 861px) {
-  .w-layout { height: calc(100vh - 64px - 48px - 100px); min-height: 460px; }
+  .w-layout { height: calc(100vh - 94px - 48px - 100px); min-height: 460px; }
   .w-list, .w-edit, .w-preview { max-height: 100%; overflow-y: auto; direction: ltr; scrollbar-width: thin; scrollbar-color: #E33563 transparent; }
   .w-list > *, .w-edit > *, .w-preview > * { direction: rtl; }
   .w-list::-webkit-scrollbar, .w-edit::-webkit-scrollbar, .w-preview::-webkit-scrollbar { width: 6px; }

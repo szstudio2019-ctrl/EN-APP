@@ -14,8 +14,23 @@
   /* ---------- top bar ---------- */
   const top = document.createElement('header');
   top.className = 'a-top';
+  // as the student site's top bar: menu, home and the greeting on the right, the
+  // logo in the middle, the four admin pages on the left (no coins, chests or music)
+  const hour = new Date().getHours();
+  const hello = hour < 12 ? 'בוקר טוב,' : hour < 17 ? 'צהריים טובים,' : 'ערב טוב,';
   top.innerHTML = `
     <div class="a-top__in">
+      <div class="a-top__start">
+        <div class="a-menu">
+          <button class="a-menu__btn" type="button" id="a-menu-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-menu" aria-label="תפריט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M8 12h12M4 17h16"/></svg></button>
+          <div class="a-menu__list" id="a-menu" role="menu" hidden>
+            ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`).join('')}
+            <a role="menuitem" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
+          </div>
+        </div>
+        <a class="a-home" href="index.html" aria-label="לאתר התלמידים – מפת האיים" title="לאתר התלמידים"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg></a>
+        <span class="a-me"><img src="assets/team-einat.webp" alt=""><span class="a-me__text"><span class="a-me__hello">${hello}</span><b class="a-me__name">עינת</b></span></span>
+      </div>
       <a class="a-logo" href="admin-content.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית · ניהול">
         <span class="logo">
           <span class="logo__text"><span class="logo__title">מדקדקים באנגלית</span><span class="logo__subtitle">קורס דיגיטלי באנגלית</span></span>
@@ -25,12 +40,15 @@
       <nav class="a-nav" aria-label="ניהול">
         ${PAGES.map(([k, href, name, icon]) => `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`).join('')}
       </nav>
-      <div class="a-top__end">
-        <a class="a-top__site" href="index.html">לאתר התלמידים<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
-        <span class="a-me"><img src="assets/team-einat.webp" alt=""><span>ד"ר עינת ודעי רונן</span></span>
-      </div>
     </div>`;
   document.body.prepend(top);
+  // the menu button opens the pages (handy on a phone, where the nav is hidden)
+  const menuBtn = top.querySelector('#a-menu-btn');
+  const menuList = top.querySelector('#a-menu');
+  const setMenu = (on) => { menuList.hidden = !on; menuBtn.setAttribute('aria-expanded', String(on)); };
+  menuBtn.addEventListener('click', () => setMenu(menuList.hidden));
+  document.addEventListener('click', (e) => { if (!menuList.hidden && !e.target.closest('.a-menu')) setMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menuList.hidden) { setMenu(false); menuBtn.focus(); } });
 
   /* ---------- storage (per browser, demo) ---------- */
   const read = (k, fallback) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } };
