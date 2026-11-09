@@ -423,3 +423,7 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* every switch: dark blue when on, a grey a little darker than the page when off */
 .a-switch__track { background: #D9D8E6; }
 .a-switch input:checked + .a-switch__track { background: #2A2577; }
+
+/* every admin scrollbar: a soft lavender */
+html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: #C4C0E3 !important; }
+@supports not selector(::-webkit-scrollbar) { html, .a-body * { scrollbar-color: #C4C0E3 transparent !important; } }
