@@ -492,14 +492,14 @@
     const w = picked();
     if (!w) return;
     const t = e.target.closest('[data-wtab]');
-    if (t) { viewTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${viewTab}"]`); if (b) b.focus(); return; }
+    if (t) { viewTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${viewTab}"]`); if (b && e.detail === 0) b.focus(); return; }
     const st = e.target.closest("[data-go]");
-    if (st) { step = Number(st.dataset.go); drawEdit(); edit.scrollTop = 0; const b = edit.querySelector('[aria-current="step"]'); if (b) b.focus(); return; }
+    if (st) { step = Number(st.dataset.go); drawEdit(); edit.scrollTop = 0; const b = edit.querySelector('[aria-current="step"]'); if (b && e.detail === 0) b.focus(); return; }
     // saving is at the end of the steps; "שמור כטיוטה" keeps the island hidden from the students
     const sv = e.target.closest('[data-save-draft],[data-save-now]');
     if (sv) {
       if (sv.hasAttribute('data-save-draft')) { w.published = false; drawList(); drawPreview(); changed(); }
-      if (bar.isDirty()) head.querySelector('[data-save]').click();
+      if (bar.isDirty()) bar.el.querySelector('[data-save]').click();
       const label = sv.textContent;
       sv.textContent = 'נשמר ✓';
       live.textContent = 'השינויים נשמרו';
@@ -669,7 +669,11 @@
   const pubTop = document.createElement('div');
   pubTop.className = 'w-pubtop';
   pubTop.hidden = true;
-  head.appendChild(pubTop);
+  // the page's buttons sit on the tabs' row, just above the white card; הוספה at the far left
+  const actions = document.createElement('div');
+  actions.className = 'w-actions';
+  actions.append(bar.el, pubTop, delBtn, plus);
+  document.querySelector('.w-layout').appendChild(actions);
   pubTop.addEventListener('change', (e) => {
     if (e.target.id !== 'f-pub') return;
     picked().published = e.target.checked;

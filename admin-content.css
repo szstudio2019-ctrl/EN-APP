@@ -312,3 +312,28 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-draft:hover { background: #FDEBF0; }
 /* the switch at the far left of the title row */
 .w-pubtop { margin-inline-start: 8px; }
+
+/* the buttons on the tabs' row, above the white card (הוספה at the far left) */
+.w-layout { position: relative; }
+.w-actions { position: absolute; top: 0; left: 0; z-index: 5; height: 46px; display: flex; align-items: center; gap: 12px; }
+.w-actions .a-save { margin: 0; }
+.w-actions .a-save__in { max-width: none; margin: 0; padding: 0; gap: 0; }
+.w-actions .a-save__actions { margin: 0; }
+.w-actions .a-save [data-save] { display: none; }
+.w-actions .a-save [data-cancel] { min-height: 38px; padding: 0 14px; font-size: 14px; }
+.w-actions .w-plus__btn { height: 40px; min-width: 40px; font-size: 15px; }
+.w-actions .w-pubtop { margin: 0; }
+.w-tabs { position: sticky; top: 0; z-index: 2; background: var(--a-page); }
+.w-edit > .w-new { margin-top: 56px; }
+@media (max-width: 860px) {
+  .w-actions { position: static; order: -1; height: auto; flex-wrap: wrap; }
+  .w-edit > .w-new { margin-top: 0; }
+}
+/* the trash, eye and pencil icons with no background */
+.w-delete, .w-pubtop .w-eye, .w-lrow__open, .w-lrow__del, .w-lrow__edit { background: none !important; border: 0 !important; box-shadow: none !important; }
+.w-delete { height: 40px; padding: 0 6px; }
+.w-pubtop .w-eye { display: grid; place-items: center; color: #2A2577; }
+.w-delete:hover, .w-pubtop .w-eye:hover, .w-lrow__open:hover, .w-lrow__del:hover, .w-lrow__edit:hover, .w-lrow__edit[aria-expanded="true"] { color: #E33563; }
+/* the add button: only the plus (the word stays for screen readers) */
+.w-actions .w-plus__btn { width: 40px; min-width: 40px; padding: 0; justify-content: center; border-radius: 50%; }
+.w-actions .w-plus__btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
