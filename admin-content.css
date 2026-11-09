@@ -431,3 +431,16 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-st .w-fold__in > .w-row__btns { padding: 14px; border-top: 1px solid var(--a-line); margin-top: 8px; }
 @media (max-width: 640px) { .w-row__head { grid-template-columns: minmax(0, 1fr) auto 32px 32px 32px; } }
 .w-delete { width: 40px; min-width: 40px; padding: 0; }
+
+/* no box around a stage: a line between stages */
+.w-stages { gap: 0; }
+.w-st { box-shadow: none; border-radius: 0; overflow: visible; }
+.w-st + .w-st { border-top: 1px solid var(--a-line); }
+.w-st__head { padding: 6px 0; }
+.w-st__title { margin: 12px 0 6px; }
+.w-st__line { margin: 12px 0 0; }
+.w-row__head { padding: 6px 0; }
+.w-row__fields { padding: 8px 0 16px; }
+.w-st .w-fold__in > .w-row__btns { padding: 14px 0; }
+/* the scrollbar right at the card's right edge */
+@media (min-width: 861px) { .w-edit > .w-tabbed > section { margin-right: -24px; padding-right: 24px; } }
