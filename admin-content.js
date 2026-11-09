@@ -304,7 +304,7 @@
     span.textContent = name ? ` – ${name}` : '';
   }
   // full width: two tabs (editing, viewing); editing goes in four steps with dots and back / next
-  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שלבים', 'הוספת תרגול'];
+  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שלבים'];
   let step = 0;
   let viewTab = 'edit';
   let lessonOpen = -1;
@@ -348,20 +348,6 @@
         <ol class="w-lrows">${rows}</ol>
         <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שלב</button>`;
   }
-  // the practices: one for each lesson until changed
-  const practicesOf = (w) => w.practices || Array.from({ length: w.planned }, () => '');
-  function practicesPart(w) {
-    if (w.review) return '<p class="a-muted">באי חזרות אין תרגולים נפרדים: השלבים עצמם הם התרגול.</p>';
-    const rows = practicesOf(w).map((name, k) => {
-      const n = (w.firstLesson || 1) + k;
-      return `<li class="w-lrow w-lrow--p">
-          <b class="w-lrow__n">תרגול ${n}</b>
-          <input data-pname="${k}" value="${UI.esc(name)}" placeholder="שם התרגול (לא חובה)" aria-label="השם של תרגול ${n}">
-          <button class="w-lrow__del" type="button" data-prac-del="${k}" aria-label="מחיקת תרגול ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>
-        </li>`;
-    }).join('');
-    return `<ol class="w-lrows">${rows}</ol><button class="a-btn a-btn--ghost w-ladd" type="button" data-prac-add>+ הוספת תרגול</button>`;
-  }
   function drawEdit() {
     if (mode === 'world') { setH1(''); return drawNewWorld(); }
     if (mode === 'review') { setH1(''); return drawNewReview(); }
@@ -391,7 +377,6 @@
           <div class="w-pubbox" id="w-warnbox"></div>`,
       `<h3>מדיה</h3>${mediaField(w)}${bgField(w)}`,
       `<h3>הוספת שלבים</h3>${lessonsPart(w)}`,
-      `<h3>הוספת תרגול</h3>${practicesPart(w)}`,
     ][step];
     edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
     drawPreview();
@@ -503,20 +488,6 @@
       setTimeout(() => { sv.textContent = label; }, 1500);
       return;
     }
-    if (e.target.closest('[data-prac-add]')) {
-      w.practices = [...practicesOf(w), ''];
-      drawEdit(); changed();
-      const f = edit.querySelector(`[data-pname="${w.practices.length - 1}"]`); if (f) f.focus();
-      return;
-    }
-    const pd = e.target.closest('[data-prac-del]');
-    if (pd) {
-      const k = Number(pd.dataset.pracDel);
-      if (!confirm(`למחוק את תרגול ${(w.firstLesson || 1) + k}?`)) return;
-      w.practices = practicesOf(w).filter((_, j) => j !== k);
-      drawEdit(); changed();
-      return;
-    }
     if (e.target.closest('[data-wtab-add]')) {
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
@@ -550,13 +521,6 @@
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
-    if (e.target.dataset.pname != null && mode === 'edit') {
-      const w = picked();
-      w.practices = practicesOf(w).slice();
-      w.practices[Number(e.target.dataset.pname)] = e.target.value;
-      changed();
-      return;
-    }
     if (e.target.dataset.ldesc != null && mode === 'edit') {
       const w = picked();
       w.lessonDescs = w.lessonDescs || [];

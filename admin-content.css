@@ -286,12 +286,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-stepnav { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--a-line); }
 .w-stepnav .a-btn:disabled { opacity: .4; cursor: default; }
 .w-pubbox { margin-top: 24px; }
-.w-lrow--p { grid-template-columns: 70px minmax(0, 1fr) 36px; }
 /* viewing: the island's main page */
 .w-viewcard { padding: 12px; }
 .w-frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 12px; background: #F4F3FA; }
 .w-page--wide { min-height: 420px; justify-content: center; }
-@media (max-width: 640px) { .w-steps span { font-size: 12px; } .w-lrow--p { grid-template-columns: minmax(0, 1fr) 36px; } }
+@media (max-width: 640px) { .w-steps span { font-size: 12px; } }
 
 /* the publish switch at the top, beside the save button */
 .w-pubtop { flex: none; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
@@ -337,3 +336,20 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-steps i { width: 24px; height: 24px; font-size: 12px; }
 .w-steps li + li::before { top: 11px; }
 .w-steps span { font-size: 14px; }
+
+/* the steps, more modern: compact and centred, the title beside its circle, short lines between them */
+.w-steps { justify-content: center; margin-bottom: 28px; }
+.w-steps li { flex: none; display: flex; align-items: center; }
+.w-steps li + li::before { content: ""; position: static; flex: none; width: 32px; height: 2px; margin: 0 10px; border-radius: 1px; background: var(--a-line); }
+.w-steps li.is-done + li::before { background: #E33563; }
+.w-steps button { width: auto; flex-direction: row; gap: 8px; color: var(--a-text-2); }
+.w-steps i { width: 36px; height: 36px; font-size: 14px; background: #F4F3FA; color: #2A2577; box-shadow: none; transition: background .2s ease, box-shadow .2s ease; }
+.w-steps span { font-size: 15px; white-space: nowrap; }
+.w-steps button:hover span { color: #2A2577; }
+.w-steps [aria-current="step"], .w-steps [aria-current="step"]:hover span { color: #E33563; font-weight: 600; }
+.w-steps [aria-current="step"] i { background: #E33563; color: #fff; box-shadow: 0 0 0 4px rgba(227, 53, 99, .15); }
+.w-steps li.is-done button { color: #2A2577; }
+.w-steps li.is-done i { background: #FDEBF0; color: transparent; box-shadow: none; position: relative; }
+.w-steps li.is-done i::after { content: ""; position: absolute; width: 6px; height: 12px; margin-top: -3px; border: solid #E33563; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); }
+@media (max-width: 1240px) { .w-steps li + li::before { width: 18px; margin: 0 6px; } .w-steps span { font-size: 14px; } }
+@media (max-width: 760px) { .w-steps button:not([aria-current="step"]) span { display: none; } .w-steps li + li::before { width: 14px; margin: 0 4px; } }
