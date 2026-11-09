@@ -97,18 +97,27 @@
       </li>`).join('');
   }
   // a world opens to its lessons (a review world: what it goes over)
+  const subOpen = new Set();
   function subList(w) {
     if (w.review) {
       return `<ul class="w-sub">
           <li><a class="w-sub__item" href="${w.page || 'review.html'}" target="_blank" rel="noopener"><span><b>${UI.esc(w.name)}</b><small>חזרה על שיעורים ${UI.esc(w.reviewOf || '')}</small></span>${ARROW}</a></li>
         </ul>`;
     }
-    const rows = Array.from({ length: w.planned }, (_, k) => {
-      const n = k + 1;
-      const page = (w.lessonPages || [])[k];
-      const name = (w.lessonNames || [])[k];
-      const label = `שלב ${n}${name ? ` · ${UI.esc(name)}` : ''}`;
-      return `<li><button class="w-sub__item${page ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b><small>${page ? 'נכתב' : 'טרם נכתב'} · עריכה</small></span>${ARROW}</button></li>`;
+    // each stage's arrow opens its lessons and practices under it
+    const rows = stagesOf(w).map((st, k) => {
+      const key = `${w.id}:${k}`;
+      const isOpen = subOpen.has(key);
+      const name = st.lessons[0].name;
+      const label = `שלב ${k + 1}${name ? ` · ${UI.esc(name)}` : ''}`;
+      const part = (kind, word) => st[kind].map((p, i) => `<li><button class="w-sub2__item" type="button" data-sub-lesson="${k}"><span>${word} ${i + 1}${p.name ? ` · ${UI.esc(p.name)}` : ''}</span><small>${isWritten(p) ? 'נכתב' : 'חסר'}</small></button></li>`).join('');
+      return `<li>
+          <div class="w-subrow">
+            <button class="w-sub__item${isReady(st) ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b><small>${isReady(st) ? 'נכתב' : 'חסר'} · עריכה</small></span></button>
+            <button class="w-sub__chev" type="button" data-sub-toggle="${k}" aria-expanded="${isOpen}" aria-label="פתיחת השיעורים והתרגולים של שלב ${k + 1}">${ARROW}</button>
+          </div>
+          ${isOpen ? `<ul class="w-sub2">${part('lessons', 'שיעור')}${part('practices', 'תרגול')}</ul>` : ''}
+        </li>`;
     }).join('');
     return `<ul class="w-sub">${rows}<li><button class="w-sub__add" type="button" data-add-lesson>+ הוספת שלב</button></li></ul>`;
   }
@@ -124,6 +133,15 @@
       return;
     }
     if (e.target.closest('[data-add-lesson]')) { startNew('lesson', li.dataset.id); return; }
+    const subT = e.target.closest('[data-sub-toggle]');
+    if (subT) {
+      const key = `${li.dataset.id}:${subT.dataset.subToggle}`;
+      if (subOpen.has(key)) subOpen.delete(key); else subOpen.add(key);
+      drawList();
+      const b = items.querySelector(`.w-item[data-id="${li.dataset.id}"] [data-sub-toggle="${subT.dataset.subToggle}"]`);
+      if (b && e.detail === 0) b.focus();
+      return;
+    }
     const sub = e.target.closest('[data-sub-lesson]');
     if (sub) {
       mode = 'edit'; draft = null;

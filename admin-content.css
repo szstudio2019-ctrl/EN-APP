@@ -448,3 +448,15 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* the small labels under a lesson's or practice's head */
 .w-row__chips { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; padding: 2px 0 6px; }
 .w-row__chips span { padding: 3px 12px; border-radius: 999px; background: #EFEFF8; color: #2A2577; font-size: 13px; font-weight: 500; }
+
+/* the islands list: a stage's arrow opens its lessons and practices */
+.w-subrow { display: flex; align-items: center; gap: 4px; }
+.w-subrow .w-sub__item { flex: 1; min-width: 0; }
+.w-sub__chev { flex: none; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: #2A2577; cursor: pointer; }
+.w-sub__chev:hover { color: #E33563; }
+.w-sub__chev svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s ease; }
+.w-sub__chev[aria-expanded="true"] svg { transform: rotate(-90deg); }
+.w-sub2 { list-style: none; margin: 0 0 6px; padding: 0 14px 0 0; display: grid; gap: 2px; }
+.w-sub2__item { width: 100%; min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px; border: 0; border-radius: 8px; background: none; color: var(--a-text); font: inherit; font-size: 14px; text-align: start; cursor: pointer; }
+.w-sub2__item:hover { background: rgba(255, 255, 255, .7); }
+.w-sub2__item small { flex: none; font-size: 12px; color: var(--a-text-2); }
