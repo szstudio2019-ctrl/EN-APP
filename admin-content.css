@@ -337,3 +337,8 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* the add button: only the plus (the word stays for screen readers) */
 .w-actions .w-plus__btn { width: 40px; min-width: 40px; padding: 0; justify-content: center; border-radius: 50%; }
 .w-actions .w-plus__btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* smaller step numbers */
+.w-steps { margin-bottom: 22px; }
+.w-steps i { width: 24px; height: 24px; font-size: 12px; }
+.w-steps li + li::before { top: 11px; }
+.w-steps span { font-size: 14px; }
