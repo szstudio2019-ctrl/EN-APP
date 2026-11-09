@@ -332,7 +332,7 @@
     'doctor3-lesson.html': 'doctor3-practice.html', 'single-lesson.html': 'single-practice.html',
   };
   const practiceOf = (page) => (page in PRACTICE_OF ? PRACTICE_OF[page] : page.replace('-lesson.html', '.html'));
-  const TEMPLATE_NAMES = ['אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
+  const TEMPLATE_NAMES = ['שיר האותיות', 'אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
   const blankPart = (name) => ({ name: name || '', desc: '', template: '', page: '' });
   const blankStage = (name) => ({ published: false, lessons: [blankPart(name)], practices: [blankPart()] });
   function seedStage(w, k) {
@@ -342,6 +342,7 @@
     if (page) {
       s.published = true; // already open to the students
       s.lessons[0].page = page;
+      if (page === 'letters-lesson.html') { s.lessons[0].template = 'שיר האותיות'; s.lessons[0].code = 'abc-1-song'; }
       const p = practiceOf(page);
       if (p) s.practices[0].page = p;
     }
@@ -383,6 +384,7 @@
           ${canDelete ? `<button class="w-lrow__del" type="button" data-row-del="${key}" aria-label="מחיקת ${word} ${i + 1}" title="מחיקה">${TRASH_ICON}</button>` : '<span class="w-row__gap"></span>'}
           <button class="w-row__add" type="button" data-row-add="${key}" aria-label="הוספת ${word} בשלב ${k + 1}" title="הוספת ${word}">${PLUS_ICON}</button>
         </div>
+        <div class="w-row__chips"><span>${word}</span><span>תבנית: ${UI.esc(it.template || 'לא נבחרה')}</span>${it.code || it.page ? `<span dir="ltr">${UI.esc(it.code || it.page.replace('.html', ''))}</span>` : ''}</div>
         <div class="w-row__fields">
           <div class="a-grid">
             <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>

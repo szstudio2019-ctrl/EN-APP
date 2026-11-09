@@ -444,3 +444,7 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-st .w-fold__in > .w-row__btns { padding: 14px 0; }
 /* the scrollbar right at the card's right edge */
 @media (min-width: 861px) { .w-edit > .w-tabbed > section { margin-right: -24px; padding-right: 24px; } }
+
+/* the small labels under a lesson's or practice's head */
+.w-row__chips { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; padding: 2px 0 6px; }
+.w-row__chips span { padding: 3px 12px; border-radius: 999px; background: #EFEFF8; color: #2A2577; font-size: 13px; font-weight: 500; }
