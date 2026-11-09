@@ -127,7 +127,7 @@
       mode = 'edit'; draft = null;
       pickedId = li.dataset.id;
       viewTab = 'edit';
-      step = 2;
+      step = 3;
       lessonOpen = Number(sub.dataset.subLesson);
       drawAll();
       const t = edit.querySelector(`[data-ldesc="${lessonOpen}"]`);
@@ -304,7 +304,7 @@
     span.textContent = name ? ` – ${name}` : '';
   }
   // full width: two tabs (editing, viewing); editing goes in four steps with dots and back / next
-  const STEPS = ['פרטי האי', 'מדיה', 'הוספת שיעור', 'הוספת תרגול'];
+  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שיעור', 'הוספת תרגול'];
   const TEMPLATES = [['lessons', 'אי שיעורים'], ['review', 'אי חזרות']];
   let step = 0;
   let viewTab = 'edit';
@@ -387,8 +387,8 @@
             <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
-          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
-          <h3 class="w-h-gap">חלון "אודות" במפה</h3>
+          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>`,
+      `<h3>חלון "אודות" במפה</h3>
           <label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
           <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
           <div class="w-pubbox" id="w-warnbox"></div>`,
