@@ -494,3 +494,14 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-st .w-row + .w-row { border-top: 1px solid var(--a-line); }
 .w-row__fields .a-grid > .a-field, .w-row__fields > .a-field { margin-top: 0 !important; }
 .w-row__fields .a-grid { align-items: start; }
+
+/* the islands list rises to just under the header; the title moves up, centred over the editing area */
+@media (min-width: 861px) {
+  .a-main { padding-top: 12px; }
+  .a-head { margin-bottom: 16px; padding-inline-start: 324px; }
+  .w-layout { height: calc(100vh - 222px); }
+  .w-list { position: relative; z-index: 6; margin-top: -77px; height: calc(100% + 77px); max-height: none; }
+}
+@media (min-width: 1241px) { .a-head { padding-inline-start: 364px; } }
+.w-abc__b, .w-song__file { position: relative; }
+.w-edit > .w-tabbed > section { position: relative; }
