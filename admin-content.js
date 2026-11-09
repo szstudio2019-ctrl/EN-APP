@@ -105,7 +105,7 @@
       const n = (w.firstLesson || 1) + k;
       const page = (w.lessonPages || [])[k];
       const name = (w.lessonNames || [])[k];
-      const label = `שיעור ${n}${name ? ` · ${UI.esc(name)}` : ''}`;
+      const label = `שלב ${n}${name ? ` · ${UI.esc(name)}` : ''}`;
       return `<li><button class="w-sub__item${page ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b><small>${page ? 'נכתב' : 'טרם נכתב'} · עריכה</small></span>${ARROW}</button></li>`;
     }).join('');
     return `<ul class="w-sub">${rows}<li><button class="w-sub__add" type="button" data-add-lesson>+ הוספת שלב</button></li></ul>`;
@@ -304,7 +304,7 @@
     span.textContent = name ? ` – ${name}` : '';
   }
   // full width: two tabs (editing, viewing); editing goes in four steps with dots and back / next
-  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שיעור', 'הוספת תרגול'];
+  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שלבים', 'הוספת תרגול'];
   const TEMPLATES = [['lessons', 'אי שיעורים'], ['review', 'אי חזרות']];
   let step = 0;
   let viewTab = 'edit';
@@ -332,23 +332,23 @@
       const open = lessonOpen === k;
       const desc = (w.lessonDescs || [])[k] || '';
       return `<li class="w-lrow${open ? ' is-open' : ''}">
-          <b class="w-lrow__n">שיעור ${n}</b>
-          <input data-lname="${k}" value="${UI.esc((w.lessonNames || [])[k] || '')}" placeholder="שם השיעור (לא חובה)" aria-label="השם של שיעור ${n}">
-          ${page ? `<span class="a-tag a-tag--live">נכתב</span><a class="w-lrow__open" href="${page}?view=admin" target="_blank" rel="noopener" aria-label="פתיחת שיעור ${n} (בלשונית חדשה)" title="פתיחת השיעור"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>`
-            : `<span class="a-tag a-tag--draft">טרם נכתב</span><button class="w-lrow__del" type="button" data-lesson-del="${k}" aria-label="מחיקת שיעור ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>`}
-          <button class="w-lrow__edit" type="button" data-lesson-edit="${k}" aria-expanded="${open}" aria-label="עריכת שיעור ${n}" title="עריכה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>
+          <b class="w-lrow__n">שלב ${n}</b>
+          <input data-lname="${k}" value="${UI.esc((w.lessonNames || [])[k] || '')}" placeholder="שם השלב (לא חובה)" aria-label="השם של שלב ${n}">
+          ${page ? `<span class="a-tag a-tag--live">נכתב</span><a class="w-lrow__open" href="${page}?view=admin" target="_blank" rel="noopener" aria-label="פתיחת שלב ${n} (בלשונית חדשה)" title="פתיחת השלב"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>`
+            : `<span class="a-tag a-tag--draft">טרם נכתב</span><button class="w-lrow__del" type="button" data-lesson-del="${k}" aria-label="מחיקת שלב ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>`}
+          <button class="w-lrow__edit" type="button" data-lesson-edit="${k}" aria-expanded="${open}" aria-label="עריכת שלב ${n}" title="עריכה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>
           ${open ? `<div class="w-lrow__more">
-              <label class="a-field"><span>תיאור השיעור</span><textarea data-ldesc="${k}" placeholder="מה לומדים בשיעור הזה">${UI.esc(desc)}</textarea></label>
-              ${page ? `<div class="w-lrow__links"><a class="a-btn a-btn--ghost" href="${page}?view=admin" target="_blank" rel="noopener">פתיחת השיעור</a></div>` : '<small class="a-help">השיעור עוד לא נכתב – הוא יופיע במפה כשייכתב</small>'}
+              <label class="a-field"><span>תיאור השלב</span><textarea data-ldesc="${k}" placeholder="מה לומדים בשלב הזה">${UI.esc(desc)}</textarea></label>
+              ${page ? `<div class="w-lrow__links"><a class="a-btn a-btn--ghost" href="${page}?view=admin" target="_blank" rel="noopener">פתיחת השלב</a></div>` : '<small class="a-help">השלב עוד לא נכתב – הוא יופיע במפה כשייכתב</small>'}
             </div>` : ''}
         </li>`;
     }).join('');
     return `<div class="w-progress">
           <p>נכתבו ${w.written} מתוך ${w.planned}</p>
-          <div class="a-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${w.planned}" aria-valuenow="${w.written}" aria-label="שיעורים שנכתבו"><i style="width:${pct}%"></i></div>
+          <div class="a-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${w.planned}" aria-valuenow="${w.written}" aria-label="שלבים שנכתבו"><i style="width:${pct}%"></i></div>
         </div>
         <ol class="w-lrows">${rows}</ol>
-        <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שיעור</button>`;
+        <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שלב</button>`;
   }
   // the practices: one for each lesson until changed
   const practicesOf = (w) => w.practices || Array.from({ length: w.planned }, () => '');
@@ -393,7 +393,7 @@
           <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
           <div class="w-pubbox" id="w-warnbox"></div>`,
       `<h3>מדיה</h3>${mediaField(w)}${bgField(w)}`,
-      `<h3>הוספת שיעור</h3>${lessonsPart(w)}`,
+      `<h3>הוספת שלבים</h3>${lessonsPart(w)}`,
       `<h3>הוספת תרגול</h3>${practicesPart(w)}`,
     ][step];
     edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
@@ -550,7 +550,7 @@
     const del = e.target.closest('[data-lesson-del]');
     if (del) {
       const k = Number(del.dataset.lessonDel);
-      if (!confirm(`למחוק את שיעור ${(w.firstLesson || 1) + k}?`)) return;
+      if (!confirm(`למחוק את שלב ${(w.firstLesson || 1) + k}?`)) return;
       w.lessonNames = w.lessonNames || [];
       w.lessonNames.splice(k, 1);
       if (w.lessonDescs) w.lessonDescs.splice(k, 1);
