@@ -353,3 +353,21 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-steps li.is-done i::after { content: ""; position: absolute; width: 6px; height: 12px; margin-top: -3px; border: solid #E33563; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); }
 @media (max-width: 1240px) { .w-steps li + li::before { width: 18px; margin: 0 6px; } .w-steps span { font-size: 14px; } }
 @media (max-width: 760px) { .w-steps button:not([aria-current="step"]) span { display: none; } .w-steps li + li::before { width: 14px; margin: 0 4px; } }
+
+/* the title in the centre */
+.a-head { justify-content: center; text-align: center; }
+.a-head > div:first-child { flex: 1; }
+/* room between the buttons and the white card */
+@media (min-width: 861px) { .w-actions { top: -12px; } }
+/* every step: the content card ends level with the list on the right, its fields scroll inside, the save buttons stay at the bottom */
+@media (min-width: 861px) {
+  .w-list { height: 100%; }
+  .w-edit:has(> .w-tabs) { height: 100%; display: flex; flex-direction: column; overflow: hidden; padding-right: 0; }
+  .w-edit > .w-tabs { flex: none; position: static; background: none; }
+  .w-edit > .w-tabbed { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .w-edit > .w-tabbed > .w-steps, .w-edit > .w-tabbed > .w-stepnav { flex: none; }
+  .w-edit > .w-tabbed > section { flex: 1; min-height: 0; overflow-y: auto; direction: ltr; padding-right: 10px; margin-right: -10px; }
+  .w-edit > .w-tabbed > section > * { direction: rtl; }
+  .w-edit > .w-viewcard .w-frame { width: 100%; height: 100%; aspect-ratio: auto; }
+  .w-edit > .w-viewcard .w-page--wide { flex: 1; }
+}
