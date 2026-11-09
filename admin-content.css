@@ -377,3 +377,9 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-pubin .w-pub { align-items: center; }
 .w-pubin .w-pub__text { max-width: none; margin: 0; }
 .w-pubin .w-pub__text b { display: block; font-weight: 600; color: #2A2577; }
+
+/* the media step: the island's picture and the background side by side */
+.w-media-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.w-sections .w-media-grid .a-field, .w-media-grid .w-bgfield { margin-top: 0; }
+@media (max-width: 760px) { .w-media-grid { grid-template-columns: minmax(0, 1fr); } }
+.w-media-grid > .a-field { margin-top: 0 !important; }
