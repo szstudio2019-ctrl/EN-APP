@@ -36,12 +36,13 @@
           <button class="a-menu__btn" type="button" id="a-menu-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-menu" aria-label="תפריט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M8 12h12M4 17h16"/></svg></button>
           <div class="a-menu__list" id="a-menu" role="menu" hidden>
             ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>${k === 'content' ? `<div class="a-menu__sub">${CONTENT_SUB.map((x) => subLink(x, ' role="menuitem"')).join('')}</div>` : ''}`).join('')}
+            <span class="a-menu__soon" role="menuitem" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.8-1.2l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0-1.2-2.8H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.8l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.8.3h.1A1.7 1.7 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.8 1.2l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>הגדרות</span><small>בקרוב</small></span>
             <hr class="a-menu__line">
             <a role="menuitem" href="index.html?view=admin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
           </div>
         </div>
         <div class="a-me-wrap">
-          <button class="a-me" type="button" id="a-me-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-me-menu"><img src="assets/team-einat.webp" alt=""><span class="a-me__text"><span class="a-me__hello">${hello}</span><b class="a-me__name">עינת</b></span><svg class="a-me__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <button class="a-me" type="button" id="a-me-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-me-menu"><img src="assets/team-einat.webp" alt=""><span class="a-me__text"><span class="a-me__hello">${hello}</span><b class="a-me__name">עינת</b></span></button>
           <div class="a-me__menu" id="a-me-menu" role="menu" hidden>
             <a role="menuitem" class="a-me__item a-me__item--main" href="index.html?view=admin"><span>לאתר התלמידים</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
             <a role="menuitem" class="a-me__item" href="profile.html?view=admin"><span>הפרופיל שלי</span></a>
