@@ -319,7 +319,9 @@
     </li>`).join('')}</ol>`;
   const stepNav = () => `<div class="w-stepnav">
       <button class="a-btn a-btn--ghost" type="button" data-go="${step - 1}"${step === 0 ? ' disabled' : ''}>חזור</button>
-      ${step < STEPS.length - 1 ? `<button class="a-btn a-btn--primary" type="button" data-go="${step + 1}">הבא</button>` : ''}
+      <div class="w-stepnav__end">${step < STEPS.length - 1
+        ? `<button class="a-btn w-draft" type="button" data-save-draft>שמור כטיוטה</button><button class="a-btn a-btn--primary" type="button" data-go="${step + 1}">הבא</button>`
+        : '<button class="a-btn a-btn--primary" type="button" data-save-now>שמירה</button>'}</div>
     </div>`;
   function lessonsPart(w) {
     if (w.review) return `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>`;
@@ -493,6 +495,17 @@
     if (t) { viewTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${viewTab}"]`); if (b) b.focus(); return; }
     const st = e.target.closest("[data-go]");
     if (st) { step = Number(st.dataset.go); drawEdit(); edit.scrollTop = 0; const b = edit.querySelector('[aria-current="step"]'); if (b) b.focus(); return; }
+    // saving is at the end of the steps; "שמור כטיוטה" keeps the island hidden from the students
+    const sv = e.target.closest('[data-save-draft],[data-save-now]');
+    if (sv) {
+      if (sv.hasAttribute('data-save-draft')) { w.published = false; drawList(); drawPreview(); changed(); }
+      if (bar.isDirty()) head.querySelector('[data-save]').click();
+      const label = sv.textContent;
+      sv.textContent = 'נשמר ✓';
+      live.textContent = 'השינויים נשמרו';
+      setTimeout(() => { sv.textContent = label; }, 1500);
+      return;
+    }
     const tpl = e.target.closest('[data-tpl]');
     if (tpl) {
       w.template = tpl.dataset.tpl;
@@ -656,7 +669,7 @@
   const pubTop = document.createElement('div');
   pubTop.className = 'w-pubtop';
   pubTop.hidden = true;
-  document.querySelector('.a-head .a-save').after(pubTop);
+  head.appendChild(pubTop);
   pubTop.addEventListener('change', (e) => {
     if (e.target.id !== 'f-pub') return;
     picked().published = e.target.checked;

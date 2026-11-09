@@ -304,3 +304,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-pubtop b { font-weight: 600; font-size: 14px; color: #2A2577; }
 .w-pubtop .w-eye { width: 40px; height: 40px; }
 .w-pubtop .w-eye svg { width: 20px; height: 20px; }
+
+/* saving moves to the end of the steps: the top row keeps only "ביטול השינויים" */
+.a-head .a-save [data-save] { display: none; }
+.w-stepnav__end { display: flex; gap: 10px; }
+.w-draft { background: #fff; color: #E33563; border-color: #E33563; font-weight: 600; }
+.w-draft:hover { background: #FDEBF0; }
+/* the switch at the far left of the title row */
+.w-pubtop { margin-inline-start: 8px; }
