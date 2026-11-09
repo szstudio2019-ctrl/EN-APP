@@ -285,11 +285,6 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-h-gap { margin-top: 32px !important; }
 .w-stepnav { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--a-line); }
 .w-stepnav .a-btn:disabled { opacity: .4; cursor: default; }
-/* which template */
-.w-tpl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 18px; }
-.w-tpl__label { font-weight: 500; font-size: 14px; margin-inline-end: 8px; }
-.w-tpl button { min-height: 40px; padding: 0 16px; border: 0; border-radius: 20px; background: #F4F3FA; color: #2A2577; font: inherit; font-weight: 600; font-size: 14px; cursor: pointer; }
-.w-tpl button[aria-pressed="true"] { background: #1E1A5C; color: #fff; }
 .w-pubbox { margin-top: 24px; }
 .w-lrow--p { grid-template-columns: 70px minmax(0, 1fr) 36px; }
 /* viewing: the island's main page */

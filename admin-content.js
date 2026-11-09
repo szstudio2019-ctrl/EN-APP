@@ -305,11 +305,9 @@
   }
   // full width: two tabs (editing, viewing); editing goes in four steps with dots and back / next
   const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שלבים', 'הוספת תרגול'];
-  const TEMPLATES = [['lessons', 'אי שיעורים'], ['review', 'אי חזרות']];
   let step = 0;
   let viewTab = 'edit';
   let lessonOpen = -1;
-  const templateOf = (w) => w.template || (w.review ? 'review' : 'lessons');
   const viewTabs = () => `<div class="w-tabs" role="tablist" aria-label="עריכה וצפייה">
       <button type="button" role="tab" data-wtab="edit" aria-selected="${viewTab === 'edit'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button>
       <button type="button" role="tab" data-wtab="view" aria-selected="${viewTab === 'view'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</button>
@@ -381,7 +379,6 @@
     }
     const part = [
       `<h3>פרטי האי</h3>
-          <div class="w-tpl" role="group" aria-label="איזו תבנית זאת"><span class="w-tpl__label">איזו תבנית זאת</span>${TEMPLATES.map(([k, t]) => `<button type="button" data-tpl="${k}" aria-pressed="${templateOf(w) === k}">${t}</button>`).join('')}</div>
           <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
             <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
@@ -504,15 +501,6 @@
       sv.textContent = 'נשמר ✓';
       live.textContent = 'השינויים נשמרו';
       setTimeout(() => { sv.textContent = label; }, 1500);
-      return;
-    }
-    const tpl = e.target.closest('[data-tpl]');
-    if (tpl) {
-      w.template = tpl.dataset.tpl;
-      w.review = w.template === 'review';
-      if (!w.review && !w.planned) w.planned = 1;
-      drawList(); drawEdit(); changed();
-      const b = edit.querySelector(`[data-tpl="${w.template}"]`); if (b) b.focus();
       return;
     }
     if (e.target.closest('[data-prac-add]')) {
