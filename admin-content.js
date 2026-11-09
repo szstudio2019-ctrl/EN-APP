@@ -126,7 +126,8 @@
     if (sub) {
       mode = 'edit'; draft = null;
       pickedId = li.dataset.id;
-      secTab = 'lessons';
+      viewTab = 'edit';
+      step = 2;
       lessonOpen = Number(sub.dataset.subLesson);
       drawAll();
       const t = edit.querySelector(`[data-ldesc="${lessonOpen}"]`);
@@ -302,15 +303,24 @@
     if (!span) { span = document.createElement('span'); span.className = 'a-h1-island'; h1.appendChild(span); }
     span.textContent = name ? ` – ${name}` : '';
   }
-  // tabs over the middle column: its parts (the island's details, media, the map's "about", lessons)
-  const SECS = [['details', 'פרטי האי'], ['media', 'מדיה'], ['about', 'חלון "אודות" במפה'], ['lessons', 'שיעורים']];
-  let secTab = 'details';
+  // full width: two tabs (editing, viewing); editing goes in four steps with dots and back / next
+  const STEPS = ['פרטי האי', 'מדיה', 'הוספת שיעור', 'הוספת תרגול'];
+  const TEMPLATES = [['lessons', 'אי שיעורים'], ['review', 'אי חזרות']];
+  let step = 0;
+  let viewTab = 'edit';
   let lessonOpen = -1;
-  function wTabs() {
-    return `<div class="w-tabs" role="tablist" aria-label="חלקי העריכה">
-        ${SECS.map(([k, t]) => `<button type="button" role="tab" data-wtab="${k}" aria-selected="${secTab === k}">${t}</button>`).join('')}
-      </div>`;
-  }
+  const templateOf = (w) => w.template || (w.review ? 'review' : 'lessons');
+  const viewTabs = () => `<div class="w-tabs" role="tablist" aria-label="עריכה וצפייה">
+      <button type="button" role="tab" data-wtab="edit" aria-selected="${viewTab === 'edit'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button>
+      <button type="button" role="tab" data-wtab="view" aria-selected="${viewTab === 'view'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</button>
+    </div>`;
+  const stepsBar = () => `<ol class="w-steps">${STEPS.map((t, k) => `<li class="${k < step ? 'is-done' : ''}">
+      <button type="button" data-go="${k}"${k === step ? ' aria-current="step"' : ''}><i aria-hidden="true">${k + 1}</i><span>${t}</span></button>
+    </li>`).join('')}</ol>`;
+  const stepNav = () => `<div class="w-stepnav">
+      <button class="a-btn a-btn--ghost" type="button" data-go="${step - 1}"${step === 0 ? ' disabled' : ''}>חזור</button>
+      ${step < STEPS.length - 1 ? `<button class="a-btn a-btn--primary" type="button" data-go="${step + 1}">הבא</button>` : ''}
+    </div>`;
   function lessonsPart(w) {
     if (w.review) return `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>`;
     const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
@@ -338,6 +348,20 @@
         <ol class="w-lrows">${rows}</ol>
         <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שיעור</button>`;
   }
+  // the practices: one for each lesson until changed
+  const practicesOf = (w) => w.practices || Array.from({ length: w.planned }, () => '');
+  function practicesPart(w) {
+    if (w.review) return '<p class="a-muted">באי חזרות אין תרגולים נפרדים: השלבים עצמם הם התרגול.</p>';
+    const rows = practicesOf(w).map((name, k) => {
+      const n = (w.firstLesson || 1) + k;
+      return `<li class="w-lrow w-lrow--p">
+          <b class="w-lrow__n">תרגול ${n}</b>
+          <input data-pname="${k}" value="${UI.esc(name)}" placeholder="שם התרגול (לא חובה)" aria-label="השם של תרגול ${n}">
+          <button class="w-lrow__del" type="button" data-prac-del="${k}" aria-label="מחיקת תרגול ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>
+        </li>`;
+    }).join('');
+    return `<ol class="w-lrows">${rows}</ol><button class="a-btn a-btn--ghost w-ladd" type="button" data-prac-add>+ הוספת תרגול</button>`;
+  }
   function drawEdit() {
     if (mode === 'world') { setH1(''); return drawNewWorld(); }
     if (mode === 'review') { setH1(''); return drawNewReview(); }
@@ -345,19 +369,33 @@
     const w = picked();
     if (!w) { setH1(''); edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם בכפתור +.</p></div>'; return; }
     setH1(w.name);
-    const part = {
-      details: `<label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
+    if (viewTab === 'view') {
+      const bg = bgOf(w);
+      edit.innerHTML = viewTabs() + `<div class="a-card w-tabbed w-viewcard" role="tabpanel"><h2 class="sr-only" id="w-title">צפייה בעמוד הראשי של האי</h2>${w.page
+        ? `<iframe class="w-frame" src="${w.page}" title="העמוד הראשי של ${UI.esc(w.name)}"></iframe>`
+        : `<div class="w-page w-page--wide"${bg ? ` style="background-image:url('${bg}')"` : ''}><p class="w-page__h"><span>${UI.esc(w.head1 || '')}</span><b>${UI.esc(w.head2 || '')}</b></p><p class="w-page__k">לאי הזה עוד אין עמוד באתר</p></div>`}</div>`;
+      drawPreview();
+      return;
+    }
+    const part = [
+      `<h3>פרטי האי</h3>
+          <div class="w-tpl" role="group" aria-label="איזו תבנית זאת"><span class="w-tpl__label">איזו תבנית זאת</span>${TEMPLATES.map(([k, t]) => `<button type="button" data-tpl="${k}" aria-pressed="${templateOf(w) === k}">${t}</button>`).join('')}</div>
+          <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
             <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
-          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>`,
-      media: `${mediaField(w)}${bgField(w)}`,
-      about: `<label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
-          <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>`,
-      lessons: lessonsPart(w),
-    }[secTab];
-    edit.innerHTML = wTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><section>${part}</section></div>`;
+          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
+          <h3 class="w-h-gap">חלון "אודות" במפה</h3>
+          <label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
+          <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
+          <div class="w-pubbox" id="w-warnbox"></div>`,
+      `<h3>מדיה</h3>${mediaField(w)}${bgField(w)}`,
+      `<h3>הוספת שיעור</h3>${lessonsPart(w)}`,
+      `<h3>הוספת תרגול</h3>${practicesPart(w)}`,
+    ][step];
+    edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
+    drawPreview();
   }
 
   function newFoot(label) {
@@ -452,7 +490,32 @@
     const w = picked();
     if (!w) return;
     const t = e.target.closest('[data-wtab]');
-    if (t) { secTab = t.dataset.wtab; drawEdit(); drawPreview(); const b = edit.querySelector(`[data-wtab="${secTab}"]`); if (b) b.focus(); return; }
+    if (t) { viewTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${viewTab}"]`); if (b) b.focus(); return; }
+    const st = e.target.closest("[data-go]");
+    if (st) { step = Number(st.dataset.go); drawEdit(); edit.scrollTop = 0; const b = edit.querySelector('[aria-current="step"]'); if (b) b.focus(); return; }
+    const tpl = e.target.closest('[data-tpl]');
+    if (tpl) {
+      w.template = tpl.dataset.tpl;
+      w.review = w.template === 'review';
+      if (!w.review && !w.planned) w.planned = 1;
+      drawList(); drawEdit(); changed();
+      const b = edit.querySelector(`[data-tpl="${w.template}"]`); if (b) b.focus();
+      return;
+    }
+    if (e.target.closest('[data-prac-add]')) {
+      w.practices = [...practicesOf(w), ''];
+      drawEdit(); changed();
+      const f = edit.querySelector(`[data-pname="${w.practices.length - 1}"]`); if (f) f.focus();
+      return;
+    }
+    const pd = e.target.closest('[data-prac-del]');
+    if (pd) {
+      const k = Number(pd.dataset.pracDel);
+      if (!confirm(`למחוק את תרגול ${(w.firstLesson || 1) + k}?`)) return;
+      w.practices = practicesOf(w).filter((_, j) => j !== k);
+      drawEdit(); changed();
+      return;
+    }
     if (e.target.closest('[data-wtab-add]')) {
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
@@ -486,6 +549,13 @@
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
+    if (e.target.dataset.pname != null && mode === 'edit') {
+      const w = picked();
+      w.practices = practicesOf(w).slice();
+      w.practices[Number(e.target.dataset.pname)] = e.target.value;
+      changed();
+      return;
+    }
     if (e.target.dataset.ldesc != null && mode === 'edit') {
       const w = picked();
       w.lessonDescs = w.lessonDescs || [];
@@ -582,8 +652,12 @@
     changed();
   });
 
-  // publishing: under the map preview
-  $('w-pubbox').addEventListener('change', (e) => {
+  // publishing: a switch at the top, beside the save button
+  const pubTop = document.createElement('div');
+  pubTop.className = 'w-pubtop';
+  pubTop.hidden = true;
+  document.querySelector('.a-head .a-save').after(pubTop);
+  pubTop.addEventListener('change', (e) => {
     if (e.target.id !== 'f-pub') return;
     picked().published = e.target.checked;
     drawList();
@@ -592,58 +666,15 @@
     $('f-pub').focus();
   });
 
-  /* ---------- preview ---------- */
+  /* ---------- the publish switch and the demo-text warning ---------- */
   function drawPreview() {
-    const w = mode === 'world' || mode === 'review' ? draft : mode === 'lesson' ? list.find((x) => x.id === draft.worldId) : picked();
-    const map = $('w-map');
-    const pub = $('w-pubbox');
-    if (!w) { map.innerHTML = ''; pub.innerHTML = ''; return; }
-    pub.innerHTML = mode !== 'edit' ? '' : `<div class="w-pub">
-        ${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}
-        <p class="w-pub__text"><b>${w.published ? 'מפורסם' : 'טיוטה'}</b>${w.published ? 'העולם מופיע לתלמידים במפה' : 'העולם מוסתר מהתלמידים עד שיפורסם'}</p>
-        ${w.page ? `<a class="w-eye" href="${w.page}?view=admin" target="_blank" rel="noopener" title="צפייה באי כמו תלמיד/ה" aria-label="צפייה ב${UI.esc(w.name)} כמו תלמיד/ה (בלשונית חדשה)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>` : ''}
-      </div>
-      ${w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : ''}`;
-    const src = imgSrc(w, false);
-    const pic = (cls) => (w.animUrl ? `<video class="${cls}" src="${w.animUrl}" autoplay muted loop playsinline></video>` : src ? `<img class="${cls}" src="${src}" alt="">` : '<div class="w-map__none">אין עדיין תמונה לאי</div>');
-    const draftTag = w.published ? '' : '<span class="a-tag a-tag--draft w-map__draft">טיוטה – לא מופיע לתלמידים</span>';
-    // what the preview shows follows the tab: the island's page, the map, or the lessons with the zebra
-    const view = mode !== 'edit' ? 'map' : ({ details: 'page', media: 'page', about: 'map', lessons: 'lesson' })[secTab];
-    $('w-prev-title').lastChild.textContent = ({ map: 'תצוגת מפה', page: 'דף האי', lesson: 'שיעור ותרגול' })[view];
-    map.className = `w-map w-map--${view}`;
-    if (view === 'page') {
-      const bg = bgOf(w);
-      map.innerHTML = `${draftTag}<div class="w-page"${bg ? ` style="background-image:url('${bg}')"` : ''}>
-          ${w.bgVideoUrl ? `<video class="w-page__video" src="${w.bgVideoUrl}" autoplay muted loop playsinline></video>` : ''}
-          <p class="w-page__h"><span>${UI.esc(w.head1 || '')}</span><b>${UI.esc(w.head2 || '')}</b></p>
-          ${w.kicker ? `<p class="w-page__k">${UI.esc(w.kicker)}</p>` : ''}
-          ${pic('w-page__island')}
-        </div>`;
-      return;
-    }
-    if (view === 'lesson') {
-      const rows = w.review ? `<li>חזרה על שיעורים ${UI.esc(w.reviewOf || '')}</li>` : Array.from({ length: w.planned }, (_, k) => {
-        const name = (w.lessonNames || [])[k];
-        const done = !!(w.lessonPages || [])[k];
-        return `<li class="${done ? 'is-done' : ''}"><b>שיעור ${(w.firstLesson || 1) + k}</b>${name ? ` · ${UI.esc(name)}` : ''}<small>${done ? 'נכתב' : 'טרם נכתב'}</small></li>`;
-      }).join('');
-      map.innerHTML = `<div class="w-lesson">
-          <img class="w-lesson__zebra" src="assets/zebra.webp" alt="">
-          <p class="w-lesson__name">${UI.esc(w.name)}</p>
-          <ol class="w-lesson__list">${rows}</ol>
-        </div>`;
-      return;
-    }
-    // the map: the island on the dashed wavy path, its "about" bubble under it
-    map.innerHTML = `${draftTag}
-      <svg class="w-map__path" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true"><path d="M-10 70 C 40 20, 90 20, 150 62 S 260 110, 310 50"/></svg>
-      ${pic('w-map__island')}
-      <div class="w-map__bubble">
-        <p class="w-map__name">${UI.esc(w.name) || '<span class="a-muted">(בלי שם)</span>'}</p>
-        ${w.kicker ? `<p class="w-map__kicker">${UI.esc(w.kicker)}</p>` : ''}
-        <p class="w-map__title">${UI.esc(w.title) || '<span class="a-muted">(בלי כותרת)</span>'}</p>
-        <p class="w-map__text">${UI.esc(w.text) || '<span class="a-muted">(בלי טקסט)</span>'}</p>
-      </div>`;
+    const w = picked();
+    pubTop.hidden = mode !== 'edit' || !w;
+    if (pubTop.hidden) return;
+    pubTop.innerHTML = `${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}<b>${w.published ? 'מפורסם' : 'טיוטה'}</b>
+      ${w.page ? `<a class="w-eye" href="${w.page}?view=admin" target="_blank" rel="noopener" title="צפייה באי כמו תלמיד/ה" aria-label="צפייה ב${UI.esc(w.name)} כמו תלמיד/ה (בלשונית חדשה)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>` : ''}`;
+    const warn = $('w-warnbox');
+    if (warn) warn.innerHTML = w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : '';
   }
 
   function drawAll() { drawList(); drawEdit(); drawPreview(); }
