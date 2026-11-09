@@ -323,7 +323,6 @@
     </div>`;
   function lessonsPart(w) {
     if (w.review) return `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>`;
-    const pct = w.planned ? Math.min(100, Math.round((w.written / w.planned) * 100)) : 0;
     const rows = Array.from({ length: w.planned }, (_, k) => {
       const n = (w.firstLesson || 1) + k;
       const page = (w.lessonPages || [])[k];
@@ -341,11 +340,7 @@
             </div>` : ''}
         </li>`;
     }).join('');
-    return `<div class="w-progress">
-          <p>נכתבו ${w.written} מתוך ${w.planned}</p>
-          <div class="a-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${w.planned}" aria-valuenow="${w.written}" aria-label="שלבים שנכתבו"><i style="width:${pct}%"></i></div>
-        </div>
-        <ol class="w-lrows">${rows}</ol>
+    return `<ol class="w-lrows">${rows}</ol>
         <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שלב</button>`;
   }
   function drawEdit() {
@@ -377,7 +372,7 @@
           <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
           <div class="w-pubbox" id="w-warnbox"></div>`,
       `<h3>מדיה</h3>${mediaField(w)}${bgField(w)}`,
-      `<h3>שלבים</h3>${lessonsPart(w)}`,
+      lessonsPart(w),
     ][step];
     edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
     drawPreview();
