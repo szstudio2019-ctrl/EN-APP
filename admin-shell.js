@@ -317,7 +317,7 @@
       el.innerHTML = `<div class="a-save__in">
           <span class="a-save__status" role="status" aria-live="polite">כל השינויים נשמרו</span>
           <div class="a-save__actions">
-            <button type="button" class="a-btn a-btn--ghost" data-cancel>ביטול השינויים</button>
+            <button type="button" class="a-btn a-btn--ghost" data-cancel>נקה שינויים</button>
             <button type="button" class="a-btn a-btn--primary" data-save>שמירה</button>
           </div>
         </div>`;

@@ -373,7 +373,7 @@
   }
   // the stages to change: from here on they are kept with the island
   function editStages(w) { w.stages = stagesOf(w); return w.stages; }
-  const isWritten = (p) => !!p.page || !!(p.desc || '').trim();
+  const isWritten = (p) => !!p.page || !!(p.desc || '').trim() || !!(p.song && (p.song.title || p.song.fileName));
   const allWritten = (arr) => arr.length > 0 && arr.every(isWritten);
   const isReady = (s) => allWritten(s.lessons) && allWritten(s.practices);
   function missingText(s) {
@@ -387,6 +387,208 @@
   const EYE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
   const TRASH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
   const PLUS_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  /* ---------- the "שיר האותיות" template: the song and when each letter is heard ---------- */
+  const SONG_TEMPLATE = 'שיר האותיות';
+  const ABC_TIMES = [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27];
+  const songUrls = new Map(); // uploads and recordings last until the page closes
+  const urlKey = (key, name) => `${picked().id}:${key}${name ? `:${name}` : ''}`;
+  function songDefaults(it) {
+    const first = it.page === 'letters-lesson.html';
+    return {
+      title: first ? 'האי של זיהוי אותיות' : '',
+      red: first ? 'שיעור היכרות עם סרגל האותיות' : '',
+      tab: first ? 'שיר ה-abc · כל האותיות' : '',
+      button: '', coins: '', empty: false,
+      says: first ? 'שירו איתי את שיר ה-abc! צפו בסרטון – כל אות קופצת בזמן הנכון. לחצו על אות כדי לשמוע איך היא נשמעת.' : '',
+      reads: first ? 'שירו איתי את שיר ה-abc! צפו בסרטון. כל אות קופצת בזמן הנכון. לחצו על אות כדי לשמוע אותה.' : '',
+      file: first ? 'assets/abc-song.mp4' : '',
+      letters: 'abcdefghijklmnopqrstuvwxyz'.split('').map((l, n) => ({ l, t: ABC_TIMES[n] })),
+    };
+  }
+  const songOf = (it) => it.song || songDefaults(it);
+  // the song to change: from here on it is kept with the lesson
+  function editSong(key) {
+    const [k, kind, i] = key.split(':');
+    const part = editStages(picked())[Number(k)][kind][Number(i)];
+    part.song = songOf(part);
+    return part.song;
+  }
+  const songAudio = (key) => edit.querySelector(`[data-song-audio="${key}"]`);
+  function songLetterRow(key, s, n) {
+    const row = s.letters[n];
+    const has = songUrls.has(urlKey(key, row.l));
+    return `<li class="w-abc" data-sg-row="${key}:${n}">
+        <button class="w-abc__grip" type="button" draggable="true" data-sg-grip="${key}:${n}" aria-label="הזזת האות ${UI.esc(row.l)}. חצים למעלה ולמטה להזזה">${UI.ICON.grip}</button>
+        <input class="w-abc__l" dir="ltr" lang="en" maxlength="3" data-sgl="${key}:${n}:l" value="${UI.esc(row.l)}" aria-label="האות">
+        <input class="w-abc__t" dir="ltr" type="number" min="0" step="0.1" data-sgl="${key}:${n}:t" value="${UI.esc(String(row.t))}" aria-label="השנייה של ${UI.esc(row.l)} בשיר">
+        <button class="w-abc__b" type="button" data-sg-stamp="${key}:${n}" title="הרגע הנוכחי בשיר" aria-label="קביעת הרגע של ${UI.esc(row.l)} לפי השיר"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg></button>
+        <button class="w-abc__b" type="button" data-sg-play="${key}:${n}" title="ניגון מהרגע של האות" aria-label="ניגון מהרגע של ${UI.esc(row.l)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></button>
+        <span class="w-abc__has${has ? ' is-on' : ''}">${has ? 'יש' : 'אין'}</span>
+        <button class="w-abc__b" type="button" data-sg-mic="${key}:${n}" title="הקלטה של האות" aria-label="הקלטה של ${UI.esc(row.l)}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <label class="w-abc__b" title="העלאת קובץ קול של האות" aria-label="העלאת קובץ קול של ${UI.esc(row.l)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V6M8 10l4-4 4 4M5 18h14"/></svg><input class="sr-only" type="file" accept="audio/*" data-sg-laudio="${key}:${n}"></label>
+        <button class="w-abc__b w-abc__b--del" type="button" data-sg-del="${key}:${n}" title="מחיקה" aria-label="מחיקת ${UI.esc(row.l)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>
+      </li>`;
+  }
+  function songFields(key, it) {
+    const s = songOf(it);
+    const url = songUrls.get(urlKey(key)) || s.file;
+    const text = (f, label, help) => `<label class="a-field"><span>${label}</span><input data-sg="${key}:${f}" value="${UI.esc(s[f])}">${help ? `<small class="a-help">${help}</small>` : ''}</label>`;
+    const area = (f, label) => `<label class="a-field"><span>${label}</span><textarea data-sg="${key}:${f}">${UI.esc(s[f])}</textarea></label>`;
+    return `${text('title', 'כותרת')}
+        <div class="a-grid">${text('red', 'השורה האדומה מתחת לכותרת')}${text('tab', 'השורה השנייה בלשונית')}</div>
+        <div class="a-grid">${text('button', 'הכפתור בסוף המסך', 'ריק = הנוסח הרגיל')}${text('coins', 'מטבעות על סיום המסך', 'ריק = לפי הגדרות המטבעות')}</div>
+        <label class="w-song__empty"><input type="checkbox" data-sg-empty="${key}"${s.empty ? ' checked' : ''}><span><b>שלב ריק</b> – התלמיד רואה רק את הכותרת והכפתורים, בלי התוכן. מסמנים כשעוד אין תוכן למסך.</span></label>
+        ${area('says', 'מה הזברה אומרת (מעל השיר)')}
+        ${area('reads', 'מה הזברה מקריאה')}
+        <div class="a-field"><span>קובץ השיר</span>
+          <div class="w-song__file">
+            <label class="w-abc__b" title="העלאת שיר" aria-label="העלאת קובץ שיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V6M8 10l4-4 4 4M5 18h14"/></svg><input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-sg-file="${key}"></label>
+            <span dir="ltr">${UI.esc(s.fileName || (s.file || '').split('/').pop() || 'אין קובץ')}</span>
+          </div>
+          <small class="a-help">שיר חדש: אחרי ההעלאה בודקים את הזמנים של האותיות (למטה) ושומרים.</small>
+        </div>
+        <div class="w-song__box">
+          <h4 class="w-st__title">התוכן של המסך · שיר האותיות</h4>
+          <p class="a-help">כל אות עם הרגע בשיר שבו שרים אותה (בשניות). מנגנים את השיר כאן, ולוחצים על השעון ליד אות כשהיא נשמעת, והזמן נקבע לבד. המשולש מנגן מהרגע של האות.</p>
+          ${url ? `<audio class="w-song__player" controls preload="metadata" src="${url}" data-song-audio="${key}"></audio>` : '<p class="a-muted">עוד אין קובץ שיר</p>'}
+          <ol class="w-abcs">${s.letters.map((_, n) => songLetterRow(key, s, n)).join('')}</ol>
+          <button class="w-sub__add" type="button" data-sg-add="${key}">+ אות</button>
+        </div>`;
+  }
+  function moveLetter(key, from, to) {
+    if (to < 0) return;
+    const s = editSong(key);
+    if (to >= s.letters.length) return;
+    s.letters.splice(to, 0, s.letters.splice(from, 1)[0]);
+    drawEdit(); changed();
+    const g = edit.querySelector(`[data-sg-grip="${key}:${to}"]`); if (g) g.focus();
+  }
+  function setSongUrl(key, name, file) {
+    const k = urlKey(key, name);
+    if (songUrls.has(k)) URL.revokeObjectURL(songUrls.get(k));
+    songUrls.set(k, URL.createObjectURL(file));
+  }
+  let songDrag = null;
+  let recording = null;
+  function wireSong() {
+    edit.addEventListener('input', (e) => {
+      if (mode !== 'edit') return;
+      const t = e.target;
+      if (t.dataset.sg) {
+        const p = t.dataset.sg.split(':');
+        editSong(p.slice(0, 3).join(':'))[p[3]] = t.value;
+        changed();
+      } else if (t.dataset.sgl) {
+        const p = t.dataset.sgl.split(':');
+        editSong(p.slice(0, 3).join(':')).letters[Number(p[3])][p[4]] = p[4] === 't' ? (t.value === '' ? '' : Number(t.value)) : t.value;
+        changed();
+      }
+    });
+    edit.addEventListener('change', (e) => {
+      if (mode !== 'edit') return;
+      const t = e.target;
+      if (t.dataset.sgEmpty) { editSong(t.dataset.sgEmpty).empty = t.checked; changed(); return; }
+      const file = t.files && t.files[0];
+      if (!file) return;
+      if (t.dataset.sgFile) {
+        const s = editSong(t.dataset.sgFile);
+        setSongUrl(t.dataset.sgFile, '', file);
+        s.fileName = file.name;
+        drawEdit(); changed();
+      } else if (t.dataset.sgLaudio) {
+        const p = t.dataset.sgLaudio.split(':');
+        const key = p.slice(0, 3).join(':');
+        setSongUrl(key, editSong(key).letters[Number(p[3])].l, file);
+        drawEdit(); changed();
+      }
+    });
+    edit.addEventListener('click', async (e) => {
+      if (mode !== 'edit') return;
+      const q = (name) => { const b = e.target.closest(`[data-${name}]`); return b ? b.getAttribute(`data-${name}`) : null; };
+      const parts = (v) => { const p = v.split(':'); return [p.slice(0, 3).join(':'), Number(p[3])]; };
+      let v;
+      if ((v = q('sg-add'))) {
+        const s = editSong(v);
+        s.letters.push({ l: '', t: '' });
+        drawEdit(); changed();
+        const f = edit.querySelector(`[data-sgl="${v}:${s.letters.length - 1}:l"]`); if (f) f.focus();
+      } else if ((v = q('sg-del'))) {
+        const [key, n] = parts(v);
+        const s = editSong(key);
+        if (!confirm(`למחוק את האות ${s.letters[n].l}?`)) return;
+        s.letters.splice(n, 1);
+        drawEdit(); changed();
+      } else if ((v = q('sg-stamp'))) {
+        const [key, n] = parts(v);
+        const a = songAudio(key);
+        if (!a) return;
+        const sec = Math.round(a.currentTime * 10) / 10;
+        editSong(key).letters[n].t = sec;
+        edit.querySelector(`[data-sgl="${key}:${n}:t"]`).value = sec;
+        changed();
+      } else if ((v = q('sg-play'))) {
+        const [key, n] = parts(v);
+        const a = songAudio(key);
+        if (!a) return;
+        a.currentTime = Number(songOf(partAt(key)).letters[n].t) || 0;
+        a.play();
+      } else if ((v = q('sg-mic'))) {
+        const b = e.target.closest('[data-sg-mic]');
+        if (recording) { recording.stop(); return; }
+        const [key, n] = parts(v);
+        let stream;
+        try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); } catch (err) { live.textContent = 'אין גישה למיקרופון'; alert('אין גישה למיקרופון'); return; }
+        const rec = new MediaRecorder(stream);
+        const chunks = [];
+        rec.ondataavailable = (ev) => chunks.push(ev.data);
+        rec.onstop = () => {
+          stream.getTracks().forEach((tr) => tr.stop());
+          recording = null;
+          setSongUrl(key, editSong(key).letters[n].l, new Blob(chunks, { type: rec.mimeType }));
+          drawEdit(); changed();
+        };
+        recording = rec;
+        rec.start();
+        b.classList.add('is-rec');
+      }
+    });
+    edit.addEventListener('keydown', (e) => {
+      const g = e.target.closest('[data-sg-grip]');
+      if (!g || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+      e.preventDefault();
+      const p = g.dataset.sgGrip.split(':');
+      const n = Number(p[3]);
+      moveLetter(p.slice(0, 3).join(':'), n, e.key === 'ArrowUp' ? n - 1 : n + 1);
+    });
+    edit.addEventListener('dragstart', (e) => {
+      const g = e.target.closest('[data-sg-grip]');
+      if (!g) return;
+      songDrag = g.dataset.sgGrip;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', songDrag);
+    });
+    edit.addEventListener('dragover', (e) => {
+      const r = songDrag && e.target.closest('[data-sg-row]');
+      if (!r) return;
+      e.preventDefault();
+      edit.querySelectorAll('.w-abc.is-over').forEach((x) => x.classList.remove('is-over'));
+      r.classList.add('is-over');
+    });
+    edit.addEventListener('drop', (e) => {
+      const r = songDrag && e.target.closest('[data-sg-row]');
+      if (!r) return;
+      e.preventDefault();
+      const a = songDrag.split(':');
+      const to = Number(r.dataset.sgRow.split(':')[3]);
+      songDrag = null;
+      moveLetter(a.slice(0, 3).join(':'), Number(a[3]), to);
+    });
+    edit.addEventListener('dragend', () => { songDrag = null; edit.querySelectorAll('.w-abc.is-over').forEach((x) => x.classList.remove('is-over')); });
+  }
+  function partAt(key) {
+    const [k, kind, i] = key.split(':');
+    return stagesOf(picked())[Number(k)][kind][Number(i)];
+  }
   function stageRow(s, k, kind, i) {
     const it = s[kind][i];
     const word = kind === 'lessons' ? 'שיעור' : 'תרגול';
@@ -407,7 +609,7 @@
           <div class="a-grid">
             <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
           </div>
-          <label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>
+          ${it.template === SONG_TEMPLATE ? songFields(key, it) : `<label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>`}
         </div>
       </div>`;
   }
@@ -834,6 +1036,7 @@
     if (warn) warn.innerHTML = w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : '';
   }
 
+  wireSong();
   function drawAll() { drawList(); drawEdit(); drawPreview(); }
   drawAll();
 })();

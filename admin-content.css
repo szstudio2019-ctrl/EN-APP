@@ -460,3 +460,37 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-sub2__item { width: 100%; min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px; border: 0; border-radius: 8px; background: none; color: var(--a-text); font: inherit; font-size: 14px; text-align: start; cursor: pointer; }
 .w-sub2__item:hover { background: rgba(255, 255, 255, .7); }
 .w-sub2__item small { flex: none; font-size: 12px; color: var(--a-text-2); }
+
+/* the "שיר האותיות" template */
+.w-row__fields > .a-field + .a-grid, .w-row__fields > .a-grid + .a-grid { margin: 0; }
+.w-song__empty { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1.5px solid var(--a-line); border-radius: 12px; font-size: 14px; cursor: pointer; }
+.w-song__empty input { flex: none; width: 18px; height: 18px; accent-color: #2A2577; }
+.w-song__empty b { font-weight: 600; color: #2A2577; }
+.w-song__file { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
+.w-song__box { padding: 4px 16px 16px; border: 1.5px dashed var(--a-line); border-radius: 14px; }
+.w-song__box .w-st__title { margin: 12px 0 6px; font-size: 16px; color: #2A2577; }
+.w-song__box .a-help { display: block; margin: 0 0 12px; }
+.w-song__player { width: 100%; height: 40px; margin-bottom: 12px; }
+.w-abcs { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
+.w-abc { display: flex; align-items: center; gap: 6px; border-radius: 10px; }
+.w-abc.is-over { box-shadow: 0 -2px 0 #E33563; }
+.w-abc__grip { flex: none; width: 28px; height: 38px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--a-text-2); cursor: grab; }
+.w-abc__grip:active { cursor: grabbing; }
+.w-abc__grip svg { width: 18px; height: 18px; fill: currentColor; }
+.w-abc input.w-abc__l, .w-abc input.w-abc__t { min-height: 38px; padding: 4px 8px; border: 1.5px solid var(--a-line); border-radius: 10px; background: #fff; color: #2A2577; }
+.w-abc input.w-abc__l { width: 56px; text-align: center; font-weight: 700; }
+.w-abc input.w-abc__t { width: 72px; }
+.w-abc__b { flex: none; width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px; background: none; color: #2A2577; cursor: pointer; }
+.w-abc__b:hover { background: #F4F3FA; }
+.w-abc__b svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.w-abc__b--del { color: #C81E55; margin-inline-start: auto; }
+.w-abc__b.is-rec { background: #FDEBF0; color: #E33563; }
+.w-abc__has { flex: none; width: 26px; text-align: center; font-size: 12px; color: var(--a-text-2); }
+.w-abc__has.is-on { color: #1F7A4D; font-weight: 600; }
+@media (max-width: 640px) { .w-abc { flex-wrap: wrap; } }
+
+/* inside an open stage: each lesson and practice in a rounded box */
+.w-st .w-row { padding: 6px 14px 14px; margin-bottom: 10px; border: 1px solid var(--a-line); border-radius: 14px; }
+.w-st .w-row + .w-row { border-top: 1px solid var(--a-line); }
+.w-row__fields .a-grid > .a-field, .w-row__fields > .a-field { margin-top: 0 !important; }
+.w-row__fields .a-grid { align-items: start; }
