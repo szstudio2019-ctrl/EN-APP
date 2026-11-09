@@ -41,7 +41,9 @@
   const delBtn = document.createElement('button');
   delBtn.type = 'button';
   delBtn.className = 'a-btn w-delete';
-  delBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg><span>מחיקה</span>';
+  delBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
+  delBtn.setAttribute('aria-label', 'מחיקת האי');
+  delBtn.title = 'מחיקת האי';
   plus.after(delBtn);
   delBtn.addEventListener('click', () => {
     const w = mode === 'edit' && picked();
@@ -130,7 +132,6 @@
       step = 3;
       stagesFor = li.dataset.id;
       openStage = Number(sub.dataset.subLesson);
-      openRow = 'lessons:0';
       stageMsg.clear();
       drawAll();
       return;
@@ -309,7 +310,6 @@
   let step = 0;
   let viewTab = 'edit';
   let openStage = -1;
-  let openRow = null;
   let stagesFor = null;
   const stageMsg = new Set();
   const viewTabs = () => `<div class="w-tabs" role="tablist" aria-label="עריכה וצפייה">
@@ -368,41 +368,35 @@
   const EYE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
   const TRASH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
   const PLUS_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-  function stageRow(s, k, kind, i, isLast) {
+  function stageRow(s, k, kind, i) {
     const it = s[kind][i];
     const word = kind === 'lessons' ? 'שיעור' : 'תרגול';
     const key = `${k}:${kind}:${i}`;
     const id = `${k}-${kind}-${i}`;
-    const next = kind === 'lessons' ? 'שמור והמשך לתרגול' : (isLast ? '' : 'שמור והמשך לשלב הבא');
     const canDelete = !it.page && s[kind].length > 1;
     return `<div class="w-row" data-row="${key}">
-        <div class="w-row__head" data-row-head="${key}">
+        <div class="w-row__head">
           <b>${word} ${i + 1}</b>
           <input data-st-name="${key}" value="${UI.esc(it.name)}" placeholder="שם ה${word} (לא חובה)" aria-label="השם של ${word} ${i + 1} בשלב ${k + 1}">
           <span class="a-tag ${it.status === 'written' ? 'a-tag--live' : 'a-tag--draft'}">${it.status === 'written' ? 'נכתב' : 'חסר'}</span>
           ${it.page ? `<a class="w-lrow__open" href="${it.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה ב${word} ${i + 1} (בלשונית חדשה)" title="צפייה">${EYE_ICON}</a>` : '<span class="w-row__gap"></span>'}
           ${canDelete ? `<button class="w-lrow__del" type="button" data-row-del="${key}" aria-label="מחיקת ${word} ${i + 1}" title="מחיקה">${TRASH_ICON}</button>` : '<span class="w-row__gap"></span>'}
           <button class="w-row__add" type="button" data-row-add="${key}" aria-label="הוספת ${word} בשלב ${k + 1}" title="הוספת ${word}">${PLUS_ICON}</button>
-          <button class="w-chev" type="button" aria-expanded="false" aria-label="פתיחה וסגירה של ${word} ${i + 1}">${CHEV}</button>
         </div>
-        <div class="w-fold"><div class="w-fold__in"><div class="w-row__fields">
+        <div class="w-row__fields">
           <div class="a-grid">
             <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
             <label class="a-field"><span>סטטוס</span><select id="st-${id}" data-st-field="${key}:status"><option value="missing"${it.status === 'written' ? '' : ' selected'}>חסר</option><option value="written"${it.status === 'written' ? ' selected' : ''}>נכתב</option></select></label>
           </div>
           <label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>
-          <div class="w-row__btns">
-            <button class="a-btn w-draft" type="button" data-row-save="${key}:close">שמור וסגור</button>
-            ${next ? `<button class="a-btn a-btn--primary" type="button" data-row-save="${key}:next">${next}</button>` : ''}
-          </div>
-        </div></div></div>
+        </div>
       </div>`;
   }
   function stageCard(s, k, isLast) {
     const msg = stageMsg.has(k) ? missingText(s) : '';
     if (!msg) stageMsg.delete(k);
     const empty = [...s.lessons, ...s.practices].every((p) => !p.page);
-    const rows = (kind) => s[kind].map((_, i) => stageRow(s, k, kind, i, isLast)).join('');
+    const rows = (kind) => s[kind].map((_, i) => stageRow(s, k, kind, i)).join('');
     return `<li class="w-st" data-st="${k}">
         <div class="w-st__head" data-st-head="${k}">
           <b>שלב ${k + 1}</b>
@@ -418,6 +412,10 @@
           <h4 class="w-st__title">שיעורים</h4>${rows('lessons')}
           <hr class="w-st__line">
           <h4 class="w-st__title">תרגולים</h4>${rows('practices')}
+          <div class="w-row__btns">
+            <button class="a-btn w-draft" type="button" data-st-save="${k}:close">שמור וסגור</button>
+            ${isLast ? '' : `<button class="a-btn a-btn--primary" type="button" data-st-save="${k}:next">שמור והמשך לשלב הבא</button>`}
+          </div>
         </div></div>
       </li>`;
   }
@@ -427,7 +425,6 @@
     if (stagesFor !== w.id) { // another island: its first unfinished stage opens
       stagesFor = w.id;
       openStage = stages.findIndex((s) => !isReady(s));
-      openRow = null;
       stageMsg.clear();
     }
     return `<ol class="w-stages">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
@@ -440,16 +437,10 @@
       el.classList.toggle('is-open', on);
       el.querySelector('.w-st__head .w-chev').setAttribute('aria-expanded', String(on));
     });
-    edit.querySelectorAll('[data-row]').forEach((el) => {
-      const [k, kind, i] = el.dataset.row.split(':');
-      const on = Number(k) === openStage && `${kind}:${i}` === openRow;
-      el.classList.toggle('is-open', on);
-      el.querySelector('.w-chev').setAttribute('aria-expanded', String(on));
-    });
   }
   function revealOpen() {
     setTimeout(() => {
-      const el = edit.querySelector('[data-row].is-open') || edit.querySelector('[data-st].is-open');
+      const el = edit.querySelector('[data-st].is-open');
       if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }, 270);
   }
@@ -604,7 +595,6 @@
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
       openStage = stages.length - 1;
-      openRow = 'lessons:0';
       drawList(); drawEdit(); changed();
       const f = edit.querySelector(`[data-st-name="${openStage}:lessons:0"]`); if (f) f.focus();
       revealOpen();
@@ -619,7 +609,7 @@
       if (w.lessonNames) w.lessonNames.splice(k, 1);
       if (w.lessonDescs) w.lessonDescs.splice(k, 1);
       w.planned = stages.length;
-      openStage = -1; openRow = null;
+      openStage = -1;
       stageMsg.clear();
       drawList(); drawEdit(); changed();
       return;
@@ -629,9 +619,8 @@
       const [k, kind, i] = addRow.dataset.rowAdd.split(':');
       editStages(w)[Number(k)][kind].splice(Number(i) + 1, 0, blankPart());
       openStage = Number(k);
-      openRow = `${kind}:${Number(i) + 1}`;
       drawEdit(); changed();
-      const f = edit.querySelector(`[data-st-name="${k}:${openRow}"]`); if (f) f.focus();
+      const f = edit.querySelector(`[data-st-name="${k}:${kind}:${Number(i) + 1}"]`); if (f) f.focus();
       return;
     }
     const delRow = e.target.closest('[data-row-del]');
@@ -639,36 +628,24 @@
       const [k, kind, i] = delRow.dataset.rowDel.split(':');
       if (!confirm(`למחוק את ${kind === 'lessons' ? 'השיעור' : 'התרגול'} הזה?`)) return;
       editStages(w)[Number(k)][kind].splice(Number(i), 1);
-      openRow = null;
       drawEdit(); changed();
       return;
     }
-    const rowSave = e.target.closest('[data-row-save]');
-    if (rowSave) {
-      const [k, kind, , how] = rowSave.dataset.rowSave.split(':');
-      if (how === 'close') openRow = null;
-      else if (kind === 'lessons') openRow = 'practices:0';
-      else { openStage = Number(k) + 1; openRow = 'lessons:0'; }
+    const stSave = e.target.closest('[data-st-save]');
+    if (stSave) {
+      const [k, how] = stSave.dataset.stSave.split(':');
+      openStage = how === 'next' ? Number(k) + 1 : -1;
       applyOpen();
       saveNow();
       revealOpen();
       return;
     }
-    // a click on a head opens or closes it; its name field, eye and switch do not
+    // a click on the stage's head opens or closes it; its switch does not
     if (e.target.closest('input,textarea,select,a,label')) return;
-    const rh = e.target.closest('[data-row-head]');
-    if (rh) {
-      const [, kind, i] = rh.dataset.rowHead.split(':');
-      const v = `${kind}:${i}`;
-      openRow = openRow === v ? null : v;
-      applyOpen();
-      return;
-    }
     const sh = e.target.closest('[data-st-head]');
     if (sh) {
       const k = Number(sh.dataset.stHead);
       openStage = openStage === k ? -1 : k;
-      openRow = null;
       applyOpen();
     }
   });

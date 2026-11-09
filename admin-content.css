@@ -423,3 +423,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 @media (max-width: 640px) { .w-row__head { grid-template-columns: minmax(0, 1fr) auto 32px 32px 32px 32px; } .w-row__head > b { grid-column: 1 / -1; } .w-st__msg { flex-basis: 100%; } .w-st__end { flex-wrap: wrap; justify-content: flex-end; } }
 @media (prefers-reduced-motion: reduce) { .w-fold, .w-fold__in, .w-chev svg { transition: none; } }
 .w-st .w-row { display: block; }
+
+/* one level: opening a stage shows its lessons and practices with their fields; no coloured backgrounds */
+.w-st, .w-st .w-row, .w-st__head, .w-row__fields { background: none; }
+.w-row__head { grid-template-columns: 62px minmax(0, 1fr) auto 36px 36px 36px; cursor: default; }
+.w-st .w-row { padding-bottom: 6px; }
+.w-st .w-fold__in > .w-row__btns { padding: 14px; border-top: 1px solid var(--a-line); margin-top: 8px; }
+@media (max-width: 640px) { .w-row__head { grid-template-columns: minmax(0, 1fr) auto 32px 32px 32px; } }
+.w-delete { width: 40px; min-width: 40px; padding: 0; }
