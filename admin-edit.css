@@ -148,3 +148,10 @@
 .t-layout.is-tabs.is-split .pv-col .t-side { position: static; }
 /* the intro: the preview tab level with the slide tabs */
 @media (min-width: 1101px) { .t-layout.is-slides .pv-col { margin-top: -48px; } .t-tabs { max-width: 60%; } }
+
+/* the slide tabs carry their titles: a little tighter so they stay on one row */
+.t-tabs [data-slide] { padding: 0 14px; font-size: 15px; }
+
+/* the + tab: a white plus on pink */
+.t-tabs__add { background: #E33563 !important; color: #fff !important; box-shadow: none !important; }
+.t-tabs__add:hover { background: #C81E55 !important; }

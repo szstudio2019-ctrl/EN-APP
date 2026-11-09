@@ -95,6 +95,7 @@
     const path = e.target.dataset.path;
     if (!path) return;
     setAt(path, e.target.value);
+    if (P.slideTabs) drawTabs();
     if (P.preview) document.getElementById('t-preview').innerHTML = P.preview(cur, UI.esc);
     changed();
   });
@@ -133,10 +134,15 @@
   const tabs = document.createElement('div');
   tabs.className = 't-tabs';
   tabs.setAttribute('role', 'tablist');
+  // a slide's tab is named by its title (what fills in by itself, in [ ], is left out)
+  const tabName = (it, k) => {
+    const name = `${it.title || ''} ${it.pink || ''}`.replace(/\[[^\]]*\]/g, '').replace(/(^|\s)([א-ת]) +/g, '$1$2').replace(/[\s,]+$/, '').trim();
+    return name || `${listSec.itemName} ${k + 1}`;
+  };
   function drawTabs() {
     const n = nSlides();
     const other = P.sections.find((x) => !x.list);
-    tabs.innerHTML = cur[listSec.list].map((_, k) => `<button type="button" role="tab" data-slide="${k}" aria-selected="${k === pick()}">${listSec.itemName} ${k + 1}</button>`).join('')
+    tabs.innerHTML = cur[listSec.list].map((it, k) => `<button type="button" role="tab" data-slide="${k}" aria-selected="${k === pick()}">${UI.esc(tabName(it, k))}</button>`).join('')
       + `<button type="button" role="tab" data-slide="${n}" aria-selected="${pick() === n}">${other ? other.tab || other.title : ''}</button>`
       + `<button type="button" class="t-tabs__add" data-add-slide aria-label="הוספת ${listSec.itemName}">+</button>`;
   }
