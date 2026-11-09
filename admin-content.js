@@ -333,7 +333,7 @@
   };
   const practiceOf = (page) => (page in PRACTICE_OF ? PRACTICE_OF[page] : page.replace('-lesson.html', '.html'));
   const TEMPLATE_NAMES = ['אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
-  const blankPart = (name) => ({ name: name || '', desc: '', template: '', status: 'missing', page: '' });
+  const blankPart = (name) => ({ name: name || '', desc: '', template: '', page: '' });
   const blankStage = (name) => ({ published: false, lessons: [blankPart(name)], practices: [blankPart()] });
   function seedStage(w, k) {
     const page = (w.lessonPages || [])[k] || '';
@@ -342,9 +342,8 @@
     if (page) {
       s.published = true; // already open to the students
       s.lessons[0].page = page;
-      s.lessons[0].status = 'written';
       const p = practiceOf(page);
-      if (p) { s.practices[0].page = p; s.practices[0].status = 'written'; }
+      if (p) s.practices[0].page = p;
     }
     return s;
   }
@@ -355,7 +354,8 @@
   }
   // the stages to change: from here on they are kept with the island
   function editStages(w) { w.stages = stagesOf(w); return w.stages; }
-  const allWritten = (arr) => arr.length > 0 && arr.every((p) => p.status === 'written');
+  const isWritten = (p) => !!p.page || !!(p.desc || '').trim();
+  const allWritten = (arr) => arr.length > 0 && arr.every(isWritten);
   const isReady = (s) => allWritten(s.lessons) && allWritten(s.practices);
   function missingText(s) {
     const noL = !allWritten(s.lessons);
@@ -378,7 +378,7 @@
         <div class="w-row__head">
           <b>${word} ${i + 1}</b>
           <input data-st-name="${key}" value="${UI.esc(it.name)}" placeholder="שם ה${word} (לא חובה)" aria-label="השם של ${word} ${i + 1} בשלב ${k + 1}">
-          <span class="a-tag ${it.status === 'written' ? 'a-tag--live' : 'a-tag--draft'}">${it.status === 'written' ? 'נכתב' : 'חסר'}</span>
+          <span class="a-tag ${isWritten(it) ? 'a-tag--live' : 'a-tag--draft'}">${isWritten(it) ? 'נכתב' : 'חסר'}</span>
           ${it.page ? `<a class="w-lrow__open" href="${it.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה ב${word} ${i + 1} (בלשונית חדשה)" title="צפייה">${EYE_ICON}</a>` : '<span class="w-row__gap"></span>'}
           ${canDelete ? `<button class="w-lrow__del" type="button" data-row-del="${key}" aria-label="מחיקת ${word} ${i + 1}" title="מחיקה">${TRASH_ICON}</button>` : '<span class="w-row__gap"></span>'}
           <button class="w-row__add" type="button" data-row-add="${key}" aria-label="הוספת ${word} בשלב ${k + 1}" title="הוספת ${word}">${PLUS_ICON}</button>
@@ -386,7 +386,6 @@
         <div class="w-row__fields">
           <div class="a-grid">
             <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
-            <label class="a-field"><span>סטטוס</span><select id="st-${id}" data-st-field="${key}:status"><option value="missing"${it.status === 'written' ? '' : ' selected'}>חסר</option><option value="written"${it.status === 'written' ? ' selected' : ''}>נכתב</option></select></label>
           </div>
           <label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>
         </div>
@@ -690,6 +689,15 @@
         while (w[key].length < w.planned) w[key].push('');
         w[key][Number(k)] = e.target.value;
         if (isName) drawList();
+      }
+      if (!isName) {
+        const st = stagesOf(w)[Number(k)];
+        const part = st[kind][Number(i)];
+        const tag = edit.querySelector(`[data-row="${k}:${kind}:${i}"] .a-tag`);
+        tag.className = `a-tag ${isWritten(part) ? 'a-tag--live' : 'a-tag--draft'}`;
+        tag.textContent = isWritten(part) ? 'נכתב' : 'חסר';
+        const note = edit.querySelector(`[data-st="${k}"] .w-st__msg`);
+        if (note) { const text = missingText(st); if (text) note.textContent = text; else { note.remove(); stageMsg.delete(Number(k)); } }
       }
       changed();
       return;
