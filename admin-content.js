@@ -6,6 +6,7 @@
 (function () {
   const { Worlds, UI } = window.Admin;
   let saved = Worlds.load();
+  saved.forEach((w) => { delete w.animUrl; delete w.bgVideoUrl; }); // a video's address lasts only until the page closes
   let list = JSON.parse(JSON.stringify(saved));
   let pickedId = (list[0] || {}).id;
   let mode = 'edit'; // 'edit' | 'world' | 'lesson' | 'review'
@@ -214,18 +215,28 @@
   const bgOf = (w) => w.bgData || BG[w.page] || '';
   function bgField(w) {
     const src = bgOf(w);
-    return `<div class="a-field w-bgfield"><span>תמונת הרקע של דף האי</span>
+    const has = src || w.bgVideoUrl;
+    return `<div class="a-field w-bgfield"><span>תמונה או וידאו ברקע של דף האי</span>
         <div class="w-media">
-          <label class="w-media__pic w-media__pic--bg" for="f-bg" aria-label="בחירת תמונת רקע">${src ? `<img src="${src}" alt="">` : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg>'}</label>
+          <label class="w-media__pic w-media__pic--bg" for="f-bg" aria-label="בחירת תמונה או וידאו לרקע">${w.bgVideoUrl ? `<video src="${w.bgVideoUrl}" autoplay muted loop playsinline></video>` : src ? `<img src="${src}" alt="">` : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg>'}</label>
           <div>
-            <label class="a-btn a-btn--ghost" for="f-bg">${src ? 'החלפה' : 'הוספת תמונת רקע'}</label>
-            <small class="a-help" style="display:block;margin-top:6px">תמונה רחבה, 1920×1080 · JPG או WEBP</small>
+            <label class="a-btn a-btn--ghost" for="f-bg">${has ? 'החלפה' : 'הוספת תמונה או וידאו'}</label>
+            <small class="a-help" style="display:block;margin-top:6px">${w.bgVideoName ? `וידאו: ${UI.esc(w.bgVideoName)} – יעלה לאתר עם הקבצים` : 'רחב, 1920×1080 · JPG או WEBP; וידאו: MP4 או WEBM'}</small>
           </div>
-          <input id="f-bg" type="file" accept="image/*" class="sr-only">
+          <input id="f-bg" type="file" accept="image/*,video/mp4,video/webm" class="sr-only">
         </div></div>`;
   }
   function readBg(file, target, done) {
-    if (!file || !file.type.startsWith('image/')) return;
+    if (!file) return;
+    // a video is shown here only: it is too big for the browser's storage (its name is kept)
+    if (file.type.startsWith('video/')) {
+      target.bgVideoUrl = URL.createObjectURL(file);
+      target.bgVideoName = file.name;
+      delete target.bgData;
+      done();
+      return;
+    }
+    if (!file.type.startsWith('image/')) return;
     const url = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
@@ -235,6 +246,7 @@
       c.width = W; c.height = H;
       c.getContext('2d').drawImage(img, 0, 0, W, H);
       target.bgData = c.toDataURL('image/webp', 0.8);
+      delete target.bgVideoUrl; delete target.bgVideoName;
       URL.revokeObjectURL(url);
       done();
     };
@@ -519,6 +531,7 @@
     readBg(e.target.files && e.target.files[0], target, () => {
       if (mode === 'edit') changed();
       drawEdit();
+      drawPreview();
       const b = $('f-bg'); if (b) b.focus();
     });
   });
@@ -558,6 +571,7 @@
       const w = { ...draft, name };
       if (w.review) w.kicker = `חזרה על שיעורים ${w.reviewOf}`;
       delete w.animUrl; // a video stays here only; its name is kept
+      delete w.bgVideoUrl;
       list.splice(at, 0, w);
       pickedId = w.id;
       live.textContent = `${name} נוסף/ה במקום ${at + 1}`;
@@ -600,6 +614,7 @@
     if (view === 'page') {
       const bg = bgOf(w);
       map.innerHTML = `${draftTag}<div class="w-page"${bg ? ` style="background-image:url('${bg}')"` : ''}>
+          ${w.bgVideoUrl ? `<video class="w-page__video" src="${w.bgVideoUrl}" autoplay muted loop playsinline></video>` : ''}
           <p class="w-page__h"><span>${UI.esc(w.head1 || '')}</span><b>${UI.esc(w.head2 || '')}</b></p>
           ${w.kicker ? `<p class="w-page__k">${UI.esc(w.kicker)}</p>` : ''}
           ${pic('w-page__island')}

@@ -155,3 +155,16 @@
 /* the + tab: a white plus on pink */
 .t-tabs__add { background: #E33563 !important; color: #fff !important; box-shadow: none !important; }
 .t-tabs__add:hover { background: #C81E55 !important; }
+
+/* several pictures in one field */
+.t-gal { display: flex; flex-wrap: wrap; gap: 10px; }
+.t-gal__item { position: relative; width: 84px; height: 84px; display: grid; place-items: center; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--a-line); }
+.t-gal__item img { max-width: 72px; max-height: 72px; object-fit: contain; }
+.t-gal__item button { position: absolute; top: -6px; left: -6px; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; background: #E33563; color: #fff; font-size: 16px; line-height: 1; cursor: pointer; }
+.t-gal__add { width: 84px; height: 84px; display: grid; place-items: center; border-radius: 12px; border: 1.5px dashed var(--a-field); color: #2A2577; font-size: 28px; cursor: pointer; }
+.t-gal__add:hover { background: #fff; border-color: #E33563; color: #E33563; }
+.pv__pics { display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin-bottom: 14px; }
+.pv__pics img { min-width: 0; max-width: 48%; max-height: 230px; object-fit: contain; }
+.pv__slider { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 14px; }
+.pv__slider img { margin: 0; max-width: 72%; }
+.pv__slider button { flex: none; width: 36px; height: 36px; border: 0; border-radius: 50%; background: #F4F3FA; color: #2A2577; font-size: 22px; line-height: 1; cursor: pointer; }

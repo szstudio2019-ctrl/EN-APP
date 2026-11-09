@@ -14,6 +14,15 @@
   const box = document.getElementById('t-form');
 
   const field = (id, f, v) => {
+    if (f.gallery) {
+      const list = Array.isArray(v) ? v : [];
+      return `<div class="a-field t-wide"><span>${f.label}</span>
+        <div class="t-gal">
+          ${list.map((src, i) => `<span class="t-gal__item"><img src="${src}" alt=""><button type="button" data-gal-del="${id}:${i}" aria-label="הסרת תמונה ${i + 1}">×</button></span>`).join('')}
+          <label class="t-gal__add" for="${id}" aria-label="הוספת תמונות">+</label>
+          <input id="${id}" data-gal="${id}" type="file" accept="image/*" multiple class="sr-only">
+        </div><small class="a-help">${f.help || 'אפשר כמה תמונות · PNG או WEBP'}</small></div>`;
+    }
     if (f.image) {
       return `<div class="a-field t-wide"><span>${f.label}</span>
         <div class="t-img">
@@ -75,6 +84,29 @@
   const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
 
   const setAt = (path, v) => { const p = path.split('.'); if (p.length === 3) cur[p[0]][Number(p[1])][p[2]] = v; else cur[path] = v; };
+  const getAt = (path) => { const p = path.split('.'); const v = p.length === 3 ? cur[p[0]][Number(p[1])][p[2]] : cur[path]; return Array.isArray(v) ? v : []; };
+  const shrink = (file) => new Promise((done) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const W = Math.min(600, img.width), H = Math.round(img.height * (W / img.width));
+      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      c.getContext('2d').drawImage(img, 0, 0, W, H);
+      URL.revokeObjectURL(url);
+      done(c.toDataURL('image/webp', 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); done(''); };
+    img.src = url;
+  });
+  box.addEventListener('change', async (e) => {
+    const path = e.target.dataset.gal;
+    if (!path) return;
+    const files = [...(e.target.files || [])].filter((f) => f.type.startsWith('image/'));
+    if (!files.length) return;
+    const added = (await Promise.all(files.map(shrink))).filter(Boolean);
+    setAt(path, [...getAt(path), ...added]);
+    draw(); changed();
+  });
   box.addEventListener('change', (e) => {
     const path = e.target.dataset.img;
     const file = path && e.target.files && e.target.files[0];
@@ -100,6 +132,13 @@
     changed();
   });
   box.addEventListener('click', (e) => {
+    const gd = e.target.closest('[data-gal-del]');
+    if (gd) {
+      const [path, i] = gd.dataset.galDel.split(':');
+      setAt(path, getAt(path).filter((_, k) => k !== Number(i)));
+      draw(); changed();
+      return;
+    }
     const del = e.target.closest('[data-img-del]');
     if (del) { setAt(del.dataset.imgDel, ''); draw(); changed(); return; }
     const b = e.target.closest('[data-up],[data-down],[data-del],[data-add]');
