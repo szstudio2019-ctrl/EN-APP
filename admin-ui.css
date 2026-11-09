@@ -419,3 +419,7 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* warnings on the bluish background of the lessons' parents' note */
 .a-note--warn { background: #f4f5fb; box-shadow: inset 0 0 0 1.5px #e4e6f2; }
 .a-note--warn svg { stroke: #2A2577; }
+
+/* every switch: dark blue when on, a grey a little darker than the page when off */
+.a-switch__track { background: #D9D8E6; }
+.a-switch input:checked + .a-switch__track { background: #2A2577; }
