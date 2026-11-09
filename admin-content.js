@@ -102,7 +102,7 @@
         </ul>`;
     }
     const rows = Array.from({ length: w.planned }, (_, k) => {
-      const n = (w.firstLesson || 1) + k;
+      const n = k + 1;
       const page = (w.lessonPages || [])[k];
       const name = (w.lessonNames || [])[k];
       const label = `שלב ${n}${name ? ` · ${UI.esc(name)}` : ''}`;
@@ -128,10 +128,11 @@
       pickedId = li.dataset.id;
       viewTab = 'edit';
       step = 3;
-      lessonOpen = Number(sub.dataset.subLesson);
+      stagesFor = li.dataset.id;
+      openStage = Number(sub.dataset.subLesson);
+      openRow = 'lessons:0';
+      stageMsg.clear();
       drawAll();
-      const t = edit.querySelector(`[data-ldesc="${lessonOpen}"]`);
-      if (t) t.focus();
       return;
     }
     pickedId = li.dataset.id;
@@ -307,7 +308,10 @@
   const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'שלבים'];
   let step = 0;
   let viewTab = 'edit';
-  let lessonOpen = -1;
+  let openStage = -1;
+  let openRow = null;
+  let stagesFor = null;
+  const stageMsg = new Set();
   const viewTabs = () => `<div class="w-tabs" role="tablist" aria-label="עריכה וצפייה">
       <button type="button" role="tab" data-wtab="edit" aria-selected="${viewTab === 'edit'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>עריכה</button>
       <button type="button" role="tab" data-wtab="view" aria-selected="${viewTab === 'view'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</button>
@@ -321,27 +325,137 @@
         ? `<button class="a-btn w-draft" type="button" data-save-draft>שמור כטיוטה</button><button class="a-btn a-btn--primary" type="button" data-go="${step + 1}">הבא</button>`
         : '<button class="a-btn a-btn--primary" type="button" data-save-now>שמירה</button>'}</div>
     </div>`;
+  /* ---------- the stages: each opens to its lessons and its practices (two-level accordion) ---------- */
+  // read from what the island already has; nothing is written until something is edited
+  const PRACTICE_OF = {
+    'letters-lesson.html': 'letters-practice.html', 'vowels-lesson.html': '', 'lesson.html': 'practice.html',
+    'doctor3-lesson.html': 'doctor3-practice.html', 'single-lesson.html': 'single-practice.html',
+  };
+  const practiceOf = (page) => (page in PRACTICE_OF ? PRACTICE_OF[page] : page.replace('-lesson.html', '.html'));
+  const TEMPLATE_NAMES = ['אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
+  const blankPart = (name) => ({ name: name || '', desc: '', template: '', status: 'missing', page: '' });
+  const blankStage = (name) => ({ published: false, lessons: [blankPart(name)], practices: [blankPart()] });
+  function seedStage(w, k) {
+    const page = (w.lessonPages || [])[k] || '';
+    const s = blankStage((w.lessonNames || [])[k]);
+    s.lessons[0].desc = (w.lessonDescs || [])[k] || '';
+    if (page) {
+      s.published = true; // already open to the students
+      s.lessons[0].page = page;
+      s.lessons[0].status = 'written';
+      const p = practiceOf(page);
+      if (p) { s.practices[0].page = p; s.practices[0].status = 'written'; }
+    }
+    return s;
+  }
+  function stagesOf(w) {
+    const list = (w.stages || []).slice();
+    for (let k = list.length; k < w.planned; k += 1) list.push(seedStage(w, k));
+    return list;
+  }
+  // the stages to change: from here on they are kept with the island
+  function editStages(w) { w.stages = stagesOf(w); return w.stages; }
+  const allWritten = (arr) => arr.length > 0 && arr.every((p) => p.status === 'written');
+  const isReady = (s) => allWritten(s.lessons) && allWritten(s.practices);
+  function missingText(s) {
+    const noL = !allWritten(s.lessons);
+    const noP = !allWritten(s.practices);
+    if (noL && noP) return 'חסרים שיעור ותרגול לפרסום';
+    if (noL) return 'חסר שיעור לפרסום';
+    return noP ? 'חסר תרגול לפרסום' : '';
+  }
+  const CHEV = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  const EYE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const TRASH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
+  const PLUS_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
+  function stageRow(s, k, kind, i, isLast) {
+    const it = s[kind][i];
+    const word = kind === 'lessons' ? 'שיעור' : 'תרגול';
+    const key = `${k}:${kind}:${i}`;
+    const id = `${k}-${kind}-${i}`;
+    const next = kind === 'lessons' ? 'שמור והמשך לתרגול' : (isLast ? '' : 'שמור והמשך לשלב הבא');
+    const canDelete = !it.page && s[kind].length > 1;
+    return `<div class="w-row" data-row="${key}">
+        <div class="w-row__head" data-row-head="${key}">
+          <b>${word} ${i + 1}</b>
+          <input data-st-name="${key}" value="${UI.esc(it.name)}" placeholder="שם ה${word} (לא חובה)" aria-label="השם של ${word} ${i + 1} בשלב ${k + 1}">
+          <span class="a-tag ${it.status === 'written' ? 'a-tag--live' : 'a-tag--draft'}">${it.status === 'written' ? 'נכתב' : 'חסר'}</span>
+          ${it.page ? `<a class="w-lrow__open" href="${it.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה ב${word} ${i + 1} (בלשונית חדשה)" title="צפייה">${EYE_ICON}</a>` : '<span class="w-row__gap"></span>'}
+          ${canDelete ? `<button class="w-lrow__del" type="button" data-row-del="${key}" aria-label="מחיקת ${word} ${i + 1}" title="מחיקה">${TRASH_ICON}</button>` : '<span class="w-row__gap"></span>'}
+          <button class="w-row__add" type="button" data-row-add="${key}" aria-label="הוספת ${word} בשלב ${k + 1}" title="הוספת ${word}">${PLUS_ICON}</button>
+          <button class="w-chev" type="button" aria-expanded="false" aria-label="פתיחה וסגירה של ${word} ${i + 1}">${CHEV}</button>
+        </div>
+        <div class="w-fold"><div class="w-fold__in"><div class="w-row__fields">
+          <div class="a-grid">
+            <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
+            <label class="a-field"><span>סטטוס</span><select id="st-${id}" data-st-field="${key}:status"><option value="missing"${it.status === 'written' ? '' : ' selected'}>חסר</option><option value="written"${it.status === 'written' ? ' selected' : ''}>נכתב</option></select></label>
+          </div>
+          <label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>
+          <div class="w-row__btns">
+            <button class="a-btn w-draft" type="button" data-row-save="${key}:close">שמור וסגור</button>
+            ${next ? `<button class="a-btn a-btn--primary" type="button" data-row-save="${key}:next">${next}</button>` : ''}
+          </div>
+        </div></div></div>
+      </div>`;
+  }
+  function stageCard(s, k, isLast) {
+    const msg = stageMsg.has(k) ? missingText(s) : '';
+    if (!msg) stageMsg.delete(k);
+    const empty = [...s.lessons, ...s.practices].every((p) => !p.page);
+    const rows = (kind) => s[kind].map((_, i) => stageRow(s, k, kind, i, isLast)).join('');
+    return `<li class="w-st" data-st="${k}">
+        <div class="w-st__head" data-st-head="${k}">
+          <b>שלב ${k + 1}</b>
+          <span class="w-st__end">
+            ${msg ? `<span class="w-st__msg" role="status">${msg}</span>` : ''}
+            <span class="w-st__state${s.published ? ' is-live' : ''}">${s.published ? 'פורסם' : 'טיוטה'}</span>
+            ${UI.switchHtml(`st-pub-${k}`, s.published, `פרסום שלב ${k + 1}`)}
+            ${empty ? `<button class="w-lrow__del" type="button" data-st-del="${k}" aria-label="מחיקת שלב ${k + 1}" title="מחיקה">${TRASH_ICON}</button>` : ''}
+            <button class="w-chev" type="button" aria-expanded="false" aria-label="פתיחה וסגירה של שלב ${k + 1}">${CHEV}</button>
+          </span>
+        </div>
+        <div class="w-fold"><div class="w-fold__in">
+          <h4 class="w-st__title">שיעורים</h4>${rows('lessons')}
+          <hr class="w-st__line">
+          <h4 class="w-st__title">תרגולים</h4>${rows('practices')}
+        </div></div>
+      </li>`;
+  }
   function lessonsPart(w) {
     if (w.review) return `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>`;
-    const rows = Array.from({ length: w.planned }, (_, k) => {
-      const n = (w.firstLesson || 1) + k;
-      const page = (w.lessonPages || [])[k];
-      const open = lessonOpen === k;
-      const desc = (w.lessonDescs || [])[k] || '';
-      return `<li class="w-lrow${open ? ' is-open' : ''}">
-          <b class="w-lrow__n">שלב ${n}</b>
-          <input data-lname="${k}" value="${UI.esc((w.lessonNames || [])[k] || '')}" placeholder="שם השלב (לא חובה)" aria-label="השם של שלב ${n}">
-          ${page ? `<span class="a-tag a-tag--live">נכתב</span><a class="w-lrow__open" href="${page}?view=admin" target="_blank" rel="noopener" aria-label="פתיחת שלב ${n} (בלשונית חדשה)" title="פתיחת השלב"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>`
-            : `<span class="a-tag a-tag--draft">טרם נכתב</span><button class="w-lrow__del" type="button" data-lesson-del="${k}" aria-label="מחיקת שלב ${n}" title="מחיקה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>`}
-          <button class="w-lrow__edit" type="button" data-lesson-edit="${k}" aria-expanded="${open}" aria-label="עריכת שלב ${n}" title="עריכה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>
-          ${open ? `<div class="w-lrow__more">
-              <label class="a-field"><span>תיאור השלב</span><textarea data-ldesc="${k}" placeholder="מה לומדים בשלב הזה">${UI.esc(desc)}</textarea></label>
-              ${page ? `<div class="w-lrow__links"><a class="a-btn a-btn--ghost" href="${page}?view=admin" target="_blank" rel="noopener">פתיחת השלב</a></div>` : '<small class="a-help">השלב עוד לא נכתב – הוא יופיע במפה כשייכתב</small>'}
-            </div>` : ''}
-        </li>`;
-    }).join('');
-    return `<ol class="w-lrows">${rows}</ol>
+    const stages = stagesOf(w);
+    if (stagesFor !== w.id) { // another island: its first unfinished stage opens
+      stagesFor = w.id;
+      openStage = stages.findIndex((s) => !isReady(s));
+      openRow = null;
+      stageMsg.clear();
+    }
+    return `<ol class="w-stages">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
         <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שלב</button>`;
+  }
+  // one open at each level; only classes change, so the height animates
+  function applyOpen() {
+    edit.querySelectorAll('[data-st]').forEach((el) => {
+      const on = Number(el.dataset.st) === openStage;
+      el.classList.toggle('is-open', on);
+      el.querySelector('.w-st__head .w-chev').setAttribute('aria-expanded', String(on));
+    });
+    edit.querySelectorAll('[data-row]').forEach((el) => {
+      const [k, kind, i] = el.dataset.row.split(':');
+      const on = Number(k) === openStage && `${kind}:${i}` === openRow;
+      el.classList.toggle('is-open', on);
+      el.querySelector('.w-chev').setAttribute('aria-expanded', String(on));
+    });
+  }
+  function revealOpen() {
+    setTimeout(() => {
+      const el = edit.querySelector('[data-row].is-open') || edit.querySelector('[data-st].is-open');
+      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }, 270);
+  }
+  function saveNow() {
+    if (bar.isDirty()) bar.el.querySelector('[data-save]').click();
+    live.textContent = 'השינויים נשמרו';
   }
   function drawEdit() {
     if (mode === 'world') { setH1(''); return drawNewWorld(); }
@@ -373,6 +487,7 @@
       lessonsPart(w),
     ][step];
     edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
+    applyOpen();
     drawPreview();
   }
 
@@ -483,52 +598,123 @@
       return;
     }
     if (e.target.closest('[data-wtab-add]')) {
+      const stages = editStages(w);
+      stages.push(blankStage());
+      w.planned = stages.length;
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
-      w.planned += 1;
-      w.lessonNames.push('');
-      drawList(); drawEdit(); drawPreview(); changed();
-      const f = edit.querySelector(`[data-lname="${w.planned - 1}"]`); if (f) f.focus();
+      openStage = stages.length - 1;
+      openRow = 'lessons:0';
+      drawList(); drawEdit(); changed();
+      const f = edit.querySelector(`[data-st-name="${openStage}:lessons:0"]`); if (f) f.focus();
+      revealOpen();
       return;
     }
-    const ed = e.target.closest('[data-lesson-edit]');
-    if (ed) {
-      const k = Number(ed.dataset.lessonEdit);
-      lessonOpen = lessonOpen === k ? -1 : k;
-      drawEdit();
-      const t = edit.querySelector(`[data-ldesc="${k}"]`) || edit.querySelector(`[data-lesson-edit="${k}"]`);
-      if (t) t.focus();
-      return;
-    }
-    const del = e.target.closest('[data-lesson-del]');
-    if (del) {
-      const k = Number(del.dataset.lessonDel);
-      if (!confirm(`למחוק את שלב ${(w.firstLesson || 1) + k}?`)) return;
-      w.lessonNames = w.lessonNames || [];
-      w.lessonNames.splice(k, 1);
+    const delStage = e.target.closest('[data-st-del]');
+    if (delStage) {
+      const k = Number(delStage.dataset.stDel);
+      if (!confirm(`למחוק את שלב ${k + 1}?`)) return;
+      const stages = editStages(w);
+      stages.splice(k, 1);
+      if (w.lessonNames) w.lessonNames.splice(k, 1);
       if (w.lessonDescs) w.lessonDescs.splice(k, 1);
-      lessonOpen = -1;
-      w.planned = Math.max(w.written, w.planned - 1);
-      drawList(); drawEdit(); drawPreview(); changed();
+      w.planned = stages.length;
+      openStage = -1; openRow = null;
+      stageMsg.clear();
+      drawList(); drawEdit(); changed();
+      return;
+    }
+    const addRow = e.target.closest('[data-row-add]');
+    if (addRow) {
+      const [k, kind, i] = addRow.dataset.rowAdd.split(':');
+      editStages(w)[Number(k)][kind].splice(Number(i) + 1, 0, blankPart());
+      openStage = Number(k);
+      openRow = `${kind}:${Number(i) + 1}`;
+      drawEdit(); changed();
+      const f = edit.querySelector(`[data-st-name="${k}:${openRow}"]`); if (f) f.focus();
+      return;
+    }
+    const delRow = e.target.closest('[data-row-del]');
+    if (delRow) {
+      const [k, kind, i] = delRow.dataset.rowDel.split(':');
+      if (!confirm(`למחוק את ${kind === 'lessons' ? 'השיעור' : 'התרגול'} הזה?`)) return;
+      editStages(w)[Number(k)][kind].splice(Number(i), 1);
+      openRow = null;
+      drawEdit(); changed();
+      return;
+    }
+    const rowSave = e.target.closest('[data-row-save]');
+    if (rowSave) {
+      const [k, kind, , how] = rowSave.dataset.rowSave.split(':');
+      if (how === 'close') openRow = null;
+      else if (kind === 'lessons') openRow = 'practices:0';
+      else { openStage = Number(k) + 1; openRow = 'lessons:0'; }
+      applyOpen();
+      saveNow();
+      revealOpen();
+      return;
+    }
+    // a click on a head opens or closes it; its name field, eye and switch do not
+    if (e.target.closest('input,textarea,select,a,label')) return;
+    const rh = e.target.closest('[data-row-head]');
+    if (rh) {
+      const [, kind, i] = rh.dataset.rowHead.split(':');
+      const v = `${kind}:${i}`;
+      openRow = openRow === v ? null : v;
+      applyOpen();
+      return;
+    }
+    const sh = e.target.closest('[data-st-head]');
+    if (sh) {
+      const k = Number(sh.dataset.stHead);
+      openStage = openStage === k ? -1 : k;
+      openRow = null;
+      applyOpen();
+    }
+  });
+  // publishing a stage, and a lesson's or practice's template and status
+  edit.addEventListener('change', (e) => {
+    if (mode !== 'edit') return;
+    const w = picked();
+    if (!w) return;
+    const t = e.target;
+    if (t.id && t.id.startsWith('st-pub-')) {
+      const k = Number(t.id.slice(7));
+      if (t.checked && !isReady(stagesOf(w)[k])) {
+        t.checked = false; // a stage is published only when all of it is written
+        stageMsg.add(k);
+        drawEdit();
+      } else {
+        editStages(w)[k].published = t.checked;
+        stageMsg.delete(k);
+        drawEdit(); changed();
+      }
+      const b = $(t.id); if (b) b.focus();
+      return;
+    }
+    if (t.dataset.stField) {
+      const [k, kind, i, field] = t.dataset.stField.split(':');
+      editStages(w)[Number(k)][kind][Number(i)][field] = t.value;
+      drawEdit(); changed();
+      const b = $(t.id); if (b) b.focus();
     }
   });
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
-    if (e.target.dataset.ldesc != null && mode === 'edit') {
+    if ((e.target.dataset.stName || e.target.dataset.stDesc) && mode === 'edit') {
       const w = picked();
-      w.lessonDescs = w.lessonDescs || [];
-      while (w.lessonDescs.length < w.planned) w.lessonDescs.push('');
-      w.lessonDescs[Number(e.target.dataset.ldesc)] = e.target.value;
+      const isName = !!e.target.dataset.stName;
+      const [k, kind, i] = (e.target.dataset.stName || e.target.dataset.stDesc).split(':');
+      editStages(w)[Number(k)][kind][Number(i)][isName ? 'name' : 'desc'] = e.target.value;
+      if (kind === 'lessons' && i === '0') {
+        const key = isName ? 'lessonNames' : 'lessonDescs';
+        w[key] = w[key] || [];
+        while (w[key].length < w.planned) w[key].push('');
+        w[key][Number(k)] = e.target.value;
+        if (isName) drawList();
+      }
       changed();
-      return;
-    }
-    if (e.target.dataset.lname != null && mode === 'edit') {
-      const w = picked();
-      w.lessonNames = w.lessonNames || [];
-      while (w.lessonNames.length < w.planned) w.lessonNames.push('');
-      w.lessonNames[Number(e.target.dataset.lname)] = e.target.value;
-      drawList(); changed();
       return;
     }
     if (mode !== 'edit') {
@@ -590,6 +776,7 @@
       w.lessonNames = w.lessonNames || [];
       while (w.lessonNames.length < w.planned) w.lessonNames.push('');
       w.lessonNames.splice(at, 0, name);
+      if (w.stages) w.stages.splice(at, 0, blankStage(name));
       w.planned += 1;
       opened.add(w.id);
       pickedId = w.id;

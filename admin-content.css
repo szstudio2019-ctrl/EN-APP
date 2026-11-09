@@ -383,3 +383,43 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-sections .w-media-grid .a-field, .w-media-grid .w-bgfield { margin-top: 0; }
 @media (max-width: 760px) { .w-media-grid { grid-template-columns: minmax(0, 1fr); } }
 .w-media-grid > .a-field { margin-top: 0 !important; }
+
+/* the stages: a two-level accordion */
+.w-stages { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.w-st { border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--a-line); overflow: hidden; }
+.w-st__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 6px 14px; cursor: pointer; }
+.w-st__head > b { font-weight: 600; color: #2A2577; }
+.w-st__end { display: flex; align-items: center; gap: 10px; }
+.w-st__end .a-switch { min-height: 0; }
+.w-st__state { font-size: 14px; font-weight: 500; color: var(--a-text-2); }
+.w-st__state.is-live { color: #E33563; }
+.w-st__msg { font-size: 13px; font-weight: 500; color: #C81E55; }
+.w-chev { flex: none; width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: #2A2577; cursor: pointer; }
+.w-chev svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s ease; }
+.w-chev:hover { color: #E33563; }
+.w-st.is-open > .w-st__head .w-chev svg, .w-row.is-open > .w-row__head .w-chev svg { transform: rotate(180deg); }
+.w-fold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
+.w-fold__in { min-height: 0; overflow: hidden; visibility: hidden; transition: visibility .25s; }
+.w-st.is-open > .w-fold, .w-row.is-open > .w-fold { grid-template-rows: 1fr; }
+.w-st.is-open > .w-fold > .w-fold__in, .w-row.is-open > .w-fold > .w-fold__in { visibility: visible; }
+.w-st__title { margin: 12px 14px 6px; font-size: 14px; font-weight: 600; color: #E33563; }
+.w-st__line { height: 1px; margin: 12px 14px 0; border: 0; background: var(--a-line); }
+.w-row + .w-row { border-top: 1px solid #F0EFF7; }
+.w-row.is-open { box-shadow: inset -3px 0 0 #E33563; }
+.w-row__head { display: grid; grid-template-columns: 62px minmax(0, 1fr) auto 36px 36px 36px 36px; align-items: center; gap: 8px; padding: 6px 14px; cursor: pointer; }
+.w-row__head > b { font-weight: 600; font-size: 14px; color: #2A2577; white-space: nowrap; }
+.w-row__head input { width: 100%; min-height: 40px; padding: 6px 12px; border: 1.5px solid var(--a-line); border-radius: 10px; background: #fff; color: var(--a-text); }
+.w-row__head input:focus-visible { border-color: var(--a-bar); outline: 0; box-shadow: 0 0 0 3px rgba(80, 65, 146, .25); }
+.w-row__add { width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: #E33563; cursor: pointer; }
+.w-row__add svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.w-row__add:hover { color: #C81E55; }
+.w-row__head .w-lrow__open, .w-row__head .w-lrow__del { width: 36px; height: 36px; display: grid; place-items: center; color: #2A2577; cursor: pointer; }
+.w-row__head .w-lrow__del { color: #C81E55; }
+.w-row__head svg { flex: none; }
+.w-row__head .w-lrow__open svg, .w-row__head .w-lrow__del svg, .w-st__end .w-lrow__del svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.w-row__fields { display: grid; gap: 14px; padding: 8px 14px 16px; }
+.w-row__fields textarea { min-height: 80px; }
+.w-row__btns { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+@media (max-width: 640px) { .w-row__head { grid-template-columns: minmax(0, 1fr) auto 32px 32px 32px 32px; } .w-row__head > b { grid-column: 1 / -1; } .w-st__msg { flex-basis: 100%; } .w-st__end { flex-wrap: wrap; justify-content: flex-end; } }
+@media (prefers-reduced-motion: reduce) { .w-fold, .w-fold__in, .w-chev svg { transition: none; } }
+.w-st .w-row { display: block; }
