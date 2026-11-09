@@ -304,7 +304,7 @@
     span.textContent = name ? ` – ${name}` : '';
   }
   // full width: two tabs (editing, viewing); editing goes in four steps with dots and back / next
-  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'הוספת שלבים'];
+  const STEPS = ['פרטי האי', 'טקסטים', 'מדיה', 'שלבים'];
   let step = 0;
   let viewTab = 'edit';
   let lessonOpen = -1;
@@ -370,13 +370,14 @@
             <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
-          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>`,
+          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
+          <div class="w-pubin" id="w-pubin"></div>`,
       `<h3>חלון "אודות" במפה</h3>
           <label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
           <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
           <div class="w-pubbox" id="w-warnbox"></div>`,
       `<h3>מדיה</h3>${mediaField(w)}${bgField(w)}`,
-      `<h3>הוספת שלבים</h3>${lessonsPart(w)}`,
+      `<h3>שלבים</h3>${lessonsPart(w)}`,
     ][step];
     edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
     drawPreview();
@@ -626,7 +627,7 @@
   actions.className = 'w-actions';
   actions.append(bar.el, pubTop, delBtn, plus);
   document.querySelector('.w-layout').appendChild(actions);
-  pubTop.addEventListener('change', (e) => {
+  edit.addEventListener('change', (e) => {
     if (e.target.id !== 'f-pub') return;
     picked().published = e.target.checked;
     drawList();
@@ -640,8 +641,10 @@
     const w = picked();
     pubTop.hidden = mode !== 'edit' || !w;
     if (pubTop.hidden) return;
-    pubTop.innerHTML = `${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}<b>${w.published ? 'מפורסם' : 'טיוטה'}</b>
-      ${w.page ? `<a class="w-eye" href="${w.page}?view=admin" target="_blank" rel="noopener" title="צפייה באי כמו תלמיד/ה" aria-label="צפייה ב${UI.esc(w.name)} כמו תלמיד/ה (בלשונית חדשה)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>` : ''}`;
+    // the publish switch sits in the island's details; only the eye stays on top
+    const pubIn = $('w-pubin');
+    if (pubIn) pubIn.innerHTML = `<div class="w-pub">${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}<p class="w-pub__text"><b>${w.published ? 'מפורסם' : 'טיוטה'}</b>${w.published ? 'האי מופיע לתלמידים במפה' : 'האי מוסתר מהתלמידים עד שיפורסם'}</p></div>`;
+    pubTop.innerHTML = `${w.page ? `<a class="w-eye" href="${w.page}?view=admin" target="_blank" rel="noopener" title="צפייה באי כמו תלמיד/ה" aria-label="צפייה ב${UI.esc(w.name)} כמו תלמיד/ה (בלשונית חדשה)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>` : ''}`;
     const warn = $('w-warnbox');
     if (warn) warn.innerHTML = w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : '';
   }
