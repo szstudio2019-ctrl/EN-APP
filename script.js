@@ -25,7 +25,7 @@
   // Plays continuously in slow motion. To hide the jump at the loop point, a
   // second copy starts from the beginning and cross-fades in over the last FADE
   // seconds, then the two swap roles. Reduced-motion users keep the still image.
-  const SPEED = 0.5; // resting playback rate (1 = normal speed)
+  const SPEED = Number(document.querySelector('video.bg')?.dataset.speed) || 0.5; // resting playback rate (1 = normal speed)
   const TRAVEL_SPEED = 1.6; // briefly faster while flying between islands
   const FADE = 1; // seconds of video time spent cross-fading at the loop point
   let rate = SPEED;
@@ -33,7 +33,8 @@
   // Opacity drives the loop cross-fade; transform follows the mouse (see CSS)
   const bgTransition = () => `opacity ${FADE / SPEED}s linear, transform .8s cubic-bezier(.22, 1, .36, 1)`;
   const bgA = document.querySelector('video.bg');
-  if (bgA && !reducedMotion) {
+  // a video already made to loop (data-seamless) plays on its own, at one steady speed
+  if (bgA && !reducedMotion && !('seamless' in bgA.dataset)) {
     const bgB = bgA.cloneNode();
     bgA.after(bgB);
     bgVideos.push(bgA, bgB);
@@ -93,6 +94,8 @@
     if (bgA.readyState >= 1) start();
     else bgA.addEventListener('loadedmetadata', start, { once: true });
   }
+
+  if (bgA && 'seamless' in bgA.dataset) { bgA.defaultPlaybackRate = SPEED; bgA.playbackRate = SPEED; }
 
   function setBackgroundRate(r) {
     rate = r;

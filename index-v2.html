@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V2 – מדקדקים באנגלית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style id="v2-bg-fit">
+    /* V2: the whole video fills the screen, stretched to it (no crop, no strips at the sides) */
+    .viewport video.bg { object-fit: fill; transform: none !important; }
+    /* V2: the sun slowly grows and shrinks (a glow over the sun in the video) */
+    .v2-sun { position: absolute; left: 26.5%; top: 19%; width: 42vmin; height: 42vmin; margin: -21vmin 0 0 -21vmin; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95) 0, rgba(255, 244, 200, .75) 14%, rgba(255, 226, 150, .28) 38%, rgba(255, 226, 150, 0) 68%); mix-blend-mode: screen; pointer-events: none; animation: v2-sun 12s ease-in-out infinite alternate; }
+    @keyframes v2-sun { from { transform: scale(.8); opacity: .75; } to { transform: scale(1.3); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .v2-sun { animation: none; } }
+    /* V2: the water, over the islands */
+    .v2-water { position: absolute; object-fit: fill; pointer-events: none; mix-blend-mode: overlay; -webkit-mask-image: linear-gradient(to bottom, transparent 51%, #000 54%); mask-image: linear-gradient(to bottom, transparent 51%, #000 54%); }
+    /* V2: no line of light between the islands */
+    .journey__path, .journey__trail { display: none !important; }
+    /* V2: every panel in one dark blue, on a glass effect over the video */
+    :root { --panel: rgba(26, 23, 92, .62); }
+    .topbar, .journey-nav, .island__card, .island-about.has-strip, .drawer, .reviews-pop__row {
+      background: var(--panel) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(130%);
+      backdrop-filter: blur(14px) saturate(130%);
+    }
+    /* the island bubble: all of it the same glass (body, tail, words) */
+    .island-about, .island-about.has-strip { background: var(--panel) !important; -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%); border: 0 !important; box-shadow: none !important; color: #fff; }
+    .island-about::before { background: var(--panel) !important; }
+    .island-about__body { background: none !important; }
+    .island-about__title, .island-about__text, .island-about__label, .island-about__list { color: #fff !important; }
+    .island-about__island, .island-about__range, .island-about__strip-range bdi { color: #FFD34D !important; }
+    .about-locked { color: #fff !important; border-color: rgba(255, 255, 255, .7) !important; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7) !important; background: none !important; }
+    /* the finale circle: the same dark blue glass, no border; its words light */
+    .finale { background: var(--panel) !important; -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%); border: 0 !important; box-shadow: none !important; animation: none !important; }
+    .finale__text, .finale__stat, .finale__note, .finale__tile--mark { color: #fff !important; }
+    .finale__stat { background: rgba(255, 255, 255, .14) !important; }
+    /* yellow highlights; more room between the rows and inside the circle; on the buttons the icon above two lines of text */
+    .finale__en, .finale__stat b, .finale__note b { color: #FFD34D !important; }
+    .finale { gap: 18px !important; padding: 0 90px !important; }
+    .finale__stats { margin-top: 0 !important; }
+    .finale__note { margin: 0 !important; }
+    .finale__actions { gap: 14px !important; margin-top: 2px !important; }
+    .finale__btn { flex-direction: column !important; width: 172px; height: auto !important; min-height: 96px; padding: 10px 16px !important; gap: 6px !important; white-space: normal !important; line-height: 1.2; text-align: center; justify-content: center; }
+    .finale__btn .finale__chevron { transform: rotate(180deg); }
+    .finale__tile:not(.is-found):not(.finale__tile--mark) { background: rgba(255, 255, 255, .92); color: #2A2577; }
+  </style>
+</head>
+<body>
+  <!-- Loader: shown until the islands, background and fonts are ready -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <div class="loader__tiles" aria-hidden="true">
+        <span class="loader__tile loader__tile--a">a</span>
+        <span class="loader__tile loader__tile--b">b</span>
+        <span class="loader__tile loader__tile--c">c</span>
+      </div>
+      <p class="loader__title">מדקדקים באנגלית</p>
+      <div class="loader__bar"><span id="loader-bar"></span></div>
+      <p class="loader__pct" dir="ltr"><span id="loader-pct">0</span></p>
+    </div>
+  </div>
+
+  <div class="viewport">
+    <!-- Full-window background (outside the scaled stage so it covers the side bars too) -->
+    <video class="bg" data-seamless data-speed="0.5" src="assets/bg-ocean-v2.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <div class="v2-sun" aria-hidden="true"></div>
+    <main class="stage" id="stage">
+
+      <!-- Header -->
+      <header class="topbar">
+        <div class="topbar__stats">
+          <a class="stat stat--chest" href="#bonus">
+            <img src="assets/chest.webp" alt="" class="stat__icon stat__icon--chest">
+            <span class="stat__text"><span class="stat__label">חזרות</span><span class="stat__value">3</span></span>
+          </a>
+          <a class="stat stat--coins" href="#coins">
+            <img src="assets/coin.webp" alt="" class="stat__icon stat__icon--coin">
+            <span class="stat__text"><span class="stat__label">מטבעות</span><span class="stat__value">350</span></span>
+          </a>
+          <a class="stat stat--shop" href="shop.html">
+            <img src="assets/shop.webp" alt="" class="stat__icon stat__icon--shop">
+            <span class="stat__text"><span class="stat__label">חנות האותיות</span><span class="stat__value">12</span></span>
+          </a>
+        </div>
+
+        <a class="logo" href="index.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית">
+          <span class="logo__text">
+            <span class="logo__title">מדקדקים באנגלית</span>
+            <span class="logo__subtitle">קורס דיגיטלי באנגלית</span>
+          </span>
+          <span class="logo__mark">
+            <img class="logo__ring" src="assets/logo-ring.svg" alt="">
+            <span class="logo__tile logo__tile--a">a</span>
+            <span class="logo__tile logo__tile--c">c</span>
+            <span class="logo__tile logo__tile--b">b</span>
+          </span>
+        </a>
+
+        <div class="topbar__user">
+          <div class="user">
+            <a class="user__greeting" href="profile.html" aria-label="האזור האישי"><span class="user__hello">בקר טוב,</span><span class="user__name">שירה כהן</span></a>
+            <a class="user__avatar" href="profile.html" aria-label="הפרופיל שלי">
+              <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+              <img class="user__photo" src="assets/avatar.webp" alt="">
+              <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+            </a>
+          </div>
+          <a class="home-btn" href="index.html" aria-label="מפת האיים – דף הבית">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+          </a>
+          <button class="menu-btn" id="menu-open" type="button" aria-label="פתיחת התפריט" aria-controls="sidebar" aria-expanded="false">
+            <img src="assets/menu.svg" alt="">
+          </button>
+        </div>
+      </header>
+
+      <!-- Island journey: built by script.js from the ISLANDS list. One island is active
+           (front, centre); the next ones wait small and locked toward the horizon.
+           Scroll / swipe / arrow keys move along the path. -->
+      <div class="journey" id="journey" aria-live="polite"></div>
+      <!-- V2: a copy of the background, only its water, over the islands -->
+      <video class="v2-water" id="v2-water" src="assets/bg-ocean-v2.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
+           button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
+      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
+        <img class="drawer-handle__icon" src="assets/island-review.webp" alt="">
+        <span class="tab-tip">מעבר לאיים</span>
+      </button>
+      <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer__scroll">
+          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
+            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- "About this world" bubble beside the island in front (filled by script.js);
+           hovering it plays the island's animation like hovering the island -->
+      <aside class="island-about" id="island-about" aria-live="polite"></aside>
+
+      <!-- One line per island on the right edge; the current one is long and pink -->
+      <nav class="journey-ticks" id="journey-ticks" aria-label="מיקום במסלול האיים"></nav>
+
+      <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
+      <button class="trophy" type="button" aria-label="המשפט המנצח שלי" aria-describedby="trophy-hint" aria-expanded="false">
+        <img src="assets/trophy.svg" alt="">
+      </button>
+      <div class="trophy-hint" id="trophy-hint" role="tooltip">
+        <p class="tab-hint-title">המשפט המנצח שלי</p>
+        <p class="trophy-hint__text">מופיע לכל מקומות של המשפט.<br>תצטרכו להשיג כרטיסיות של אותיות כדי למצוא את המשפט שקיבלתם</p>
+        <div class="sentence" aria-label="המשפט: b, n, y נמצאו">
+          <span class="sentence__word"><b class="tile is-found">b</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+          <span class="sentence__word"><b class="tile">?</b><b class="tile is-found">n</b></span>
+          <span class="sentence__word"><b class="tile is-found">y</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+        </div>
+        <button class="trophy-hint__redraw" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>
+          <span>להגרלת משפט אחר</span>
+        </button>
+      </div>
+      <a class="cart" href="shop.html" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
+      <div class="hint" id="shop-hint" role="tooltip">
+        <p class="tab-hint-title">לחנות האותיות</p>
+        <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>
+        <a class="btn-pill hint__cta" href="shop.html">
+          <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
+          <span>לחנות האותיות</span>
+        </a>
+      </div>
+      <button class="help-btn" type="button" aria-label="עזרה">?</button>
+
+
+      <!-- Welcome popup (intro.js): four slides over the cloud video, before the map -->
+      <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="ברוכים הבאים" hidden>
+        <div class="intro__card">
+          <!-- for showing the client: the sentence card's two cases, one after the other -->
+          <div class="intro__options" role="tablist" aria-label="אפשרויות">
+            <button type="button" role="tab" data-option="1">אפשרות 1</button>
+            <button type="button" role="tab" data-option="2">אפשרות 2</button>
+          </div>
+          <button class="intro__close" type="button" aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+          <section class="intro__slide">
+            <h2 class="intro__title">ברוכים הבאים, <span class="intro__pink" data-first-name>!</span></h2>
+            <p class="intro__text">הגעתם למדקדקים באנגלית<br>תוכלו ללמוד אנגלית בכיף.</p>
+            <img class="intro__zebra" src="assets/zebra.webp" alt="">
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">שלבי המשחק</h2>
+            <p class="intro__text">במשחק יש <span data-island-count>7</span> איים בכל אי כמה שלבים +<br>איי חזרות</p>
+            <div class="intro__islands">
+              <img class="intro__island-img" src="" alt="">
+              <p class="intro__island-name"></p>
+              <button class="intro__arrow intro__arrow--prev" type="button" aria-label="האי הקודם"><img src="assets/chevron.svg" alt=""></button>
+              <button class="intro__arrow intro__arrow--next" type="button" aria-label="האי הבא"><img src="assets/chevron.svg" alt=""></button>
+            </div>
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">בונוסים מ<span class="intro__pink">החזרות והתמדה</span></h2>
+            <p class="intro__text">כל כמה שלבים שיהיו לך שלבי חזרה על החומר<br>בהם תוכלי לצבור כמות גדולה של מטבעות בתיבות</p>
+            <img class="intro__zebra intro__zebra--hoop" src="assets/zebra-hoop.webp" alt="">
+            <img class="intro__deco intro__chest" src="assets/chest-big.webp" alt="">
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
+            <p class="intro__text">בכל משחק תוכלי להגריל משפט ולקנות<br>אותיות מחנות האותיות מהמטבעות שתצברי במשחק.</p>
+            <img class="intro__zebra" src="assets/zebra.webp" alt="">
+            <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
+            <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
+            <img class="intro__deco intro__shop" src="assets/shop.webp" alt="">
+          </section>
+          <!-- from the second visit on: only this card – the sentence game (the sentence in progress, or a draw) -->
+          <section class="intro__slide intro__slide--sentence" aria-labelledby="intro-sentence-title">
+            <h2 class="intro__title" id="intro-sentence-title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
+            <p class="intro__text" id="intro-sentence-text"></p>
+            <div class="intro__sentence-pic" aria-hidden="true">
+              <img class="intro__sentence-zebra" src="assets/zebra.webp" alt="">
+              <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
+              <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
+            </div>
+            <div class="sentence intro__sentence" id="intro-sentence" dir="ltr" lang="en"></div>
+            <div class="intro__sentence-btns">
+              <!-- back to the intro's last slide -->
+              <button class="intro__back intro__sentence-back" type="button" id="intro-sentence-back"><img src="assets/chevron.svg" alt=""><span>חזרה</span></button>
+              <button class="btn-pill intro__draw" type="button" id="intro-draw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg><span>הגרלת משפט</span></button>
+              <a class="intro__back intro__shop-btn" href="shop.html" id="intro-shop"><img class="intro__shop-icon" src="assets/shop.webp" alt=""><span>לחנות האותיות</span><img class="intro__shop-arrow" src="assets/chevron.svg" alt=""></a>
+              <button class="btn-pill intro__go" type="button" id="intro-go"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>בואו נתחיל</span></button>
+            </div>
+          </section>
+          <div class="intro__foot">
+            <div class="intro__btns">
+              <button class="intro__back" type="button" hidden><img src="assets/chevron.svg" alt=""><span>חזרה</span></button>
+              <button class="btn-pill intro__next" type="button"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>הבא</span></button>
+            </div>
+            <div class="intro__dots" role="tablist" aria-label="שקופיות"></div>
+            <button class="intro__skip" type="button">דלגו</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side menu (Figma "Sidebar - Open"); the island lists are filled by script.js -->
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+      <aside class="sidebar" id="sidebar" aria-label="תפריט" aria-hidden="true">
+        <button class="sidebar__close" id="menu-close" type="button" aria-label="סגירת התפריט">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+
+        <div class="sidebar__profile sb-item">
+          <div class="sidebar__who">
+            <span class="sidebar__hello">בוקר טוב</span>
+            <span class="sidebar__name">שירה כהן</span>
+          </div>
+          <span class="user__avatar sidebar__avatar">
+            <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+            <img class="user__photo" src="assets/avatar.webp" alt="">
+            <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+          </span>
+        </div>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="index.html">
+            <span>ראשי</span><img src="assets/icons/home.svg" alt="">
+          </a>
+
+          <div class="sb-group is-open sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="true">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>איים</span><img src="assets/icons/island.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-worlds"></div>
+          </div>
+
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>חזרות</span><img src="assets/icons/infinity.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-reviews"></div>
+          </div>
+
+          <a class="sb-link sb-item" href="index.html?intro" id="sb-intro">
+            <span>הסבר על האתר</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-item" href="about.html">
+            <span>אודות</span><img src="assets/icons/page.svg" alt="">
+          </a>
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>אזור אישי</span><img src="assets/icons/user.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-personal">
+              <div class="sb-sub__inner">
+                <a class="sb-sublink" href="profile.html"><span>הפרטים שלי</span></a>
+                <a class="sb-sublink" href="admin.html"><span>מנהל – סטטוס המשתמשים</span></a>
+                <a class="sb-sublink" href="admin.html#stats"><span>נתוני התמדה</span><img class="sb-sub-icon" src="assets/icons/chart.svg" alt=""></a>
+              </div>
+            </div>
+          </div>
+          <a class="sb-link sb-link--bright sb-item" href="shop.html">
+            <span>חנות האותיות</span><img class="sb-pic" src="assets/shop.webp" alt="">
+          </a>
+          <a class="sb-link sb-item" href="profile.html">
+            <span>מה השגתי</span><img class="sb-pic" src="assets/coin.webp" alt="">
+          </a>
+          <a class="sb-link sb-item" href="#sentence" id="sb-sentence">
+            <span>הגרלת המשפטים</span><img class="sb-pic" src="assets/trophy.svg" alt="">
+          </a>
+        </nav>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="#settings">
+            <img class="sb-chevron sb-chevron--side" src="assets/icons/chevron-side.svg" alt="">
+            <span>הגדרות</span><img src="assets/icons/settings.svg" alt="">
+          </a>
+        </nav>
+
+        <nav class="sidebar__nav sidebar__nav--bottom">
+          <a class="sb-link sb-item" href="#help">
+            <span>עזרה</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-link--danger sb-item" href="#logout">
+            <span>התנתקות/ התחברות</span><img src="assets/icons/logout.svg" alt="">
+          </a>
+        </nav>
+      </aside>
+    </main>
+  </div>
+
+  <script src="transition.js"></script>
+  <script src="sound.js"></script>
+  <script src="islands.js"></script>
+  <script src="sentence.js"></script>
+  <script src="menu.js"></script>
+  <script src="drawer.js"></script>
+  <script src="mobile.js"></script>
+  <script src="script.js"></script>
+  <script src="intro.js"></script>
+  <div aria-hidden="true" style="position:fixed;bottom:12px;left:12px;z-index:10000;padding:4px 12px;border-radius:999px;background:#2A2577;color:#fff;font:700 14px Rubik,sans-serif;pointer-events:none">V2</div>
+  <script>
+    // V2: the water layer lines up with the window and stays in step with the background
+    (function () {
+      const stage = document.getElementById('stage');
+      const water = document.getElementById('v2-water');
+      const bg = document.querySelector('video.bg');
+      if (!stage || !water || !bg) return;
+      function place() {
+        const r = stage.getBoundingClientRect();
+        const k = r.width / 1920;
+        water.style.left = (-r.left / k) + 'px';
+        water.style.top = (-r.top / k) + 'px';
+        water.style.width = (innerWidth / k) + 'px';
+        water.style.height = (innerHeight / k) + 'px';
+      }
+      addEventListener('resize', () => requestAnimationFrame(place));
+      place();
+      setInterval(() => {
+        water.playbackRate = bg.playbackRate;
+        const d = Math.abs(water.currentTime - bg.currentTime);
+        if (d > 0.08 && d < bg.duration - 0.08) water.currentTime = bg.currentTime;
+      }, 500);
+    })();
+  </script>
+</body>
+</html>
