@@ -17,7 +17,17 @@
     @keyframes v2-sun { from { transform: scale(.8); opacity: .75; } to { transform: scale(1.3); opacity: 1; } }
     @media (prefers-reduced-motion: reduce) { .v2-sun { animation: none; } }
     /* V2: the water, over the islands */
-    .v2-water { position: absolute; object-fit: fill; pointer-events: none; mix-blend-mode: overlay; -webkit-mask-image: linear-gradient(to bottom, transparent 51%, #000 54%); mask-image: linear-gradient(to bottom, transparent 51%, #000 54%); }
+    /* the side ticks: one colour, and only the current island stands out */
+    .journey-tick, .journey-tick.is-done { background: #fff; }
+    .journey-tick.is-current { background: #FFD34D; }
+    /* z-index: above the islands (50, 100), below the "about" panel (150) */
+    .v2-water { position: absolute; z-index: 120; object-fit: fill; pointer-events: none; mix-blend-mode: multiply;
+      /* water only below the horizon, with a hole over the current island's plaque (its place is set by the script) */
+      -webkit-mask-image: linear-gradient(to bottom, transparent 51%, #000 54%), linear-gradient(#000, #000); mask-image: linear-gradient(to bottom, transparent 51%, #000 54%), linear-gradient(#000, #000);
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px); mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px);
+      -webkit-mask-position: 0 0, var(--cx, 0px) var(--cy, 0px); mask-position: 0 0, var(--cx, 0px) var(--cy, 0px);
+      -webkit-mask-composite: xor; mask-composite: exclude; }
     /* V2: no line of light between the islands */
     .journey__path, .journey__trail { display: none !important; }
     /* V2: every panel in one dark blue, on a glass effect over the video */
@@ -361,6 +371,19 @@
       }
       addEventListener('resize', () => requestAnimationFrame(place));
       place();
+      // the hole in the water follows the current island's plaque, so its text stays readable
+      function followCard() {
+        const card = document.querySelector('.island[data-slot="active"] .island__card');
+        const w = water.getBoundingClientRect();
+        const k = w.width / water.offsetWidth || 1;
+        const c = card ? card.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+        water.style.setProperty('--cx', ((c.left - w.left) / k) + 'px');
+        water.style.setProperty('--cy', ((c.top - w.top) / k) + 'px');
+        water.style.setProperty('--cw', (c.width / k) + 'px');
+        water.style.setProperty('--ch', (c.height / k) + 'px');
+        if (document.hidden) setTimeout(followCard, 500); else requestAnimationFrame(followCard);
+      }
+      followCard();
       setInterval(() => {
         water.playbackRate = bg.playbackRate;
         const d = Math.abs(water.currentTime - bg.currentTime);
