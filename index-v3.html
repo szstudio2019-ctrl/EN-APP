@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V3 – מדקדקים באנגלית</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@500&family=Varela+Round&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style id="v2-bg-fit">
+    /* V2: the whole video fills the screen, stretched to it (no crop, no strips at the sides) */
+    .viewport video.bg { object-fit: fill; transform: none !important; }
+    /* V2: the sea sits lower, so more of each island shows above it: the background (and the water over the islands, and the sun) grow from the top edge, which pushes the horizon down */
+    :root { --v2-drop: 1; }
+    .viewport video.bg { transform: scale(var(--v2-drop)) !important; transform-origin: 50% 0; }
+    /* V2: the sun slowly grows and shrinks (a glow over the sun in the video) */
+    .v2-sun { position: absolute; left: calc(50% - 23.5% * var(--v2-drop)); top: calc(19% * var(--v2-drop)); width: 42vmin; height: 42vmin; margin: -21vmin 0 0 -21vmin; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95) 0, rgba(255, 244, 200, .75) 14%, rgba(255, 226, 150, .28) 38%, rgba(255, 226, 150, 0) 68%); mix-blend-mode: screen; pointer-events: none; animation: v2-sun 12s ease-in-out infinite alternate; }
+    @keyframes v2-sun { from { transform: scale(.8); opacity: .75; } to { transform: scale(1.3); opacity: 1; } }
+    /* V2: rays around the sun, slowly turning (two sets, turning opposite ways, so the light flickers softly) */
+    .v2-rays { position: absolute; left: calc(50% - 23.5% * var(--v2-drop)); top: calc(19% * var(--v2-drop)); width: 150vmin; height: 150vmin; margin: -75vmin 0 0 -75vmin; pointer-events: none; mix-blend-mode: screen;
+      -webkit-mask-image: radial-gradient(circle, #000 4%, rgba(0, 0, 0, .55) 22%, transparent 62%); mask-image: radial-gradient(circle, #000 4%, rgba(0, 0, 0, .55) 22%, transparent 62%); }
+    .v2-rays::before, .v2-rays::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
+    .v2-rays::before { background: repeating-conic-gradient(from 0deg, rgba(255, 248, 215, 0) 0deg, rgba(255, 248, 215, .55) 5deg, rgba(255, 248, 215, 0) 11deg, rgba(255, 248, 215, 0) 24deg); animation: v2-rays 90s linear infinite; }
+    .v2-rays::after { background: repeating-conic-gradient(from 7deg, rgba(255, 236, 180, 0) 0deg, rgba(255, 236, 180, .35) 3deg, rgba(255, 236, 180, 0) 7deg, rgba(255, 236, 180, 0) 17deg); animation: v2-rays 140s linear infinite reverse; }
+    @keyframes v2-rays { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .v2-sun, .v2-rays::before, .v2-rays::after { animation: none; } }
+    /* V2: the water, over the islands */
+    /* the side ticks: one colour, and only the current island stands out */
+    .journey-tick, .journey-tick.is-done { background: #fff; }
+    .journey-tick.is-current { background: #FFD34D; }
+    /* smaller and thinner; a clear strip either side keeps them easy to click */
+    .journey-ticks { gap: 6px; }
+    .journey-tick { box-sizing: content-box; width: 4px; height: 16px; padding: 0 5px; background-clip: content-box !important; box-shadow: none; }
+    .journey-tick.is-current { height: 32px; }
+    /* z-index: above the islands (50, 100), below the "about" panel (150) */
+    .v2-water { position: absolute; z-index: 120; object-fit: fill; pointer-events: none; mix-blend-mode: multiply; opacity: .6; transform: scale(var(--v2-drop)); transform-origin: 50% -100%;
+      /* its own video: the lower half of the background (the water, no sky); it fades in just under the horizon.
+         Holes keep the current island's plaque and its round badge (lock, tick or %) out of the water; the script sets their places */
+      --hole: linear-gradient(#000, #000); --dot: radial-gradient(closest-side, #000 calc(100% - 1.5px), transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 8%), var(--hole), var(--dot); mask-image: linear-gradient(to bottom, transparent 2%, #000 8%), var(--hole), var(--dot);
+      -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px), var(--lw, 0px) var(--lh, 0px); mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px), var(--lw, 0px) var(--lh, 0px);
+      -webkit-mask-position: 0 0, var(--cx, 0px) var(--cy, 0px), var(--lx, 0px) var(--ly, 0px); mask-position: 0 0, var(--cx, 0px) var(--cy, 0px), var(--lx, 0px) var(--ly, 0px);
+      /* the water minus (plaque + badge) */
+      -webkit-mask-composite: source-out, source-over, source-over; mask-composite: subtract, add, add; }
+    /* V2: real frosted glass on the plaques and the end circle: an island marked for opacity changes cuts the blur off from what is behind it, so it is marked for movement only */
+    .island { will-change: transform !important; }
+    /* V2: no line of light between the islands */
+    .journey__path, .journey__trail { display: none !important; }
+    /* V2: every panel in one dark blue, on a glass effect over the video */
+    :root { --panel: rgba(26, 23, 92, .62); }
+    .topbar, .journey-nav, .island__card, .island-about.has-strip, .drawer, .reviews-pop__row {
+      background: var(--panel) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(130%);
+      backdrop-filter: blur(14px) saturate(130%);
+    }
+    /* the island bubble: all of it the same glass (body, tail, words) */
+    .island-about, .island-about.has-strip { background: var(--panel) !important; -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%); border: 0 !important; box-shadow: none !important; color: #fff; }
+    .island-about::before { background: var(--panel) !important; }
+    .island-about__body { background: none !important; }
+    .island-about__title, .island-about__text, .island-about__label, .island-about__list { color: #fff !important; }
+    .island-about__island, .island-about__range, .island-about__strip-range bdi { color: #FFD34D !important; }
+    .about-locked { color: #fff !important; border-color: rgba(255, 255, 255, .7) !important; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7) !important; background: none !important; }
+    /* the finale circle: the same dark blue glass, no border; its words light */
+    .finale { background: var(--panel) !important; -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%); border: 0 !important; box-shadow: none !important; animation: none !important; }
+    .finale__text, .finale__stat, .finale__note, .finale__tile--mark { color: #fff !important; }
+    .finale__stat { background: rgba(255, 255, 255, .14) !important; }
+    /* yellow highlights; more room between the rows and inside the circle; on the buttons the icon above two lines of text */
+    .finale__en, .finale__stat b, .finale__note b { color: #FFD34D !important; }
+    .finale { gap: 18px !important; padding: 0 90px !important; }
+    .finale__stats { margin-top: 0 !important; }
+    .finale__note { margin: 0 !important; }
+    .finale__actions { gap: 14px !important; margin-top: 2px !important; }
+    .finale__btn { flex-direction: column !important; width: 172px; height: auto !important; min-height: 96px; padding: 10px 16px !important; gap: 6px !important; white-space: normal !important; line-height: 1.2; text-align: center; justify-content: center; }
+    /* the end buttons: smaller words, softer corners, no arrow; a coin over the coins button, like the shop's icon */
+    .finale__btn { font-size: 15px !important; border-radius: 18px !important; }
+    .finale__btn .finale__chevron { display: none; }
+    .finale__btn[data-finale="reviews"]::before { content: ''; width: 34px; height: 34px; margin: -2px 0 -4px; background: url(assets/coin.webp) center / contain no-repeat; }
+    /* the icon on the right, bigger; the words beside it, aligned right, on two lines */
+    .finale__btn { flex-direction: row !important; justify-content: flex-start !important; gap: 10px !important; width: 196px; text-align: right !important; padding: 10px 14px !important; }
+    .finale__btn > span { flex: 1; min-width: 0; text-align: right; }
+    .finale__btn .finale__shop-icon, .finale__btn[data-finale="reviews"]::before { flex: none; width: 48px; height: 48px; margin: 0; }
+    .finale__tile:not(.is-found):not(.finale__tile--mark) { background: rgba(255, 255, 255, .92); color: #2A2577; }
+    /* V3: the galaxy background, stretched to the screen */
+    .viewport { background: #0B0F5C !important; }
+    /* ...and it grows very slowly, then back, over and over */
+    .viewport::before { content: ''; position: absolute; inset: 0; background: url(assets/bg-galaxy-v3.webp) 0 0 / 100% 100% no-repeat; transform-origin: 50% 50%; animation: v3-zoom 30s ease-in-out infinite alternate; pointer-events: none; }
+    @keyframes v3-zoom { from { transform: scale(1); } to { transform: scale(1.25); } }
+    @media (prefers-reduced-motion: reduce) { .viewport::before { animation: none; } }
+    /* V3: a big drawn vortex under the islands, seen at a low angle like a whirlpool, turning clockwise; the islands move as in V1 and V2 */
+    .v3-vortex { position: absolute; left: 50vw; top: 67vh; width: 80vw; height: 80vw; margin: -40vw 0 0 -40vw; pointer-events: none; perspective: 1500px; }
+    /* depth and blending: strongest a little in front of the eye, fading softly into the sky all round, most toward the horizon */
+    .v3-vortex__svg { display: block; width: 100%; height: 100%; overflow: visible; -webkit-mask-image: radial-gradient(circle at 50% 60%, #000 22%, rgba(0, 0, 0, .55) 40%, rgba(0, 0, 0, .15) 55%, transparent 66%); mask-image: radial-gradient(circle at 50% 60%, #000 22%, rgba(0, 0, 0, .55) 40%, rgba(0, 0, 0, .15) 55%, transparent 66%); transform: rotateX(76deg); transition: transform .6s ease; }
+    .v3-vortex__spin { transform-origin: 0 0; animation: v3-spin 14s linear infinite; }
+    @keyframes v3-spin { to { transform: rotate(360deg); } }
+    /* when an island comes out, the vortex swells and its eye flares */
+    .v3-vortex.is-pulling .v3-vortex__svg { transform: rotateX(76deg) scale(1.12); }
+    .v3-vortex::after { content: ''; position: absolute; inset: 38%; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95) 0, rgba(170, 200, 255, .5) 40%, rgba(120, 90, 255, 0) 70%); opacity: 0; transform: scaleY(.25); transition: opacity .4s ease, transform .4s ease; }
+    .v3-vortex.is-pulling::after { opacity: 1; transform: scale(1.6, .4); }
+    @media (prefers-reduced-motion: reduce) { .v3-vortex__spin { animation: none; } }
+    /* V3: small twinkling stars, and now and then a shooting star */
+    .v3-sky { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+    .v3-star { position: absolute; border-radius: 50%; background: #fff; box-shadow: 0 0 4px 1px rgba(200, 225, 255, .8); animation: v3-twinkle var(--d, 3s) ease-in-out var(--w, 0s) infinite; }
+    @keyframes v3-twinkle { 0%, 100% { opacity: .15; transform: scale(.6); } 50% { opacity: 1; transform: scale(1); } }
+    .v3-shoot { position: absolute; width: 180px; height: 2px; border-radius: 2px; background: linear-gradient(to left, #fff, rgba(190, 220, 255, .6) 30%, rgba(190, 220, 255, 0)); filter: drop-shadow(0 0 6px rgba(220, 235, 255, .9)); transform-origin: 100% 50%; opacity: 0; }
+    @media (prefers-reduced-motion: reduce) { .v3-star { animation: none; opacity: .6; } .v3-shoot { display: none; } }
+    /* V3: a light runs round the edge of the island's text panel, and of the end circle */
+    @property --v3-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+    .island-about::after, .finale::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; pointer-events: none;
+      background: conic-gradient(from var(--v3-a), transparent 0 62%, rgba(158, 201, 255, .35) 74%, #CFE6FF 84%, #fff 87%, rgba(158, 201, 255, .35) 91%, transparent 97%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+      filter: drop-shadow(0 0 4px rgba(190, 220, 255, .9)); animation: v3-edge 4s linear infinite; }
+    @keyframes v3-edge { to { --v3-a: 360deg; } }
+    .finale::after { padding: 3px; animation-duration: 6s; }
+    @media (prefers-reduced-motion: reduce) { .island-about::after, .finale::after { animation: none; } }
+  </style>
+</head>
+<body>
+  <!-- Loader: shown until the islands, background and fonts are ready -->
+  <div class="loader" id="loader" role="status" aria-live="polite">
+    <div class="loader__inner">
+      <div class="loader__tiles" aria-hidden="true">
+        <span class="loader__tile loader__tile--a">a</span>
+        <span class="loader__tile loader__tile--b">b</span>
+        <span class="loader__tile loader__tile--c">c</span>
+      </div>
+      <p class="loader__title">מדקדקים באנגלית</p>
+      <div class="loader__bar"><span id="loader-bar"></span></div>
+      <p class="loader__pct" dir="ltr"><span id="loader-pct">0</span></p>
+    </div>
+  </div>
+
+  <div class="viewport">
+    <!-- Full-window background (outside the scaled stage so it covers the side bars too) -->
+    <div class="v3-sky" id="v3-sky" aria-hidden="true"></div>
+    <div class="v3-vortex" id="v3-vortex" aria-hidden="true">
+      <svg class="v3-vortex__svg" viewBox="-100 -100 200 200" aria-hidden="true">
+        <defs>
+          <radialGradient id="v3-arm" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="100">
+            <stop offset="0" stop-color="#F1E4FF"/><stop offset=".22" stop-color="#C9B8FF"/><stop offset=".55" stop-color="#6F86FF"/><stop offset="1" stop-color="#9B5CFF" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="v3-haze" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="100">
+            <stop offset="0" stop-color="#A9D1FF"/><stop offset=".3" stop-color="#4F63F0"/><stop offset=".6" stop-color="#7B3CE6"/><stop offset=".85" stop-color="#4B1FA8" stop-opacity=".7"/><stop offset="1" stop-color="#24106A" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="v3-disc" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#B99CFF" stop-opacity=".85"/><stop offset=".3" stop-color="#3340B8" stop-opacity=".7"/><stop offset=".65" stop-color="#1B1068" stop-opacity=".65"/><stop offset="1" stop-color="#0A0630" stop-opacity="0"/></radialGradient>
+          <radialGradient id="v3-core" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#F4EAFF"/><stop offset=".35" stop-color="#D2B4FF" stop-opacity=".85"/><stop offset="1" stop-color="#9A6BFF" stop-opacity="0"/></radialGradient>
+          <filter id="v3-soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>
+          <filter id="v3-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5"/></filter>
+        </defs>
+        <circle r="100" fill="url(#v3-disc)"/>
+        <g class="v3-vortex__spin">
+          <g fill="none" stroke-linecap="round" stroke="url(#v3-haze)" stroke-width="26" filter="url(#v3-soft)" opacity=".75"><path d="M3.00 0.00 L3.39 -0.40 L3.73 -0.90 L4.01 -1.49 L4.19 -2.16 L4.28 -2.89 L4.25 -3.67 L4.10 -4.49 L3.82 -5.33 L3.39 -6.17 L2.82 -6.98 L2.10 -7.75 L1.25 -8.44 L0.25 -9.05 L-0.87 -9.54 L-2.10 -9.89 L-3.43 -10.09 L-4.84 -10.11 L-6.31 -9.94 L-7.81 -9.57 L-9.31 -8.99 L-10.78 -8.18 L-12.20 -7.15 L-13.52 -5.91 L-14.73 -4.45 L-15.78 -2.78 L-16.65 -0.93 L-17.30 1.09 L-17.72 3.25 L-17.86 5.53 L-17.72 7.89 L-17.27 10.30 L-16.51 12.71 L-15.41 15.09 L-13.99 17.40 L-12.23 19.58 L-10.16 21.59 L-7.78 23.40 L-5.12 24.94 L-2.20 26.19 L0.95 27.10 L4.28 27.64 L7.75 27.77 L11.32 27.47 L14.93 26.72 L18.53 25.50 L22.05 23.81 L25.43 21.65 L28.62 19.01 L31.54 15.93 L34.15 12.43 L36.37 8.53 L38.15 4.28 L39.44 -0.28 L40.19 -5.08 L40.36 -10.06 L39.93 -15.17 L38.85 -20.31 L37.12 -25.42 L34.73 -30.40 L31.68 -35.19 L27.99 -39.68 L23.69 -43.81 L18.79 -47.47 L13.37 -50.60 L7.46 -53.12 L1.15 -54.95 L-5.50 -56.04 L-12.39 -56.34 L-19.43 -55.80 L-26.53 -54.38 L-33.56 -52.08 L-40.43 -48.88 L-47.02 -44.78 L-53.22 -39.81 L-58.91 -34.01 L-63.97 -27.42 L-68.32 -20.11 L-71.83 -12.15 L-74.44 -3.64 L-76.04 5.32 L-76.58 14.61 L-75.99 24.10 L-74.23 33.67 L-71.28 43.17 L-67.14 52.45 L-61.79 61.36 L-55.29 69.76 L-47.67 77.48 L-39.00 84.39 L-29.36 90.35"/><path d="M0.93 2.85 L1.43 3.10 L2.01 3.27 L2.66 3.35 L3.35 3.32 L4.07 3.18 L4.81 2.91 L5.54 2.51 L6.25 1.98 L6.91 1.32 L7.51 0.53 L8.02 -0.39 L8.41 -1.42 L8.68 -2.56 L8.80 -3.77 L8.76 -5.06 L8.53 -6.38 L8.12 -7.73 L7.51 -9.07 L6.69 -10.38 L5.67 -11.63 L4.45 -12.78 L3.04 -13.81 L1.44 -14.69 L-0.32 -15.38 L-2.23 -15.87 L-4.26 -16.12 L-6.38 -16.12 L-8.57 -15.84 L-10.78 -15.28 L-12.98 -14.42 L-15.13 -13.25 L-17.19 -11.77 L-19.12 -9.99 L-20.87 -7.93 L-22.40 -5.59 L-23.68 -2.99 L-24.66 -0.17 L-25.30 2.84 L-25.59 6.00 L-25.48 9.27 L-24.96 12.61 L-24.02 15.96 L-22.63 19.26 L-20.80 22.46 L-18.53 25.50 L-15.83 28.33 L-12.73 30.88 L-9.24 33.09 L-5.41 34.92 L-1.27 36.32 L3.13 37.22 L7.72 37.60 L12.45 37.42 L17.25 36.65 L22.04 35.28 L26.76 33.29 L31.32 30.67 L35.64 27.45 L39.65 23.64 L43.26 19.26 L46.39 14.36 L48.98 8.99 L50.96 3.21 L52.25 -2.92 L52.82 -9.31 L52.62 -15.89 L51.60 -22.54 L49.76 -29.19 L47.06 -35.72 L43.53 -42.03 L39.16 -48.01 L33.99 -53.56 L28.06 -58.56 L21.42 -62.92 L14.14 -66.53 L6.31 -69.31 L-1.99 -71.19 L-10.64 -72.07 L-19.54 -71.92 L-28.55 -70.67 L-37.56 -68.31 L-46.41 -64.82 L-54.96 -60.19 L-63.09 -54.45 L-70.63 -47.64 L-77.46 -39.81 L-83.43 -31.03 L-88.42 -21.39 L-92.31 -11.01 L-95.00 -0.00"/><path d="M-2.43 1.76 L-2.51 2.32 L-2.49 2.93 L-2.37 3.56 L-2.13 4.21 L-1.77 4.85 L-1.28 5.47 L-0.68 6.05 L0.05 6.56 L0.88 6.98 L1.82 7.30 L2.85 7.50 L3.95 7.56 L5.11 7.47 L6.31 7.21 L7.52 6.77 L8.71 6.14 L9.86 5.33 L10.95 4.34 L11.94 3.16 L12.81 1.80 L13.53 0.28 L14.07 -1.38 L14.41 -3.17 L14.53 -5.06 L14.40 -7.02 L14.02 -9.03 L13.36 -11.05 L12.42 -13.04 L11.20 -14.97 L9.70 -16.80 L7.92 -18.48 L5.88 -19.99 L3.60 -21.27 L1.09 -22.30 L-1.61 -23.03 L-4.47 -23.44 L-7.46 -23.50 L-10.52 -23.19 L-13.61 -22.48 L-16.69 -21.37 L-19.71 -19.84 L-22.60 -17.91 L-25.31 -15.57 L-27.79 -12.84 L-29.98 -9.74 L-31.83 -6.30 L-33.30 -2.56 L-34.33 1.44 L-34.89 5.65 L-34.93 10.02 L-34.43 14.47 L-33.38 18.96 L-31.74 23.40 L-29.53 27.73 L-26.74 31.87 L-23.39 35.74 L-19.49 39.27 L-15.09 42.38 L-10.23 45.01 L-4.95 47.09 L0.68 48.56 L6.59 49.36 L12.70 49.45 L18.93 48.79 L25.18 47.36 L31.37 45.13 L37.39 42.11 L43.14 38.30 L48.52 33.72 L53.43 28.41 L57.76 22.41 L61.44 15.77 L64.36 8.59 L66.46 0.93 L67.65 -7.11 L67.87 -15.42 L67.09 -23.89 L65.26 -32.39 L62.36 -40.81 L58.39 -49.00 L53.36 -56.83 L47.31 -64.16 L40.26 -70.87 L32.29 -76.83 L23.48 -81.90 L13.92 -85.97 L3.73 -88.94 L-6.98 -90.71 L-18.06 -91.20 L-29.36 -90.35"/><path d="M-2.43 -1.76 L-2.98 -1.67 L-3.55 -1.46 L-4.12 -1.15 L-4.66 -0.72 L-5.16 -0.18 L-5.60 0.47 L-5.96 1.22 L-6.22 2.07 L-6.37 3.00 L-6.38 3.99 L-6.26 5.03 L-5.97 6.10 L-5.52 7.17 L-4.90 8.23 L-4.11 9.24 L-3.15 10.18 L-2.02 11.03 L-0.74 11.75 L0.69 12.33 L2.25 12.74 L3.91 12.96 L5.66 12.96 L7.47 12.73 L9.30 12.25 L11.13 11.53 L12.92 10.54 L14.64 9.29 L16.24 7.78 L17.70 6.03 L18.97 4.03 L20.03 1.82 L20.83 -0.58 L21.34 -3.15 L21.54 -5.85 L21.41 -8.65 L20.91 -11.50 L20.05 -14.35 L18.80 -17.17 L17.17 -19.90 L15.16 -22.48 L12.78 -24.87 L10.05 -27.02 L6.99 -28.88 L3.62 -30.39 L0.00 -31.52 L-3.84 -32.22 L-7.85 -32.46 L-11.98 -32.20 L-16.15 -31.43 L-20.32 -30.12 L-24.41 -28.28 L-28.35 -25.88 L-32.07 -22.96 L-35.50 -19.52 L-38.57 -15.58 L-41.22 -11.20 L-43.37 -6.40 L-44.97 -1.26 L-45.97 4.18 L-46.32 9.84 L-45.97 15.65 L-44.91 21.52 L-43.11 27.36 L-40.56 33.08 L-37.26 38.58 L-33.23 43.78 L-28.50 48.57 L-23.09 52.86 L-17.08 56.56 L-10.51 59.59 L-3.46 61.86 L3.98 63.31 L11.72 63.87 L19.65 63.49 L27.67 62.14 L35.64 59.78 L43.45 56.42 L50.97 52.05 L58.08 46.70 L64.64 40.39 L70.54 33.19 L75.64 25.16 L79.85 16.39 L83.04 6.97 L85.14 -2.97 L86.06 -13.32 L85.73 -23.94 L84.11 -34.67 L81.15 -45.36 L76.86 -55.84"/><path d="M0.93 -2.85 L0.66 -3.35 L0.29 -3.83 L-0.18 -4.27 L-0.75 -4.65 L-1.42 -4.96 L-2.18 -5.18 L-3.01 -5.29 L-3.89 -5.28 L-4.82 -5.13 L-5.77 -4.84 L-6.72 -4.40 L-7.64 -3.79 L-8.53 -3.04 L-9.34 -2.12 L-10.06 -1.06 L-10.66 0.15 L-11.11 1.48 L-11.41 2.93 L-11.52 4.47 L-11.42 6.07 L-11.11 7.72 L-10.57 9.39 L-9.80 11.03 L-8.78 12.63 L-7.52 14.15 L-6.03 15.55 L-4.31 16.79 L-2.38 17.85 L-0.26 18.70 L2.03 19.29 L4.46 19.61 L6.99 19.63 L9.59 19.32 L12.22 18.68 L14.84 17.69 L17.40 16.34 L19.85 14.63 L22.14 12.58 L24.23 10.18 L26.07 7.47 L27.61 4.47 L28.81 1.21 L29.63 -2.28 L30.03 -5.95 L29.98 -9.74 L29.46 -13.61 L28.45 -17.50 L26.93 -21.34 L24.90 -25.08 L22.37 -28.63 L19.35 -31.95 L15.86 -34.96 L11.92 -37.59 L7.59 -39.79 L2.90 -41.50 L-2.09 -42.66 L-7.31 -43.23 L-12.70 -43.16 L-18.18 -42.43 L-23.68 -41.01 L-29.09 -38.89 L-34.34 -36.06 L-39.34 -32.54 L-43.99 -28.35 L-48.21 -23.51 L-51.91 -18.08 L-55.00 -12.09 L-57.41 -5.63 L-59.07 1.24 L-59.92 8.42 L-59.90 15.83 L-58.98 23.35 L-57.12 30.88 L-54.31 38.31 L-50.55 45.51 L-45.85 52.37 L-40.23 58.76 L-33.75 64.56 L-26.46 69.67 L-18.44 73.96 L-9.77 77.34 L-0.56 79.72 L9.09 81.00 L19.03 81.14 L29.14 80.06 L39.27 77.73 L49.26 74.14 L58.96 69.28 L68.21 63.17 L76.86 55.84"/></g>
+          <g fill="none" stroke-linecap="round" stroke="#07062A" stroke-width="16" filter="url(#v3-soft)" opacity=".7"><path d="M2.43 1.76 L2.98 1.67 L3.55 1.46 L4.12 1.15 L4.66 0.72 L5.16 0.18 L5.60 -0.47 L5.96 -1.22 L6.22 -2.07 L6.37 -3.00 L6.38 -3.99 L6.26 -5.03 L5.97 -6.10 L5.52 -7.17 L4.90 -8.23 L4.11 -9.24 L3.15 -10.18 L2.02 -11.03 L0.74 -11.75 L-0.69 -12.33 L-2.25 -12.74 L-3.91 -12.96 L-5.66 -12.96 L-7.47 -12.73 L-9.30 -12.25 L-11.13 -11.53 L-12.92 -10.54 L-14.64 -9.29 L-16.24 -7.78 L-17.70 -6.03 L-18.97 -4.03 L-20.03 -1.82 L-20.83 0.58 L-21.34 3.15 L-21.54 5.85 L-21.41 8.65 L-20.91 11.50 L-20.05 14.35 L-18.80 17.17 L-17.17 19.90 L-15.16 22.48 L-12.78 24.87 L-10.05 27.02 L-6.99 28.88 L-3.62 30.39 L-0.00 31.52 L3.84 32.22 L7.85 32.46 L11.98 32.20 L16.15 31.43 L20.32 30.12 L24.41 28.28 L28.35 25.88 L32.07 22.96 L35.50 19.52 L38.57 15.58 L41.22 11.20 L43.37 6.40 L44.97 1.26 L45.97 -4.18 L46.32 -9.84 L45.97 -15.65 L44.91 -21.52 L43.11 -27.36 L40.56 -33.08 L37.26 -38.58 L33.23 -43.78 L28.50 -48.57 L23.09 -52.86 L17.08 -56.56 L10.51 -59.59 L3.46 -61.86 L-3.98 -63.31 L-11.72 -63.87 L-19.65 -63.49 L-27.67 -62.14 L-35.64 -59.78 L-43.45 -56.42 L-50.97 -52.05 L-58.08 -46.70 L-64.64 -40.39 L-70.54 -33.19 L-75.64 -25.16 L-79.85 -16.39 L-83.04 -6.97 L-85.14 2.97 L-86.06 13.32 L-85.73 23.94 L-84.11 34.67 L-81.15 45.36 L-76.86 55.84"/><path d="M-0.93 2.85 L-0.66 3.35 L-0.29 3.83 L0.18 4.27 L0.75 4.65 L1.42 4.96 L2.18 5.18 L3.01 5.29 L3.89 5.28 L4.82 5.13 L5.77 4.84 L6.72 4.40 L7.64 3.79 L8.53 3.04 L9.34 2.12 L10.06 1.06 L10.66 -0.15 L11.11 -1.48 L11.41 -2.93 L11.52 -4.47 L11.42 -6.07 L11.11 -7.72 L10.57 -9.39 L9.80 -11.03 L8.78 -12.63 L7.52 -14.15 L6.03 -15.55 L4.31 -16.79 L2.38 -17.85 L0.26 -18.70 L-2.03 -19.29 L-4.46 -19.61 L-6.99 -19.63 L-9.59 -19.32 L-12.22 -18.68 L-14.84 -17.69 L-17.40 -16.34 L-19.85 -14.63 L-22.14 -12.58 L-24.23 -10.18 L-26.07 -7.47 L-27.61 -4.47 L-28.81 -1.21 L-29.63 2.28 L-30.03 5.95 L-29.98 9.74 L-29.46 13.61 L-28.45 17.50 L-26.93 21.34 L-24.90 25.08 L-22.37 28.63 L-19.35 31.95 L-15.86 34.96 L-11.92 37.59 L-7.59 39.79 L-2.90 41.50 L2.09 42.66 L7.31 43.23 L12.70 43.16 L18.18 42.43 L23.68 41.01 L29.09 38.89 L34.34 36.06 L39.34 32.54 L43.99 28.35 L48.21 23.51 L51.91 18.08 L55.00 12.09 L57.41 5.63 L59.07 -1.24 L59.92 -8.42 L59.90 -15.83 L58.98 -23.35 L57.12 -30.88 L54.31 -38.31 L50.55 -45.51 L45.85 -52.37 L40.23 -58.76 L33.75 -64.56 L26.46 -69.67 L18.44 -73.96 L9.77 -77.34 L0.56 -79.72 L-9.09 -81.00 L-19.03 -81.14 L-29.14 -80.06 L-39.27 -77.73 L-49.26 -74.14 L-58.96 -69.28 L-68.21 -63.17 L-76.86 -55.84"/><path d="M-3.00 0.00 L-3.39 0.40 L-3.73 0.90 L-4.01 1.49 L-4.19 2.16 L-4.28 2.89 L-4.25 3.67 L-4.10 4.49 L-3.82 5.33 L-3.39 6.17 L-2.82 6.98 L-2.10 7.75 L-1.25 8.44 L-0.25 9.05 L0.87 9.54 L2.10 9.89 L3.43 10.09 L4.84 10.11 L6.31 9.94 L7.81 9.57 L9.31 8.99 L10.78 8.18 L12.20 7.15 L13.52 5.91 L14.73 4.45 L15.78 2.78 L16.65 0.93 L17.30 -1.09 L17.72 -3.25 L17.86 -5.53 L17.72 -7.89 L17.27 -10.30 L16.51 -12.71 L15.41 -15.09 L13.99 -17.40 L12.23 -19.58 L10.16 -21.59 L7.78 -23.40 L5.12 -24.94 L2.20 -26.19 L-0.95 -27.10 L-4.28 -27.64 L-7.75 -27.77 L-11.32 -27.47 L-14.93 -26.72 L-18.53 -25.50 L-22.05 -23.81 L-25.43 -21.65 L-28.62 -19.01 L-31.54 -15.93 L-34.15 -12.43 L-36.37 -8.53 L-38.15 -4.28 L-39.44 0.28 L-40.19 5.08 L-40.36 10.06 L-39.93 15.17 L-38.85 20.31 L-37.12 25.42 L-34.73 30.40 L-31.68 35.19 L-27.99 39.68 L-23.69 43.81 L-18.79 47.47 L-13.37 50.60 L-7.46 53.12 L-1.15 54.95 L5.50 56.04 L12.39 56.34 L19.43 55.80 L26.53 54.38 L33.56 52.08 L40.43 48.88 L47.02 44.78 L53.22 39.81 L58.91 34.01 L63.97 27.42 L68.32 20.11 L71.83 12.15 L74.44 3.64 L76.04 -5.32 L76.58 -14.61 L75.99 -24.10 L74.23 -33.67 L71.28 -43.17 L67.14 -52.45 L61.79 -61.36 L55.29 -69.76 L47.67 -77.48 L39.00 -84.39 L29.36 -90.35"/><path d="M-0.93 -2.85 L-1.43 -3.10 L-2.01 -3.27 L-2.66 -3.35 L-3.35 -3.32 L-4.07 -3.18 L-4.81 -2.91 L-5.54 -2.51 L-6.25 -1.98 L-6.91 -1.32 L-7.51 -0.53 L-8.02 0.39 L-8.41 1.42 L-8.68 2.56 L-8.80 3.77 L-8.76 5.06 L-8.53 6.38 L-8.12 7.73 L-7.51 9.07 L-6.69 10.38 L-5.67 11.63 L-4.45 12.78 L-3.04 13.81 L-1.44 14.69 L0.32 15.38 L2.23 15.87 L4.26 16.12 L6.38 16.12 L8.57 15.84 L10.78 15.28 L12.98 14.42 L15.13 13.25 L17.19 11.77 L19.12 9.99 L20.87 7.93 L22.40 5.59 L23.68 2.99 L24.66 0.17 L25.30 -2.84 L25.59 -6.00 L25.48 -9.27 L24.96 -12.61 L24.02 -15.96 L22.63 -19.26 L20.80 -22.46 L18.53 -25.50 L15.83 -28.33 L12.73 -30.88 L9.24 -33.09 L5.41 -34.92 L1.27 -36.32 L-3.13 -37.22 L-7.72 -37.60 L-12.45 -37.42 L-17.25 -36.65 L-22.04 -35.28 L-26.76 -33.29 L-31.32 -30.67 L-35.64 -27.45 L-39.65 -23.64 L-43.26 -19.26 L-46.39 -14.36 L-48.98 -8.99 L-50.96 -3.21 L-52.25 2.92 L-52.82 9.31 L-52.62 15.89 L-51.60 22.54 L-49.76 29.19 L-47.06 35.72 L-43.53 42.03 L-39.16 48.01 L-33.99 53.56 L-28.06 58.56 L-21.42 62.92 L-14.14 66.53 L-6.31 69.31 L1.99 71.19 L10.64 72.07 L19.54 71.92 L28.55 70.67 L37.56 68.31 L46.41 64.82 L54.96 60.19 L63.09 54.45 L70.63 47.64 L77.46 39.81 L83.43 31.03 L88.42 21.39 L92.31 11.01 L95.00 0.00"/><path d="M2.43 -1.76 L2.51 -2.32 L2.49 -2.93 L2.37 -3.56 L2.13 -4.21 L1.77 -4.85 L1.28 -5.47 L0.68 -6.05 L-0.05 -6.56 L-0.88 -6.98 L-1.82 -7.30 L-2.85 -7.50 L-3.95 -7.56 L-5.11 -7.47 L-6.31 -7.21 L-7.52 -6.77 L-8.71 -6.14 L-9.86 -5.33 L-10.95 -4.34 L-11.94 -3.16 L-12.81 -1.80 L-13.53 -0.28 L-14.07 1.38 L-14.41 3.17 L-14.53 5.06 L-14.40 7.02 L-14.02 9.03 L-13.36 11.05 L-12.42 13.04 L-11.20 14.97 L-9.70 16.80 L-7.92 18.48 L-5.88 19.99 L-3.60 21.27 L-1.09 22.30 L1.61 23.03 L4.47 23.44 L7.46 23.50 L10.52 23.19 L13.61 22.48 L16.69 21.37 L19.71 19.84 L22.60 17.91 L25.31 15.57 L27.79 12.84 L29.98 9.74 L31.83 6.30 L33.30 2.56 L34.33 -1.44 L34.89 -5.65 L34.93 -10.02 L34.43 -14.47 L33.38 -18.96 L31.74 -23.40 L29.53 -27.73 L26.74 -31.87 L23.39 -35.74 L19.49 -39.27 L15.09 -42.38 L10.23 -45.01 L4.95 -47.09 L-0.68 -48.56 L-6.59 -49.36 L-12.70 -49.45 L-18.93 -48.79 L-25.18 -47.36 L-31.37 -45.13 L-37.39 -42.11 L-43.14 -38.30 L-48.52 -33.72 L-53.43 -28.41 L-57.76 -22.41 L-61.44 -15.77 L-64.36 -8.59 L-66.46 -0.93 L-67.65 7.11 L-67.87 15.42 L-67.09 23.89 L-65.26 32.39 L-62.36 40.81 L-58.39 49.00 L-53.36 56.83 L-47.31 64.16 L-40.26 70.87 L-32.29 76.83 L-23.48 81.90 L-13.92 85.97 L-3.73 88.94 L6.98 90.71 L18.06 91.20 L29.36 90.35"/></g>
+          <g fill="none" stroke-linecap="round" stroke="url(#v3-arm)" stroke-width="8" filter="url(#v3-blur)" opacity=".55"><path d="M3.00 0.00 L3.39 -0.40 L3.73 -0.90 L4.01 -1.49 L4.19 -2.16 L4.28 -2.89 L4.25 -3.67 L4.10 -4.49 L3.82 -5.33 L3.39 -6.17 L2.82 -6.98 L2.10 -7.75 L1.25 -8.44 L0.25 -9.05 L-0.87 -9.54 L-2.10 -9.89 L-3.43 -10.09 L-4.84 -10.11 L-6.31 -9.94 L-7.81 -9.57 L-9.31 -8.99 L-10.78 -8.18 L-12.20 -7.15 L-13.52 -5.91 L-14.73 -4.45 L-15.78 -2.78 L-16.65 -0.93 L-17.30 1.09 L-17.72 3.25 L-17.86 5.53 L-17.72 7.89 L-17.27 10.30 L-16.51 12.71 L-15.41 15.09 L-13.99 17.40 L-12.23 19.58 L-10.16 21.59 L-7.78 23.40 L-5.12 24.94 L-2.20 26.19 L0.95 27.10 L4.28 27.64 L7.75 27.77 L11.32 27.47 L14.93 26.72 L18.53 25.50 L22.05 23.81 L25.43 21.65 L28.62 19.01 L31.54 15.93 L34.15 12.43 L36.37 8.53 L38.15 4.28 L39.44 -0.28 L40.19 -5.08 L40.36 -10.06 L39.93 -15.17 L38.85 -20.31 L37.12 -25.42 L34.73 -30.40 L31.68 -35.19 L27.99 -39.68 L23.69 -43.81 L18.79 -47.47 L13.37 -50.60 L7.46 -53.12 L1.15 -54.95 L-5.50 -56.04 L-12.39 -56.34 L-19.43 -55.80 L-26.53 -54.38 L-33.56 -52.08 L-40.43 -48.88 L-47.02 -44.78 L-53.22 -39.81 L-58.91 -34.01 L-63.97 -27.42 L-68.32 -20.11 L-71.83 -12.15 L-74.44 -3.64 L-76.04 5.32 L-76.58 14.61 L-75.99 24.10 L-74.23 33.67 L-71.28 43.17 L-67.14 52.45 L-61.79 61.36 L-55.29 69.76 L-47.67 77.48 L-39.00 84.39 L-29.36 90.35"/><path d="M0.93 2.85 L1.43 3.10 L2.01 3.27 L2.66 3.35 L3.35 3.32 L4.07 3.18 L4.81 2.91 L5.54 2.51 L6.25 1.98 L6.91 1.32 L7.51 0.53 L8.02 -0.39 L8.41 -1.42 L8.68 -2.56 L8.80 -3.77 L8.76 -5.06 L8.53 -6.38 L8.12 -7.73 L7.51 -9.07 L6.69 -10.38 L5.67 -11.63 L4.45 -12.78 L3.04 -13.81 L1.44 -14.69 L-0.32 -15.38 L-2.23 -15.87 L-4.26 -16.12 L-6.38 -16.12 L-8.57 -15.84 L-10.78 -15.28 L-12.98 -14.42 L-15.13 -13.25 L-17.19 -11.77 L-19.12 -9.99 L-20.87 -7.93 L-22.40 -5.59 L-23.68 -2.99 L-24.66 -0.17 L-25.30 2.84 L-25.59 6.00 L-25.48 9.27 L-24.96 12.61 L-24.02 15.96 L-22.63 19.26 L-20.80 22.46 L-18.53 25.50 L-15.83 28.33 L-12.73 30.88 L-9.24 33.09 L-5.41 34.92 L-1.27 36.32 L3.13 37.22 L7.72 37.60 L12.45 37.42 L17.25 36.65 L22.04 35.28 L26.76 33.29 L31.32 30.67 L35.64 27.45 L39.65 23.64 L43.26 19.26 L46.39 14.36 L48.98 8.99 L50.96 3.21 L52.25 -2.92 L52.82 -9.31 L52.62 -15.89 L51.60 -22.54 L49.76 -29.19 L47.06 -35.72 L43.53 -42.03 L39.16 -48.01 L33.99 -53.56 L28.06 -58.56 L21.42 -62.92 L14.14 -66.53 L6.31 -69.31 L-1.99 -71.19 L-10.64 -72.07 L-19.54 -71.92 L-28.55 -70.67 L-37.56 -68.31 L-46.41 -64.82 L-54.96 -60.19 L-63.09 -54.45 L-70.63 -47.64 L-77.46 -39.81 L-83.43 -31.03 L-88.42 -21.39 L-92.31 -11.01 L-95.00 -0.00"/><path d="M-2.43 1.76 L-2.51 2.32 L-2.49 2.93 L-2.37 3.56 L-2.13 4.21 L-1.77 4.85 L-1.28 5.47 L-0.68 6.05 L0.05 6.56 L0.88 6.98 L1.82 7.30 L2.85 7.50 L3.95 7.56 L5.11 7.47 L6.31 7.21 L7.52 6.77 L8.71 6.14 L9.86 5.33 L10.95 4.34 L11.94 3.16 L12.81 1.80 L13.53 0.28 L14.07 -1.38 L14.41 -3.17 L14.53 -5.06 L14.40 -7.02 L14.02 -9.03 L13.36 -11.05 L12.42 -13.04 L11.20 -14.97 L9.70 -16.80 L7.92 -18.48 L5.88 -19.99 L3.60 -21.27 L1.09 -22.30 L-1.61 -23.03 L-4.47 -23.44 L-7.46 -23.50 L-10.52 -23.19 L-13.61 -22.48 L-16.69 -21.37 L-19.71 -19.84 L-22.60 -17.91 L-25.31 -15.57 L-27.79 -12.84 L-29.98 -9.74 L-31.83 -6.30 L-33.30 -2.56 L-34.33 1.44 L-34.89 5.65 L-34.93 10.02 L-34.43 14.47 L-33.38 18.96 L-31.74 23.40 L-29.53 27.73 L-26.74 31.87 L-23.39 35.74 L-19.49 39.27 L-15.09 42.38 L-10.23 45.01 L-4.95 47.09 L0.68 48.56 L6.59 49.36 L12.70 49.45 L18.93 48.79 L25.18 47.36 L31.37 45.13 L37.39 42.11 L43.14 38.30 L48.52 33.72 L53.43 28.41 L57.76 22.41 L61.44 15.77 L64.36 8.59 L66.46 0.93 L67.65 -7.11 L67.87 -15.42 L67.09 -23.89 L65.26 -32.39 L62.36 -40.81 L58.39 -49.00 L53.36 -56.83 L47.31 -64.16 L40.26 -70.87 L32.29 -76.83 L23.48 -81.90 L13.92 -85.97 L3.73 -88.94 L-6.98 -90.71 L-18.06 -91.20 L-29.36 -90.35"/><path d="M-2.43 -1.76 L-2.98 -1.67 L-3.55 -1.46 L-4.12 -1.15 L-4.66 -0.72 L-5.16 -0.18 L-5.60 0.47 L-5.96 1.22 L-6.22 2.07 L-6.37 3.00 L-6.38 3.99 L-6.26 5.03 L-5.97 6.10 L-5.52 7.17 L-4.90 8.23 L-4.11 9.24 L-3.15 10.18 L-2.02 11.03 L-0.74 11.75 L0.69 12.33 L2.25 12.74 L3.91 12.96 L5.66 12.96 L7.47 12.73 L9.30 12.25 L11.13 11.53 L12.92 10.54 L14.64 9.29 L16.24 7.78 L17.70 6.03 L18.97 4.03 L20.03 1.82 L20.83 -0.58 L21.34 -3.15 L21.54 -5.85 L21.41 -8.65 L20.91 -11.50 L20.05 -14.35 L18.80 -17.17 L17.17 -19.90 L15.16 -22.48 L12.78 -24.87 L10.05 -27.02 L6.99 -28.88 L3.62 -30.39 L0.00 -31.52 L-3.84 -32.22 L-7.85 -32.46 L-11.98 -32.20 L-16.15 -31.43 L-20.32 -30.12 L-24.41 -28.28 L-28.35 -25.88 L-32.07 -22.96 L-35.50 -19.52 L-38.57 -15.58 L-41.22 -11.20 L-43.37 -6.40 L-44.97 -1.26 L-45.97 4.18 L-46.32 9.84 L-45.97 15.65 L-44.91 21.52 L-43.11 27.36 L-40.56 33.08 L-37.26 38.58 L-33.23 43.78 L-28.50 48.57 L-23.09 52.86 L-17.08 56.56 L-10.51 59.59 L-3.46 61.86 L3.98 63.31 L11.72 63.87 L19.65 63.49 L27.67 62.14 L35.64 59.78 L43.45 56.42 L50.97 52.05 L58.08 46.70 L64.64 40.39 L70.54 33.19 L75.64 25.16 L79.85 16.39 L83.04 6.97 L85.14 -2.97 L86.06 -13.32 L85.73 -23.94 L84.11 -34.67 L81.15 -45.36 L76.86 -55.84"/><path d="M0.93 -2.85 L0.66 -3.35 L0.29 -3.83 L-0.18 -4.27 L-0.75 -4.65 L-1.42 -4.96 L-2.18 -5.18 L-3.01 -5.29 L-3.89 -5.28 L-4.82 -5.13 L-5.77 -4.84 L-6.72 -4.40 L-7.64 -3.79 L-8.53 -3.04 L-9.34 -2.12 L-10.06 -1.06 L-10.66 0.15 L-11.11 1.48 L-11.41 2.93 L-11.52 4.47 L-11.42 6.07 L-11.11 7.72 L-10.57 9.39 L-9.80 11.03 L-8.78 12.63 L-7.52 14.15 L-6.03 15.55 L-4.31 16.79 L-2.38 17.85 L-0.26 18.70 L2.03 19.29 L4.46 19.61 L6.99 19.63 L9.59 19.32 L12.22 18.68 L14.84 17.69 L17.40 16.34 L19.85 14.63 L22.14 12.58 L24.23 10.18 L26.07 7.47 L27.61 4.47 L28.81 1.21 L29.63 -2.28 L30.03 -5.95 L29.98 -9.74 L29.46 -13.61 L28.45 -17.50 L26.93 -21.34 L24.90 -25.08 L22.37 -28.63 L19.35 -31.95 L15.86 -34.96 L11.92 -37.59 L7.59 -39.79 L2.90 -41.50 L-2.09 -42.66 L-7.31 -43.23 L-12.70 -43.16 L-18.18 -42.43 L-23.68 -41.01 L-29.09 -38.89 L-34.34 -36.06 L-39.34 -32.54 L-43.99 -28.35 L-48.21 -23.51 L-51.91 -18.08 L-55.00 -12.09 L-57.41 -5.63 L-59.07 1.24 L-59.92 8.42 L-59.90 15.83 L-58.98 23.35 L-57.12 30.88 L-54.31 38.31 L-50.55 45.51 L-45.85 52.37 L-40.23 58.76 L-33.75 64.56 L-26.46 69.67 L-18.44 73.96 L-9.77 77.34 L-0.56 79.72 L9.09 81.00 L19.03 81.14 L29.14 80.06 L39.27 77.73 L49.26 74.14 L58.96 69.28 L68.21 63.17 L76.86 55.84"/></g>
+          <g fill="none" stroke-linecap="round" stroke="url(#v3-arm)" stroke-width="1.4" opacity=".55"><path d="M3.00 0.00 L3.39 -0.40 L3.73 -0.90 L4.01 -1.49 L4.19 -2.16 L4.28 -2.89 L4.25 -3.67 L4.10 -4.49 L3.82 -5.33 L3.39 -6.17 L2.82 -6.98 L2.10 -7.75 L1.25 -8.44 L0.25 -9.05 L-0.87 -9.54 L-2.10 -9.89 L-3.43 -10.09 L-4.84 -10.11 L-6.31 -9.94 L-7.81 -9.57 L-9.31 -8.99 L-10.78 -8.18 L-12.20 -7.15 L-13.52 -5.91 L-14.73 -4.45 L-15.78 -2.78 L-16.65 -0.93 L-17.30 1.09 L-17.72 3.25 L-17.86 5.53 L-17.72 7.89 L-17.27 10.30 L-16.51 12.71 L-15.41 15.09 L-13.99 17.40 L-12.23 19.58 L-10.16 21.59 L-7.78 23.40 L-5.12 24.94 L-2.20 26.19 L0.95 27.10 L4.28 27.64 L7.75 27.77 L11.32 27.47 L14.93 26.72 L18.53 25.50 L22.05 23.81 L25.43 21.65 L28.62 19.01 L31.54 15.93 L34.15 12.43 L36.37 8.53 L38.15 4.28 L39.44 -0.28 L40.19 -5.08 L40.36 -10.06 L39.93 -15.17 L38.85 -20.31 L37.12 -25.42 L34.73 -30.40 L31.68 -35.19 L27.99 -39.68 L23.69 -43.81 L18.79 -47.47 L13.37 -50.60 L7.46 -53.12 L1.15 -54.95 L-5.50 -56.04 L-12.39 -56.34 L-19.43 -55.80 L-26.53 -54.38 L-33.56 -52.08 L-40.43 -48.88 L-47.02 -44.78 L-53.22 -39.81 L-58.91 -34.01 L-63.97 -27.42 L-68.32 -20.11 L-71.83 -12.15 L-74.44 -3.64 L-76.04 5.32 L-76.58 14.61 L-75.99 24.10 L-74.23 33.67 L-71.28 43.17 L-67.14 52.45 L-61.79 61.36 L-55.29 69.76 L-47.67 77.48 L-39.00 84.39 L-29.36 90.35"/><path d="M0.93 2.85 L1.43 3.10 L2.01 3.27 L2.66 3.35 L3.35 3.32 L4.07 3.18 L4.81 2.91 L5.54 2.51 L6.25 1.98 L6.91 1.32 L7.51 0.53 L8.02 -0.39 L8.41 -1.42 L8.68 -2.56 L8.80 -3.77 L8.76 -5.06 L8.53 -6.38 L8.12 -7.73 L7.51 -9.07 L6.69 -10.38 L5.67 -11.63 L4.45 -12.78 L3.04 -13.81 L1.44 -14.69 L-0.32 -15.38 L-2.23 -15.87 L-4.26 -16.12 L-6.38 -16.12 L-8.57 -15.84 L-10.78 -15.28 L-12.98 -14.42 L-15.13 -13.25 L-17.19 -11.77 L-19.12 -9.99 L-20.87 -7.93 L-22.40 -5.59 L-23.68 -2.99 L-24.66 -0.17 L-25.30 2.84 L-25.59 6.00 L-25.48 9.27 L-24.96 12.61 L-24.02 15.96 L-22.63 19.26 L-20.80 22.46 L-18.53 25.50 L-15.83 28.33 L-12.73 30.88 L-9.24 33.09 L-5.41 34.92 L-1.27 36.32 L3.13 37.22 L7.72 37.60 L12.45 37.42 L17.25 36.65 L22.04 35.28 L26.76 33.29 L31.32 30.67 L35.64 27.45 L39.65 23.64 L43.26 19.26 L46.39 14.36 L48.98 8.99 L50.96 3.21 L52.25 -2.92 L52.82 -9.31 L52.62 -15.89 L51.60 -22.54 L49.76 -29.19 L47.06 -35.72 L43.53 -42.03 L39.16 -48.01 L33.99 -53.56 L28.06 -58.56 L21.42 -62.92 L14.14 -66.53 L6.31 -69.31 L-1.99 -71.19 L-10.64 -72.07 L-19.54 -71.92 L-28.55 -70.67 L-37.56 -68.31 L-46.41 -64.82 L-54.96 -60.19 L-63.09 -54.45 L-70.63 -47.64 L-77.46 -39.81 L-83.43 -31.03 L-88.42 -21.39 L-92.31 -11.01 L-95.00 -0.00"/><path d="M-2.43 1.76 L-2.51 2.32 L-2.49 2.93 L-2.37 3.56 L-2.13 4.21 L-1.77 4.85 L-1.28 5.47 L-0.68 6.05 L0.05 6.56 L0.88 6.98 L1.82 7.30 L2.85 7.50 L3.95 7.56 L5.11 7.47 L6.31 7.21 L7.52 6.77 L8.71 6.14 L9.86 5.33 L10.95 4.34 L11.94 3.16 L12.81 1.80 L13.53 0.28 L14.07 -1.38 L14.41 -3.17 L14.53 -5.06 L14.40 -7.02 L14.02 -9.03 L13.36 -11.05 L12.42 -13.04 L11.20 -14.97 L9.70 -16.80 L7.92 -18.48 L5.88 -19.99 L3.60 -21.27 L1.09 -22.30 L-1.61 -23.03 L-4.47 -23.44 L-7.46 -23.50 L-10.52 -23.19 L-13.61 -22.48 L-16.69 -21.37 L-19.71 -19.84 L-22.60 -17.91 L-25.31 -15.57 L-27.79 -12.84 L-29.98 -9.74 L-31.83 -6.30 L-33.30 -2.56 L-34.33 1.44 L-34.89 5.65 L-34.93 10.02 L-34.43 14.47 L-33.38 18.96 L-31.74 23.40 L-29.53 27.73 L-26.74 31.87 L-23.39 35.74 L-19.49 39.27 L-15.09 42.38 L-10.23 45.01 L-4.95 47.09 L0.68 48.56 L6.59 49.36 L12.70 49.45 L18.93 48.79 L25.18 47.36 L31.37 45.13 L37.39 42.11 L43.14 38.30 L48.52 33.72 L53.43 28.41 L57.76 22.41 L61.44 15.77 L64.36 8.59 L66.46 0.93 L67.65 -7.11 L67.87 -15.42 L67.09 -23.89 L65.26 -32.39 L62.36 -40.81 L58.39 -49.00 L53.36 -56.83 L47.31 -64.16 L40.26 -70.87 L32.29 -76.83 L23.48 -81.90 L13.92 -85.97 L3.73 -88.94 L-6.98 -90.71 L-18.06 -91.20 L-29.36 -90.35"/><path d="M-2.43 -1.76 L-2.98 -1.67 L-3.55 -1.46 L-4.12 -1.15 L-4.66 -0.72 L-5.16 -0.18 L-5.60 0.47 L-5.96 1.22 L-6.22 2.07 L-6.37 3.00 L-6.38 3.99 L-6.26 5.03 L-5.97 6.10 L-5.52 7.17 L-4.90 8.23 L-4.11 9.24 L-3.15 10.18 L-2.02 11.03 L-0.74 11.75 L0.69 12.33 L2.25 12.74 L3.91 12.96 L5.66 12.96 L7.47 12.73 L9.30 12.25 L11.13 11.53 L12.92 10.54 L14.64 9.29 L16.24 7.78 L17.70 6.03 L18.97 4.03 L20.03 1.82 L20.83 -0.58 L21.34 -3.15 L21.54 -5.85 L21.41 -8.65 L20.91 -11.50 L20.05 -14.35 L18.80 -17.17 L17.17 -19.90 L15.16 -22.48 L12.78 -24.87 L10.05 -27.02 L6.99 -28.88 L3.62 -30.39 L0.00 -31.52 L-3.84 -32.22 L-7.85 -32.46 L-11.98 -32.20 L-16.15 -31.43 L-20.32 -30.12 L-24.41 -28.28 L-28.35 -25.88 L-32.07 -22.96 L-35.50 -19.52 L-38.57 -15.58 L-41.22 -11.20 L-43.37 -6.40 L-44.97 -1.26 L-45.97 4.18 L-46.32 9.84 L-45.97 15.65 L-44.91 21.52 L-43.11 27.36 L-40.56 33.08 L-37.26 38.58 L-33.23 43.78 L-28.50 48.57 L-23.09 52.86 L-17.08 56.56 L-10.51 59.59 L-3.46 61.86 L3.98 63.31 L11.72 63.87 L19.65 63.49 L27.67 62.14 L35.64 59.78 L43.45 56.42 L50.97 52.05 L58.08 46.70 L64.64 40.39 L70.54 33.19 L75.64 25.16 L79.85 16.39 L83.04 6.97 L85.14 -2.97 L86.06 -13.32 L85.73 -23.94 L84.11 -34.67 L81.15 -45.36 L76.86 -55.84"/><path d="M0.93 -2.85 L0.66 -3.35 L0.29 -3.83 L-0.18 -4.27 L-0.75 -4.65 L-1.42 -4.96 L-2.18 -5.18 L-3.01 -5.29 L-3.89 -5.28 L-4.82 -5.13 L-5.77 -4.84 L-6.72 -4.40 L-7.64 -3.79 L-8.53 -3.04 L-9.34 -2.12 L-10.06 -1.06 L-10.66 0.15 L-11.11 1.48 L-11.41 2.93 L-11.52 4.47 L-11.42 6.07 L-11.11 7.72 L-10.57 9.39 L-9.80 11.03 L-8.78 12.63 L-7.52 14.15 L-6.03 15.55 L-4.31 16.79 L-2.38 17.85 L-0.26 18.70 L2.03 19.29 L4.46 19.61 L6.99 19.63 L9.59 19.32 L12.22 18.68 L14.84 17.69 L17.40 16.34 L19.85 14.63 L22.14 12.58 L24.23 10.18 L26.07 7.47 L27.61 4.47 L28.81 1.21 L29.63 -2.28 L30.03 -5.95 L29.98 -9.74 L29.46 -13.61 L28.45 -17.50 L26.93 -21.34 L24.90 -25.08 L22.37 -28.63 L19.35 -31.95 L15.86 -34.96 L11.92 -37.59 L7.59 -39.79 L2.90 -41.50 L-2.09 -42.66 L-7.31 -43.23 L-12.70 -43.16 L-18.18 -42.43 L-23.68 -41.01 L-29.09 -38.89 L-34.34 -36.06 L-39.34 -32.54 L-43.99 -28.35 L-48.21 -23.51 L-51.91 -18.08 L-55.00 -12.09 L-57.41 -5.63 L-59.07 1.24 L-59.92 8.42 L-59.90 15.83 L-58.98 23.35 L-57.12 30.88 L-54.31 38.31 L-50.55 45.51 L-45.85 52.37 L-40.23 58.76 L-33.75 64.56 L-26.46 69.67 L-18.44 73.96 L-9.77 77.34 L-0.56 79.72 L9.09 81.00 L19.03 81.14 L29.14 80.06 L39.27 77.73 L49.26 74.14 L58.96 69.28 L68.21 63.17 L76.86 55.84"/></g>
+        </g>
+        <circle r="30" fill="url(#v3-core)"/>
+      </svg>
+    </div>
+    <main class="stage" id="stage">
+
+      <!-- Header -->
+      <header class="topbar">
+        <div class="topbar__stats">
+          <a class="stat stat--chest" href="#bonus">
+            <img src="assets/chest.webp" alt="" class="stat__icon stat__icon--chest">
+            <span class="stat__text"><span class="stat__label">חזרות</span><span class="stat__value">3</span></span>
+          </a>
+          <a class="stat stat--coins" href="#coins">
+            <img src="assets/coin.webp" alt="" class="stat__icon stat__icon--coin">
+            <span class="stat__text"><span class="stat__label">מטבעות</span><span class="stat__value">350</span></span>
+          </a>
+          <a class="stat stat--shop" href="shop.html">
+            <img src="assets/shop.webp" alt="" class="stat__icon stat__icon--shop">
+            <span class="stat__text"><span class="stat__label">חנות האותיות</span><span class="stat__value">12</span></span>
+          </a>
+        </div>
+
+        <a class="logo" href="index.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית">
+          <span class="logo__text">
+            <span class="logo__title">מדקדקים באנגלית</span>
+            <span class="logo__subtitle">קורס דיגיטלי באנגלית</span>
+          </span>
+          <span class="logo__mark">
+            <img class="logo__ring" src="assets/logo-ring.svg" alt="">
+            <span class="logo__tile logo__tile--a">a</span>
+            <span class="logo__tile logo__tile--c">c</span>
+            <span class="logo__tile logo__tile--b">b</span>
+          </span>
+        </a>
+
+        <div class="topbar__user">
+          <div class="user">
+            <a class="user__greeting" href="profile.html" aria-label="האזור האישי"><span class="user__hello">בקר טוב,</span><span class="user__name">שירה כהן</span></a>
+            <a class="user__avatar" href="profile.html" aria-label="הפרופיל שלי">
+              <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+              <img class="user__photo" src="assets/avatar.webp" alt="">
+              <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+            </a>
+          </div>
+          <a class="home-btn" href="index.html" aria-label="מפת האיים – דף הבית">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+          </a>
+          <button class="menu-btn" id="menu-open" type="button" aria-label="פתיחת התפריט" aria-controls="sidebar" aria-expanded="false">
+            <img src="assets/menu.svg" alt="">
+          </button>
+        </div>
+      </header>
+
+      <!-- Island journey: built by script.js from the ISLANDS list. One island is active
+           (front, centre); the next ones wait small and locked toward the horizon.
+           Scroll / swipe / arrow keys move along the path. -->
+      <div class="journey" id="journey" aria-live="polite"></div>
+      <!-- V2: a copy of the background, only its water, over the islands -->
+      <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
+           button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
+      <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
+        <img class="drawer-handle__icon" src="assets/island-review.webp" alt="">
+        <span class="tab-tip">מעבר לאיים</span>
+      </button>
+      <div class="drawer" id="drawer" aria-hidden="true">
+        <div class="drawer__scroll">
+          <ol class="drawer__list" id="drawer-list" aria-label="כל העולמות">
+            <li class="drawer__line" aria-hidden="true"><span class="drawer__fill"></span></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- "About this world" bubble beside the island in front (filled by script.js);
+           hovering it plays the island's animation like hovering the island -->
+      <aside class="island-about" id="island-about" aria-live="polite"></aside>
+
+      <!-- One line per island on the right edge; the current one is long and pink -->
+      <nav class="journey-ticks" id="journey-ticks" aria-label="מיקום במסלול האיים"></nav>
+
+      <!-- Left-edge tabs: the trophy (hidden sentence) and the letter shop -->
+      <button class="trophy" type="button" aria-label="המשפט המנצח שלי" aria-describedby="trophy-hint" aria-expanded="false">
+        <img src="assets/trophy.svg" alt="">
+      </button>
+      <div class="trophy-hint" id="trophy-hint" role="tooltip">
+        <p class="tab-hint-title">המשפט המנצח שלי</p>
+        <p class="trophy-hint__text">מופיע לכל מקומות של המשפט.<br>תצטרכו להשיג כרטיסיות של אותיות כדי למצוא את המשפט שקיבלתם</p>
+        <div class="sentence" aria-label="המשפט: b, n, y נמצאו">
+          <span class="sentence__word"><b class="tile is-found">b</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+          <span class="sentence__word"><b class="tile">?</b><b class="tile is-found">n</b></span>
+          <span class="sentence__word"><b class="tile is-found">y</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b><b class="tile">?</b></span>
+        </div>
+        <button class="trophy-hint__redraw" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>
+          <span>להגרלת משפט אחר</span>
+        </button>
+      </div>
+      <a class="cart" href="shop.html" aria-label="חנות האותיות" aria-describedby="shop-hint"><img src="assets/shop.webp" alt=""></a>
+      <div class="hint" id="shop-hint" role="tooltip">
+        <p class="tab-hint-title">לחנות האותיות</p>
+        <p class="hint__text">תוכלו לקנות אותיות בחנות האותיות ולנסות לנחש את המשפט שהמערכת הגרילה לכם</p>
+        <a class="btn-pill hint__cta" href="shop.html">
+          <img src="assets/chevron.svg" alt="" class="btn-pill__chevron">
+          <span>לחנות האותיות</span>
+        </a>
+      </div>
+      <button class="help-btn" type="button" aria-label="עזרה">?</button>
+
+
+      <!-- Welcome popup (intro.js): four slides over the cloud video, before the map -->
+      <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="ברוכים הבאים" hidden>
+        <div class="intro__card">
+          <!-- for showing the client: the sentence card's two cases, one after the other -->
+          <div class="intro__options" role="tablist" aria-label="אפשרויות">
+            <button type="button" role="tab" data-option="1">אפשרות 1</button>
+            <button type="button" role="tab" data-option="2">אפשרות 2</button>
+          </div>
+          <button class="intro__close" type="button" aria-label="סגירה"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+          <section class="intro__slide">
+            <h2 class="intro__title">ברוכים הבאים, <span class="intro__pink" data-first-name>!</span></h2>
+            <p class="intro__text">הגעתם למדקדקים באנגלית<br>תוכלו ללמוד אנגלית בכיף.</p>
+            <img class="intro__zebra" src="assets/zebra.webp" alt="">
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">שלבי המשחק</h2>
+            <p class="intro__text">במשחק יש <span data-island-count>7</span> איים בכל אי כמה שלבים +<br>איי חזרות</p>
+            <div class="intro__islands">
+              <img class="intro__island-img" src="" alt="">
+              <p class="intro__island-name"></p>
+              <button class="intro__arrow intro__arrow--prev" type="button" aria-label="האי הקודם"><img src="assets/chevron.svg" alt=""></button>
+              <button class="intro__arrow intro__arrow--next" type="button" aria-label="האי הבא"><img src="assets/chevron.svg" alt=""></button>
+            </div>
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">בונוסים מ<span class="intro__pink">החזרות והתמדה</span></h2>
+            <p class="intro__text">כל כמה שלבים שיהיו לך שלבי חזרה על החומר<br>בהם תוכלי לצבור כמות גדולה של מטבעות בתיבות</p>
+            <img class="intro__zebra intro__zebra--hoop" src="assets/zebra-hoop.webp" alt="">
+            <img class="intro__deco intro__chest" src="assets/chest-big.webp" alt="">
+          </section>
+          <section class="intro__slide">
+            <h2 class="intro__title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
+            <p class="intro__text">בכל משחק תוכלי להגריל משפט ולקנות<br>אותיות מחנות האותיות מהמטבעות שתצברי במשחק.</p>
+            <img class="intro__zebra" src="assets/zebra.webp" alt="">
+            <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
+            <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
+            <img class="intro__deco intro__shop" src="assets/shop.webp" alt="">
+          </section>
+          <!-- from the second visit on: only this card – the sentence game (the sentence in progress, or a draw) -->
+          <section class="intro__slide intro__slide--sentence" aria-labelledby="intro-sentence-title">
+            <h2 class="intro__title" id="intro-sentence-title">משחק הגרלת <span class="intro__pink">המשפטים</span></h2>
+            <p class="intro__text" id="intro-sentence-text"></p>
+            <div class="intro__sentence-pic" aria-hidden="true">
+              <img class="intro__sentence-zebra" src="assets/zebra.webp" alt="">
+              <img class="intro__deco intro__coin intro__coin--a" src="assets/coin.webp" alt="">
+              <img class="intro__deco intro__coin intro__coin--b" src="assets/coin.webp" alt="">
+            </div>
+            <div class="sentence intro__sentence" id="intro-sentence" dir="ltr" lang="en"></div>
+            <div class="intro__sentence-btns">
+              <!-- back to the intro's last slide -->
+              <button class="intro__back intro__sentence-back" type="button" id="intro-sentence-back"><img src="assets/chevron.svg" alt=""><span>חזרה</span></button>
+              <button class="btn-pill intro__draw" type="button" id="intro-draw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg><span>הגרלת משפט</span></button>
+              <a class="intro__back intro__shop-btn" href="shop.html" id="intro-shop"><img class="intro__shop-icon" src="assets/shop.webp" alt=""><span>לחנות האותיות</span><img class="intro__shop-arrow" src="assets/chevron.svg" alt=""></a>
+              <button class="btn-pill intro__go" type="button" id="intro-go"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>בואו נתחיל</span></button>
+            </div>
+          </section>
+          <div class="intro__foot">
+            <div class="intro__btns">
+              <button class="intro__back" type="button" hidden><img src="assets/chevron.svg" alt=""><span>חזרה</span></button>
+              <button class="btn-pill intro__next" type="button"><img src="assets/chevron.svg" alt="" class="btn-pill__chevron"><span>הבא</span></button>
+            </div>
+            <div class="intro__dots" role="tablist" aria-label="שקופיות"></div>
+            <button class="intro__skip" type="button">דלגו</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side menu (Figma "Sidebar - Open"); the island lists are filled by script.js -->
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+      <aside class="sidebar" id="sidebar" aria-label="תפריט" aria-hidden="true">
+        <button class="sidebar__close" id="menu-close" type="button" aria-label="סגירת התפריט">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+        </button>
+
+        <div class="sidebar__profile sb-item">
+          <div class="sidebar__who">
+            <span class="sidebar__hello">בוקר טוב</span>
+            <span class="sidebar__name">שירה כהן</span>
+          </div>
+          <span class="user__avatar sidebar__avatar">
+            <img class="user__ring" src="assets/avatar-ring.svg" alt="">
+            <img class="user__photo" src="assets/avatar.webp" alt="">
+            <span class="user__edit"><img src="assets/avatar-badge.svg" alt=""></span>
+          </span>
+        </div>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="index.html">
+            <span>ראשי</span><img src="assets/icons/home.svg" alt="">
+          </a>
+
+          <div class="sb-group is-open sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="true">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>איים</span><img src="assets/icons/island.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-worlds"></div>
+          </div>
+
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>חזרות</span><img src="assets/icons/infinity.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-reviews"></div>
+          </div>
+
+          <a class="sb-link sb-item" href="index.html?intro" id="sb-intro">
+            <span>הסבר על האתר</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-item" href="about.html">
+            <span>אודות</span><img src="assets/icons/page.svg" alt="">
+          </a>
+          <div class="sb-group sb-item">
+            <button class="sb-link sb-link--group" type="button" aria-expanded="false">
+              <img class="sb-chevron" src="assets/icons/chevron-down.svg" alt="">
+              <span>אזור אישי</span><img src="assets/icons/user.svg" alt="">
+            </button>
+            <div class="sb-sub" id="sb-personal">
+              <div class="sb-sub__inner">
+                <a class="sb-sublink" href="profile.html"><span>הפרטים שלי</span></a>
+                <a class="sb-sublink" href="admin.html"><span>מנהל – סטטוס המשתמשים</span></a>
+                <a class="sb-sublink" href="admin.html#stats"><span>נתוני התמדה</span><img class="sb-sub-icon" src="assets/icons/chart.svg" alt=""></a>
+              </div>
+            </div>
+          </div>
+          <a class="sb-link sb-link--bright sb-item" href="shop.html">
+            <span>חנות האותיות</span><img class="sb-pic" src="assets/shop.webp" alt="">
+          </a>
+          <a class="sb-link sb-item" href="profile.html">
+            <span>מה השגתי</span><img class="sb-pic" src="assets/coin.webp" alt="">
+          </a>
+          <a class="sb-link sb-item" href="#sentence" id="sb-sentence">
+            <span>הגרלת המשפטים</span><img class="sb-pic" src="assets/trophy.svg" alt="">
+          </a>
+        </nav>
+
+        <hr class="sidebar__divider sb-item">
+
+        <nav class="sidebar__nav">
+          <a class="sb-link sb-item" href="#settings">
+            <img class="sb-chevron sb-chevron--side" src="assets/icons/chevron-side.svg" alt="">
+            <span>הגדרות</span><img src="assets/icons/settings.svg" alt="">
+          </a>
+        </nav>
+
+        <nav class="sidebar__nav sidebar__nav--bottom">
+          <a class="sb-link sb-item" href="#help">
+            <span>עזרה</span><img src="assets/icons/help.svg" alt="">
+          </a>
+          <a class="sb-link sb-link--danger sb-item" href="#logout">
+            <span>התנתקות/ התחברות</span><img src="assets/icons/logout.svg" alt="">
+          </a>
+        </nav>
+      </aside>
+    </main>
+  </div>
+
+  <script src="transition.js"></script>
+  <script src="sound.js"></script>
+  <script src="islands.js"></script>
+  <script src="sentence.js"></script>
+  <script src="menu.js"></script>
+  <script src="drawer.js"></script>
+  <script src="mobile.js"></script>
+  <script src="script.js"></script>
+  <script src="intro.js"></script>
+  <div aria-hidden="true" style="position:fixed;bottom:12px;left:12px;z-index:10000;padding:4px 12px;border-radius:999px;background:#2A2577;color:#fff;font:700 14px Rubik,sans-serif;pointer-events:none">V3</div>
+  <script>
+    // V3: the stars: scattered at random, each twinkling at its own pace; a shooting star every few seconds
+    (function () {
+      const sky = document.getElementById('v3-sky');
+      if (!sky) return;
+      const rnd = (a, b) => a + Math.random() * (b - a);
+      for (let i = 0; i < 90; i++) {
+        const st = document.createElement('span');
+        st.className = 'v3-star';
+        const size = rnd(1, 2.8);
+        st.style.cssText = `left:${rnd(0, 100)}%;top:${rnd(0, 100)}%;width:${size}px;height:${size}px;--d:${rnd(1.8, 4.5)}s;--w:${rnd(-4, 0)}s`;
+        sky.appendChild(st);
+      }
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      function shoot() {
+        const el = document.createElement('span');
+        el.className = 'v3-shoot';
+        const x = rnd(25, 95), y = rnd(2, 40);
+        const angle = -rnd(15, 28); // tilted so that moving back along it heads down and to the left, bright head first
+        const dist = rnd(380, 620);
+        el.style.left = `calc(${x}% - 180px)`;
+        el.style.top = y + '%';
+        sky.appendChild(el);
+        el.animate([
+          { opacity: 0, transform: `rotate(${angle}deg) translateX(0) scaleX(.3)` },
+          { opacity: 1, offset: .15, transform: `rotate(${angle}deg) translateX(${-dist * .15}px) scaleX(1)` },
+          { opacity: 0, transform: `rotate(${angle}deg) translateX(${-dist}px) scaleX(.6)` }
+        ], { duration: rnd(900, 1400), easing: 'ease-in' }).onfinish = () => el.remove();
+        setTimeout(shoot, rnd(4000, 9000));
+      }
+      setTimeout(shoot, 2500);
+    })();
+  </script>
+</body>
+</html>

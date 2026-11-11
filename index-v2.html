@@ -12,22 +12,45 @@
   <style id="v2-bg-fit">
     /* V2: the whole video fills the screen, stretched to it (no crop, no strips at the sides) */
     .viewport video.bg { object-fit: fill; transform: none !important; }
+    /* V2: the sea sits lower, so more of each island shows above it: the background (and the water over the islands, and the sun) grow from the top edge, which pushes the horizon down */
+    :root { --v2-drop: 1; }
+    .viewport video.bg { transform: scale(var(--v2-drop)) !important; transform-origin: 50% 0; }
     /* V2: the sun slowly grows and shrinks (a glow over the sun in the video) */
-    .v2-sun { position: absolute; left: 26.5%; top: 19%; width: 42vmin; height: 42vmin; margin: -21vmin 0 0 -21vmin; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95) 0, rgba(255, 244, 200, .75) 14%, rgba(255, 226, 150, .28) 38%, rgba(255, 226, 150, 0) 68%); mix-blend-mode: screen; pointer-events: none; animation: v2-sun 12s ease-in-out infinite alternate; }
+    .v2-sun { position: absolute; left: calc(50% - 23.5% * var(--v2-drop)); top: calc(19% * var(--v2-drop)); width: 42vmin; height: 42vmin; margin: -21vmin 0 0 -21vmin; border-radius: 50%; background: radial-gradient(circle, rgba(255, 255, 255, .95) 0, rgba(255, 244, 200, .75) 14%, rgba(255, 226, 150, .28) 38%, rgba(255, 226, 150, 0) 68%); mix-blend-mode: screen; pointer-events: none; animation: v2-sun 12s ease-in-out infinite alternate; }
     @keyframes v2-sun { from { transform: scale(.8); opacity: .75; } to { transform: scale(1.3); opacity: 1; } }
-    @media (prefers-reduced-motion: reduce) { .v2-sun { animation: none; } }
+    /* V2: rays around the sun, slowly turning (two sets, turning opposite ways, so the light flickers softly) */
+    .v2-rays { position: absolute; left: calc(50% - 23.5% * var(--v2-drop)); top: calc(19% * var(--v2-drop)); width: 150vmin; height: 150vmin; margin: -75vmin 0 0 -75vmin; pointer-events: none; mix-blend-mode: screen;
+      -webkit-mask-image: radial-gradient(circle, #000 4%, rgba(0, 0, 0, .55) 22%, transparent 62%); mask-image: radial-gradient(circle, #000 4%, rgba(0, 0, 0, .55) 22%, transparent 62%); }
+    .v2-rays::before, .v2-rays::after { content: ''; position: absolute; inset: 0; border-radius: 50%; }
+    .v2-rays::before { background: repeating-conic-gradient(from 0deg, rgba(255, 248, 215, 0) 0deg, rgba(255, 248, 215, .55) 5deg, rgba(255, 248, 215, 0) 11deg, rgba(255, 248, 215, 0) 24deg); animation: v2-rays 90s linear infinite; }
+    .v2-rays::after { background: repeating-conic-gradient(from 7deg, rgba(255, 236, 180, 0) 0deg, rgba(255, 236, 180, .35) 3deg, rgba(255, 236, 180, 0) 7deg, rgba(255, 236, 180, 0) 17deg); animation: v2-rays 140s linear infinite reverse; }
+    @keyframes v2-rays { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .v2-sun, .v2-rays::before, .v2-rays::after { animation: none; } }
     /* V2: the water, over the islands */
     /* the side ticks: one colour, and only the current island stands out */
     .journey-tick, .journey-tick.is-done { background: #fff; }
     .journey-tick.is-current { background: #FFD34D; }
+    /* smaller and thinner; a clear strip either side keeps them easy to click */
+    .journey-ticks { gap: 6px; }
+    .journey-tick { box-sizing: content-box; width: 4px; height: 16px; padding: 0 5px; background-clip: content-box !important; box-shadow: none; }
+    .journey-tick.is-current { height: 32px; }
     /* z-index: above the islands (50, 100), below the "about" panel (150) */
-    .v2-water { position: absolute; z-index: 120; object-fit: fill; pointer-events: none; mix-blend-mode: multiply;
-      /* water only below the horizon, with a hole over the current island's plaque (its place is set by the script) */
-      -webkit-mask-image: linear-gradient(to bottom, transparent 51%, #000 54%), linear-gradient(#000, #000); mask-image: linear-gradient(to bottom, transparent 51%, #000 54%), linear-gradient(#000, #000);
+    .v2-water { position: absolute; z-index: 120; object-fit: fill; pointer-events: none; mix-blend-mode: multiply; opacity: .6; transform: scale(var(--v2-drop)); transform-origin: 50% -100%;
+      /* its own video: the lower half of the background (the water, no sky); it fades in just under the horizon.
+         Holes keep the current island's plaque and its round badge (lock, tick or %) out of the water; the script sets their places */
+      --hole: linear-gradient(#000, #000); --dot: radial-gradient(closest-side, #000 calc(100% - 1.5px), transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 2%, #000 8%), var(--hole), var(--dot); mask-image: linear-gradient(to bottom, transparent 2%, #000 8%), var(--hole), var(--dot);
       -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-      -webkit-mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px); mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px);
-      -webkit-mask-position: 0 0, var(--cx, 0px) var(--cy, 0px); mask-position: 0 0, var(--cx, 0px) var(--cy, 0px);
-      -webkit-mask-composite: xor; mask-composite: exclude; }
+      -webkit-mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px), var(--lw, 0px) var(--lh, 0px); mask-size: 100% 100%, var(--cw, 0px) var(--ch, 0px), var(--lw, 0px) var(--lh, 0px);
+      -webkit-mask-position: 0 0, var(--cx, 0px) var(--cy, 0px), var(--lx, 0px) var(--ly, 0px); mask-position: 0 0, var(--cx, 0px) var(--cy, 0px), var(--lx, 0px) var(--ly, 0px);
+      /* the water minus (plaque + badge) */
+      -webkit-mask-composite: source-out, source-over, source-over; mask-composite: subtract, add, add; }
+    /* V2: real frosted glass on the plaques and the end circle: an island marked for opacity changes cuts the blur off from what is behind it, so it is marked for movement only */
+    .island { will-change: transform !important; }
+    /* V2: the smiling letters island (with its plaque and badge) sits higher, so the water line meets it at the edge of the grass and its rocky underside shows through the water */
+    .island[href="smiles.html"] .island__float { top: -48px; bottom: 48px; }
+    /* V2: the letters island's plaque sits above the water line, its bottom on the horizon */
+    .journey .island[href="letters.html"] .island__card { top: 162px; }
     /* V2: no line of light between the islands */
     .journey__path, .journey__trail { display: none !important; }
     /* V2: every panel in one dark blue, on a glass effect over the video */
@@ -55,7 +78,14 @@
     .finale__note { margin: 0 !important; }
     .finale__actions { gap: 14px !important; margin-top: 2px !important; }
     .finale__btn { flex-direction: column !important; width: 172px; height: auto !important; min-height: 96px; padding: 10px 16px !important; gap: 6px !important; white-space: normal !important; line-height: 1.2; text-align: center; justify-content: center; }
-    .finale__btn .finale__chevron { transform: rotate(180deg); }
+    /* the end buttons: smaller words, softer corners, no arrow; a coin over the coins button, like the shop's icon */
+    .finale__btn { font-size: 15px !important; border-radius: 18px !important; }
+    .finale__btn .finale__chevron { display: none; }
+    .finale__btn[data-finale="reviews"]::before { content: ''; width: 34px; height: 34px; margin: -2px 0 -4px; background: url(assets/coin.webp) center / contain no-repeat; }
+    /* the icon on the right, bigger; the words beside it, aligned right, on two lines */
+    .finale__btn { flex-direction: row !important; justify-content: flex-start !important; gap: 10px !important; width: 196px; text-align: right !important; padding: 10px 14px !important; }
+    .finale__btn > span { flex: 1; min-width: 0; text-align: right; }
+    .finale__btn .finale__shop-icon, .finale__btn[data-finale="reviews"]::before { flex: none; width: 48px; height: 48px; margin: 0; }
     .finale__tile:not(.is-found):not(.finale__tile--mark) { background: rgba(255, 255, 255, .92); color: #2A2577; }
   </style>
 </head>
@@ -77,6 +107,7 @@
   <div class="viewport">
     <!-- Full-window background (outside the scaled stage so it covers the side bars too) -->
     <video class="bg" data-seamless data-speed="0.5" src="assets/bg-ocean-v2.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <div class="v2-rays" aria-hidden="true"></div>
     <div class="v2-sun" aria-hidden="true"></div>
     <main class="stage" id="stage">
 
@@ -133,7 +164,7 @@
            Scroll / swipe / arrow keys move along the path. -->
       <div class="journey" id="journey" aria-live="polite"></div>
       <!-- V2: a copy of the background, only its water, over the islands -->
-      <video class="v2-water" id="v2-water" src="assets/bg-ocean-v2.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+      <video class="v2-water" id="v2-water" src="assets/bg-ocean-v2-water.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
       <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
            button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
       <button class="drawer-handle" id="drawer-handle" type="button" aria-expanded="false" aria-controls="drawer" aria-label="כל העולמות">
@@ -365,22 +396,43 @@
         const r = stage.getBoundingClientRect();
         const k = r.width / 1920;
         water.style.left = (-r.left / k) + 'px';
-        water.style.top = (-r.top / k) + 'px';
+        water.style.top = (-r.top / k + innerHeight / k / 2) + 'px';
         water.style.width = (innerWidth / k) + 'px';
-        water.style.height = (innerHeight / k) + 'px';
+        water.style.height = (innerHeight / k / 2) + 'px';
       }
       addEventListener('resize', () => requestAnimationFrame(place));
       place();
       // the hole in the water follows the current island's plaque, so its text stays readable
+      // an element's box on screen, taking in its outer frame (outline) and anything poking out of it (the review number)
+      function box(el) {
+        if (!el || getComputedStyle(el).display === 'none') return { left: 0, top: 0, width: 0, height: 0 };
+        const b = el.getBoundingClientRect();
+        let l = b.left, t = b.top, r = b.right, btm = b.bottom;
+        for (const k of el.children) {
+          const kr = k.getBoundingClientRect();
+          if (!kr.width || !kr.height) continue;
+          l = Math.min(l, kr.left); t = Math.min(t, kr.top); r = Math.max(r, kr.right); btm = Math.max(btm, kr.bottom);
+        }
+        const cs = getComputedStyle(el);
+        const scale = b.width / el.offsetWidth || 1;
+        const pad = ((parseFloat(cs.outlineWidth) || 0) + Math.max(0, parseFloat(cs.outlineOffset) || 0) + 2) * scale;
+        return { left: l - pad, top: t - pad, width: r - l + pad * 2, height: btm - t + pad * 2 };
+      }
       function followCard() {
-        const card = document.querySelector('.island[data-slot="active"] .island__card');
+        const island = document.querySelector('.island[data-slot="active"]');
         const w = water.getBoundingClientRect();
         const k = w.width / water.offsetWidth || 1;
-        const c = card ? card.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
-        water.style.setProperty('--cx', ((c.left - w.left) / k) + 'px');
-        water.style.setProperty('--cy', ((c.top - w.top) / k) + 'px');
-        water.style.setProperty('--cw', (c.width / k) + 'px');
-        water.style.setProperty('--ch', (c.height / k) + 'px');
+        const hole = (el, x, y, wd, ht) => {
+          const r = box(el);
+          water.style.setProperty(x, ((r.left - w.left) / k) + 'px');
+          water.style.setProperty(y, ((r.top - w.top) / k) + 'px');
+          water.style.setProperty(wd, (r.width / k) + 'px');
+          water.style.setProperty(ht, (r.height / k) + 'px');
+        };
+        hole(island && island.querySelector('.island__card'), '--cx', '--cy', '--cw', '--ch');
+        hole(island && island.querySelector('.island__lock'), '--lx', '--ly', '--lw', '--lh');
+        // the end panel ("Very Good!") stays clear of the water
+        water.style.visibility = island && island.dataset.state === 'finale' ? 'hidden' : '';
         if (document.hidden) setTimeout(followCard, 500); else requestAnimationFrame(followCard);
       }
       followCard();
