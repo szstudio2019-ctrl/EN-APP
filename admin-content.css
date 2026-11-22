@@ -667,3 +667,8 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* the name and its place on the path: side by side, on one line */
 .w-sections section .w-namepos .a-field { margin-top: 0 !important; }
 .w-namepos { align-items: start; }
+/* the trash in the top row: a white tooltip with blue text, opening below */
+.w-delete { position: relative; overflow: visible; }
+.w-tip { position: absolute; top: calc(100% + 10px); left: 50%; z-index: 30; width: max-content; padding: 7px 12px; border-radius: 10px; background: #fff; color: #2A2577; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; box-shadow: 0 8px 22px rgba(20, 18, 74, .16), 0 0 0 1px var(--a-line); opacity: 0; visibility: hidden; transform: translate(-50%, -4px); transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+.w-tip::before { content: ''; position: absolute; bottom: 100%; left: 50%; width: 10px; height: 10px; background: #fff; box-shadow: -1px -1px 0 var(--a-line); transform: translate(-50%, 5px) rotate(45deg); }
+.w-delete:hover .w-tip, .w-delete:focus-visible .w-tip { opacity: 1; visibility: visible; transform: translate(-50%, 0); }

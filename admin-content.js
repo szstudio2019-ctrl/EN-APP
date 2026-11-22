@@ -56,9 +56,8 @@
   const delBtn = document.createElement('button');
   delBtn.type = 'button';
   delBtn.className = 'a-btn w-delete';
-  delBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
+  delBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg><span class="w-tip" aria-hidden="true">מחיקת האי</span>';
   delBtn.setAttribute('aria-label', 'מחיקת האי');
-  delBtn.title = 'מחיקת האי';
   plus.after(delBtn);
   delBtn.addEventListener('click', () => {
     const w = mode === 'edit' && picked();
