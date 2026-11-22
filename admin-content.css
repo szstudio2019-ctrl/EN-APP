@@ -509,3 +509,6 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* each stage's row: a band in the page's light blue, with a small gap between stages */
 .w-st__head { padding: 6px 14px; border-radius: 12px; background: var(--a-page); }
 .w-st + .w-st { border-top: 0; margin-top: 8px; }
+
+/* the islands list: a blue title instead of the count and the how-to */
+.w-list__title { margin: 0 4px 12px; font-size: 20px; font-weight: 600; color: #2A2577; }
