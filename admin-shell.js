@@ -31,7 +31,7 @@
     ['home', 'admin-home.html', 'ראשי', I('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'), page === 'home'],
     '-',
     ['islands', 'admin-content.html', 'עריכת איים', '<svg class="is-fill" viewBox="0 0 64 52" aria-hidden="true"><path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/><path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/><path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/></svg>', page === 'content' && sub === 'islands'],
-    ['about', 'admin-about.html', 'עריכת אודות', I('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'), page === 'content' && sub === 'about'],
+    ['about', 'admin-about.html', 'עריכת אודות', I('<path d="M17 4.6A8.6 8.6 0 1 0 19.6 17"/><rect x="9" y="8.2" width="7.4" height="8.8" rx="1.6" transform="rotate(-10 12.7 12.6)" fill="currentColor" stroke="none"/>'), page === 'content' && sub === 'about'],
     ['intro', 'admin-intro.html', 'הסבר על האתר', I('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'), page === 'content' && sub === 'intro'],
     ['cards', 'admin-cards.html', 'חנות כרטיסים', I('<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/>'), page === 'content' && sub === 'cards'],
     ['raffle', 'admin-sentences.html', 'משפטי הגרלה', I('<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2"/><circle cx="15.5" cy="15.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/>'), page === 'content' && sub === 'raffle'],
@@ -316,8 +316,60 @@
       box.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !list.hidden) { e.stopPropagation(); setOpen(false); btn.focus(); } });
       label();
     },
-    // the sticky save bar: { el, setDirty(bool) }; buttons only while there are changes;
-    // leaving the page with unsaved changes asks first
+    // SaveButton: one save button for the whole admin. States (data-status):
+    // idle (no changes, disabled) · dirty · saving (spinner, locked, same width) · saved (green "נשמר ✓" for 2s, then idle).
+    // A failed save goes back to dirty with a small red note under the button.
+    // saveButton(btn, { onSave, label }) → { setDirty, isDirty, run, status, onStatus }
+    saveButton(btn, { onSave, label = 'שמירה' } = {}) {
+      btn.classList.add('a-savebtn');
+      btn.classList.remove('a-btn--primary');
+      let wrap = btn.parentElement && btn.parentElement.classList.contains('a-savebtn-wrap') ? btn.parentElement : null;
+      if (!wrap) { wrap = document.createElement('span'); wrap.className = 'a-savebtn-wrap'; btn.replaceWith(wrap); wrap.append(btn); }
+      let err = wrap.querySelector('.a-savebtn__err');
+      if (!err) { err = document.createElement('small'); err.className = 'a-savebtn__err'; err.setAttribute('role', 'alert'); wrap.append(err); }
+      let status = 'idle';
+      let timer = 0;
+      const subs = [];
+      const paint = () => {
+        btn.dataset.status = status;
+        btn.disabled = status !== 'dirty';
+        btn.setAttribute('aria-busy', String(status === 'saving'));
+        btn.innerHTML = status === 'saving' ? '<span class="a-savebtn__spin" aria-hidden="true"></span>שומר…'
+          : status === 'saved' ? 'נשמר ✓' : esc(label);
+        // the width stays put while saving and while 'נשמר ✓' shows
+        if (status === 'idle' || status === 'dirty') btn.style.width = '';
+        subs.forEach((fn) => fn(status));
+      };
+      const set = (s) => { status = s; paint(); };
+      const api = {
+        status: () => status,
+        isDirty: () => status === 'dirty' || status === 'saving',
+        onStatus: (fn) => subs.push(fn),
+        setDirty(d) {
+          if (status === 'saving') return;
+          if (d) { clearTimeout(timer); err.textContent = ''; set('dirty'); } else if (status !== 'saved') set('idle');
+        },
+        run() {
+          if (status !== 'dirty') return;
+          err.textContent = '';
+          btn.style.width = `${btn.offsetWidth}px`;
+          set('saving');
+          setTimeout(() => {
+            let ok = true;
+            try { ok = onSave() !== false; } catch (e) { ok = false; }
+            if (!ok) { err.textContent = 'השמירה נכשלה, נסי שוב'; set('dirty'); return; }
+            set('saved');
+            clearTimeout(timer);
+            timer = setTimeout(() => { if (status === 'saved') set('idle'); }, 2000);
+          }, 450);
+        },
+      };
+      // a form's submit button: the form checks its fields first, then calls run()
+      btn.addEventListener('click', (e) => { if (btn.type === 'submit') return; e.preventDefault(); api.run(); });
+      paint();
+      return api;
+    },
+    // the sticky save bar: { el, setDirty(bool) }; leaving the page with unsaved changes asks first
     saveBar({ onSave, onCancel }) {
       const el = document.createElement('div');
       el.className = 'a-save';
@@ -325,30 +377,29 @@
           <span class="a-save__status" role="status" aria-live="polite">כל השינויים נשמרו</span>
           <div class="a-save__actions">
             <button type="button" class="a-btn a-btn--ghost" data-cancel>נקה שינויים</button>
-            <button type="button" class="a-btn a-btn--primary" data-save>שמירה</button>
+            <button type="button" data-save>שמירה</button>
           </div>
         </div>`;
-      let dirty = false;
       const status = el.querySelector('.a-save__status');
-      const saveBtn = el.querySelector('[data-save]');
+      const save = UI.saveButton(el.querySelector('[data-save]'), { onSave });
       const setDirty = (d) => {
-        dirty = d;
+        save.setDirty(d);
         el.classList.toggle('is-dirty', d);
-        saveBtn.disabled = !d;
         status.textContent = d ? 'יש שינויים שלא נשמרו' : 'כל השינויים נשמרו';
       };
-      el.querySelector('[data-save]').addEventListener('click', () => { onSave(); setDirty(false); });
+      save.onStatus((s) => { if (s === 'saved') { el.classList.remove('is-dirty'); status.textContent = 'כל השינויים נשמרו'; } });
       el.querySelector('[data-cancel]').addEventListener('click', () => { onCancel(); setDirty(false); });
-      window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
-      // links inside the admin (the top bar) ask too, in Hebrew
+      window.addEventListener('beforeunload', (e) => { if (save.isDirty()) { e.preventDefault(); e.returnValue = ''; } });
+      // links inside the admin ask too, in Hebrew
+      let leaving = false;
       document.addEventListener('click', (e) => {
         const a = e.target.closest('a[href]');
-        if (!a || !dirty || a.target === '_blank') return;
+        if (!a || leaving || !save.isDirty() || a.target === '_blank') return;
         if (!confirm('יש שינויים שלא נשמרו. לצאת בלי לשמור?')) e.preventDefault();
-        else dirty = false;
+        else leaving = true;
       }, true);
       setDirty(false);
-      return { el, setDirty, isDirty: () => dirty };
+      return { el, setDirty, isDirty: save.isDirty, save };
     },
     ICON: {
       chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',

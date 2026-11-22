@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin-ui.css?v=20261122p">
+  <link rel="stylesheet" href="admin-ui.css?v=20261122r">
 </head>
 <body class="a-body" data-page="me">
   <main class="a-main">
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <section class="a-card me-card" aria-label="עריכת הפרטים שלי">
+    <form class="a-card me-card" id="me-form" novalidate aria-label="עריכת הפרטים שלי">
       <div class="me-photo">
         <label class="me-photo__pic" for="me-file" aria-label="החלפת התמונה"><img id="me-img" src="assets/team-einat.webp" alt=""></label>
         <div class="me-photo__btns">
@@ -32,15 +32,18 @@
       <div class="a-grid me-grid">
         <label class="a-field"><span>שם פרטי</span><input id="me-first" autocomplete="given-name"></label>
         <label class="a-field"><span>שם משפחה</span><input id="me-last" autocomplete="family-name"></label>
-        <label class="a-field"><span>אימייל</span><input id="me-email" type="email" dir="ltr" autocomplete="email"></label>
+        <label class="a-field"><span>אימייל</span><input id="me-email" type="email" dir="ltr" autocomplete="email" aria-describedby="me-email-err"><small class="me-err" id="me-email-err" role="alert"></small></label>
         <label class="a-field"><span>טלפון</span><input id="me-phone" type="tel" dir="ltr" autocomplete="tel"></label>
         <label class="a-field a-wide"><span>תפקיד</span><input id="me-role"></label>
       </div>
-    </section>
+      <div class="me-foot">
+        <button type="submit" id="me-save">שמירה</button>
+      </div>
+    </form>
   </main>
 
   <script src="islands.js"></script>
-  <script src="admin-shell.js?v=20261122p"></script>
+  <script src="admin-shell.js?v=20261122r"></script>
   <script>
     (function () {
       const { UI, Me } = window.Admin;
@@ -52,13 +55,18 @@
         Object.entries(FIELDS).forEach(([k, id]) => { $(id).value = cur[k] || ''; });
         $('me-img').src = cur.photo || 'assets/team-einat.webp';
       };
-      const bar = UI.saveBar({
-        onSave: () => { saved = { ...cur }; Me.save(saved); Me.paint(saved); },
-        onCancel: () => { cur = { ...saved }; fill(); },
+      // "יש שינויים" = the form differs from what is saved
+      const save = UI.saveButton($('me-save'), { onSave: () => { saved = { ...cur }; Me.save(saved); Me.paint(saved); } });
+      const changed = () => save.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
+      Object.entries(FIELDS).forEach(([k, id]) => $(id).addEventListener('input', (e) => { cur[k] = e.target.value.trim(); if (k === 'email') $('me-email-err').textContent = ''; changed(); }));
+      // a basic check of the email before saving
+      $('me-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = $('me-email');
+        if (email.value.trim() && !email.checkValidity()) { $('me-email-err').textContent = 'כתובת האימייל לא תקינה'; email.focus(); return; }
+        save.run();
       });
-      document.querySelector('.a-head').appendChild(bar.el);
-      const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
-      Object.entries(FIELDS).forEach(([k, id]) => $(id).addEventListener('input', (e) => { cur[k] = e.target.value; changed(); }));
+      window.addEventListener('beforeunload', (e) => { if (save.isDirty()) { e.preventDefault(); e.returnValue = ''; } });
       $('me-file').addEventListener('change', (e) => {
         const f = e.target.files && e.target.files[0];
         if (!f || !f.type.startsWith('image/')) return;
@@ -71,7 +79,8 @@
           c.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, S, S);
           cur.photo = c.toDataURL('image/webp', 0.85);
           URL.revokeObjectURL(url);
-          fill(); changed();
+          $('me-img').src = cur.photo;
+          changed();
         };
         img.src = url;
       });

@@ -23,6 +23,16 @@
   });
   head.appendChild(bar.el);
   const changed = () => bar.setDirty(JSON.stringify(list) !== JSON.stringify(saved));
+  // the last step's "שמירה" shows the shared save button's state (no changes / saving / saved)
+  function syncSaveNow() {
+    const b = edit.querySelector('[data-save-now]');
+    if (!b) return;
+    const st = bar.save.status();
+    b.dataset.status = st;
+    b.disabled = st !== 'dirty';
+    b.innerHTML = st === 'saving' ? '<span class="a-savebtn__spin" aria-hidden="true"></span>שומר…' : st === 'saved' ? 'נשמר ✓' : 'שמירה';
+  }
+  bar.save.onStatus(() => syncSaveNow());
   const picked = () => list.find((w) => w.id === pickedId);
   const subOf = (w) => (w.review ? (w.kicker || 'עולם חזרה') : `${w.written} מתוך ${w.planned} שיעורים`);
   const imgSrc = (w, small) => (w.imgData || (w.img ? `assets/${small ? 'map/' : ''}${w.img}.webp` : ''));
@@ -347,7 +357,7 @@
       <button class="a-btn a-btn--ghost" type="button" data-go="${step - 1}"${step === 0 ? ' disabled' : ''}>חזור</button>
       <div class="w-stepnav__end">${step < STEPS.length - 1
         ? `<button class="a-btn w-draft" type="button" data-save-draft>שמור כטיוטה</button><button class="a-btn a-btn--primary" type="button" data-go="${step + 1}">הבא</button>`
-        : '<button class="a-btn a-btn--primary" type="button" data-save-now>שמירה</button>'}</div>
+        : '<button class="a-savebtn" type="button" data-save-now>שמירה</button>'}</div>
     </div>`;
   /* ---------- the stages: each opens to its lessons and its practices (two-level accordion) ---------- */
   // read from what the island already has; nothing is written until something is edited
@@ -709,6 +719,7 @@
     ][step];
     edit.innerHTML = `<div class="a-card w-sections w-tabbed" role="tabpanel">${topRow(w, stepsBar())}<h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2><section>${part}</section>${stepNav()}</div>`;
     placeActions();
+    syncSaveNow();
     applyOpen();
     drawPreview();
   }
@@ -812,11 +823,9 @@
     const sv = e.target.closest('[data-save-draft],[data-save-now]');
     if (sv) {
       if (sv.hasAttribute('data-save-draft')) { w.published = false; drawList(); drawPreview(); changed(); }
-      if (bar.isDirty()) bar.el.querySelector('[data-save]').click();
-      const label = sv.textContent;
-      sv.textContent = 'נשמר ✓';
+      // the shared save button does the saving (spinner, "נשמר ✓", or a note if it failed)
+      bar.save.run();
       live.textContent = 'השינויים נשמרו';
-      setTimeout(() => { sv.textContent = label; }, 1500);
       return;
     }
     if (e.target.closest('[data-wtab-add]')) {

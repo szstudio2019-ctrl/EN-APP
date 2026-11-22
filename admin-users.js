@@ -95,7 +95,41 @@
         <td>${UI.switchHtml(`act-${i}`, u.active, `${u.first} ${u.last} פעיל`)}</td>
       </tr>${i === inline ? editorRow(u, i) : i === dataOpen ? dataPanel(u) : ''}`;
     }).join('');
+    if (inline >= 0) wireEditorSave();
   }
+  // the edit row's "שמירה" is the shared save button: no changes → greyed; saving → spinner; then "נשמר ✓" and the row closes
+  const EDIT_IDS = { first: 'e-first', last: 'e-last', user: 'e-user', grade: 'e-grade', email: 'e-email', phone: 'e-phone', end: 'e-end' };
+  let editSave = null;
+  function editorValues() {
+    const v = (id) => (document.getElementById(id) || {}).value || '';
+    return { ...Object.fromEntries(Object.entries(EDIT_IDS).map(([k, id]) => [k, v(id).trim()])), photo: inlinePhoto };
+  }
+  function editorDirty() {
+    const u = users[inline];
+    if (!u) return false;
+    const now = editorValues();
+    const was = { first: u.first, last: u.last, user: u.user, grade: Users.gradeOf(u), email: u.email, phone: u.phone, end: u.end, photo: u.photo || '' };
+    return Object.keys(now).some((k) => String(now[k] || '') !== String(was[k] || '')) || !!(document.getElementById('e-pass') || {}).value;
+  }
+  function wireEditorSave() {
+    const btn = rows.querySelector('#e-form [type="submit"]');
+    if (!btn) return;
+    const at = inline;
+    editSave = UI.saveButton(btn, {
+      onSave: () => {
+        Object.assign(users[at], editorValues());
+        // the new password is not kept in this demo (no passwords in the browser's storage)
+        Users.save();
+      },
+    });
+    editSave.onStatus((st) => {
+      if (st !== 'saved') return;
+      setTimeout(() => { if (inline !== at) return; inline = -1; render(); const back = rows.querySelector(`[data-edit="${at}"]`); if (back) back.focus(); }, 900);
+    });
+    editSave.setDirty(editorDirty());
+  }
+  rows.addEventListener('input', (e) => { if (editSave && e.target.closest('#e-form')) editSave.setDirty(editorDirty()); });
+  rows.addEventListener('change', (e) => { if (editSave && e.target.closest('#e-form') && e.target.id !== 'e-photo') editSave.setDirty(editorDirty()); });
 
   rows.addEventListener('change', (e) => {
     const box = e.target.closest('input[id^="act-"]');
@@ -237,14 +271,7 @@
     e.preventDefault();
     const v = (id) => document.getElementById(id).value.trim();
     if (!v('e-first') || !v('e-user') || !v('e-end')) { (['e-first', 'e-user', 'e-end'].map((id) => document.getElementById(id)).find((el) => !el.value.trim()) || {}).focus?.(); return; }
-    Object.assign(users[inline], { first: v('e-first'), last: v('e-last'), user: v('e-user'), grade: v('e-grade'), email: v('e-email'), phone: v('e-phone'), end: v('e-end'), photo: inlinePhoto });
-    // the new password is not kept in this demo (no passwords in the browser's storage)
-    Users.save();
-    const i = inline;
-    inline = -1;
-    render();
-    const back = rows.querySelector(`[data-edit="${i}"]`);
-    if (back) back.focus();
+    if (editSave) editSave.run();
   });
 
 
