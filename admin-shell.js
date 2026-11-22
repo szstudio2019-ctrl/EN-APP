@@ -30,8 +30,8 @@
   const RAIL = [
     ['home', 'admin-home.html', 'ראשי', I('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'), page === 'home'],
     '-',
-    ['islands', 'admin-content.html', 'עריכת איים', '<svg class="is-fill" viewBox="0 0 64 52" aria-hidden="true"><path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/><path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/><path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/></svg>', page === 'content' && sub === 'islands'],
-    ['about', 'admin-about.html', 'עריכת אודות', I('<path d="M17 4.6A8.6 8.6 0 1 0 19.6 17"/><rect x="9" y="8.2" width="7.4" height="8.8" rx="1.6" transform="rotate(-10 12.7 12.6)" fill="currentColor" stroke="none"/>'), page === 'content' && sub === 'about'],
+    ['islands', 'admin-content.html', 'איים', '<svg class="is-fill" viewBox="0 0 64 52" aria-hidden="true"><path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/><path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/><path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/></svg>', page === 'content' && sub === 'islands'],
+    ['about', 'admin-about.html', 'אודות', I('<path d="M17 4.6A8.6 8.6 0 1 0 19.6 17"/><rect x="9" y="8.2" width="7.4" height="8.8" rx="1.6" transform="rotate(-10 12.7 12.6)" fill="currentColor" stroke="none"/>'), page === 'content' && sub === 'about'],
     ['intro', 'admin-intro.html', 'הסבר על האתר', I('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'), page === 'content' && sub === 'intro'],
     ['cards', 'admin-cards.html', 'חנות כרטיסים', I('<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/>'), page === 'content' && sub === 'cards'],
     ['raffle', 'admin-sentences.html', 'משפטי הגרלה', I('<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2"/><circle cx="15.5" cy="15.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/>'), page === 'content' && sub === 'raffle'],
