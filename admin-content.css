@@ -576,3 +576,21 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
   .w-layout { flex: 1; height: auto; min-height: 0; }
 }
 .has-rail .a-head { justify-content: flex-start; text-align: start; padding-inline-start: 0; }
+
+/* ---------- the islands panel's head: the title on the right, "+ הוספה" on the left ---------- */
+.w-list__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 4px 12px; }
+.w-list__head .w-list__title { margin: 0; }
+.w-list__head .w-plus { position: relative; }
+.w-list__head .w-plus__btn { width: auto; min-width: 0; height: 36px; min-height: 36px; padding: 0 14px 0 16px; gap: 6px; display: inline-flex; align-items: center; border: 0; border-radius: 18px; background: #E0345C; color: #fff; font: inherit; font-size: 14px; font-weight: 600; box-shadow: none; transform: none; cursor: pointer; transition: background-color 150ms ease; }
+.w-list__head .w-plus__btn:hover { background: #C42A4E; }
+.w-list__head .w-plus__btn:active { background: #A8223F; }
+.w-list__head .w-plus__btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(224, 52, 92, .35); }
+.w-list__head .w-plus__btn svg { width: 18px; height: 18px; }
+.w-list__head .w-plus__btn span { position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: nowrap; }
+.w-list__head .w-plus__menu { top: calc(100% + 8px); left: 0; right: auto; }
+
+/* ---------- "+ הוספת שלב": the next empty place in the stages list ---------- */
+.w-ladd { width: 100%; height: 40px; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14px; border: 1.5px dashed #E0345C; border-radius: 10px; background: #FFF5F8; color: #E0345C; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease; }
+.w-ladd:hover { background: #FDE8EE; }
+.w-ladd:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(224, 52, 92, .35); }
+.w-ladd svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }

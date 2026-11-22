@@ -44,7 +44,6 @@
   plus.innerHTML = `<button class="w-plus__btn" type="button" id="w-plus" aria-haspopup="menu" aria-expanded="false" aria-controls="w-plus-menu" ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>הוספה</span></button>
     <div class="w-plus__menu" id="w-plus-menu" role="menu" hidden>
       <button type="button" role="menuitem" data-new="world"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 15h18l-3 3.5H6z"/><path d="M9 21l1-2.5M15 21l-1-2.5"/><path d="M12 15V8"/><path d="M12 8c-1.5-2-4-2.3-5.5-1.2M12 8c1.5-2 4-2.3 5.5-1.2M12 8c-.6-2.2.4-4 2-4.8"/></svg></span>הוספת עולם</button>
-      <button type="button" role="menuitem" data-new="lesson"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"/><path d="M12 6.5v13"/></svg></span>הוספת שלב</button>
       <button type="button" role="menuitem" data-new="review"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></span>הוספת חזרה</button>
     </div>`;
   head.appendChild(plus);
@@ -83,8 +82,32 @@
     const b = e.target.closest('[data-new]');
     if (!b) return;
     closeMenu(false);
-    startNew(b.dataset.new);
+    addNow(b.dataset.new);
   });
+  // a new world / review goes to the end of the list, opens for editing, and the list scrolls to it
+  function addNow(kind) {
+    startNew(kind);
+    const w = { ...draft, name: draft.name || 'עולם חדש' };
+    list.push(w);
+    pickedId = w.id;
+    mode = 'edit';
+    draft = null;
+    step = 0;
+    viewTab = 'edit';
+    drawAll();
+    changed();
+    const li = items.querySelector(`[data-id="${w.id}"]`);
+    if (li) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    const f = $('f-name');
+    if (f) { f.focus(); f.select(); }
+    live.textContent = `${w.name} נוסף/ה בסוף הרשימה`;
+  }
+  // the button sits in the islands panel's head, beside its title
+  const listTitle = $('w-list-title');
+  const listHead = document.createElement('div');
+  listHead.className = 'w-list__head';
+  listTitle.replaceWith(listHead);
+  listHead.append(listTitle, plus);
 
   /* ---------- the list ---------- */
   const opened = new Set();
@@ -665,7 +688,7 @@
       stageMsg.clear();
     }
     return `<ol class="w-stages">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
-        <button class="a-btn a-btn--ghost w-ladd" type="button" data-wtab-add>+ הוספת שלב</button>`;
+        <button class="w-ladd" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
   }
   // one open at each level; only classes change, so the height animates
   function applyOpen() {
@@ -1031,7 +1054,7 @@
   // the page's buttons sit on the tabs' row, just above the white card; הוספה at the far left
   const actions = document.createElement('div');
   actions.className = 'w-actions';
-  actions.append(bar.el, pubTop, delBtn, plus);
+  actions.append(bar.el, pubTop, delBtn);
   document.querySelector('.w-layout').appendChild(actions);
   edit.addEventListener('change', (e) => {
     if (e.target.id !== 'f-pub') return;
