@@ -314,3 +314,6 @@
 .c-tip__t { font-size: 12px; padding: 5px 10px; line-height: 1.4; right: 0; transform: translate(0, 4px); }
 .c-tip:hover .c-tip__t, .c-tip:focus-within .c-tip__t { transform: translate(0, 0); }
 .c-tip__t::after { right: 12px; transform: translate(50%, -5px) rotate(45deg); }
+
+/* card tools: the image button centred in its box and at the card's left end */
+.c-card__tools .c-card__pic.c-tip { display: grid; place-items: center; margin-right: auto; }

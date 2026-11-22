@@ -659,3 +659,10 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 .a-tip, .a-info__tip { font-weight: 400; }
 .a-info__tip { top: auto; bottom: calc(100% + 8px); }
 .a-tip, .a-info__tip { font-size: 12px; }
+
+/* every switch: a lighter blue when on; white with a thin border when off */
+.a-switch__track { background: #fff !important; box-shadow: inset 0 0 0 1.5px #C9C7DD; }
+.a-switch__track::after { background: #B8B6CC !important; box-shadow: none !important; }
+.a-switch input:checked + .a-switch__track { background: #5468E7 !important; box-shadow: none; }
+.a-switch input:checked + .a-switch__track::after { background: #fff !important; box-shadow: 0 1px 2px rgba(0, 0, 0, .2) !important; }
+.a-switch input:focus-visible + .a-switch__track { box-shadow: inset 0 0 0 1.5px #C9C7DD, 0 0 0 3px rgba(84, 104, 231, .3); }
