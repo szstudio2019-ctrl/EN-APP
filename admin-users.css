@@ -71,3 +71,10 @@
 
 /* the opened row (edit or data) on the page background */
 .a-table tr.is-open > td, .u-editor-row > td, .u-panel-row > td { background: var(--a-page); }
+
+/* no inner scroll: the table grows with its rows and the page scrolls; the column titles stay under the header */
+.u-scroll { max-height: none; min-height: 0; scrollbar-gutter: auto; }
+@media (min-width: 1100px) {
+  .u-scroll { overflow: visible; }
+  .u-scroll thead th { top: 56px; }
+}
