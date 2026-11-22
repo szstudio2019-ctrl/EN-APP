@@ -261,3 +261,13 @@
 .c-sumbox__l1 b { font-size: 18px; font-weight: 600; color: #E33563; }
 .c-sumbox__l2 { margin-top: 4px !important; font-size: 13px; color: var(--a-text-2); }
 .a-head:has(.c-sumbox) { align-items: center; }
+
+/* about – the view: the page's background fills the white area; the content runs its full width */
+.t-layout.is-tabs .t-side:has(.pv-about--full) { padding: 0; overflow: hidden; }
+.t-layout.is-tabs .t-side .pv-about--full { max-width: none; min-height: 100%; margin: 0; padding: 40px 48px 56px; background: #F4F3FA center / cover no-repeat; }
+.pv-about--full .pv-about__hero, .pv-about--full > p, .pv-about--full blockquote, .pv-about--full .pv-about__cards div { position: relative; }
+.pv-about--full .pv-about__hero { padding: 18px 20px; border-radius: 16px; background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.pv-about--full > p { padding: 0 4px; text-shadow: 0 1px 0 rgba(255, 255, 255, .6); }
+.pv-about--full blockquote, .pv-about--full .pv-about__cards div { background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.pv-about--full > p { padding: 10px 16px; border-radius: 14px; background: rgba(255, 255, 255, .62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #2F2B66; text-shadow: none; }
+.pv-about--full > p + p { margin-top: -2px; }
