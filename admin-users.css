@@ -116,3 +116,24 @@
 .u-chip--steady[aria-pressed="true"] { box-shadow: inset 0 0 0 2px #F08A3C; }
 .u-chip--top[aria-pressed="true"] b { background: #F2B705; color: #fff; }
 .u-chip--steady[aria-pressed="true"] b { background: #F08A3C; color: #fff; }
+
+/* ---------- the filter chips: one row, each with a check box on its right ---------- */
+.u-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.u-chips .u-chip { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 18px; border-radius: 22px; background: #EFEFF8; color: var(--a-text); font-weight: 600; white-space: nowrap; cursor: pointer; box-shadow: none; transition: background .15s ease, box-shadow .15s ease; }
+.u-chips .u-chip:hover { background: #E4E3F3; }
+.u-chip__box { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+.u-chip__tick { flex: none; width: 18px; height: 18px; display: grid; place-items: center; border: 2px solid #B9B6D9; border-radius: 5px; background: #fff; transition: background .15s ease, border-color .15s ease; }
+.u-chip__box:checked + .u-chip__tick { border-color: #2A2577; background: #2A2577; }
+.u-chip__box:checked + .u-chip__tick::after { content: ''; width: 4px; height: 9px; border: solid #fff; border-width: 0 2.2px 2.2px 0; transform: translateY(-1px) rotate(45deg); }
+.u-chip__box:focus-visible + .u-chip__tick { box-shadow: 0 0 0 3px rgba(80, 65, 146, .35); }
+.u-chips .u-chip b { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; background: #fff; color: #C81E55; font-size: 13px; font-weight: 600; }
+/* a ticked chip: a navy line around it and its number in navy */
+.u-chips .u-chip:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 2px #2A2577; }
+.u-chips .u-chip:has(.u-chip__box:checked) b { background: #2A2577; color: #fff; }
+/* the achievements keep their colours when ticked */
+.u-chips .u-chip--top:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 2px #F2B705; }
+.u-chips .u-chip--top:has(.u-chip__box:checked) b, .u-chip--top .u-chip__box:checked + .u-chip__tick { background: #F2B705; border-color: #F2B705; color: #fff; }
+.u-chips .u-chip--steady:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 2px #F08A3C; }
+.u-chips .u-chip--steady:has(.u-chip__box:checked) b, .u-chip--steady .u-chip__box:checked + .u-chip__tick { background: #F08A3C; border-color: #F08A3C; color: #fff; }
+.u-chips .u-chip img, .u-chips .u-chip svg { width: 20px; height: 20px; flex: none; }
+.u-chips .u-chip:hover .u-chip__tip { opacity: 1; visibility: visible; }

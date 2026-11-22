@@ -8,7 +8,6 @@
   const empty = document.getElementById('u-empty');
   const search = document.getElementById('u-search');
   const filterBox = document.getElementById('u-filter');
-  let filter = 'all';
   let grades = [];
   const inGrade = (u) => !grades.length || grades.includes(Users.gradeOf(u));
   const gradeBox = document.getElementById('u-grade');
@@ -28,43 +27,50 @@
     return '<span class="a-badge" aria-hidden="true"></span>';
   }
 
-  function drawFilter() {
-    const users = Users.all().filter(inGrade);
-    filterBox.innerHTML = UI.segHtml('סינון משתמשים', [
-      ['all', 'הכל', users.length],
-      ['active', 'פעילים', users.filter((u) => u.active).length],
-      ['inactive', 'לא פעילים', users.filter((u) => !u.active).length],
-      ['expiring', 'המנוי פג בקרוב', users.filter(Users.expiring).length],
-    ], filter);
-  }
-  UI.wireSeg(filterBox, (k) => { filter = k; render(); });
-
-  // the achievement chips: each one on or off by itself; with both on, either one shows
-  const achBox = document.getElementById('u-ach');
+  // one row of filter chips, each with a check box on its right; several can be ticked:
+  // the statuses ticked show any of them, the achievements ticked show any of them, and both groups together narrow down
+  const st = new Set();
   const ach = new Set();
-  const inStatus = (u) => filter === 'all' || (filter === 'active' && u.active) || (filter === 'inactive' && !u.active) || (filter === 'expiring' && Users.expiring(u));
+  const STATUS = {
+    active: (u) => u.active,
+    inactive: (u) => !u.active,
+    expiring: (u) => Users.expiring(u),
+  };
+  const inStatus = (u) => !st.size || [...st].some((k) => STATUS[k](u));
   const inAch = (u) => !ach.size || ach.has(levelOf(u));
   const CHIPS = [
     ['top', 'מצטיינים', 'שיחקו ברוב הימים', '<img src="assets/trophy.svg" alt="">'],
     ['steady', 'מתמידים', 'משתדלים לשחק', MEDAL],
   ];
-  function drawAch() {
-    // the numbers follow the status (and grade) picked now
-    const base = Users.all().filter(inGrade).filter(inStatus);
-    achBox.innerHTML = `<div class="u-ach" role="group" aria-label="סינון לפי הישגים"><span class="u-ach__sep" aria-hidden="true"></span>${CHIPS.map(([k, name, tip, icon]) => `<button type="button" class="u-chip u-chip--${k}" data-ach="${k}" aria-pressed="${ach.has(k)}" aria-describedby="u-tip-${k}"><i class="u-chip__check" aria-hidden="true">✓</i>${icon}<span>${name}</span><b>${base.filter((u) => levelOf(u) === k).length}</b><span class="u-chip__tip" id="u-tip-${k}" role="tooltip">${tip}</span></button>`).join('')}</div>`;
+  const chip = (group, k, label, n, on, extra = '') => `<label class="u-chip u-chip--${k}"${extra}><input type="checkbox" class="u-chip__box" data-${group}="${k}"${on ? ' checked' : ''}><span class="u-chip__tick" aria-hidden="true"></span>${label}<b>${n}</b></label>`;
+  function drawFilter() {
+    const users = Users.all().filter(inGrade);
+    // the achievements' numbers follow the statuses (and grades) ticked now
+    const base = users.filter(inStatus);
+    filterBox.innerHTML = `<div class="u-chips" role="group" aria-label="סינון משתמשים">
+      ${chip('all', 'all', '<span>הכל</span>', users.length, !st.size && !ach.size)}
+      ${chip('st', 'active', '<span>פעילים</span>', users.filter(STATUS.active).length, st.has('active'))}
+      ${chip('st', 'inactive', '<span>לא פעילים</span>', users.filter(STATUS.inactive).length, st.has('inactive'))}
+      ${chip('st', 'expiring', '<span>המנוי פג בקרוב</span>', users.filter(STATUS.expiring).length, st.has('expiring'))}
+      ${CHIPS.map(([k, name, tip, icon]) => chip('ach', k, `${icon}<span>${name}</span><span class="u-chip__tip" role="tooltip">${tip}</span>`, base.filter((u) => levelOf(u) === k).length, ach.has(k), ` title="${tip}"`)).join('')}
+    </div>`;
   }
-  achBox.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-ach]');
-    if (!b) return;
-    const k = b.dataset.ach;
-    if (ach.has(k)) ach.delete(k); else ach.add(k);
+  filterBox.addEventListener('change', (e) => {
+    const box = e.target.closest('.u-chip__box');
+    if (!box) return;
+    if (box.dataset.all) { st.clear(); ach.clear(); }
+    else {
+      const set = box.dataset.st ? st : ach;
+      const k = box.dataset.st || box.dataset.ach;
+      if (box.checked) set.add(k); else set.delete(k);
+    }
+    const key = box.dataset.all ? '[data-all]' : box.dataset.st ? `[data-st="${box.dataset.st}"]` : `[data-ach="${box.dataset.ach}"]`;
     render();
-    achBox.querySelector(`[data-ach="${k}"]`).focus();
+    filterBox.querySelector(key).focus();
   });
 
   function render() {
     drawFilter();
-    drawAch();
     const q = search.value.trim().toLowerCase();
     const list = users.map((u, i) => [u, i])
       .filter(([u]) => inGrade(u))
@@ -319,7 +325,7 @@
     else users.unshift({ id: `${data.user}-${Date.now()}`, ...data });
     Users.save();
     close();
-    if (editing < 0) { filter = 'all'; search.value = ''; }
+    if (editing < 0) { st.clear(); ach.clear(); search.value = ''; }
     render();
   });
 
