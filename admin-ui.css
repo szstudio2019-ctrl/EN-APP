@@ -427,3 +427,36 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* every admin scrollbar: a soft lavender */
 html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: #C4C0E3 !important; }
 @supports not selector(::-webkit-scrollbar) { html, .a-body * { scrollbar-color: #C4C0E3 transparent !important; } }
+
+/* ---------- the admin's own compact header: 56px, full width, stuck to the top (the student header is untouched) ---------- */
+.a-top { height: 56px; padding: 0; background: #2A2577; }
+.a-top .a-top__in { max-width: none; height: 56px; padding: 0 16px; gap: 12px; border-radius: 0; box-shadow: none; background: #2A2577; }
+.a-top__mid { justify-self: center; display: flex; align-items: center; gap: 10px; min-width: 0; }
+.a-top .a-logo { width: 32px; height: 32px; flex: none; }
+.a-top .a-logo img { display: block; width: 32px; height: 32px; border-radius: 9px; }
+.a-crumb { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 15px; white-space: nowrap; color: rgba(255, 255, 255, .75); }
+.a-crumb a { color: inherit; text-decoration: none; }
+.a-crumb a:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.a-crumb__sep { color: rgba(255, 255, 255, .4); }
+.a-crumb b { color: #fff; font-weight: 600; }
+.a-info { position: relative; display: inline-flex; }
+.a-info__btn { width: 26px; height: 26px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: rgba(255, 255, 255, .75); cursor: help; }
+.a-info__btn:hover, .a-info__btn:focus-visible { color: #fff; background: rgba(255, 255, 255, .12); }
+.a-info__btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.a-info__tip { position: absolute; top: calc(100% + 10px); left: 50%; z-index: 80; width: max-content; max-width: 300px; padding: 10px 14px; border-radius: 10px; background: #fff; color: var(--a-text); font-size: 13.5px; line-height: 1.5; white-space: normal; box-shadow: 0 10px 28px rgba(20, 18, 74, .25), 0 0 0 1px var(--a-line); transform: translateX(-50%); opacity: 0; visibility: hidden; transition: opacity .15s ease, visibility .15s; }
+.a-info:hover .a-info__tip, .a-info__btn:focus-visible + .a-info__tip { opacity: 1; visibility: visible; }
+/* smaller menu button, greeting and back arrow to fit the 56px bar */
+.a-top .a-menu__btn { width: 38px; height: 38px; }
+.a-top .a-menu__btn svg { width: 20px; height: 20px; }
+.a-top .a-me { gap: 8px; padding: 2px 4px 2px 8px; }
+.a-top .a-me img { width: 34px; height: 34px; }
+.a-top .a-me__hello { font-size: 12px; }
+.a-top .a-me__name { font-size: 14px; }
+.a-top .a-back { height: 38px; min-width: 38px; padding: 0 7px; }
+.a-top .a-back svg { width: 22px; height: 22px; }
+.a-menu__list, .a-me__menu { top: calc(100% + 9px); }
+@media (max-width: 760px) {
+  .a-top { padding: 0; }
+  .a-top .a-top__in { height: 56px; padding: 0 10px; border-radius: 0; }
+  .a-crumb > a, .a-crumb__sep { display: none; }
+}

@@ -512,3 +512,50 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 
 /* the islands list: a blue title instead of the count and the how-to */
 .w-list__title { margin: 0 4px 12px; font-size: 20px; font-weight: 600; color: #2A2577; }
+
+/* ---------- compact layout: no big title, one row on top of the card ---------- */
+/* the top row: the island's name, the stepper in the middle, editing | viewing and the buttons at the end */
+.w-toprow { flex: none; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(max-content, 1fr); align-items: center; gap: 16px; min-height: 56px; margin: -24px -24px 16px; padding: 0 20px; border-bottom: 1px solid var(--a-line); }
+.w-toprow__name { min-width: 0; font-size: 20px; font-weight: 700; color: #2A2577; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-toprow__mid { justify-self: center; }
+.w-toprow__end { justify-self: end; display: flex; align-items: center; gap: 8px; }
+/* the stepper, compact */
+.w-toprow .w-steps { margin: 0; }
+.w-toprow .w-steps li + li::before { width: 18px; margin: 0 8px; }
+.w-toprow .w-steps button { gap: 6px; }
+.w-toprow .w-steps i { width: 26px; height: 26px; font-size: 12.5px; }
+.w-toprow .w-steps span { font-size: 14px; }
+.w-toprow .w-steps [aria-current="step"] i { box-shadow: 0 0 0 3px rgba(227, 53, 99, .15); }
+/* editing | viewing: a segmented switch */
+.w-toprow .w-tabs { position: static; display: inline-flex; flex-wrap: nowrap; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: #EFEFF8; }
+.w-toprow .w-tabs [data-wtab] { min-height: 32px; padding: 0 12px; border-radius: 999px; background: transparent; box-shadow: none; color: #2A2577; font-size: 14px; }
+.w-toprow .w-tabs [data-wtab][aria-selected="true"] { background: #fff; color: #E33563; box-shadow: 0 1px 3px rgba(42, 37, 97, .15); }
+.w-toprow .w-tabs svg { width: 16px; height: 16px; margin-inline-end: 6px; }
+/* the buttons inside the row; the separate eye goes (the 'צפייה' tab does the same) */
+.w-toprow .w-actions { position: static; height: auto; gap: 4px; }
+.w-toprow .w-actions .w-pubtop { display: none !important; }
+.w-toprow .w-actions .w-plus__btn { width: 36px; min-width: 36px; height: 36px; }
+.w-toprow .w-delete { height: 36px; }
+.w-toprow .w-actions .a-save [data-cancel] { min-height: 34px; }
+
+@media (min-width: 861px) {
+  /* no title and description above the card (the description is in the ⓘ beside the breadcrumb) */
+  .a-head { display: none; }
+  .a-main { padding: 20px 24px 16px; }
+  /* the card and the list start on one line under the header and end at the bottom of the screen */
+  .w-layout { height: calc(100vh - 56px - 36px); min-height: 460px; }
+  .w-list { margin-top: 0; height: 100%; }
+  .w-edit { height: 100%; }
+  .w-edit:has(> .w-tabbed) { display: flex; flex-direction: column; overflow: hidden; padding-right: 0; }
+  .w-edit > .w-tabbed { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .w-edit > .w-tabbed > .w-stepnav { flex: none; margin-top: 0; padding: 12px 0 0; }
+  .w-edit > .w-viewcard > .w-toprow { margin: -12px -12px 12px; }
+  .w-edit > .w-viewcard .w-frame { flex: 1; min-height: 0; }
+  /* the new island / stage / review forms: the buttons above, as before */
+  .w-actions { top: 0; }
+  .w-edit > .w-new { margin-top: 52px; }
+}
+@media (max-width: 860px) {
+  .w-toprow { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 10px 16px; margin: -16px -16px 16px; }
+  .w-toprow__mid { order: 3; width: 100%; overflow-x: auto; }
+}

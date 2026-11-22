@@ -337,6 +337,10 @@
   const stepsBar = () => `<ol class="w-steps">${STEPS.map((t, k) => `<li class="${k < step ? 'is-done' : ''}">
       <button type="button" data-go="${k}"${k === step ? ' aria-current="step"' : ''}><i aria-hidden="true">${k + 1}</i><span>${t}</span></button>
     </li>`).join('')}</ol>`;
+  // one row on top of the card: the island's name, the stepper in the middle, the switch and the buttons at the end
+  const topRow = (w, middle) => `<div class="w-toprow"><b class="w-toprow__name" aria-hidden="true">${UI.esc(w.name)}</b><div class="w-toprow__mid">${middle}</div><div class="w-toprow__end">${viewTabs()}</div></div>`;
+  // the page's buttons (cancel, delete, +) move into that row; without it they go back above the card
+  const placeActions = () => { const slot = edit.querySelector('.w-toprow__end'); (slot || document.querySelector('.w-layout')).appendChild(actions); };
   const stepNav = () => `<div class="w-stepnav">
       <button class="a-btn a-btn--ghost" type="button" data-go="${step - 1}"${step === 0 ? ' disabled' : ''}>חזור</button>
       <div class="w-stepnav__end">${step < STEPS.length - 1
@@ -670,6 +674,8 @@
     live.textContent = 'השינויים נשמרו';
   }
   function drawEdit() {
+    // the buttons step out of the card before it is redrawn (placeActions puts them back in its top row)
+    document.querySelector('.w-layout').appendChild(actions);
     if (mode === 'world') { setH1(''); return drawNewWorld(); }
     if (mode === 'review') { setH1(''); return drawNewReview(); }
     if (mode === 'lesson') { setH1(''); return drawNewLesson(); }
@@ -678,9 +684,10 @@
     setH1(w.name);
     if (viewTab === 'view') {
       const bg = bgOf(w);
-      edit.innerHTML = viewTabs() + `<div class="a-card w-tabbed w-viewcard" role="tabpanel"><h2 class="sr-only" id="w-title">צפייה בעמוד הראשי של האי</h2>${w.page
+      edit.innerHTML = `<div class="a-card w-tabbed w-viewcard" role="tabpanel">${topRow(w, '')}<h2 class="sr-only" id="w-title">צפייה בעמוד הראשי של האי</h2>${w.page
         ? `<iframe class="w-frame" src="${w.page}" title="העמוד הראשי של ${UI.esc(w.name)}"></iframe>`
         : `<div class="w-page w-page--wide"${bg ? ` style="background-image:url('${bg}')"` : ''}><p class="w-page__h"><span>${UI.esc(w.head1 || '')}</span><b>${UI.esc(w.head2 || '')}</b></p><p class="w-page__k">לאי הזה עוד אין עמוד באתר</p></div>`}</div>`;
+      placeActions();
       drawPreview();
       return;
     }
@@ -698,7 +705,8 @@
       `<div class="w-media-grid">${mediaField(w)}${bgField(w)}</div>`,
       lessonsPart(w),
     ][step];
-    edit.innerHTML = viewTabs() + `<div class="a-card w-sections w-tabbed" role="tabpanel"><h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>${stepsBar()}<section>${part}</section>${stepNav()}</div>`;
+    edit.innerHTML = `<div class="a-card w-sections w-tabbed" role="tabpanel">${topRow(w, stepsBar())}<h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2><section>${part}</section>${stepNav()}</div>`;
+    placeActions();
     applyOpen();
     drawPreview();
   }

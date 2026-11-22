@@ -30,6 +30,8 @@
   // logo in the middle, the four admin pages on the left (no coins, chests or music)
   const hour = new Date().getHours();
   const hello = hour < 12 ? 'בוקר טוב,' : hour < 17 ? 'צהריים טובים,' : 'ערב טוב,';
+  // a page may give a short explanation for the ⓘ beside the breadcrumb (body data-info)
+  const info = (document.body.dataset.info || '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   top.innerHTML = `
     <div class="a-top__in">
       <div class="a-top__start">
@@ -52,12 +54,10 @@
           </div>
         </div>
       </div>
-      <a class="a-logo" href="admin-home.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית · ניהול">
-        <span class="logo">
-          <span class="logo__text"><span class="logo__title">מדקדקים באנגלית</span><span class="logo__subtitle">קורס דיגיטלי באנגלית</span></span>
-          <span class="logo__mark"><img class="logo__ring" src="assets/logo-ring.svg" alt=""><span class="logo__tile logo__tile--a">a</span><span class="logo__tile logo__tile--c">c</span><span class="logo__tile logo__tile--b">b</span></span>
-        </span>
-      </a>
+      <div class="a-top__mid">
+        <a class="a-logo" href="admin-home.html" aria-label="מדקדקים באנגלית – מערכת ניהול, ראשי"><img src="favicon.svg" alt=""></a>
+        <nav class="a-crumb" aria-label="מיקום"><a href="admin-home.html">מדקדקים באנגלית</a><span class="a-crumb__sep" aria-hidden="true">/</span><b>מערכת ניהול</b>${info ? `<span class="a-info"><button class="a-info__btn" type="button" aria-describedby="a-info-tip" aria-label="הסבר על העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><span class="a-info__tip" id="a-info-tip" role="tooltip">${info}</span></span>` : ''}</nav>
+      </div>
       <nav class="a-nav" aria-label="ניהול">
         ${PAGES.map(([k, href, name, icon]) => (k === 'content'
           ? `<div class="a-sub"><button class="a-sub__btn" type="button" aria-expanded="false" aria-haspopup="true"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span><svg class="a-sub__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="a-sub__list" hidden>${CONTENT_SUB.map((x) => subLink(x, '')).join('')}</div></div>`
