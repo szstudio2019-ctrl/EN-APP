@@ -67,12 +67,8 @@
             <button class="t-round t-round--del" type="button" data-del="${i}" aria-label="מחיקת המשפט ${UI.esc(s.en)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>
           </li>`).join('') : '<li class="s-empty">לא נמצאו משפטים</li>';
       };
-      const bar = UI.saveBar({
-        onSave: () => { cur = cur.filter((s) => s.en.trim()); saved = JSON.parse(JSON.stringify(cur)); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* blocked */ } draw(); },
-        onCancel: () => { cur = JSON.parse(JSON.stringify(saved)); draw(); },
-      });
-      document.querySelector('.a-head').appendChild(bar.el);
-      const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
+      // no save button: every change is kept straight away
+      const changed = () => { saved = JSON.parse(JSON.stringify(cur)); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* blocked */ } };
       list.addEventListener('input', (e) => {
         const t = e.target;
         if (t.dataset.en != null) { cur[t.dataset.en].en = t.value; list.querySelector(`[data-meta="${t.dataset.en}"]`).textContent = `${letters(t.value)} אותיות שונות`; }
