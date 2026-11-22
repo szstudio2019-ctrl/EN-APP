@@ -204,7 +204,7 @@
       const nm = (a.stage.lessons[0] || {}).name;
       return `<li class="w-arch">
         <span class="w-arch__ic" aria-hidden="true">${ARCH_ICON}</span>
-        <span class="w-arch__body"><b>שלב${nm ? ` · ${UI.esc(nm)}` : ''}</b><small>מתוך ${UI.esc(a.worldName || 'אי')} · נמחק ב־${dateOf(a.at)}</small></span>
+        <span class="w-arch__body"><b>שלב${a.n ? ` ${a.n}` : ''}${nm ? ` · ${UI.esc(nm)}` : ''}</b><small>מתוך ${UI.esc(a.worldName || 'אי')} · נמחק ב־${dateOf(a.at)}</small></span>
         ${back(`s:${i}`, 'השלב')}
       </li>`;
     }).join('');
@@ -1002,7 +1002,7 @@
       const k = Number(delStage.dataset.stDel);
       const stages = editStages(w);
       const [gone] = stages.splice(k, 1);
-      arch.stages.unshift({ worldId: w.id, worldName: w.name, stage: gone, name: (w.lessonNames || [])[k] || '', desc: (w.lessonDescs || [])[k] || '', at: Date.now() });
+      arch.stages.unshift({ worldId: w.id, worldName: w.name, n: k + 1, stage: gone, name: (w.lessonNames || [])[k] || '', desc: (w.lessonDescs || [])[k] || '', at: Date.now() });
       if (w.lessonNames) w.lessonNames.splice(k, 1);
       if (w.lessonDescs) w.lessonDescs.splice(k, 1);
       w.planned = stages.length;
