@@ -4,6 +4,7 @@
 // (switch, stepper, segmented filter, sticky save bar).
 (function () {
   const PAGES = [
+    ['home', 'admin-home.html', 'ראשי', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>'],
     ['content', 'admin-content.html', 'עריכת תוכן', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>'],
     ['users', 'admin.html', 'משתמשים', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/></svg>'],
     ['stats', 'admin-stats.html', 'התמדה', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>'],
@@ -51,7 +52,7 @@
           </div>
         </div>
       </div>
-      <a class="a-logo" href="admin-content.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית · ניהול">
+      <a class="a-logo" href="admin-home.html" aria-label="מדקדקים באנגלית – קורס דיגיטלי באנגלית · ניהול">
         <span class="logo">
           <span class="logo__text"><span class="logo__title">מדקדקים באנגלית</span><span class="logo__subtitle">קורס דיגיטלי באנגלית</span></span>
           <span class="logo__mark"><img class="logo__ring" src="assets/logo-ring.svg" alt=""><span class="logo__tile logo__tile--a">a</span><span class="logo__tile logo__tile--c">c</span><span class="logo__tile logo__tile--b">b</span></span>
