@@ -463,3 +463,7 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* the bar stays full width, but its contents line up with the page's content (same width as .a-main) */
 .a-top .a-top__in { max-width: 1392px; margin: 0 auto; padding: 0 24px; }
 @media (max-width: 760px) { .a-top .a-top__in { padding: 0 16px; } }
+/* the header's logo: the student site's mark (the ring with a, b, c), small */
+.a-top .a-logo { position: relative; width: 54px; height: 42px; }
+.a-top .a-logo .logo__mark { top: 2px; left: 2px; transform: scale(.56); transform-origin: top left; }
+.a-top .a-logo { width: 56px; height: 30px; }

@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="a-top__mid">
-        <a class="a-logo" href="admin-home.html" aria-label="מדקדקים באנגלית – מערכת ניהול, ראשי"><img src="favicon.svg" alt=""></a>
+        <a class="a-logo" href="admin-home.html" aria-label="מדקדקים באנגלית – מערכת ניהול, ראשי"><span class="logo__mark" aria-hidden="true"><img class="logo__ring" src="assets/logo-ring.svg" alt=""><span class="logo__tile logo__tile--a">a</span><span class="logo__tile logo__tile--c">c</span><span class="logo__tile logo__tile--b">b</span></span></a>
         <nav class="a-crumb" aria-label="מיקום"><a href="admin-home.html">מדקדקים באנגלית</a><span class="a-crumb__sep" aria-hidden="true">/</span><b>מערכת ניהול</b>${info ? `<span class="a-info"><button class="a-info__btn" type="button" aria-describedby="a-info-tip" aria-label="הסבר על העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><span class="a-info__tip" id="a-info-tip" role="tooltip">${info}</span></span>` : ''}</nav>
       </div>
       <nav class="a-nav" aria-label="ניהול">
