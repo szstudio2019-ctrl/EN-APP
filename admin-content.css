@@ -637,3 +637,12 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-list__head .w-plus__menu { top: 100%; margin-top: 0; }
 .w-list__head .w-plus::after { content: ''; position: absolute; top: 100%; left: 0; right: 0; height: 8px; }
 .w-list__head .w-plus__menu { top: calc(100% + 6px); }
+
+/* "+ הוספת שלב": a dashed add row – in the islands panel and in step 4 of the card */
+.w-addrow { width: 100%; height: 40px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 14px; border: 1.5px dashed #E0345C; border-radius: 10px; background: #FFF5F7; color: #E0345C; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease; }
+.w-addrow:hover { background: #FDE7EC; border-style: solid; }
+.w-addrow:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(224, 52, 92, .35); }
+.w-addrow svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+/* in the panel: the full width of the stages list, lined up with the stage rows */
+.w-sub__addli { margin-top: 6px; }
+.w-sub .w-addrow { margin: 0; }

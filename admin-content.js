@@ -163,7 +163,7 @@
           ${isOpen ? `<ul class="w-sub2">${part('lessons', 'שיעור')}${part('practices', 'תרגול')}</ul>` : ''}
         </li>`;
     }).join('');
-    return `<ul class="w-sub">${rows}<li><button class="w-sub__add" type="button" data-add-lesson>+ הוספת שלב</button></li></ul>`;
+    return `<ul class="w-sub">${rows}<li class="w-sub__addli"><button class="w-addrow" type="button" data-add-lesson><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>`;
   }
   items.addEventListener('click', (e) => {
     const li = e.target.closest('.w-item');
@@ -699,7 +699,7 @@
       stageMsg.clear();
     }
     return `<ol class="w-stages">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
-        <button class="w-ladd" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
+        <button class="w-ladd w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
   }
   // one open at each level; only classes change, so the height animates
   function applyOpen() {
