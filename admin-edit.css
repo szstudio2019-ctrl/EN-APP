@@ -238,3 +238,13 @@
 .s-back { min-height: 36px; padding: 0 14px; font-size: 14px; }
 .s-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 @media (max-width: 760px) { .s-row, .s-row--arch { grid-template-columns: 26px minmax(0, 1fr) 40px; } .s-row__meta { display: none; } }
+/* a sentence row: the number, the sentence on the right, its letters count right after it, the trash at the far left */
+.s-row, .s-row--arch { grid-template-columns: 34px auto auto minmax(0, 1fr) auto; }
+.s-row__edit { justify-self: start; max-width: 100%; }
+.s-row .s-row__edit input { width: auto; max-width: 100%; text-align: right; field-sizing: content; min-width: 10ch; }
+.s-row__text { justify-self: start; padding: 0 12px; text-align: right; }
+.s-row__meta { text-align: right; padding-inline-start: 4px; white-space: nowrap; }
+.s-row > .s-arch, .s-row > .s-back { grid-column: 5; justify-self: end; }
+.s-saved { right: auto; left: calc(100% + 8px); white-space: nowrap; }
+.s-row:has(.s-saved:not(:empty)) .s-row__meta { visibility: hidden; }
+@media (max-width: 760px) { .s-row, .s-row--arch { grid-template-columns: 26px minmax(0, 1fr) auto; } .s-row > .s-arch, .s-row > .s-back { grid-column: 3; } }

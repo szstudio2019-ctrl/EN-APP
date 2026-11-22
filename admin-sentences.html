@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css?v=20261122u">
-  <link rel="stylesheet" href="admin-edit.css?v=20261122g">
+  <link rel="stylesheet" href="admin-edit.css?v=20261122h">
 </head>
 <body class="a-body" data-page="content" data-sub="raffle">
   <main class="a-main">
@@ -32,7 +32,8 @@
         </div>
       </form>
     </section>
-    <section class="a-card">
+    <section class="a-card" aria-labelledby="s-list-title">
+      <h2 class="t-h" id="s-list-title">רשימת המשפטים</h2>
       <div class="s-tools">
         <div id="s-tabs"></div>
         <label class="a-search" id="s-search-box" style="flex:0 1 260px"><span class="sr-only">חיפוש משפט</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="s-search" placeholder="חיפוש משפט" style="border-radius:999px"></label>
@@ -57,6 +58,16 @@
       let cur;
       try { cur = JSON.parse(localStorage.getItem(KEY)); } catch (e) { cur = null; }
       if (!Array.isArray(cur)) cur = POOL;
+      // demo: a few sentences already moved to the archive (added once)
+      const DAY = 24 * 60 * 60 * 1000;
+      const ARCHIVED_DEMO = [['Reading is fun!', 3], ['Smile every day.', 9], ['You are a star!', 21], ['Learning is a gift.', 40]];
+      let demoDone = false;
+      try { demoDone = localStorage.getItem('en-app:admin-sentences-arch-demo') === '1'; } catch (e) { /* blocked */ }
+      if (!demoDone) {
+        const have = new Set(cur.map((x) => String(x.en).trim().toLowerCase()));
+        ARCHIVED_DEMO.forEach(([en, ago]) => { if (!have.has(en.toLowerCase())) cur.push({ en, archived: true, archivedAt: new Date(Date.now() - ago * DAY).toISOString() }); });
+        try { localStorage.setItem(KEY, JSON.stringify(cur)); localStorage.setItem('en-app:admin-sentences-arch-demo', '1'); } catch (e) { /* blocked */ }
+      }
       // every change is kept straight away (a translation already in the data stays there untouched)
       const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cur)); } catch (e) { /* blocked */ } };
       const $ = (id) => document.getElementById(id);
@@ -134,7 +145,7 @@
         const rows = active.map(([s, i], k) => [s, i, k]).filter(([s]) => !q || s.en.toLowerCase().includes(q));
         list.innerHTML = rows.length ? rows.map(([s, i, k]) => `<li class="s-row">
             <span class="s-row__n">${k + 1}</span>
-            <span class="s-row__edit"><input data-en="${i}" dir="ltr" lang="en" value="${UI.esc(s.en)}" aria-label="משפט ${k + 1}"><span class="s-saved" data-saved="${i}" role="status"></span></span>
+            <span class="s-row__edit"><input data-en="${i}" dir="ltr" lang="en" value="${UI.esc(s.en)}" size="${Math.max(10, s.en.length + 2)}" aria-label="משפט ${k + 1}"><span class="s-saved" data-saved="${i}" role="status"></span></span>
             <span class="s-row__meta" data-meta="${i}">${letters(s.en)} אותיות שונות</span>
             <button class="t-round s-arch" type="button" data-arch="${i}" aria-label="העברה לארכיון: ${UI.esc(s.en)}" title="העברה לארכיון">${ICON.archive}</button>
           </li>`).join('') : `<li class="s-empty">${q ? 'לא נמצאו משפטים' : 'אין משפטים פעילים'}</li>`;
@@ -146,6 +157,7 @@
         const t = e.target;
         if (t.dataset.en == null) return;
         list.querySelector(`[data-meta="${t.dataset.en}"]`).textContent = `${letters(t.value)} אותיות שונות`;
+        t.size = Math.max(10, t.value.length + 2);
       });
       list.addEventListener('focusout', (e) => {
         const t = e.target;
