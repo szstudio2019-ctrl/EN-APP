@@ -149,3 +149,4 @@
 
 /* tooltips: regular weight, above the chip */
 .u-chip__tip { top: auto; bottom: calc(100% + 10px); font-weight: 400; }
+.u-chip__tip { font-size: 12px; padding: 5px 10px; }

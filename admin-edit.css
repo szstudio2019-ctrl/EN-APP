@@ -309,3 +309,8 @@
 
 /* tooltips: regular weight */
 .c-tip__t { font-weight: 400; }
+
+/* tooltips: smaller, and opening toward the page (from the button's right edge) so the side menu never covers them */
+.c-tip__t { font-size: 12px; padding: 5px 10px; line-height: 1.4; right: 0; transform: translate(0, 4px); }
+.c-tip:hover .c-tip__t, .c-tip:focus-within .c-tip__t { transform: translate(0, 0); }
+.c-tip__t::after { right: 12px; transform: translate(50%, -5px) rotate(45deg); }

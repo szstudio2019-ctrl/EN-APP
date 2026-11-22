@@ -773,3 +773,4 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tip--l::before { transform: translate(0, -5px) rotate(45deg); }
 /* the card's area doesn't scroll (its inside does), so a tooltip above the top row isn't cut */
 @media (min-width: 1025px) { .w-edit { overflow: visible !important; } }
+.w-tip { font-size: 12px; padding: 5px 10px; }

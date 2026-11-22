@@ -456,5 +456,22 @@
     },
   };
 
+  // every tooltip stays on screen: if it would run past the page's edge or under the side menu, it slides in
+  const fitTip = (e) => {
+    const host = e.target.closest && e.target.closest('.c-tip, .w-tipped, .w-delete, .u-chip');
+    if (!host) return;
+    const t = host.querySelector('.c-tip__t, .w-tip, .u-chip__tip');
+    if (!t) return;
+    t.style.translate = '';
+    const r = t.getBoundingClientRect();
+    const rail = document.querySelector('.a-rail');
+    const maxR = (rail ? rail.getBoundingClientRect().left : innerWidth) - 8;
+    let dx = 0;
+    if (r.left < 8) dx = 8 - r.left; else if (r.right > maxR) dx = maxR - r.right;
+    if (dx) t.style.translate = dx + 'px 0';
+  };
+  document.addEventListener('mouseover', fitTip);
+  document.addEventListener('focusin', fitTip);
+
   window.Admin = { Users, Worlds, Coins, UI, Me, iso, DAY, now };
 })();

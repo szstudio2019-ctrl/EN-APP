@@ -658,3 +658,4 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* tooltips: regular weight; the info tooltip opens above */
 .a-tip, .a-info__tip { font-weight: 400; }
 .a-info__tip { top: auto; bottom: calc(100% + 8px); }
+.a-tip, .a-info__tip { font-size: 12px; }
