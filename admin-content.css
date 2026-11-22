@@ -774,3 +774,32 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* the card's area doesn't scroll (its inside does), so a tooltip above the top row isn't cut */
 @media (min-width: 1025px) { .w-edit { overflow: visible !important; } }
 .w-tip { font-size: 12px; padding: 5px 10px; }
+
+/* ---------- order: handles, the lifted row, the landing line, the ⋯ menu and the toast ---------- */
+[data-drag] { cursor: grab; touch-action: none; }
+.is-sorting, .is-sorting * { cursor: grabbing !important; user-select: none !important; }
+.w-handle { flex: none; width: 24px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px; background: none; color: #A6A3C2; }
+.w-handle:hover { color: #2A2577; background: #F1EFFA; }
+.w-handle svg { width: 16px; height: 16px; fill: currentColor; }
+.w-morebtn { flex: none; width: 30px; height: 30px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 8px; background: none; color: #6B6890; cursor: pointer; }
+.w-morebtn:hover, .w-morebtn[aria-expanded="true"] { color: #2A2577; background: #F1EFFA; }
+.w-morebtn svg { width: 18px; height: 18px; fill: currentColor; }
+.is-lifted { position: relative; z-index: 60; background: #fff; border-radius: 14px; box-shadow: 0 14px 30px rgba(42, 37, 97, .24), 0 0 0 1px var(--a-line) !important; transition: none !important; }
+.w-item.is-lifted > .w-sub, .w-item.is-lifted > .w-sub2 { display: none; }
+.w-drop-line { position: fixed; z-index: 100; border-radius: 2px; background: #E0345C; pointer-events: none; }
+.w-more { position: fixed; z-index: 140; min-width: 190px; max-height: 60vh; overflow-y: auto; display: grid; gap: 2px; padding: 6px; border-radius: 12px; background: #fff; box-shadow: 0 12px 30px rgba(20, 18, 74, .18), 0 0 0 1px var(--a-line); direction: rtl; }
+.w-more button { padding: 8px 12px; border: 0; border-radius: 8px; background: none; color: #2A2577; font: inherit; font-size: 14px; text-align: right; cursor: pointer; }
+.w-more button:hover:not(:disabled), .w-more button:focus-visible { outline: none; background: #F1EFFA; }
+.w-more button:disabled { color: #BDBBD0; cursor: default; }
+.w-more__h { margin: 4px 0 0; padding: 8px 12px 2px; border-top: 1px solid var(--a-line); font-size: 12px; color: #8C8EA6; }
+.w-toast { position: fixed; bottom: 96px; left: 50%; z-index: 150; display: flex; align-items: center; gap: 16px; padding: 10px 18px 10px 10px; border-radius: 12px; background: #1E1A5C; color: #fff; font-size: 14px; box-shadow: 0 12px 30px rgba(20, 18, 74, .3); transform: translateX(-50%); direction: rtl; }
+.w-toast[hidden] { display: none; }
+.w-toast button { padding: 6px 12px; border: 0; border-radius: 8px; background: rgba(255, 255, 255, .1); color: #FFB3C6; font: inherit; font-weight: 600; cursor: pointer; }
+.w-toast button:hover { background: rgba(255, 255, 255, .18); }
+/* where the handles and ⋯ sit */
+.w-subrow .w-handle { width: 20px; }
+.w-subrow .w-morebtn { width: 26px; height: 26px; }
+.w-tile { padding-top: 0; }
+.w-tile__grip { position: absolute; top: 10px; left: 8px; }
+.w-tile__main { padding-left: 34px; }
+.w-row__head { grid-template-columns: 24px 62px minmax(0, 1fr) auto 36px 36px 30px 36px !important; }

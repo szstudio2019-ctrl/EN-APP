@@ -196,14 +196,15 @@
     $('w-count').textContent = `${pub} מתוך ${list.length} מפורסמים`;
     paintArchBtn();
     if (showArch) { items.innerHTML = archList(); return; }
-    items.innerHTML = list.map((w, k) => `<li class="w-item" data-id="${w.id}" aria-current="${mode === 'edit' && w.id === pickedId}">
-        <button class="w-grip" type="button" draggable="true" data-grip aria-label="הזזת ${UI.esc(w.name)} – מקום ${k + 1} מתוך ${list.length}. חצים למעלה ולמטה להזזה" aria-describedby="w-howto">${UI.ICON.grip}</button>
+    items.innerHTML = list.map((w, k) => `<li class="w-item" data-id="${w.id}" data-sort-group="isl" aria-current="${mode === 'edit' && w.id === pickedId}">
+        <button class="w-grip" type="button" data-drag data-grip aria-label="גרירת ${UI.esc(w.name)} – מקום ${k + 1} מתוך ${list.length}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
         <span class="w-n" aria-hidden="true">${k + 1}</span>
         ${pic(w, 'w-pic')}
         <span class="w-body">
           <button class="w-pick" type="button" data-pick aria-current="${mode === 'edit' && w.id === pickedId}"><b>${UI.esc(w.name) || 'אי בלי שם'}</b><small>${UI.esc(subOf(w))}</small></button>
           <span class="w-row">
             <span class="a-tag ${w.published ? 'a-tag--live' : 'a-tag--draft'}">${w.published ? 'מפורסם' : 'טיוטה'}</span>
+            <button class="w-morebtn" type="button" data-more aria-label="אפשרויות ל${UI.esc(w.name)}" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
             <button class="w-open" type="button" data-open aria-expanded="${opened.has(w.id)}" aria-label="${opened.has(w.id) ? 'סגירת' : 'פתיחת'} השיעורים של ${UI.esc(w.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
           </span>
         </span>
@@ -267,9 +268,11 @@
       const name = stName(st);
       const label = `שלב ${k + 1}${name ? ` · ${UI.esc(name)}` : ''}`;
       const part = (kind, word) => st[kind].map((p, i) => `<li><button class="w-sub2__item" type="button" data-sub-lesson="${k}"><span>${word} ${i + 1}${p.name ? ` · ${UI.esc(p.name)}` : ''}</span><small>${isWritten(p) ? 'נכתב' : 'חסר'}</small></button></li>`).join('');
-      return `<li>
+      return `<li data-sort-group="stg:${w.id}">
           <div class="w-subrow">
+            <button class="w-handle" type="button" data-drag data-grip aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
             <button class="w-sub__item${isReady(st) ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b>${stageBars(st)}</span></button>
+            <button class="w-morebtn" type="button" data-more aria-label="אפשרויות לשלב ${k + 1}" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
             <button class="w-sub__chev" type="button" data-sub-toggle="${k}" aria-expanded="${isOpen}" aria-label="פתיחת השיעורים והתרגולים של שלב ${k + 1}">${ARROW}</button>
           </div>
           ${isOpen ? `<ul class="w-sub2">${part('lessons', 'שיעור')}${part('practices', 'תרגול')}</ul>` : ''}
@@ -278,6 +281,7 @@
     return `<ul class="w-sub">${rows}<li class="w-sub__addli"><button class="w-addrow" type="button" data-add-lesson><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>`;
   }
   items.addEventListener('click', (e) => {
+    if (e.target.closest('[data-drag],[data-more]')) return;
     const rb = e.target.closest('[data-restore]');
     if (rb) { restore(rb.dataset.restore); return; }
     const li = e.target.closest('.w-item');
@@ -317,58 +321,7 @@
     drawAll();
   });
 
-  // move a world from one place to another, and say so for screen readers
-  function move(from, to) {
-    if (to < 0 || to >= list.length || from === to) return;
-    const [w] = list.splice(from, 1);
-    list.splice(to, 0, w);
-    drawList();
-    live.textContent = `${w.name} הועבר/ה למקום ${to + 1} מתוך ${list.length}`;
-    changed();
-  }
-  items.addEventListener('keydown', (e) => {
-    const g = e.target.closest('[data-grip]');
-    if (!g || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
-    e.preventDefault();
-    const id = g.closest('.w-item').dataset.id;
-    const from = list.findIndex((w) => w.id === id);
-    move(from, from + (e.key === 'ArrowUp' ? -1 : 1));
-    items.querySelector(`.w-item[data-id="${id}"] [data-grip]`).focus();
-  });
 
-  // drag and drop by the handle
-  let dragId = null;
-  const clearOver = () => items.querySelectorAll('.is-over-before, .is-over-after').forEach((x) => x.classList.remove('is-over-before', 'is-over-after'));
-  items.addEventListener('dragstart', (e) => {
-    const g = e.target.closest('[data-grip]');
-    if (!g) { e.preventDefault(); return; }
-    const li = g.closest('.w-item');
-    dragId = li.dataset.id;
-    li.classList.add('is-dragging');
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', dragId);
-    try { e.dataTransfer.setDragImage(li, 20, 20); } catch (err) { /* older browsers */ }
-  });
-  items.addEventListener('dragover', (e) => {
-    const li = e.target.closest('.w-item');
-    if (!dragId || !li) return;
-    e.preventDefault();
-    clearOver();
-    const r = li.getBoundingClientRect();
-    li.classList.add(e.clientY < r.top + r.height / 2 ? 'is-over-before' : 'is-over-after');
-  });
-  items.addEventListener('drop', (e) => {
-    const li = e.target.closest('.w-item');
-    if (!dragId || !li) return;
-    e.preventDefault();
-    const from = list.findIndex((w) => w.id === dragId);
-    let to = list.findIndex((w) => w.id === li.dataset.id);
-    if (li.classList.contains('is-over-after')) to += 1;
-    if (from < to) to -= 1;
-    clearOver();
-    move(from, to);
-  });
-  items.addEventListener('dragend', () => { dragId = null; clearOver(); items.querySelectorAll('.is-dragging').forEach((x) => x.classList.remove('is-dragging')); });
 
   /* ---------- picture or animation of a world ---------- */
   // an image is shrunk and kept; an animation (WEBM / MP4) is shown here only –
@@ -774,13 +727,15 @@
     const key = `${k}:${kind}:${i}`;
     const id = `${k}-${kind}-${i}`;
     const canDelete = !it.page && s[kind].length > 1;
-    return `<div class="w-row" data-row="${key}">
+    return `<div class="w-row" data-row="${key}" data-sort-group="prt:${k}:${kind}">
         <div class="w-row__head">
+          <button class="w-handle" type="button" data-drag aria-label="גרירת ${word} ${i + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
           <b>${word} ${i + 1}</b>
           <input data-st-name="${key}" value="${UI.esc(it.name)}" placeholder="שם ה${word} (לא חובה)" aria-label="השם של ${word} ${i + 1} בשלב ${k + 1}">
           <span class="a-tag ${isWritten(it) ? 'a-tag--live' : 'a-tag--draft'}">${isWritten(it) ? 'נכתב' : 'חסר'}</span>
           ${it.page ? `<a class="w-lrow__open" href="${it.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה ב${word} ${i + 1} (בלשונית חדשה)" title="צפייה">${EYE_ICON}</a>` : '<span class="w-row__gap"></span>'}
           ${canDelete ? `<button class="w-lrow__del" type="button" data-row-del="${key}" aria-label="מחיקת ${word} ${i + 1}" title="מחיקה">${TRASH_ICON}</button>` : '<span class="w-row__gap"></span>'}
+          <button class="w-morebtn" type="button" data-more aria-label="אפשרויות ל${word} ${i + 1}" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
           <button class="w-row__add" type="button" data-row-add="${key}" aria-label="הוספת ${word} בשלב ${k + 1}" title="הוספת ${word}">${PLUS_ICON}</button>
         </div>
         <div class="w-row__chips"><span>${word}</span><span>תבנית: ${UI.esc(it.template || 'לא נבחרה')}</span>${it.code || it.page ? `<span dir="ltr">${UI.esc(it.code || it.page.replace('.html', ''))}</span>` : ''}</div>
@@ -830,13 +785,15 @@
     }
     // a tile for every stage (edit · duplicate · delete); the stage being edited opens under the tiles
     const EDIT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
-    const tile = (st, k) => `<li class="w-tile${k === openStage ? ' is-open' : ''}" data-tile="${k}">
+    const tile = (st, k) => `<li class="w-tile${k === openStage ? ' is-open' : ''}" data-tile="${k}" data-sort-group="til:${w.id}">
+        <button class="w-handle w-tile__grip" type="button" data-drag aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
         <button class="w-tile__main" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">
           <span class="w-tile__top"><b>שלב ${k + 1}</b><span class="a-tag ${st.published ? 'a-tag--live' : 'a-tag--draft'}">${st.published ? 'פורסם' : 'טיוטה'}</span></span>
           <small>${UI.esc(stName(st)) || 'בלי שם'}</small>
           ${stageBars(st)}
         </button>
         <span class="w-tile__acts">
+          <button class="w-morebtn" type="button" data-more aria-label="אפשרויות לשלב ${k + 1}" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
           <button class="w-lrow__del w-tipped" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">${EDIT_ICON}<span class="w-tip w-tip--l" aria-hidden="true">עריכה</span></button>
           <button class="w-lrow__del w-st__dup w-tipped" type="button" data-st-dup="${k}" aria-label="שכפול שלב ${k + 1}">${COPY_ICON}<span class="w-tip w-tip--l" aria-hidden="true">שכפול השלב</span></button>
           <button class="w-lrow__del w-tipped" type="button" data-st-del="${k}" aria-label="מחיקת שלב ${k + 1} – עובר לארכיון">${TRASH_ICON}<span class="w-tip w-tip--l" aria-hidden="true">מחיקה – השלב עובר לארכיון</span></button>
@@ -1005,6 +962,7 @@
 
   edit.addEventListener('click', (e) => {
     if (mode !== 'edit') return;
+    if (e.target.closest('[data-drag],[data-more]')) return;
     const w = picked();
     if (!w) return;
     const t = e.target.closest('[data-wtab]');
@@ -1281,6 +1239,282 @@
   }
 
   wireSong();
+  /* ---------- order: drag by the ⋮⋮ handle, the keyboard (space · arrows · space), or the ⋯ menu ----------
+     groups: "isl" the islands · "stg:<id>" / "til:<id>" an island's stages (list / tiles) · "prt:<k>:<kind>" a stage's lessons or practices.
+     A new order is kept at once (it doesn't wait for "שמירה"), with "ביטול" for 5 seconds. */
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  const mv = (arr, from, to) => { const [x] = arr.splice(from, 1); arr.splice(to, 0, x); };
+  const pad = (arr, n) => { while (arr.length < n) arr.push(''); return arr; };
+  const groupEls = (g) => [...document.querySelectorAll('[data-sort-group]')].filter((el) => el.dataset.sortGroup === g);
+  const followList = (arr) => { const pos = new Map(list.map((w, i) => [w.id, i])); arr.sort((x, y) => (pos.has(x.id) ? pos.get(x.id) : 1e9) - (pos.has(y.id) ? pos.get(y.id) : 1e9)); };
+  function opStage(arr, wid, from, to) {
+    const w = arr.find((x) => x.id === wid);
+    if (!w) return;
+    const st = editStages(w);
+    if (from >= st.length || to >= st.length) return;
+    mv(st, from, to);
+    w.lessonNames = pad(w.lessonNames || [], st.length); mv(w.lessonNames, from, to);
+    if (w.lessonDescs) { pad(w.lessonDescs, st.length); mv(w.lessonDescs, from, to); }
+  }
+  function opPart(arr, wid, k, kind, from, toK, to) {
+    const w = arr.find((x) => x.id === wid);
+    if (!w) return;
+    const st = editStages(w);
+    if (!st[k] || !st[toK] || from >= st[k][kind].length) return;
+    const [p] = st[k][kind].splice(from, 1);
+    st[toK][kind].splice(Math.min(to, st[toK][kind].length), 0, p);
+  }
+  // the toast: "הסדר עודכן" + "ביטול"
+  const toast = document.createElement('div');
+  toast.className = 'w-toast';
+  toast.setAttribute('role', 'status');
+  toast.hidden = true;
+  document.body.appendChild(toast);
+  let toastT = 0;
+  function showToast(undo) {
+    clearTimeout(toastT);
+    toast.innerHTML = '<span>הסדר עודכן</span><button type="button">ביטול</button>';
+    toast.hidden = false;
+    toast.querySelector('button').addEventListener('click', () => { clearTimeout(toastT); toast.hidden = true; undo(); });
+    toastT = setTimeout(() => { toast.hidden = true; }, 5000);
+  }
+  // keep the new order now: in the page and in what is saved, so the "יש שינויים" bar doesn't light up
+  function commitOrder(op, msg) {
+    const snap = { list: clone(list), saved: clone(saved), open: openStage };
+    op(list, false);
+    op(saved, true);
+    drawAll();
+    saved.forEach((sv) => { const l = list.find((x) => x.id === sv.id); if (sv.review && l && l.kickerAuto && isAutoKicker(sv)) { sv.kicker = l.kicker; sv.kickerAuto = true; } });
+    Worlds.save(saved);
+    changed();
+    live.textContent = msg;
+    showToast(() => { list = snap.list; saved = snap.saved; openStage = snap.open; Worlds.save(saved); drawAll(); changed(); live.textContent = 'הסדר הוחזר כמו שהיה'; });
+  }
+  // the rows slide to their new places
+  function flip(g, before, from, to) {
+    const order = before.map((_, i) => i);
+    mv(order, from, to);
+    groupEls(g).forEach((el, j) => {
+      const r0 = before[order[j]];
+      if (!r0) return;
+      const r1 = el.getBoundingClientRect();
+      const dx = r0.left - r1.left;
+      const dy = r0.top - r1.top;
+      if (dx || dy) el.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 220, easing: 'cubic-bezier(.2,.7,.3,1)' });
+    });
+  }
+  function moveIn(g, from, to, opts = {}) {
+    if (from === to || to < 0) return;
+    const before = groupEls(g).map((el) => el.getBoundingClientRect());
+    if (to >= before.length) return;
+    if (opts.lifted) before[from] = opts.lifted;
+    const [kind, a, b] = g.split(':');
+    const n = before.length;
+    if (kind === 'isl') {
+      const w = list[from];
+      commitOrder((arr, isSaved) => (isSaved ? followList(arr) : mv(arr, from, to)), `${w.name || 'האי'} עבר/ה למקום ${to + 1} מתוך ${n}`);
+    } else if (kind === 'stg' || kind === 'til') {
+      const remap = (i) => (i === from ? to : from < i && i <= to ? i - 1 : to <= i && i < from ? i + 1 : i);
+      if (openStage >= 0) openStage = remap(openStage);
+      stageMsg.clear();
+      [...subOpen].forEach((key) => { const [id, k] = key.split(':'); if (id === a) { subOpen.delete(key); subOpen.add(`${id}:${remap(Number(k))}`); } });
+      commitOrder((arr) => opStage(arr, a, from, to), `שלב ${from + 1} עבר למקום ${to + 1} מתוך ${n}`);
+    } else if (kind === 'prt') {
+      const word = b === 'lessons' ? 'שיעור' : 'תרגול';
+      commitOrder((arr) => opPart(arr, pickedId, Number(a), b, from, Number(a), to), `${word} ${from + 1} עבר למקום ${to + 1} מתוך ${n}`);
+    }
+    flip(g, before, from, to);
+    if (opts.focus) { const el = groupEls(g)[to]; const h = el && el.querySelector(opts.focus); if (h) h.focus(); }
+  }
+
+  // dragging with the mouse / finger: only the handle lifts the row; a 2px pink line shows where it lands
+  const line = document.createElement('div');
+  line.className = 'w-drop-line';
+  line.hidden = true;
+  document.body.appendChild(line);
+  let drag = null;
+  let kb = null;
+  function targetOf(e) {
+    const others = groupEls(drag.g).filter((x) => x !== drag.el);
+    if (!others.length) return { to: 0, others };
+    if (!drag.grid) {
+      const to = others.filter((o) => { const r = o.getBoundingClientRect(); return r.top + r.height / 2 < e.clientY; }).length;
+      return { to, others };
+    }
+    let best = 0; let bd = Infinity;
+    others.forEach((o, i) => { const r = o.getBoundingClientRect(); const d = Math.hypot(r.left + r.width / 2 - e.clientX, r.top + r.height / 2 - e.clientY); if (d < bd) { bd = d; best = i; } });
+    const r = others[best].getBoundingClientRect();
+    const before = e.clientX > r.left + r.width / 2; // right to left: the right half comes first
+    return { to: best + (before ? 0 : 1), others, near: others[best], before };
+  }
+  function showLine(t) {
+    const { to, others } = t;
+    if (!others.length) { line.hidden = true; return; }
+    line.hidden = false;
+    if (drag.grid) {
+      const r = t.near.getBoundingClientRect();
+      Object.assign(line.style, { width: '2px', height: `${r.height}px`, top: `${r.top}px`, left: `${(t.before ? r.right + 5 : r.left - 7)}px` });
+      return;
+    }
+    const ref = others[Math.min(to, others.length - 1)].getBoundingClientRect();
+    const y = to < others.length ? ref.top - 3 : ref.bottom + 1;
+    Object.assign(line.style, { width: `${ref.width}px`, height: '2px', left: `${ref.left}px`, top: `${y}px` });
+  }
+  document.addEventListener('pointerdown', (e) => {
+    const h = e.target.closest('[data-drag]');
+    if (!h || e.button !== 0 || kb) return;
+    const el = h.closest('[data-sort-group]');
+    if (!el) return;
+    e.preventDefault();
+    const g = el.dataset.sortGroup;
+    const from = groupEls(g).indexOf(el);
+    drag = { g, el, h, from, to: from, x0: e.clientX, y0: e.clientY, grid: g.startsWith('til'), moved: false, scroller: el.closest('.w-list, .w-tabbed > section') };
+    try { h.setPointerCapture(e.pointerId); } catch (err) { /* old browsers */ }
+  });
+  document.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    if (!drag.moved) {
+      if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 4) return;
+      drag.moved = true;
+      drag.el.classList.add('is-lifted');
+      document.body.classList.add('is-sorting');
+    }
+    const sc = drag.scroller;
+    if (sc) { const r = sc.getBoundingClientRect(); if (e.clientY < r.top + 40) sc.scrollTop -= 10; else if (e.clientY > r.bottom - 40) sc.scrollTop += 10; }
+    drag.el.style.transform = `translate(${drag.grid ? e.clientX - drag.x0 : 0}px, ${e.clientY - drag.y0}px) scale(1.02)`;
+    const t = targetOf(e);
+    drag.to = t.to;
+    showLine(t);
+  });
+  const endDrag = (cancel) => {
+    if (!drag) return;
+    const d = drag;
+    drag = null;
+    line.hidden = true;
+    document.body.classList.remove('is-sorting');
+    const lifted = d.el.getBoundingClientRect();
+    d.el.classList.remove('is-lifted');
+    d.el.style.transform = '';
+    if (d.moved && !cancel && d.to !== d.from) moveIn(d.g, d.from, d.to, { lifted });
+  };
+  document.addEventListener('pointerup', () => endDrag(false));
+  document.addEventListener('pointercancel', () => endDrag(true));
+
+  // the keyboard: space lifts, the arrows move, space puts it down (Esc puts it back)
+  document.addEventListener('keydown', (e) => {
+    if (drag && e.key === 'Escape') { endDrag(true); return; }
+    const h = e.target.closest && e.target.closest('[data-drag]');
+    if (!h) return;
+    const el = h.closest('[data-sort-group]');
+    if (!el) return;
+    const g = el.dataset.sortGroup;
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      if (!kb) {
+        const from = groupEls(g).indexOf(el);
+        kb = { g, el, from, cur: from };
+        el.classList.add('is-lifted');
+        live.textContent = `הורם – מקום ${from + 1} מתוך ${groupEls(g).length}. חצים להזזה, רווח להנחה, Esc לביטול`;
+      } else {
+        const k = kb;
+        kb = null;
+        k.el.classList.remove('is-lifted');
+        if (k.cur === k.from) { live.textContent = 'הסדר לא השתנה'; return; }
+        drawAll(); // back to the real order, then move it for real
+        moveIn(k.g, k.from, k.cur, { focus: '[data-drag]' });
+      }
+      return;
+    }
+    if (!kb || kb.el !== el) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      const k = kb;
+      kb = null;
+      k.el.classList.remove('is-lifted');
+      drawAll();
+      const back = groupEls(k.g)[k.from];
+      if (back) back.querySelector('[data-drag]').focus();
+      live.textContent = 'ההזזה בוטלה';
+      return;
+    }
+    const fwd = e.key === 'ArrowDown' || e.key === 'ArrowLeft';
+    const bwd = e.key === 'ArrowUp' || e.key === 'ArrowRight';
+    if (!fwd && !bwd) return;
+    e.preventDefault();
+    const sibs = groupEls(g);
+    const n = kb.cur + (fwd ? 1 : -1);
+    if (n < 0 || n >= sibs.length) return;
+    const ref = fwd ? sibs[n].nextSibling : sibs[n];
+    const r0 = el.getBoundingClientRect();
+    sibs[n].parentNode.insertBefore(el, ref);
+    const r1 = el.getBoundingClientRect();
+    el.animate([{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)` }, { transform: 'none' }], { duration: 160, easing: 'ease-out' });
+    kb.cur = n;
+    h.focus();
+    live.textContent = `מקום ${n + 1} מתוך ${sibs.length}`;
+  });
+
+  // the ⋯ menu: up · down, and for a lesson / practice "העברה לשלב…"
+  const more = document.createElement('div');
+  more.className = 'w-more';
+  more.setAttribute('role', 'menu');
+  more.hidden = true;
+  document.body.appendChild(more);
+  let moreCtx = null;
+  const closeMore = (back) => { more.hidden = true; if (back && moreCtx) moreCtx.btn.focus(); moreCtx = null; };
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-more]');
+    if (btn) {
+      if (moreCtx && moreCtx.btn === btn) { closeMore(false); return; }
+      const el = btn.closest('[data-sort-group]');
+      const g = el.dataset.sortGroup;
+      const sibs = groupEls(g);
+      const i = sibs.indexOf(el);
+      let html = `<button type="button" role="menuitem" data-act="up"${i === 0 ? ' disabled' : ''}>הזזה למעלה</button><button type="button" role="menuitem" data-act="down"${i === sibs.length - 1 ? ' disabled' : ''}>הזזה למטה</button>`;
+      if (g.startsWith('prt')) {
+        const [, k] = g.split(':');
+        const stages = stagesOf(picked());
+        if (stages.length > 1) html += `<p class="w-more__h">העברה לשלב…</p>${stages.map((st, j) => (j === Number(k) ? '' : `<button type="button" role="menuitem" data-act="to:${j}">שלב ${j + 1}${stName(st) ? ` · ${UI.esc(stName(st))}` : ''}</button>`)).join('')}`;
+      }
+      more.innerHTML = html;
+      more.hidden = false;
+      const r = btn.getBoundingClientRect();
+      const mw = more.offsetWidth;
+      const mh = more.offsetHeight;
+      more.style.left = `${Math.max(8, Math.min(r.right - mw, innerWidth - mw - 8))}px`;
+      more.style.top = `${r.bottom + 6 + mh > innerHeight ? Math.max(8, r.top - mh - 6) : r.bottom + 6}px`;
+      moreCtx = { btn, g, i };
+      const first = more.querySelector('button:not([disabled])');
+      if (first && e.detail === 0) first.focus();
+      return;
+    }
+    if (!more.hidden && !more.contains(e.target)) closeMore(false);
+  });
+  more.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-act]');
+    if (!b || !moreCtx) return;
+    const { g, i } = moreCtx;
+    const viaKeys = e.detail === 0;
+    closeMore(false);
+    const act = b.dataset.act;
+    if (act === 'up' || act === 'down') { moveIn(g, i, i + (act === 'up' ? -1 : 1), viaKeys ? { focus: '[data-more]' } : {}); return; }
+    const toK = Number(act.split(':')[1]);
+    const [, k, kind] = g.split(':');
+    const word = kind === 'lessons' ? 'השיעור' : 'התרגול';
+    openStage = toK;
+    commitOrder((arr) => opPart(arr, pickedId, Number(k), kind, i, toK, Infinity), `${word} עבר לסוף שלב ${toK + 1}`);
+    revealOpen();
+    if (viaKeys) { const el = groupEls(`prt:${toK}:${kind}`).pop(); if (el) el.querySelector('[data-more]').focus(); }
+  });
+  more.addEventListener('keydown', (e) => {
+    const all = [...more.querySelectorAll('button:not([disabled])')];
+    const at = all.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); all[(at + 1) % all.length].focus(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); all[(at - 1 + all.length) % all.length].focus(); }
+    if (e.key === 'Escape') { e.preventDefault(); closeMore(true); }
+  });
+  document.addEventListener('scroll', () => { if (!more.hidden) closeMore(false); }, true);
+
   function drawAll() { drawList(); drawEdit(); drawPreview(); }
   drawAll();
 })();
