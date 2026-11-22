@@ -144,3 +144,5 @@
 .u-chips .u-chip:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #B4AFDD; }
 .u-chips .u-chip--top:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #F2B705; }
 .u-chips .u-chip--steady:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #F08A3C; }
+/* the achievements too: the same thin bluish line when ticked */
+.u-chips .u-chip--top:has(.u-chip__box:checked), .u-chips .u-chip--steady:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #B4AFDD; }
