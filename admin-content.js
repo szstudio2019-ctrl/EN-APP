@@ -53,6 +53,21 @@
   }
   bar.save.onStatus(() => syncSaveNow());
   const picked = () => list.find((w) => w.id === pickedId);
+  // a review's subtitle names the islands it goes over: every island since the review before it
+  // ("חזרה על אי X ואי Y"); it follows the order of the list, until the subtitle is written by hand
+  const joinHe = (a) => (a.length < 2 ? (a[0] || '') : `${a.slice(0, -1).join(', ')} ו${a[a.length - 1]}`);
+  function autoKicker(w) {
+    const i = list.findIndex((x) => x.id === w.id);
+    const names = [];
+    for (let j = i - 1; j >= 0 && !list[j].review; j -= 1) names.unshift(list[j].name || 'אי בלי שם');
+    return names.length ? `חזרה על ${joinHe(names)}` : 'אי חזרה';
+  }
+  const isAutoKicker = (w) => w.kickerAuto || !w.kicker || /^חזרה על שיעורים/.test(w.kicker);
+  function syncReviewKickers() {
+    list.forEach((w) => { if (w.review && isAutoKicker(w)) { w.kicker = autoKicker(w); w.kickerAuto = true; } });
+  }
+  syncReviewKickers();
+  saved = JSON.parse(JSON.stringify(list));
   const subOf = (w) => (w.review ? (w.kicker || 'אי חזרה') : `${w.written} מתוך ${w.planned} שיעורים`);
   const imgSrc = (w, small) => (w.imgData || (w.img ? `assets/${small ? 'map/' : ''}${w.img}.webp` : ''));
   const pic = (w, cls) => (imgSrc(w, true) ? `<img class="${cls}" src="${imgSrc(w, true)}" alt="" onerror="this.onerror=null;this.src='assets/${w.img}.webp'">` : `<span class="${cls} ${cls}--none" aria-hidden="true"></span>`);
@@ -175,6 +190,7 @@
   const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
   function drawList() {
     const pub = list.filter((w) => w.published).length;
+    syncReviewKickers();
     $('w-count').textContent = `${pub} מתוך ${list.length} מפורסמים`;
     paintArchBtn();
     if (showArch) { items.innerHTML = archList(); return; }
@@ -868,7 +884,7 @@
             <label class="a-field"><span>הכותרת בדף האי – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
-          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
+          <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">${w.review ? 'נכתבת לבד לפי האיים שלפני החזרה (מאז החזרה הקודמת). אפשר לשנות ידנית' : 'למשל "שיעורים 2-4"'}</small></label>
           <div class="w-pubin" id="w-pubin"></div>`,
       `<label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
           <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים באי הזה</small></label>
@@ -1135,7 +1151,7 @@
     const key = { 'f-name': 'name', 'f-head1': 'head1', 'f-head2': 'head2', 'f-kicker': 'kicker', 'f-title': 'title', 'f-text': 'text', 'f-reviewof': 'reviewOf' }[id];
     if (!w || !key) return;
     w[key] = e.target.value;
-    if (key === 'reviewOf') w.kicker = `חזרה על שיעורים ${w.reviewOf}`;
+    if (key === 'kicker') w.kickerAuto = !w.kicker.trim();
     if (key === 'name') setH1(w.name);
     drawList();
     drawPreview();
@@ -1195,7 +1211,7 @@
       if (mode === 'review' && !($('n-reviewof').value || '').trim()) { $('n-reviewof').focus(); return; }
       const at = Number($('n-at').value);
       const w = { ...draft, name };
-      if (w.review) w.kicker = `חזרה על שיעורים ${w.reviewOf}`;
+      if (w.review) w.kickerAuto = true;
       delete w.animUrl; // a video stays here only; its name is kept
       delete w.bgVideoUrl;
       list.splice(at, 0, w);

@@ -726,3 +726,13 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-radios { overflow-y: hidden; align-items: center; }
 .w-radio { display: flex; }
 .w-new .w-dup, .w-new .w-delete { display: none !important; }
+
+/* a narrow card: the steps drop their labels (the current one keeps it), so the top row never spills out */
+.w-edit { container-type: inline-size; container-name: wedit; }
+@container wedit (max-width: 900px) {
+  .w-toprow .w-steps li:not(:has([aria-current="step"])) span { display: none; }
+  .w-toprow .w-steps li + li::before { width: 12px; margin: 0 6px; }
+}
+@container wedit (max-width: 640px) {
+  .w-toprow .w-steps span { display: none; }
+}
