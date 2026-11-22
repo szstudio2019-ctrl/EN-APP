@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css?v=20261123g">
-  <link rel="stylesheet" href="admin-edit.css?v=20261123e">
+  <link rel="stylesheet" href="admin-edit.css?v=20261123g">
 </head>
 <body class="a-body" data-page="content" data-sub="raffle">
   <main class="a-main">
@@ -136,7 +136,7 @@
               <span class="s-row__n">${k + 1}</span>
               <span class="s-row__text" dir="ltr" lang="en">${UI.esc(s.en)}</span>
               <span class="s-row__meta">בארכיון מ־${s.archivedAt ? fmt(s.archivedAt) : '—'}</span>
-              <button class="a-btn a-btn--ghost s-back" type="button" data-back="${i}">${ICON.back}החזרה להגרלה</button>
+              <button class="t-round s-arch s-back c-tip" type="button" data-back="${i}" aria-label="החזרה להגרלה: ${UI.esc(s.en)}">${ICON.back}<span class="c-tip__t" aria-hidden="true">החזרה להגרלה – המשפט חוזר לרשימת הפעילים</span></button>
             </li>`).join('') : '<li class="s-empty">אין משפטים בארכיון</li>';
           return;
         }
@@ -147,7 +147,7 @@
             <span class="s-row__n">${k + 1}</span>
             <span class="s-row__edit"><input data-en="${i}" dir="ltr" lang="en" value="${UI.esc(s.en)}" size="${Math.max(10, s.en.length + 2)}" aria-label="משפט ${k + 1}"><span class="s-saved" data-saved="${i}" role="status"></span></span>
             <span class="s-row__meta" data-meta="${i}">${letters(s.en)} אותיות שונות</span>
-            <button class="t-round s-arch" type="button" data-arch="${i}" aria-label="העברה לארכיון: ${UI.esc(s.en)}" title="העברה לארכיון">${ICON.archive}</button>
+            <button class="t-round s-arch c-tip" type="button" data-arch="${i}" aria-label="מחיקה: ${UI.esc(s.en)}">${ICON.archive}<span class="c-tip__t" aria-hidden="true">מחיקה – המשפט עובר לארכיון</span></button>
           </li>`).join('') : `<li class="s-empty">${q ? 'לא נמצאו משפטים' : 'אין משפטים פעילים'}</li>`;
       }
       UI.wireSeg($('s-tabs'), (k) => { tab = k; draw(); });

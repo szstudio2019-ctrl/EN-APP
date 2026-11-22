@@ -296,3 +296,13 @@
 .pva__card b { display: block; margin: 8px 0 6px; font-size: 16px; color: #E33563; }
 .pva__card span:last-child { display: block; font-size: 13px; line-height: 1.55; color: #444; }
 @media (max-width: 1100px) { .pva__method { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pva__hero { flex-direction: column; align-items: flex-start; } }
+/* raffle sentences: the archive's "back to the raffle" as a round icon like the trash; both with a white tooltip */
+.s-row > .s-back { width: 36px; height: 36px; min-height: 0; padding: 0; display: grid; place-items: center; border-radius: 50%; }
+.s-row .c-tip { display: grid; }
+.s-row .c-tip__t { right: auto; left: 50%; transform: translate(-50%, 4px); }
+.s-row .c-tip:hover .c-tip__t, .s-row .c-tip:focus-visible .c-tip__t { transform: translate(-50%, 0); }
+.s-row .c-tip__t::after { right: auto; left: 50%; transform: translate(-50%, -5px) rotate(45deg); }
+/* the buttons sit at the far left: the tooltip opens toward the row, not off the screen */
+.s-row .c-tip__t { left: -4px; right: auto; transform: translate(0, 4px); }
+.s-row .c-tip:hover .c-tip__t, .s-row .c-tip:focus-visible .c-tip__t { transform: translate(0, 0); }
+.s-row .c-tip__t::after { left: 18px; right: auto; transform: translate(0, -5px) rotate(45deg); }
