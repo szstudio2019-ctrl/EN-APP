@@ -107,3 +107,12 @@
 .u-chip[aria-pressed="true"] .u-chip__check { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; color: #fff; font-size: 12px; line-height: 1; }
 .u-chip--top .u-chip__check { background: #F2B705; }
 .u-chip--steady .u-chip__check { background: #F08A3C; }
+/* the achievement chips as the other chips: bluish, no ✓; picked: a border in the chip's colour and its number in a circle of that colour */
+.u-chip, .u-chip--top, .u-chip--steady, .u-chip[aria-pressed="true"] { background: #EFEFF8; color: var(--a-text); box-shadow: none; }
+.u-chip:hover, .u-chip[aria-pressed="true"]:hover { background: #E4E3F3; }
+.u-chip b { background: #fff; color: #C81E55; transition: background .15s ease, color .15s ease; }
+.u-chip .u-chip__check, .u-chip[aria-pressed="true"] .u-chip__check { display: none; }
+.u-chip--top[aria-pressed="true"] { box-shadow: inset 0 0 0 2px #F2B705; }
+.u-chip--steady[aria-pressed="true"] { box-shadow: inset 0 0 0 2px #F08A3C; }
+.u-chip--top[aria-pressed="true"] b { background: #F2B705; color: #fff; }
+.u-chip--steady[aria-pressed="true"] b { background: #F08A3C; color: #fff; }
