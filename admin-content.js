@@ -719,6 +719,15 @@
     if (bar.isDirty()) bar.el.querySelector('[data-save]').click();
     live.textContent = 'השינויים נשמרו';
   }
+  function posField(w) {
+    const at = list.findIndex((x) => x.id === w.id);
+    const others = list.filter((x) => x.id !== w.id);
+    const prev = at > 0 ? list[at - 1].id : '';
+    return `<label class="a-field"><span>מיקום במסלול האיים</span><select id="f-pos">
+        <option value=""${prev ? '' : ' selected'}>ראשון במסלול</option>
+        ${others.map((x) => `<option value="${x.id}"${x.id === prev ? ' selected' : ''}>אחרי ${UI.esc(x.name || 'אי בלי שם')}</option>`).join('')}
+      </select></label>`;
+  }
   function drawEdit() {
     // the buttons step out of the card before it is redrawn (placeActions puts them back in its top row)
     document.querySelector('.w-layout').appendChild(actions);
@@ -739,7 +748,10 @@
       return;
     }
     const part = [
-      `          <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
+      `          <div class="a-grid w-namepos">
+            <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
+            ${posField(w)}
+          </div>
           <div class="a-grid w-heads">
             <label class="a-field"><span>הכותרת בדף האי – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
@@ -989,6 +1001,18 @@
       return;
     }
     const w = picked();
+    // moving the island to its new place on the path
+    if (id === 'f-pos' && w) {
+      const from = list.findIndex((x) => x.id === w.id);
+      list.splice(from, 1);
+      const to = e.target.value ? list.findIndex((x) => x.id === e.target.value) + 1 : 0;
+      list.splice(to, 0, w);
+      drawList(); drawEdit(); changed();
+      const sel = $('f-pos'); if (sel) sel.focus();
+      const li = items.querySelector(`[data-id="${w.id}"]`); if (li) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      live.textContent = `${w.name} הועבר/ה למקום ${to + 1}`;
+      return;
+    }
     const key = { 'f-name': 'name', 'f-head1': 'head1', 'f-head2': 'head2', 'f-kicker': 'kicker', 'f-title': 'title', 'f-text': 'text', 'f-reviewof': 'reviewOf' }[id];
     if (!w || !key) return;
     w[key] = e.target.value;
