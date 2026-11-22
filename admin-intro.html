@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css?v=20261122e">
-  <link rel="stylesheet" href="admin-edit.css?v=20261110x">
+  <link rel="stylesheet" href="admin-edit.css?v=20261122b">
 </head>
 <body class="a-body" data-page="content" data-sub="intro">
   <main class="a-main">
@@ -51,6 +51,8 @@
         });
         if (!Array.isArray(d.sImgs)) d.sImgs = d.sImg && d.sImg.startsWith('data:') ? [d.sImg] : def.sImgs.slice();
         delete d.sImg;
+        // the slides are only edited, never added: a slide added here earlier goes
+        d.slides = d.slides.slice(0, def.slides.length);
       },
       defaults: {
         slides: [
@@ -66,10 +68,10 @@
         sNone: 'אין לך משפט פעיל כרגע – הגרילי משפט חדש ותתחילי לגלות אותו!',
       },
       sections: [
-        { list: 'slides', title: 'השקופיות', itemName: 'שקופית', note: 'הסדר כאן הוא סדר השקופיות. מה שבסוגריים מרובעים מתמלא לבד (השם של הילד/ה, מספר האיים).',
-          fields: [{ key: 'title', label: 'כותרת' }, { key: 'pink', label: 'המשך הכותרת בוורוד' }, { key: 'text', label: 'טקסט', long: true }, { key: 'imgs', label: 'תמונות בשקופית', gallery: true }] },
+        { list: 'slides', fixed: true, title: 'השקופיות', itemName: 'שקופית', note: 'מה שבסוגריים מרובעים מתמלא לבד (השם של הילד/ה, מספר האיים).',
+          fields: [{ key: 'title', label: 'כותרת' }, { key: 'pink', label: 'המשך הכותרת בוורוד' }, { key: 'text', label: 'טקסט', long: true }, { key: 'imgs', label: 'התמונה בשקופית', gallery: true, combine: true }] },
         { id: 'sentence', title: 'כרטיס משחק המשפטים', tab: 'כרטיס המשפטים', note: 'מופיע אחרי השקופיות, ובכל כניסה מהשנייה ואילך.',
-          fields: [{ key: 'sTitle', label: 'כותרת' }, { key: 'sPink', label: 'המשך הכותרת בוורוד' }, { key: 'sImgs', label: 'תמונות בכרטיס', gallery: true },
+          fields: [{ key: 'sTitle', label: 'כותרת' }, { key: 'sPink', label: 'המשך הכותרת בוורוד' }, { key: 'sImgs', label: 'התמונה בכרטיס', gallery: true, combine: true, help: 'תמונה אחת במקום התמונות שבכרטיס · PNG או WEBP' },
             { key: 'sNew', label: 'כשהוגרל משפט חדש', long: true }, { key: 'sGoing', label: 'כשיש משפט בתהליך', long: true },
             { key: 'sDone', label: 'כשהמשפט הושלם', long: true }, { key: 'sNone', label: 'כשאין משפט', long: true }] },
       ],
@@ -95,6 +97,6 @@
   </script>
   <script src="islands.js"></script>
   <script src="admin-shell.js?v=20261122d"></script>
-  <script src="admin-texts.js?v=20261110x"></script>
+  <script src="admin-texts.js?v=20261122a"></script>
 </body>
 </html>

@@ -14,6 +14,22 @@
   const box = document.getElementById('t-form');
 
   const field = (id, f, v) => {
+    // the pictures shown together, as on the site, with one place to put a single picture in their stead
+    if (f.gallery && f.combine) {
+      const list = Array.isArray(v) ? v : [];
+      const many = list.length > 3;
+      return `<div class="a-field t-wide"><span>${f.label}</span>
+        <div class="t-combo">
+          <label class="t-combo__pic" for="${id}" aria-label="החלפת התמונה">${list.length
+            ? `<span class="t-combo__pics">${(many ? list.slice(0, 1) : list).map((src) => `<img src="${src}" alt="">`).join('')}</span>${many ? `<small class="t-combo__n">${list.length} תמונות מתחלפות</small>` : ''}`
+            : '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg>'}</label>
+          <div class="t-img__btns">
+            <label class="a-btn a-btn--ghost" for="${id}">${list.length ? 'החלפת תמונה' : 'הוספת תמונה'}</label>
+            <small class="a-help" style="display:block">${f.help || 'תמונה אחת במקום התמונות שבשקופית · PNG או WEBP'}</small>
+          </div>
+          <input id="${id}" data-gal-one="${id}" type="file" accept="image/*" class="sr-only">
+        </div></div>`;
+    }
     if (f.gallery) {
       const list = Array.isArray(v) ? v : [];
       return `<div class="a-field t-wide"><span>${f.label}</span>
@@ -57,8 +73,8 @@
           <ol class="t-items">${items.map((it, k) => (P.slideTabs && k !== pick() ? '' : `<li class="t-item">
             <div class="t-item__head"><b>${s.itemName} ${k + 1}</b>
               <span class="t-item__tools">
-                <button class="t-round" type="button" data-up="${s.list}:${k}" aria-label="הזזה למעלה"${k === 0 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
-                <button class="t-round" type="button" data-down="${s.list}:${k}" aria-label="הזזה למטה"${k === items.length - 1 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+                ${s.fixed ? '' : `<button class="t-round" type="button" data-up="${s.list}:${k}" aria-label="הזזה למעלה"${k === 0 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+                <button class="t-round" type="button" data-down="${s.list}:${k}" aria-label="הזזה למטה"${k === items.length - 1 ? ' disabled' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`}
                 ${s.fixed ? '' : `<button class="t-round t-round--del" type="button" data-del="${s.list}:${k}" aria-label="מחיקת ${s.itemName} ${k + 1}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>`}
               </span>
             </div>
@@ -105,6 +121,15 @@
     if (!files.length) return;
     const added = (await Promise.all(files.map(shrink))).filter(Boolean);
     setAt(path, [...getAt(path), ...added]);
+    draw(); changed();
+  });
+  box.addEventListener('change', async (e) => {
+    const path = e.target.dataset.galOne;
+    const file = path && e.target.files && e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const one = await shrink(file);
+    if (!one) return;
+    setAt(path, [one]);
     draw(); changed();
   });
   box.addEventListener('change', (e) => {
@@ -183,7 +208,7 @@
     const other = P.sections.find((x) => !x.list);
     tabs.innerHTML = cur[listSec.list].map((it, k) => `<button type="button" role="tab" data-slide="${k}" aria-selected="${k === pick()}">${UI.esc(tabName(it, k))}</button>`).join('')
       + `<button type="button" role="tab" data-slide="${n}" aria-selected="${pick() === n}">${other ? other.tab || other.title : ''}</button>`
-      + `<button type="button" class="t-tabs__add" data-add-slide aria-label="הוספת ${listSec.itemName}">+</button>`;
+      + (listSec.fixed ? '' : `<button type="button" class="t-tabs__add" data-add-slide aria-label="הוספת ${listSec.itemName}">+</button>`);
   }
   if (P.slideTabs) {
     layout.before(tabs);
