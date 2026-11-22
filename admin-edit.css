@@ -306,3 +306,6 @@
 .s-row .c-tip__t { left: -4px; right: auto; transform: translate(0, 4px); }
 .s-row .c-tip:hover .c-tip__t, .s-row .c-tip:focus-visible .c-tip__t { transform: translate(0, 0); }
 .s-row .c-tip__t::after { left: 18px; right: auto; transform: translate(0, -5px) rotate(45deg); }
+
+/* tooltips: regular weight */
+.c-tip__t { font-weight: 400; }

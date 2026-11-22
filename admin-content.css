@@ -765,3 +765,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* a thin line and some room between the list's head and the islands */
 .w-list__head { border-bottom: 1px solid var(--a-line); }
 .w-list__head + * , #w-items { margin-top: 12px; }
+
+/* tooltips: regular weight, above the button */
+.w-tip { top: auto; bottom: calc(100% + 10px); font-weight: 400; transform: translate(-50%, 4px); }
+.w-tip::before { bottom: auto; top: 100%; box-shadow: 1px 1px 0 var(--a-line); transform: translate(-50%, -5px) rotate(45deg); }
+.w-tip--l { transform: translate(0, 4px); }
+.w-tip--l::before { transform: translate(0, -5px) rotate(45deg); }
+/* the card's area doesn't scroll (its inside does), so a tooltip above the top row isn't cut */
+@media (min-width: 1025px) { .w-edit { overflow: visible !important; } }

@@ -654,3 +654,7 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* every field: a red-pink border when it is focused */
 .a-body input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):focus,
 .a-body select:focus, .a-body textarea:focus { outline: none; border-color: #E33563 !important; box-shadow: 0 0 0 3px rgba(227, 53, 99, .18) !important; }
+
+/* tooltips: regular weight; the info tooltip opens above */
+.a-tip, .a-info__tip { font-weight: 400; }
+.a-info__tip { top: auto; bottom: calc(100% + 8px); }

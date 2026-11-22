@@ -146,3 +146,6 @@
 .u-chips .u-chip--steady:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #F08A3C; }
 /* the achievements too: the same thin bluish line when ticked */
 .u-chips .u-chip--top:has(.u-chip__box:checked), .u-chips .u-chip--steady:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #B4AFDD; }
+
+/* tooltips: regular weight, above the chip */
+.u-chip__tip { top: auto; bottom: calc(100% + 10px); font-weight: 400; }
