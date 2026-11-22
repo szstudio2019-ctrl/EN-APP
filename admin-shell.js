@@ -49,6 +49,20 @@
       ? `<a class="a-rail__item" href="${href}" aria-label="${name}"${on ? ' aria-current="page"' : ''} data-rail="${k}">${icon}<span class="a-tip" aria-hidden="true">${name}</span></a>`
       : `<span class="a-rail__item is-soon" role="link" aria-disabled="true" aria-label="${name}">${icon}<span class="a-tip" aria-hidden="true">${name}</span></span>`}</li>`;
   };
+  // the manager's own details (name, photo…), kept in this browser; edited on admin-profile.html
+  const ME_DEFAULT = { first: 'עינת', last: '', email: '', phone: '', role: 'מנהלת המערכת', photo: '' };
+  const Me = {
+    load() { try { return { ...ME_DEFAULT, ...(JSON.parse(localStorage.getItem('en-app:admin-me')) || {}) }; } catch (e) { return { ...ME_DEFAULT }; } },
+    save(v) { try { localStorage.setItem('en-app:admin-me', JSON.stringify(v)); } catch (e) { /* blocked */ } },
+    // the rail shows the saved name and photo
+    paint(v) {
+      const a = document.querySelector('.a-rail__me');
+      if (!a) return;
+      a.querySelector('img').src = v.photo || 'assets/team-einat.webp';
+      a.querySelector('span').textContent = v.first || 'עינת';
+      a.setAttribute('aria-label', `הפרטים שלי – ${v.first || 'עינת'}`);
+    },
+  };
   const rail = document.createElement('nav');
   rail.className = 'a-rail';
   rail.setAttribute('aria-label', 'מערכת ניהול');
@@ -63,10 +77,11 @@
     </div>
     <ul class="a-rail__list">${RAIL.map(railItem).join('')}</ul>
     <div class="a-rail__foot">
-      <a class="a-rail__me" href="profile.html?view=admin" aria-label="הפרופיל שלי – עינת"><img src="assets/team-einat.webp" alt=""><span>עינת</span></a>
+      <a class="a-rail__me" href="admin-profile.html" aria-label="הפרטים שלי – עינת"${page === 'me' ? ' aria-current="page"' : ''}><img src="assets/team-einat.webp" alt=""><span>עינת</span><span class="a-tip" aria-hidden="true">הפרטים שלי</span></a>
       <a class="a-rail__item a-rail__out" href="index.html?view=off" aria-label="התנתקות">${I('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5M5 12h11"/>')}<span class="a-tip" aria-hidden="true">התנתקות</span></a>
     </div>`;
   document.body.prepend(rail);
+  Me.paint(Me.load());
   document.body.classList.add('has-rail');
   // every page title starts with 'מערכת ניהול –'
   const h1 = document.querySelector('.a-head h1');
@@ -346,5 +361,5 @@
     },
   };
 
-  window.Admin = { Users, Worlds, Coins, UI, iso, DAY, now };
+  window.Admin = { Users, Worlds, Coins, UI, Me, iso, DAY, now };
 })();
