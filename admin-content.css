@@ -658,3 +658,5 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* a new world / review / stage form: the white card starts at the top; its buttons sit inside it, in the top corner */
 .w-edit > .w-new { margin-top: 0 !important; position: relative; }
 .w-new > .w-actions { position: absolute; top: 20px; left: 20px; height: auto; z-index: 2; }
+/* every heading on the page in pink: the islands panel, the island's name, a new item's title */
+.w-list__title, .w-toprow__name b, .w-sections .w-name, .w-new h2, .w-new .w-name { color: #E33563 !important; }

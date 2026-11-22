@@ -40,7 +40,7 @@
   }
   bar.save.onStatus(() => syncSaveNow());
   const picked = () => list.find((w) => w.id === pickedId);
-  const subOf = (w) => (w.review ? (w.kicker || 'עולם חזרה') : `${w.written} מתוך ${w.planned} שיעורים`);
+  const subOf = (w) => (w.review ? (w.kicker || 'אי חזרה') : `${w.written} מתוך ${w.planned} שיעורים`);
   const imgSrc = (w, small) => (w.imgData || (w.img ? `assets/${small ? 'map/' : ''}${w.img}.webp` : ''));
   const pic = (w, cls) => (imgSrc(w, true) ? `<img class="${cls}" src="${imgSrc(w, true)}" alt="" onerror="this.onerror=null;this.src='assets/${w.img}.webp'">` : `<span class="${cls} ${cls}--none" aria-hidden="true"></span>`);
 
@@ -49,7 +49,7 @@
   plus.className = 'w-plus';
   plus.innerHTML = `<button class="w-plus__btn" type="button" id="w-plus" aria-haspopup="menu" aria-expanded="false" aria-controls="w-plus-menu" ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>הוספה</span></button>
     <div class="w-plus__menu" id="w-plus-menu" role="menu" hidden>
-      <button type="button" role="menuitem" data-new="world"><span class="w-plus__ic" aria-hidden="true"><svg class="is-fill" viewBox="0 0 64 52"><path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/><path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/><path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/></svg></span>הוספת עולם</button>
+      <button type="button" role="menuitem" data-new="world"><span class="w-plus__ic" aria-hidden="true"><svg class="is-fill" viewBox="0 0 64 52"><path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/><path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/><path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/></svg></span>הוספת אי</button>
       <button type="button" role="menuitem" data-new="review"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 12c-2-2.7-3.6-4.5-6-4.5a4.5 4.5 0 0 0 0 9c2.4 0 4-1.8 6-4.5zm0 0c2 2.7 3.6 4.5 6 4.5a4.5 4.5 0 0 0 0-9c-2.4 0-4 1.8-6 4.5z"/></svg></span>הוספת חזרה</button>
     </div>`;
   head.appendChild(plus);
@@ -96,7 +96,7 @@
   // a new world / review goes to the end of the list, opens for editing, and the list scrolls to it
   function addNow(kind) {
     startNew(kind);
-    const w = { ...draft, name: draft.name || 'עולם חדש' };
+    const w = { ...draft, name: draft.name || 'אי חדש' };
     list.push(w);
     fresh.add(w.id);
     reached[w.id] = 0;
@@ -131,7 +131,7 @@
         <span class="w-n" aria-hidden="true">${k + 1}</span>
         ${pic(w, 'w-pic')}
         <span class="w-body">
-          <button class="w-pick" type="button" data-pick aria-current="${mode === 'edit' && w.id === pickedId}"><b>${UI.esc(w.name) || 'עולם בלי שם'}</b><small>${UI.esc(subOf(w))}</small></button>
+          <button class="w-pick" type="button" data-pick aria-current="${mode === 'edit' && w.id === pickedId}"><b>${UI.esc(w.name) || 'אי בלי שם'}</b><small>${UI.esc(subOf(w))}</small></button>
           <span class="w-row">
             <span class="a-tag ${w.published ? 'a-tag--live' : 'a-tag--draft'}">${w.published ? 'מפורסם' : 'טיוטה'}</span>
             <button class="w-open" type="button" data-open aria-expanded="${opened.has(w.id)}" aria-label="${opened.has(w.id) ? 'סגירת' : 'פתיחת'} השיעורים של ${UI.esc(w.name)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
@@ -346,7 +346,7 @@
   const where = (sel) => `<label class="a-field"><span>מיקום במפה</span><select id="${sel}">
       <option value="0">בהתחלה</option>
       ${list.map((w, k) => `<option value="${k + 1}"${k === list.length - 1 ? ' selected' : ''}>אחרי ${UI.esc(w.name)}</option>`).join('')}
-    </select><small class="a-help">איפה העולם יופיע במסלול האיים</small></label>`;
+    </select><small class="a-help">איפה האי יופיע במסלול האיים</small></label>`;
 
   function startNew(kind, worldId) {
     mode = kind;
@@ -727,7 +727,7 @@
     if (mode === 'review') { setH1(''); drawNewReview(); placeActions(); return; }
     if (mode === 'lesson') { setH1(''); drawNewLesson(); placeActions(); return; }
     const w = picked();
-    if (!w) { setH1(''); edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם בכפתור +.</p></div>'; return; }
+    if (!w) { setH1(''); edit.innerHTML = '<div class="a-card"><p class="a-muted">אין איים. אפשר להוסיף אי בכפתור "+ הוספה".</p></div>'; return; }
     setH1(w.name);
     if (viewTab === 'view') {
       const bg = bgOf(w);
@@ -741,13 +741,13 @@
     const part = [
       `          <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
           <div class="a-grid w-heads">
-            <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
+            <label class="a-field"><span>הכותרת בדף האי – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
           <label class="a-field"><span>שורת משנה</span><input id="f-kicker" value="${UI.esc(w.kicker)}"><small class="a-help">למשל "שיעורים 2-4"</small></label>
           <div class="w-pubin" id="w-pubin"></div>`,
       `<label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
-          <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים בעולם הזה</small></label>
+          <label class="a-field"><span>טקסט ה"אודות" במפה</span><textarea id="f-text">${UI.esc(w.text)}</textarea><small class="a-help">משפט או שניים: מה לומדים באי הזה</small></label>
           <div class="w-pubbox" id="w-warnbox"></div>`,
       `<div class="w-media-grid">${mediaField(w)}${bgField(w)}</div>`,
       lessonsPart(w),
@@ -766,11 +766,11 @@
     const d = draft;
     edit.innerHTML = `<form class="a-card w-sections w-new" id="w-new-form" novalidate>
         <section aria-labelledby="w-title">
-          <p class="w-kind">עולם חדש</p>
-          <h2 class="w-name" id="w-title">${UI.esc(d.name) || 'עולם חדש'}</h2>
-          <label class="a-field"><span>שם העולם (במפה ובתפריט)</span><input id="n-name" value="${UI.esc(d.name)}" required></label>
+          <p class="w-kind">אי חדש</p>
+          <h2 class="w-name" id="w-title">${UI.esc(d.name) || 'אי חדש'}</h2>
+          <label class="a-field"><span>שם האי (במפה ובתפריט)</span><input id="n-name" value="${UI.esc(d.name)}" required></label>
           <div class="a-grid w-heads">
-            <label class="a-field"><span>הכותרת בדף העולם – שורה 1</span><input id="n-head1" value="${UI.esc(d.head1)}"></label>
+            <label class="a-field"><span>הכותרת בדף האי – שורה 1</span><input id="n-head1" value="${UI.esc(d.head1)}"></label>
             <label class="a-field"><span>שורה 2</span><input id="n-head2" value="${UI.esc(d.head2)}"></label>
           </div>
           ${where('n-at')}
@@ -784,9 +784,9 @@
         </section>
         <section aria-labelledby="sec-lessons">
           <h3 id="sec-lessons">שיעורים</h3>
-          <div class="a-field"><span>כמה שיעורים מתוכננים בעולם</span>${UI.stepperHtml('n-planned', d.planned, 'כמה שיעורים מתוכננים בעולם', 1, 60)}<small class="a-help">למספור במפה, עד שכל השיעורים ייכתבו</small></div>
+          <div class="a-field"><span>כמה שיעורים מתוכננים באי</span>${UI.stepperHtml('n-planned', d.planned, 'כמה שיעורים מתוכננים באי', 1, 60)}<small class="a-help">למספור במפה, עד שכל השיעורים ייכתבו</small></div>
         </section>
-        ${newFoot('יצירת העולם')}
+        ${newFoot('יצירת האי')}
       </form>`;
     refreshSteppers();
   }
@@ -819,9 +819,9 @@
         <section aria-labelledby="w-title">
           <p class="w-kind">שלב חדש</p>
           <h2 class="w-name" id="w-title">${UI.esc(d.name) || 'שלב חדש'}</h2>
-          <label class="a-field"><span>באיזה עולם</span><select id="n-world">${worlds.map((x) => `<option value="${x.id}"${x.id === w.id ? ' selected' : ''}>${UI.esc(x.name)}</option>`).join('')}</select></label>
+          <label class="a-field"><span>באיזה אי</span><select id="n-world">${worlds.map((x) => `<option value="${x.id}"${x.id === w.id ? ' selected' : ''}>${UI.esc(x.name)}</option>`).join('')}</select></label>
           <label class="a-field"><span>שם השלב</span><input id="n-name" value="${UI.esc(d.name)}" placeholder="למשל: קריאת משפטים" required></label>
-          <label class="a-field"><span>מיקום בעולם</span><select id="n-at">
+          <label class="a-field"><span>מיקום באי</span><select id="n-at">
             <option value="0"${at === 0 ? ' selected' : ''}>בהתחלה</option>
             ${Array.from({ length: w.planned }, (_, k) => `<option value="${k + 1}"${at === k + 1 ? ' selected' : ''}>אחרי שיעור ${(w.firstLesson || 1) + k}</option>`).join('')}
           </select><small class="a-help">השלב יקבל את המספר שלו לפי המקום. דף השלב ייכתב בנפרד, ועד אז הוא "טרם נכתב".</small></label>
@@ -984,7 +984,7 @@
       const key = { 'n-name': 'name', 'n-head1': 'head1', 'n-head2': 'head2', 'n-title': 'title', 'n-text': 'text', 'n-reviewof': 'reviewOf' }[id];
       if (!key) return;
       draft[key] = e.target.value;
-      if (key === 'name') $('w-title').textContent = draft.name || ({ world: 'עולם חדש', review: 'חזרה חדשה', lesson: 'שלב חדש' })[mode];
+      if (key === 'name') $('w-title').textContent = draft.name || ({ world: 'אי חדש', review: 'חזרה חדשה', lesson: 'שלב חדש' })[mode];
       if (mode !== 'lesson') drawPreview();
       return;
     }
@@ -1089,7 +1089,7 @@
     if (pubIn) pubIn.innerHTML = `<div class="w-pub">${UI.switchHtml('f-pub', w.published, 'מפורסם לתלמידים')}<p class="w-pub__text"><b>${w.published ? 'מפורסם' : 'טיוטה'}</b>${w.published ? 'האי מופיע לתלמידים במפה' : 'האי מוסתר מהתלמידים עד שיפורסם'}</p></div>`;
     pubTop.innerHTML = `${w.page ? `<a class="w-eye" href="${w.page}?view=admin" target="_blank" rel="noopener" title="צפייה באי כמו תלמיד/ה" aria-label="צפייה ב${UI.esc(w.name)} כמו תלמיד/ה (בלשונית חדשה)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></a>` : ''}`;
     const warn = $('w-warnbox');
-    if (warn) warn.innerHTML = w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>העולם מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : '';
+    if (warn) warn.innerHTML = w.published && Worlds.isDemo(w) ? `<div class="a-note a-note--warn w-warn">${UI.ICON.warn}<p>האי מפורסם, אבל בחלון ה"אודות" שלו עדיין יש טקסט דמו. כדאי להחליף אותו בטקסט האמיתי.</p></div>` : '';
   }
 
   wireSong();
