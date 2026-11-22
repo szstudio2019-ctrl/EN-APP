@@ -646,3 +646,12 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* in the panel: the full width of the stages list, lined up with the stage rows */
 .w-sub__addli { margin-top: 6px; }
 .w-sub .w-addrow { margin: 0; }
+
+/* the islands list: the head stays on top, and the list fades out (white to clear) at its top and bottom */
+@media (min-width: 861px) {
+  .w-list { padding-top: 0; padding-bottom: 0; }
+  .w-list__head { position: sticky; top: 0; z-index: 8; margin: 0 -16px 0; padding: 16px 20px 12px; background: #fff; }
+  .w-list__head::after { content: ''; position: absolute; top: 100%; left: 0; right: 0; height: 28px; background: linear-gradient(#fff, rgba(255, 255, 255, 0)); pointer-events: none; }
+  .w-list::after { content: ''; position: sticky; bottom: 0; z-index: 7; display: block; height: 40px; margin: -40px -16px 0; background: linear-gradient(rgba(255, 255, 255, 0), #fff); pointer-events: none; }
+  .w-items { padding-bottom: 24px; }
+}
