@@ -635,3 +635,16 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* every small action icon (trash, replace picture, edit, open…): a thinner line, like the side menu */
 .a-body .w-delete svg, .a-body .s-arch svg, .a-body .c-card__pic svg, .a-body .t-round svg, .a-body .w-lrow__del svg, .a-body .w-lrow__open svg,
 .a-body .w-lrow__edit svg, .a-body .u-round svg, .a-body .a-icon-btn svg, .a-body .w-row__add svg, .a-body .s-back svg { stroke-width: 1.6 !important; }
+
+/* every admin drop-down: our own list (where the browser allows it) – rounded, the picked one light pink, hover lavender */
+@supports (appearance: base-select) {
+  .a-body .a-field select, .a-body .a-field select::picker(select) { appearance: base-select; }
+  .a-body .a-field select { display: flex; align-items: center; }
+  .a-body .a-field select::picker-icon { color: #504192; transition: rotate .2s ease; }
+  .a-body .a-field select:open::picker-icon { rotate: 180deg; }
+  .a-body .a-field select::picker(select) { margin-top: 6px; padding: 6px; border: 0; border-radius: 12px; background: #fff; box-shadow: 0 14px 34px rgba(42, 37, 97, .18), 0 0 0 1px var(--a-line); max-height: 320px; }
+  .a-body .a-field select option { min-height: 38px; padding: 8px 12px; border-radius: 8px; color: var(--a-text); font: inherit; font-size: 15px; }
+  .a-body .a-field select option::checkmark { display: none; }
+  .a-body .a-field select option:hover, .a-body .a-field select option:focus-visible { background: #F1EFFA; outline: none; }
+  .a-body .a-field select option:checked { background: #FDE7EC; color: #C42A4E; font-weight: 600; }
+}

@@ -664,3 +664,6 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-bars { display: flex; gap: 4px; margin-top: 6px; }
 .w-bars i { width: 22px; height: 5px; border-radius: 3px; background: #E2E1EC; }
 .w-bars i.is-done { background: #F7B8C8; }
+/* the name and its place on the path: side by side, on one line */
+.w-sections section .w-namepos .a-field { margin-top: 0 !important; }
+.w-namepos { align-items: start; }
