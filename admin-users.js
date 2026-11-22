@@ -18,11 +18,13 @@
   const fmt = (d) => new Date(d).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' });
 
   // the trophy: played on most days of the last 30; the medal: keeps trying
-  const MEDAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#f4b73b" stroke="#d08a00" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg>';
+  const MEDAL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h4l2 6H9z" fill="#e33563"/><path d="M13 2h4l-2 6h-4z" fill="#2f7cf2"/><circle cx="12" cy="15" r="6.5" fill="#F08A3C" stroke="#C2621F" stroke-width="1.2"/><path d="M12 11.6l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="#fff6d6"/></svg>';
+  // 'top' (מצטיינים), 'steady' (מתמידים) or ''; the medal is in the peach-orange of its filter chip
+  const levelOf = (u) => { const pct = (activityOf(u).slice(0, 30).filter((d) => d.min).length / 30) * 100; return pct >= 70 ? 'top' : pct >= 40 ? 'steady' : ''; };
   function badgeOf(u) {
-    const pct = (activityOf(u).slice(0, 30).filter((d) => d.min).length / 30) * 100;
-    if (pct >= 70) return '<span class="a-badge" title="מצטיין/ת"><img src="assets/trophy.svg" alt="מצטיין/ת"></span>';
-    if (pct >= 40) return `<span class="a-badge" title="מתמיד/ה">${MEDAL}<span class="sr-only">מתמיד/ה</span></span>`;
+    const lv = levelOf(u);
+    if (lv === 'top') return '<span class="a-badge" title="מצטיין/ת"><img src="assets/trophy.svg" alt="מצטיין/ת"></span>';
+    if (lv === 'steady') return `<span class="a-badge" title="מתמיד/ה">${MEDAL}<span class="sr-only">מתמיד/ה</span></span>`;
     return '<span class="a-badge" aria-hidden="true"></span>';
   }
 
@@ -37,12 +39,37 @@
   }
   UI.wireSeg(filterBox, (k) => { filter = k; render(); });
 
+  // the achievement chips: each one on or off by itself; with both on, either one shows
+  const achBox = document.getElementById('u-ach');
+  const ach = new Set();
+  const inStatus = (u) => filter === 'all' || (filter === 'active' && u.active) || (filter === 'inactive' && !u.active) || (filter === 'expiring' && Users.expiring(u));
+  const inAch = (u) => !ach.size || ach.has(levelOf(u));
+  const CHIPS = [
+    ['top', 'מצטיינים', 'שיחקו ברוב הימים', '<img src="assets/trophy.svg" alt="">'],
+    ['steady', 'מתמידים', 'משתדלים לשחק', MEDAL],
+  ];
+  function drawAch() {
+    // the numbers follow the status (and grade) picked now
+    const base = Users.all().filter(inGrade).filter(inStatus);
+    achBox.innerHTML = `<div class="u-ach" role="group" aria-label="סינון לפי הישגים"><span class="u-ach__sep" aria-hidden="true"></span>${CHIPS.map(([k, name, tip, icon]) => `<button type="button" class="u-chip u-chip--${k}" data-ach="${k}" aria-pressed="${ach.has(k)}" aria-describedby="u-tip-${k}"><i class="u-chip__check" aria-hidden="true">✓</i>${icon}<span>${name}</span><b>${base.filter((u) => levelOf(u) === k).length}</b><span class="u-chip__tip" id="u-tip-${k}" role="tooltip">${tip}</span></button>`).join('')}</div>`;
+  }
+  achBox.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-ach]');
+    if (!b) return;
+    const k = b.dataset.ach;
+    if (ach.has(k)) ach.delete(k); else ach.add(k);
+    render();
+    achBox.querySelector(`[data-ach="${k}"]`).focus();
+  });
+
   function render() {
     drawFilter();
+    drawAch();
     const q = search.value.trim().toLowerCase();
     const list = users.map((u, i) => [u, i])
       .filter(([u]) => inGrade(u))
-      .filter(([u]) => filter === 'all' || (filter === 'active' && u.active) || (filter === 'inactive' && !u.active) || (filter === 'expiring' && Users.expiring(u)))
+      .filter(([u]) => inStatus(u))
+      .filter(([u]) => inAch(u))
       .filter(([u]) => !q || [u.first, u.last, u.user, u.phone, u.email].join(' ').toLowerCase().includes(q));
     empty.hidden = list.length > 0;
     rows.innerHTML = list.map(([u, i]) => {

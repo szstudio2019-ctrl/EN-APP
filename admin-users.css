@@ -80,3 +80,22 @@
 }
 /* no header above any more: the column titles stick to the very top */
 @media (min-width: 1100px) { .u-scroll thead th { top: 0; } }
+
+/* the achievement chips (מצטיינים / מתמידים): the status chips' size, a thin line before them */
+.u-ach { display: inline-flex; align-items: center; gap: 8px; }
+.u-ach__sep { width: 1px; height: 28px; margin-inline-end: 4px; background: var(--a-line); }
+.u-chip { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 0; border-radius: 22px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.u-chip img, .u-chip svg { width: 20px; height: 20px; flex: none; }
+.u-chip b { display: inline-grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; background: #fff; font-size: 13px; font-weight: 600; }
+.u-chip--top { background: #FFF4D6; color: #8A6100; }
+.u-chip--top:hover { background: #FFEBB3; }
+.u-chip--steady { background: #FFEADB; color: #9A4A12; }
+.u-chip--steady:hover { background: #FFDCC2; }
+/* picked: the stronger colour, dark text and a small ✓ */
+.u-chip__check { display: none; font-style: normal; font-size: 13px; font-weight: 700; }
+.u-chip[aria-pressed="true"] .u-chip__check { display: inline; }
+.u-chip--top[aria-pressed="true"] { background: #F2B705; color: #2A2006; }
+.u-chip--steady[aria-pressed="true"] { background: #F08A3C; color: #2B1405; }
+/* the short explanation, on hover */
+.u-chip__tip { position: absolute; top: calc(100% + 8px); right: 50%; z-index: 20; padding: 6px 12px; border-radius: 8px; background: #1E1A5C; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; transform: translateX(50%); transition: opacity .15s ease, visibility .15s; }
+.u-chip:hover .u-chip__tip, .u-chip:focus-visible .u-chip__tip { opacity: 1; visibility: visible; }
