@@ -828,11 +828,27 @@
       openStage = stages.findIndex((s) => !isReady(s));
       stageMsg.clear();
     }
-    return `<ol class="w-stages">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
-        <button class="w-ladd w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
+    // a tile for every stage (edit · duplicate · delete); the stage being edited opens under the tiles
+    const EDIT_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>';
+    const tile = (st, k) => `<li class="w-tile${k === openStage ? ' is-open' : ''}" data-tile="${k}">
+        <button class="w-tile__main" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">
+          <span class="w-tile__top"><b>שלב ${k + 1}</b><span class="a-tag ${st.published ? 'a-tag--live' : 'a-tag--draft'}">${st.published ? 'פורסם' : 'טיוטה'}</span></span>
+          <small>${UI.esc(stName(st)) || 'בלי שם'}</small>
+          ${stageBars(st)}
+        </button>
+        <span class="w-tile__acts">
+          <button class="w-lrow__del w-tipped" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">${EDIT_ICON}<span class="w-tip w-tip--l" aria-hidden="true">עריכה</span></button>
+          <button class="w-lrow__del w-st__dup w-tipped" type="button" data-st-dup="${k}" aria-label="שכפול שלב ${k + 1}">${COPY_ICON}<span class="w-tip w-tip--l" aria-hidden="true">שכפול השלב</span></button>
+          <button class="w-lrow__del w-tipped" type="button" data-st-del="${k}" aria-label="מחיקת שלב ${k + 1} – עובר לארכיון">${TRASH_ICON}<span class="w-tip w-tip--l" aria-hidden="true">מחיקה – השלב עובר לארכיון</span></button>
+        </span>
+      </li>`;
+    return `<ul class="w-tiles">${stages.map(tile).join('')}<li class="w-tile w-tile--add"><button class="w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>
+        <ol class="w-stages w-stages--tiles">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
+        <button class="w-ladd w-addrow" type="button" data-wtab-add hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
   }
   // one open at each level; only classes change, so the height animates
   function applyOpen() {
+    edit.querySelectorAll('[data-tile]').forEach((el) => el.classList.toggle('is-open', Number(el.dataset.tile) === openStage));
     edit.querySelectorAll('[data-st]').forEach((el) => {
       const on = Number(el.dataset.st) === openStage;
       el.classList.toggle('is-open', on);
@@ -1054,6 +1070,14 @@
       if (!confirm(`למחוק את ${kind === 'lessons' ? 'השיעור' : 'התרגול'} הזה?`)) return;
       editStages(w)[Number(k)][kind].splice(Number(i), 1);
       drawEdit(); changed();
+      return;
+    }
+    const stEdit = e.target.closest('[data-st-edit]');
+    if (stEdit) {
+      const k = Number(stEdit.dataset.stEdit);
+      openStage = openStage === k ? -1 : k;
+      applyOpen();
+      revealOpen();
       return;
     }
     const stSave = e.target.closest('[data-st-save]');

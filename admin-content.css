@@ -741,3 +741,27 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-item[aria-current="true"] { box-shadow: inset 0 0 0 1.5px #504192; }
 .w-list__head::after { transition: opacity .2s ease; }
 .w-list:not(.is-scrolled) .w-list__head::after { opacity: 0; }
+
+/* step 4: a tile per stage, with edit · duplicate · delete; the stage being edited opens under the tiles */
+.w-tiles { list-style: none; margin: 0 0 20px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.w-tile { position: relative; display: flex; flex-direction: column; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--a-line); transition: box-shadow .15s, background-color .15s; }
+.w-tile:hover { box-shadow: inset 0 0 0 1.5px #B4AFDD; }
+.w-tile.is-open { background: #F7F6FC; box-shadow: inset 0 0 0 1.5px #504192; }
+.w-tile__main { flex: 1; display: grid; gap: 6px; padding: 14px 16px 8px; border: 0; background: none; font: inherit; text-align: right; color: #2A2577; cursor: pointer; border-radius: 14px; }
+.w-tile__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.w-tile__top b { font-size: 17px; font-weight: 700; color: #E33563; }
+.w-tile__main small { font-size: 13px; color: #6B6890; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-tile .w-bars { margin-top: 2px; }
+.w-tile__acts { display: flex; justify-content: flex-end; gap: 2px; padding: 0 8px 8px; }
+.w-tile__acts .w-lrow__del { width: 34px; height: 34px; display: grid; place-items: center; background: none; box-shadow: none; color: #2A2577; }
+.w-tile__acts .w-lrow__del:last-child { color: #C81E55; }
+.w-tile__acts .w-lrow__del:hover { color: #E33563; background: #FFF5F7; }
+.w-tile__acts svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.w-tile--add { box-shadow: none; background: none; }
+.w-tile--add .w-addrow { width: 100%; height: 100%; min-height: 110px; margin: 0; }
+.w-stages--tiles .w-st:not(.is-open) { display: none; }
+.w-stages--tiles .w-st__head .w-st__dup, .w-stages--tiles .w-st__head [data-st-del] { display: none; }
+
+/* a thin line and some room between the list's head and the islands */
+.w-list__head { border-bottom: 1px solid var(--a-line); }
+.w-list__head + * , #w-items { margin-top: 12px; }
