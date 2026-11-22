@@ -157,7 +157,7 @@
       const part = (kind, word) => st[kind].map((p, i) => `<li><button class="w-sub2__item" type="button" data-sub-lesson="${k}"><span>${word} ${i + 1}${p.name ? ` · ${UI.esc(p.name)}` : ''}</span><small>${isWritten(p) ? 'נכתב' : 'חסר'}</small></button></li>`).join('');
       return `<li>
           <div class="w-subrow">
-            <button class="w-sub__item${isReady(st) ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b><small>${isReady(st) ? 'נכתב' : 'חסר'} · עריכה</small></span></button>
+            <button class="w-sub__item${isReady(st) ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b>${stageBars(st)}</span></button>
             <button class="w-sub__chev" type="button" data-sub-toggle="${k}" aria-expanded="${isOpen}" aria-label="פתיחת השיעורים והתרגולים של שלב ${k + 1}">${ARROW}</button>
           </div>
           ${isOpen ? `<ul class="w-sub2">${part('lessons', 'שיעור')}${part('practices', 'תרגול')}</ul>` : ''}
@@ -426,6 +426,18 @@
   const isWritten = (p) => !!p.page || !!(p.desc || '').trim() || !!(p.song && (p.song.title || p.song.fileName));
   const allWritten = (arr) => arr.length > 0 && arr.every(isWritten);
   const isReady = (s) => allWritten(s.lessons) && allWritten(s.practices);
+  // a stage's progress in 4 bars (grey, light pink when done): a name, lessons written, practices written, published
+  function stageBars(st) {
+    const parts = [
+      ['שם לשלב', !!(st.lessons[0] && st.lessons[0].name)],
+      ['שיעורים נכתבו', allWritten(st.lessons)],
+      ['תרגולים נכתבו', allWritten(st.practices)],
+      ['פורסם', !!st.published],
+    ];
+    const done = parts.filter((p) => p[1]).length;
+    const tip = parts.map(([t, ok]) => `${ok ? '✓' : '○'} ${t}`).join(' · ');
+    return `<span class="w-bars" role="img" aria-label="${done} מתוך 4 הושלמו: ${tip}" title="${tip}">${parts.map(([, ok]) => `<i class="${ok ? 'is-done' : ''}"></i>`).join('')}</span>`;
+  }
   function missingText(s) {
     const noL = !allWritten(s.lessons);
     const noP = !allWritten(s.practices);
