@@ -655,3 +655,6 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
   .w-list::after { content: ''; position: sticky; bottom: 0; z-index: 7; display: block; height: 40px; margin: -40px -16px 0; background: linear-gradient(rgba(255, 255, 255, 0), #fff); pointer-events: none; }
   .w-items { padding-bottom: 24px; }
 }
+/* a new world / review / stage form: the white card starts at the top; its buttons sit inside it, in the top corner */
+.w-edit > .w-new { margin-top: 0 !important; position: relative; }
+.w-new > .w-actions { position: absolute; top: 20px; left: 20px; height: auto; z-index: 2; }

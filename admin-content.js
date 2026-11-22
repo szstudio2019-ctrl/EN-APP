@@ -386,7 +386,7 @@
   // one row on top of the card: the island's name, the stepper in the middle, the switch and the buttons at the end
   const topRow = (w, middle) => `<div class="w-toprow"><div class="w-toprow__name"><b aria-hidden="true">${UI.esc(w.name)}</b>${info}</div><div class="w-toprow__mid">${middle}</div><div class="w-toprow__end">${viewTabs()}</div></div>`;
   // the page's buttons (cancel, delete, +) move into that row; without it they go back above the card
-  const placeActions = () => { const slot = edit.querySelector('.w-toprow__end'); (slot || document.querySelector('.w-layout')).appendChild(actions); };
+  const placeActions = () => { const slot = edit.querySelector('.w-toprow__end') || edit.querySelector('.w-new'); (slot || document.querySelector('.w-layout')).appendChild(actions); };
   const stepNav = () => `<div class="w-stepnav">
       <button class="a-btn a-btn--ghost" type="button" data-go="${step - 1}"${step === 0 ? ' disabled' : ''}>חזור</button>
       <div class="w-stepnav__end">${step < STEPS.length - 1
@@ -722,9 +722,10 @@
   function drawEdit() {
     // the buttons step out of the card before it is redrawn (placeActions puts them back in its top row)
     document.querySelector('.w-layout').appendChild(actions);
-    if (mode === 'world') { setH1(''); return drawNewWorld(); }
-    if (mode === 'review') { setH1(''); return drawNewReview(); }
-    if (mode === 'lesson') { setH1(''); return drawNewLesson(); }
+    // a new world / review / stage form: the page's buttons go inside its white card (top corner)
+    if (mode === 'world') { setH1(''); drawNewWorld(); placeActions(); return; }
+    if (mode === 'review') { setH1(''); drawNewReview(); placeActions(); return; }
+    if (mode === 'lesson') { setH1(''); drawNewLesson(); placeActions(); return; }
     const w = picked();
     if (!w) { setH1(''); edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות. אפשר להוסיף עולם בכפתור +.</p></div>'; return; }
     setH1(w.name);
