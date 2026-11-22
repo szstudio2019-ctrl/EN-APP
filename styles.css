@@ -1078,23 +1078,27 @@ video.bg {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 }
+/* Thin lines, all one colour; only the current island stands out (as in V2/V3).
+   A clear strip either side keeps them easy to click. */
 .journey-tick {
   display: block;
-  width: 7px;
-  height: 26px;
-  padding: 0;
+  box-sizing: content-box;
+  width: 4px;
+  height: 16px;
+  padding: 0 5px;
   border: 0;
   border-radius: 7px;
-  background: rgba(255, 255, 255, .9);
-  box-shadow: 0 2px 6px rgba(36, 34, 117, .25);
+  background: #fff;
+  background-clip: content-box;
+  box-shadow: none;
   cursor: pointer;
   transition: height .45s cubic-bezier(.16, 1, .3, 1), background .3s ease, transform .2s ease;
 }
-.journey-tick:hover { transform: scaleX(1.4); background: #fff; }
-.journey-tick.is-done { background: var(--yellow); }
-.journey-tick.is-current { height: 54px; background: var(--pink); }
+.journey-tick:hover { transform: scaleX(1.4); background: #fff; background-clip: content-box; }
+.journey-tick.is-done { background: #fff; background-clip: content-box; }
+.journey-tick.is-current { height: 32px; background: #FFD34D; background-clip: content-box; }
 
 /* "Draw another sentence" button in the trophy bubble */
 .trophy-hint__redraw {
@@ -3412,3 +3416,31 @@ body:not(.is-mobile) .topbar .logo__subtitle { font-weight: 400; }
 .rp-finale .finale { position: relative; left: auto; top: auto; transform: scale(var(--rp-finale-k, 1.15)); }
 .rp-finale__close { position: absolute; top: 24px; left: 24px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 8px 18px rgba(0, 0, 0, .25); }
 .rp-finale__close svg { width: 18px; height: 18px; fill: none; stroke: #2a2968; stroke-width: 2; stroke-linecap: round; }
+
+/* ---------- Island bubble: dark blue, as in V2/V3 ----------
+   one blue all over (no white body, no strip); light words, yellow island name,
+   and a review island's number in a pink circle beside its name */
+.island-about { background: var(--panel); -webkit-backdrop-filter: blur(14px) saturate(130%); backdrop-filter: blur(14px) saturate(130%); border: 0; box-shadow: none; color: #fff; }
+.island-about::before { background: var(--panel); }
+.island-about__title, .island-about__text, .island-about__label, .island-about__list { color: #fff; }
+.island-about__island, .island-about__range { color: #FFD34D; }
+.island-about .about-locked { color: #fff; border-color: rgba(255, 255, 255, .7); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7); background: none; }
+.island-about__island { display: flex; align-items: center; gap: 12px; }
+.island-about__no {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pink);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Island cards: no lesson / review range, so the reward (coins or chest) sits in
+   the middle, right above the centred progress line */
+.island__stats { left: 0; width: 100%; justify-content: center; }
+.island__progress { left: 50%; translate: -50% 0; }

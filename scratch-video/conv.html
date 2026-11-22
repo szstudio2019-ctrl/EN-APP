@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><body>
+<script src="https://cdn.jsdelivr.net/npm/fix-webm-duration@1.0.6/fix-webm-duration.js"></script>
+<script>
+// mp4 → a light webm (VP9 + Opus), recorded from start to end, duration fixed, saved via /__save
+window.conv = async (src, out, vbps) => {
+  const blob = await (await fetch(src)).blob();
+  const v = document.createElement('video');
+  v.src = URL.createObjectURL(blob); v.playsInline = true; v.muted = false; v.volume = 0.0001;
+  document.body.append(v);
+  await new Promise((r) => v.addEventListener('loadeddata', r, { once: true }));
+  const stream = v.captureStream();
+  const hasAudio = stream.getAudioTracks().length > 0;
+  const mime = hasAudio ? 'video/webm;codecs=vp9,opus' : 'video/webm;codecs=vp9';
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: vbps, audioBitsPerSecond: 96000 });
+  const parts = []; rec.ondataavailable = (e) => e.data.size && parts.push(e.data);
+  const t0 = performance.now();
+  const done = new Promise((r) => (rec.onstop = r));
+  rec.start(250); await v.play();
+  await new Promise((r) => v.addEventListener('ended', r, { once: true }));
+  rec.stop(); await done;
+  const ms = v.duration * 1000;
+  const fixed = await new Promise((r) => ysFixWebmDuration(new Blob(parts, { type: 'video/webm' }), ms, r, { logger: false }));
+  await fetch('/__save/' + out, { method: 'POST', body: fixed });
+  v.remove();
+  return { out, hasAudio, dur: v.duration, w: v.videoWidth, h: v.videoHeight, kb: Math.round(fixed.size / 1024), took: Math.round(performance.now() - t0) };
+};
+</script>

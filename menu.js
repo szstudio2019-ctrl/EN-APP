@@ -239,9 +239,9 @@
   const isReview = (island) => !!island.review;
   const short = (island) => island.name.replace(/^אי (ה)?/, '');
   fillList('sb-worlds', (island) => !isReview(island) && !island.finale,
-    (island) => (island.lessons ? `${short(island)} (שיעור ${island.lessons})` : short(island)));
+    (island) => short(island)); // no lesson numbers in the menu
   // each review leads straight to its own practice (its range and pin)
-  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n} (שיעורים ${island.review})`,
+  fillList('sb-reviews', isReview, (island, n) => `חזרה ${n}`,
     (island, n) => `review-practice.html?r=${island.review}&p=${n}`);
 
   // Highlight the island being viewed (on an island page: that page's island)

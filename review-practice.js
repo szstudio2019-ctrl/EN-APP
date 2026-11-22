@@ -603,3 +603,75 @@
   });
   window.addEventListener('pagehide', () => { if (canSpeak) speechSynthesis.cancel(); });
 })();
+
+// The helper ruler (סרגל עזר): a left tab that opens, on hover or tap, a narrow
+// tall panel listing every icon of the review with its name and what it means.
+// The panel stays open until its ✕; it can be dragged by its top bar.
+(function helperRuler() {
+  const tab = document.getElementById('rp-ruler-tab');
+  const panel = document.getElementById('rp-ruler');
+  if (!tab || !panel) return;
+  // out of the scaled stage, so its place and drag are in plain window pixels
+  document.body.appendChild(panel);
+  const ITEMS = [
+    ['review-find', 'זיהוי', 'האות לבדה: אומרים את שם האות ואת הצליל שלה'],
+    ['review-doctor', 'a', 'האות של הרופאה: אָההה'],
+    ['review-smiles', 'i', 'אות מחייכת: אִי'],
+    ['review-smiles', 'ea', 'אותיות מחייכות: אִי'],
+    ['review-smiles', 'ee', 'אותיות מחייכות: אִי'],
+    ['sound-shock', 'o', 'האות o: הצליל אוֹ (חולם)'],
+    ['sound-slide', 'u', 'האות u: הצליל אָ, כמו במילה cut'],
+    ['sound-sheep', 'e', 'האות e: הצליל אֶ, כמו הכבשה שעושה מֶההה'],
+    ['sound-cow', 'oo', 'הצליל אוּ, כמו הפרה שעושה מוּוּוּ'],
+    ['sound-gamepad', 'ai / ay', 'הצליל אֵיי, כמו במילה play'],
+    ['sound-smiley-sad-bandage', 'ou / ow', 'הצליל אַאוּ, כמו כשכואב: ow!'],
+    ['sound-chips', 'ch', 'הצליל צ׳, כמו במילה chips'],
+    ['sound-shh', 'sh', 'הצליל ש, כמו שששש… שקט'],
+    ['review-whistling', 'ph', 'האותיות השורקות: ph נותנות את הצליל פ (f)'],
+    ['review-sounds', 'igh', 'צלילים מיוחדים: igh נותנות את הצליל אַיי, כמו high'],
+    ['sound-magic', 'magic e', 'e בסוף המילה עושה קסם: האות לפניה אומרת את השם שלה (bike, bake)'],
+  ];
+  panel.querySelector('.rp-ruler__list').innerHTML = ITEMS.map(([ico, tag, text]) => `
+    <li class="rp-ruler__item">
+      <img src="assets/icons/cue-${ico}.webp" alt="">
+      <span><b class="rp-ruler__tag" lang="en" dir="ltr">${tag}</b><span class="rp-ruler__text">${text}</span></span>
+    </li>`).join('');
+
+  let placed = false;
+  const open = () => {
+    if (!panel.hidden) return;
+    panel.hidden = false;
+    tab.setAttribute('aria-expanded', 'true');
+    if (!placed) {
+      // first time: beside the tab, at the top of the left tabs
+      const r = tab.getBoundingClientRect();
+      panel.style.left = `${Math.round(r.right + 12)}px`;
+      panel.style.top = `${Math.max(12, Math.round(window.innerHeight - panel.offsetHeight) / 2)}px`;
+      placed = true;
+    }
+  };
+  const close = () => { panel.hidden = true; tab.setAttribute('aria-expanded', 'false'); };
+  tab.addEventListener('mouseenter', open);
+  tab.addEventListener('click', () => (panel.hidden ? open() : close()));
+  panel.querySelector('.rp-ruler__close').addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) close(); });
+
+  // drag by the top bar (mouse and touch); kept inside the window
+  const head = panel.querySelector('.rp-ruler__head');
+  head.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.rp-ruler__close')) return;
+    const startX = e.clientX, startY = e.clientY;
+    const left0 = panel.offsetLeft, top0 = panel.offsetTop;
+    head.setPointerCapture(e.pointerId);
+    panel.classList.add('is-dragging');
+    const move = (ev) => {
+      const x = Math.min(window.innerWidth - panel.offsetWidth, Math.max(0, left0 + ev.clientX - startX));
+      const y = Math.min(window.innerHeight - 40, Math.max(0, top0 + ev.clientY - startY));
+      panel.style.left = `${x}px`;
+      panel.style.top = `${y}px`;
+    };
+    const up = () => { panel.classList.remove('is-dragging'); head.removeEventListener('pointermove', move); head.removeEventListener('pointerup', up); };
+    head.addEventListener('pointermove', move);
+    head.addEventListener('pointerup', up);
+  });
+})();

@@ -214,6 +214,19 @@
         </a>
       </div>
       <button class="help-btn" type="button" aria-label="עזרה">?</button>
+      <!-- Fourth left tab: the helper ruler – every icon of the review and what it means.
+           Opens on hover (or tap), stays open; closes with ✕; drag it by its top -->
+      <button class="rp-ruler-tab" id="rp-ruler-tab" type="button" aria-expanded="false" aria-controls="rp-ruler">
+        <img src="assets/icons/cue-review-find.webp" alt="">
+        <span class="tab-label">סרגל עזר</span>
+      </button>
+      <aside class="rp-ruler" id="rp-ruler" hidden aria-label="סרגל עזר">
+        <div class="rp-ruler__head">
+          <b>סרגל עזר</b>
+          <button class="rp-ruler__close" type="button" aria-label="סגירה">✕</button>
+        </div>
+        <ul class="rp-ruler__list"></ul>
+      </aside>
 
       <!-- Islands drawer: hidden at the bottom centre behind a half-circle arrow
            button; opens on hover (desktop) or tap. Built by drawer.js from ISLANDS. -->
@@ -285,8 +298,7 @@
             <div class="sb-sub" id="sb-personal">
               <div class="sb-sub__inner">
                 <a class="sb-sublink" href="profile.html"><span>הפרטים שלי</span></a>
-                <a class="sb-sublink" href="admin.html"><span>מנהל – סטטוס המשתמשים</span></a>
-                <a class="sb-sublink" href="admin.html#stats"><span>נתוני התמדה</span><img class="sb-sub-icon" src="assets/icons/chart.svg" alt=""></a>
+                <a class="sb-sublink" href="admin-home.html"><span>מערכת ניהול</span></a>
               </div>
             </div>
           </div>

@@ -166,11 +166,8 @@
       : `<div class="island__placeholder">${island.name}</div>`;
     // Review islands (Figma): "חזרות" range and "תרגולים 800" with a treasure chest;
     // lesson islands: "שיעורים" range and "מטבעות 350" with a coin
-    const range = island.review
-      ? `<p class="island__stat"><span>חזרות</span><b>${island.review}</b></p>`
-      : island.lessons
-        ? `<p class="island__stat"><span>שיעורים</span><b>${island.lessons}</b></p>`
-        : '<span></span>';
+    // no lesson / review range on the cards any more: only the reward, centred
+    const range = '';
     const reward = island.review
       ? { icon: 'chest.webp', label: 'תרגולים', value: 800 }
       : { icon: 'coin.webp', label: 'מטבעות', value: island.coins ?? 350 };
@@ -471,22 +468,16 @@
       const about = island.about;
       if (!about) { aboutEl.innerHTML = ''; return; }
       aboutEl.classList.toggle('is-left', index % 2 === 0); // island on the right → bubble on its left
-      // Review islands: a navy strip under the white bubble with the lessons
-      // range on the left and "חזרה מספר N" (N in a pink circle) on the right
+      // Review islands: the review number (a pink circle) beside the island name;
+      // no strip under the bubble any more
       const reviewNo = island.review ? ISLANDS.slice(0, index + 1).filter((x) => x.review).length : 0;
-      aboutEl.classList.toggle('has-strip', !!reviewNo);
+      aboutEl.classList.remove('has-strip');
       const body = `
-        <p class="island-about__island">${island.name}</p>
+        <p class="island-about__island">${island.name}${reviewNo ? ` <b class="island-about__no">${reviewNo}</b>` : ''}</p>
         <h2 class="island-about__title">${about.title}</h2>
         <p class="island-about__text">${about.text}</p>
         ${aboutAction(island)}`;
-      aboutEl.innerHTML = reviewNo
-        ? `<div class="island-about__body">${body}</div>
-          <div class="island-about__strip">
-            <span class="island-about__strip-no">חזרה מספר <b>${reviewNo}</b></span>
-            <span class="island-about__strip-range">שיעורים <bdi>${island.review}</bdi></span>
-          </div>`
-        : body;
+      aboutEl.innerHTML = body;
       showAbout.t = setTimeout(() => aboutEl.classList.add('is-shown'), 450);
     }, wasShown ? 300 : 0);
   }
