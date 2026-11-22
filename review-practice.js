@@ -98,7 +98,20 @@
   // keeps the island's range
   const PIN_LAST = new URLSearchParams(location.search).get('p')
     ? Number(RANGES[PIN - 1].split('-').pop()) : LAST;
-  const isOpen = (ti) => ti < PIN;
+  // the right-hand list: no longer reviews 1-5 but three kinds of practice for this
+  // review – its letters (the sounds table), its words and its sentences (from the
+  // recordings doc, review-lists.js), one stage per sound
+  {
+    const own = TOPICS[PIN - 1];
+    const lists = (window.REVIEW_LISTS || {})[PIN] || { words: [], sentences: [] };
+    const stagesOf = (arr) => arr.map((st) => ({ label: st.label, text: '', words: st.items.map((w) => ({ show: w, say: w, ico: st.ico, tag: st.label, c: '' })) }));
+    TOPICS.splice(0, TOPICS.length,
+      { name: 'תרגול אותיות', islands: own.islands, pic: 'review-abc', subs: own.subs },
+      { name: 'תרגול מילים', islands: 'קריאת מילים', pic: 'review-blending', subs: stagesOf(lists.words) },
+      { name: 'תרגול משפטים', islands: 'קריאת משפטים', pic: 'review-sounds', subs: stagesOf(lists.sentences) });
+    for (let k = TOPICS.length - 1; k > 0; k -= 1) if (!TOPICS[k].subs.length) TOPICS.splice(k, 1);
+  }
+  const isOpen = () => true;
   const LOCK = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   // the page shows this review's number and range, and its back link returns to it
   const noEl = document.querySelector('.rp-no');
@@ -123,12 +136,12 @@
   const prevBtn = document.getElementById('practice-prev');
 
   // progress is kept per island range and pin
-  const KEY = RANGE === '1-38' && PIN === 5 ? 'en-app:practice-review-5' : `en-app:practice-review:${RANGE}:${PIN}`;
+  const KEY = `en-app:practice-review3:${RANGE}:${PIN}`; // letters / words / sentences
   let done = {};
   try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (err) { done = {}; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) { /* storage blocked */ } };
   const recordings = {};
-  let topic = Math.min(PIN, 5) - 1;
+  let topic = 0;
   let sub = 0;
   let index = 0;
   const words = () => TOPICS[topic].subs[sub].words;
@@ -150,7 +163,7 @@
   const topicDone = (ti) => TOPICS[ti].subs.every((_, si) => subDone(ti, si));
   function syncStates() {
     // a review before this one (it was finished to get here) shows as done – green
-    topicsEl.querySelectorAll('.rp-topic').forEach((b, ti) => b.classList.toggle('is-done', ti < PIN - 1 || topicDone(ti)));
+    topicsEl.querySelectorAll('.rp-topic').forEach((b, ti) => b.classList.toggle('is-done', topicDone(ti)));
     subsEl.querySelectorAll('.rp-sub').forEach((b, si) => b.classList.toggle('is-done', subDone(topic, si)));
   }
 
@@ -270,6 +283,7 @@
       cueEl.classList.add('is-new');
     }
     wordEl.classList.toggle('is-long', list[index].show.length > 6);
+    wordEl.classList.toggle('is-sentence', /s/.test(list[index].show.trim()));
     countEl.textContent = `${index + 1} מתוך ${list.length}`;
     [...dotsEl.children].forEach((d, k) => {
       d.classList.toggle('is-on', k === index);
@@ -297,8 +311,7 @@
 
   const pickTopic = (i) => {
     topic = i; sub = 0; renderTopic(); renderSub(); show(0, 1);
-    // the title shows the review now open (the list's "חזרה 4" opens review 4)
-    if (noEl) { noEl.textContent = i + 1; noEl.setAttribute('aria-label', 'מספר ' + (i + 1)); }
+    // the title keeps this review's number (the list now holds kinds of practice, not reviews)
   };
   const pickSub = (i, at = 0, dir = 1) => {
     sub = i;

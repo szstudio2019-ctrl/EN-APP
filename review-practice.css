@@ -1173,3 +1173,36 @@
 /* with the range gone, the coins and the chest sit together in the middle, the bar under them */
 .rp-isl-card__row { justify-content: center; gap: 14px; }
 .rp-isl-card__bar { margin-inline: auto; }
+
+/* the helper ruler, round 2: shorter, no pink border, a pink scrollbar, the
+   letters (the important part) in a pink pill, and a drag grip beside the ✕ */
+.rp-ruler { max-height: min(560px, calc(100vh - 24px)); border: 0; box-shadow: 0 18px 40px rgba(36, 34, 117, .3); }
+.rp-ruler__list { scrollbar-width: thin; scrollbar-color: #e33563 #fde3eb; }
+.rp-ruler__list::-webkit-scrollbar { width: 8px; }
+.rp-ruler__list::-webkit-scrollbar-track { background: #fde3eb; border-radius: 8px; }
+.rp-ruler__list::-webkit-scrollbar-thumb { background: #e33563; border-radius: 8px; }
+.rp-ruler__item { grid-template-columns: 48px 1fr; }
+.rp-ruler__item img { width: 48px; height: 48px; }
+.rp-ruler__tag {
+  display: inline-block;
+  min-width: 34px;
+  padding: 3px 12px 4px;
+  border-radius: 999px;
+  background: #e33563;
+  color: #fff;
+  text-align: center;
+  font-size: 19px;
+}
+.rp-ruler__text { margin-top: 5px; }
+.rp-ruler__tools { display: flex; align-items: center; gap: 6px; }
+.rp-ruler__grip { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, .25); }
+.rp-ruler__grip svg { width: 16px; height: 16px; fill: #fff; }
+/* the ruler tab exactly like the other left tabs (124px wide, same picture size);
+   hidden on phones like them */
+.rp-ruler-tab { width: 124px; }
+.rp-ruler-tab img { width: 66px; height: 66px; }
+@media (max-width: 760px) { .rp-ruler-tab, .rp-ruler { display: none !important; } }
+
+/* a sentence on the card (תרגול משפטים): smaller, and it may wrap */
+.review-practice .rp-main .practice__word.is-sentence,
+.review-practice .practice__word.is-sentence { font-size: 34px !important; line-height: 1.25; white-space: normal; max-width: 90%; text-align: center; }
