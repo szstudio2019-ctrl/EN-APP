@@ -630,3 +630,10 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-edit > .w-tabbed > .w-stepnav, .w-edit > .w-sections.w-tabbed > .w-stepnav { padding: 0 20px; }
 /* the card and the list reach down to the side menu's bottom line (12px from the screen's edge) */
 @media (min-width: 861px) { .has-rail .a-main { padding-bottom: 12px; } }
+/* the add menu: the game's island (filled) and the infinity sign */
+.w-plus__ic svg.is-fill { fill: currentColor; stroke: none; width: 24px; }
+.w-plus__ic svg { stroke-width: 1.8; }
+/* no gap between the button and the menu, so the mouse can move into it */
+.w-list__head .w-plus__menu { top: 100%; margin-top: 0; }
+.w-list__head .w-plus::after { content: ''; position: absolute; top: 100%; left: 0; right: 0; height: 8px; }
+.w-list__head .w-plus__menu { top: calc(100% + 6px); }

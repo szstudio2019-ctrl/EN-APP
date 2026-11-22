@@ -49,8 +49,8 @@
   plus.className = 'w-plus';
   plus.innerHTML = `<button class="w-plus__btn" type="button" id="w-plus" aria-haspopup="menu" aria-expanded="false" aria-controls="w-plus-menu" ><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>הוספה</span></button>
     <div class="w-plus__menu" id="w-plus-menu" role="menu" hidden>
-      <button type="button" role="menuitem" data-new="world"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 15h18l-3 3.5H6z"/><path d="M9 21l1-2.5M15 21l-1-2.5"/><path d="M12 15V8"/><path d="M12 8c-1.5-2-4-2.3-5.5-1.2M12 8c1.5-2 4-2.3 5.5-1.2M12 8c-.6-2.2.4-4 2-4.8"/></svg></span>הוספת עולם</button>
-      <button type="button" role="menuitem" data-new="review"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></span>הוספת חזרה</button>
+      <button type="button" role="menuitem" data-new="world"><span class="w-plus__ic" aria-hidden="true"><svg class="is-fill" viewBox="0 0 64 52"><path d="M33 20c-1-6 2-11 6-14 0 4 3 7 7 8-4 1-9 3-13 6z"/><path d="M27 21c-2-4-1-8 2-10 0 3 2 5 4 6-2 1-4 2-6 4z"/><path d="M4 25c0-3 12-6 28-6s28 3 28 6c0 2-2 3-5 4l-7 9-6 3-4 9-5-8-6-1-5-6-7-3c-6-2-11-3-11-7z"/></svg></span>הוספת עולם</button>
+      <button type="button" role="menuitem" data-new="review"><span class="w-plus__ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 12c-2-2.7-3.6-4.5-6-4.5a4.5 4.5 0 0 0 0 9c2.4 0 4-1.8 6-4.5zm0 0c2 2.7 3.6 4.5 6 4.5a4.5 4.5 0 0 0 0-9c-2.4 0-4 1.8-6 4.5z"/></svg></span>הוספת חזרה</button>
     </div>`;
   head.appendChild(plus);
   const delBtn = document.createElement('button');
@@ -75,6 +75,9 @@
   const openMenu = (focusFirst) => { menu.hidden = false; plusBtn.setAttribute('aria-expanded', 'true'); if (focusFirst) menuItems()[0].focus(); };
   const closeMenu = (back) => { menu.hidden = true; plusBtn.setAttribute('aria-expanded', 'false'); if (back) plusBtn.focus(); };
   plusBtn.addEventListener('click', () => (menu.hidden ? openMenu(false) : closeMenu(false)));
+  let hoverOut = 0;
+  plus.addEventListener('mouseenter', () => { clearTimeout(hoverOut); if (menu.hidden) openMenu(false); });
+  plus.addEventListener('mouseleave', () => { hoverOut = setTimeout(() => { if (!menu.hidden && !plus.contains(document.activeElement)) closeMenu(false); }, 250); });
   plusBtn.addEventListener('keydown', (e) => { if (e.key === 'ArrowDown') { e.preventDefault(); openMenu(true); } });
   menu.addEventListener('keydown', (e) => {
     const all = menuItems();
