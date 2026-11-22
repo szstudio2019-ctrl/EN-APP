@@ -505,3 +505,7 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 @media (min-width: 1241px) { .a-head { padding-inline-start: 364px; } }
 .w-abc__b, .w-song__file { position: relative; }
 .w-edit > .w-tabbed > section { position: relative; }
+
+/* each stage's row: a band in the page's light blue, with a small gap between stages */
+.w-st__head { padding: 6px 14px; border-radius: 12px; background: var(--a-page); }
+.w-st + .w-st { border-top: 0; margin-top: 8px; }
