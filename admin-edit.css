@@ -254,3 +254,10 @@
 .c-tip__t { position: absolute; bottom: calc(100% + 10px); right: 50%; z-index: 20; width: max-content; max-width: 200px; padding: 7px 12px; border-radius: 10px; background: #fff; color: #2A2577; font-size: 13px; font-weight: 500; line-height: 1.4; text-align: center; white-space: normal; pointer-events: none; box-shadow: 0 8px 22px rgba(20, 18, 74, .16), 0 0 0 1px var(--a-line); opacity: 0; visibility: hidden; transform: translate(50%, 4px); transition: opacity .15s ease, transform .15s ease, visibility .15s; }
 .c-tip__t::after { content: ''; position: absolute; top: 100%; right: 50%; width: 10px; height: 10px; background: #fff; box-shadow: 1px 1px 0 var(--a-line); transform: translate(50%, -5px) rotate(45deg); }
 .c-tip:hover .c-tip__t, .c-tip:focus-within .c-tip__t { opacity: 1; visibility: visible; transform: translate(50%, 0); }
+/* card shop: the count on the left of the title row, two lines */
+.c-sumbox { text-align: left; }
+.c-sumbox p { margin: 0; }
+.c-sumbox__l1 { font-size: 15px; color: var(--a-text-2); }
+.c-sumbox__l1 b { font-size: 18px; font-weight: 600; color: #E33563; }
+.c-sumbox__l2 { margin-top: 4px !important; font-size: 13px; color: var(--a-text-2); }
+.a-head:has(.c-sumbox) { align-items: center; }
