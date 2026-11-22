@@ -89,19 +89,56 @@
   delBtn.setAttribute('aria-label', 'מחיקת האי – עובר לארכיון');
   plus.after(delBtn);
   // deleting moves the island to the archive (it can come back from there)
-  delBtn.addEventListener('click', () => {
-    const w = mode === 'edit' && picked();
-    if (!w) return;
+  delBtn.addEventListener('click', () => { const w = mode === 'edit' && picked(); if (w) askArchive(w); });
+  // the reviews that go over an island's lessons (by their lesson range)
+  const rangeOf = (txt) => { const m = String(txt || '').match(/(\d+)\s*-\s*(\d+)/); return m ? [Number(m[1]), Number(m[2])] : null; };
+  function reviewsWith(w) {
+    if (w.review || !w.planned) return [];
+    const a = w.firstLesson || 1;
+    const b = a + w.planned - 1;
+    return list.filter((r) => { if (!r.review) return false; const rg = rangeOf(r.reviewOf); return rg && rg[0] <= b && a <= rg[1]; }).map((r) => r.name);
+  }
+  // deleting = to the archive (archived, archivedAt), after a question
+  function askArchive(w) {
+    const name = w.name || (w.review ? 'החזרה' : 'האי');
+    const revs = reviewsWith(w);
+    UI.confirm({
+      title: `להעביר את ${name} לארכיון?`,
+      note: revs.length ? `האי כלול ב${joinHe(revs)}. החזרות יישארו, אבל בלי השיעורים שלו.` : '',
+      ok: 'העברה לארכיון',
+      cancel: 'ביטול',
+    }, () => archiveIsland(w));
+  }
+  function archiveIsland(w) {
     const at = list.findIndex((x) => x.id === w.id);
+    if (at < 0) return;
+    const name = w.name || (w.review ? 'החזרה' : 'האי');
     list.splice(at, 1);
-    arch.islands.unshift({ w, at: Date.now() });
-    // the island before it opens (the first one, if it was first), at its first step
-    pickedId = (list[Math.max(0, at - 1)] || {}).id;
-    step = 0; viewTab = 'edit';
+    w.archived = true;
+    w.archivedAt = new Date().toISOString();
+    const entry = { w, at: Date.now() };
+    arch.islands.unshift(entry);
+    // the one that moved up into its place opens (the one above, if it was the last)
+    pickedId = (list[at] || list[at - 1] || {}).id;
+    mode = 'edit'; step = 0; viewTab = 'edit';
     drawAll(); changed();
-    live.textContent = `${w.name || 'האי'} עבר/ה לארכיון`;
-    showToast(() => { const i = arch.islands.findIndex((a) => a.w.id === w.id); if (i >= 0) arch.islands.splice(i, 1); list.splice(Math.min(at, list.length), 0, w); pickedId = w.id; drawAll(); changed(); live.textContent = 'האי הוחזר'; }, 'האי נמחק בהצלחה ונשמר בארכיון');
-  });
+    revealPicked();
+    live.textContent = `${name} ${w.review ? 'הועברה' : 'הועבר'} לארכיון`;
+    showToast(() => {
+      const j = arch.islands.indexOf(entry);
+      if (j >= 0) arch.islands.splice(j, 1);
+      delete w.archived; delete w.archivedAt;
+      list.splice(Math.min(at, list.length), 0, w);
+      pickedId = w.id; mode = 'edit'; step = 0; viewTab = 'edit';
+      drawAll(); changed(); revealPicked();
+      live.textContent = `${name} ${w.review ? 'חזרה' : 'חזר'} למקום ${at + 1}`;
+    }, `${name} ${w.review ? 'הועברה' : 'הועבר'} לארכיון`);
+  }
+  // the list scrolls to the picked island
+  function revealPicked() {
+    const li = items.querySelector(`.w-item[data-id="${pickedId}"]`);
+    if (li) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
   // duplicating: a copy (a draft) right after the island, open for editing
   const dupBtn = document.createElement('button');
   dupBtn.type = 'button';
@@ -218,7 +255,7 @@
   // the archive: deleted islands, then deleted stages, each with a round "החזרה" button
   function archList() {
     const BACK_TIP = { i: 'האי חוזר לסוף רשימת האיים', s: 'השלב חוזר לסוף האי שלו', p: 'חוזר לסוף השלב שלו' };
-    const back = (key, what) => `<button class="w-arch__back w-tipped" type="button" data-restore="${key}" aria-label="החזרת ${UI.esc(what)}">${BACK_ICON}<span class="w-tip w-tip--l" aria-hidden="true">החזרה – ${BACK_TIP[key[0]]}</span></button>`;
+    const back = (key, what) => `<button class="w-arch__back w-tipped" type="button" data-restore="${key}" aria-label="שחזור ${UI.esc(what)}">${BACK_ICON}<span>שחזור</span><span class="w-tip w-tip--l" aria-hidden="true">${BACK_TIP[key[0]]}</span></button>`;
     const isl = arch.islands.map((a, i) => `<li class="w-arch">
         ${pic(a.w, 'w-pic')}
         <span class="w-arch__body"><b>${UI.esc(a.w.name) || 'אי בלי שם'}</b><small>${a.w.review ? 'חזרה' : 'אי'} · נמחק ב־${dateOf(a.at)}</small></span>
@@ -248,7 +285,9 @@
     const i = Number(n);
     if (kind === 'i') {
       const [a] = arch.islands.splice(i, 1);
+      delete a.w.archived; delete a.w.archivedAt;
       list.push(a.w);
+      pickedId = a.w.id; mode = 'edit'; step = 0; viewTab = 'edit';
       live.textContent = `${a.w.name || 'האי'} חזר/ה לסוף רשימת האיים`;
     } else if (kind === 'p') {
       const a = arch.parts[i];
@@ -862,7 +901,16 @@
     if (mode === 'review') { setH1(''); drawNewReview(); placeActions(); return; }
     if (mode === 'lesson') { setH1(''); drawNewLesson(); placeActions(); return; }
     const w = picked();
-    if (!w) { setH1(''); edit.innerHTML = '<div class="a-card"><p class="a-muted">אין איים. אפשר להוסיף אי בכפתור "+ הוספה".</p></div>'; return; }
+    dupBtn.style.display = delBtn.style.display = w ? '' : 'none';
+    if (!w) {
+      setH1('');
+      edit.innerHTML = `<div class="a-card w-empty"><h2>אין כרגע איים. רוצה להוסיף?</h2>
+          <div class="w-empty__opts">
+            <button type="button" class="w-empty__opt" data-empty-new="world"><span class="w-plus__ic" aria-hidden="true">${menu.querySelector('[data-new="world"] .w-plus__ic').innerHTML}</span><b>הוספת אי</b><small>אי חדש עם שלבים, שיעורים ותרגולים</small></button>
+            <button type="button" class="w-empty__opt" data-empty-new="review"><span class="w-plus__ic" aria-hidden="true">${menu.querySelector('[data-new="review"] .w-plus__ic').innerHTML}</span><b>הוספת חזרה</b><small>אי חזרה על השיעורים שלפניו</small></button>
+          </div></div>`;
+      return;
+    }
     setH1(w.name);
     if (viewTab === 'view') {
       const bg = bgOf(w);
@@ -984,6 +1032,8 @@
   }
 
   edit.addEventListener('click', (e) => {
+    const en = e.target.closest('[data-empty-new]');
+    if (en) { addNow(en.dataset.emptyNew); return; }
     if (mode !== 'edit') return;
     if (e.target.closest('[data-drag],[data-more]')) return;
     const w = picked();
@@ -1500,6 +1550,7 @@
       const sibs = groupEls(g);
       const i = sibs.indexOf(el);
       let html = `<button type="button" role="menuitem" data-act="up"${i === 0 ? ' disabled' : ''}>הזזה למעלה</button><button type="button" role="menuitem" data-act="down"${i === sibs.length - 1 ? ' disabled' : ''}>הזזה למטה</button>`;
+      if (g === 'isl') html += '<p class="w-more__h"></p><button type="button" role="menuitem" data-act="archive" class="w-more__danger">מחיקה – העברה לארכיון</button>';
       if (g.startsWith('prt')) {
         const [, k] = g.split(':');
         const stages = stagesOf(picked());
@@ -1526,6 +1577,7 @@
     const viaKeys = e.detail === 0;
     closeMore(false);
     const act = b.dataset.act;
+    if (act === 'archive') { const w = list[i]; if (w) askArchive(w); return; }
     if (act === 'up' || act === 'down') { moveIn(g, i, i + (act === 'up' ? -1 : 1), viaKeys ? { focus: '[data-more]' } : {}); return; }
     const toK = Number(act.split(':')[1]);
     const [, k, kind] = g.split(':');

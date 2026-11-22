@@ -803,3 +803,23 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tile__grip { position: absolute; top: 10px; left: 8px; }
 .w-tile__main { padding-left: 34px; }
 .w-row__head { grid-template-columns: 24px 62px minmax(0, 1fr) auto 36px 36px 30px 36px !important; }
+
+/* the archive's "שחזור" button: a small pill with the arrow */
+.w-arch { grid-template-columns: 56px minmax(0, 1fr) auto; }
+.w-arch__back { width: auto; height: 32px; gap: 6px; display: inline-flex; align-items: center; padding: 0 12px 0 14px; border-radius: 16px; font: inherit; font-size: 13px; font-weight: 600; }
+.w-arch__back svg { width: 16px; height: 16px; }
+/* the ⋯ menu's delete */
+.w-more__h:empty { padding: 0; margin: 4px 0; }
+.w-more .w-more__danger { color: #C81E55; }
+.w-more .w-more__danger:hover { background: #FFF5F7; }
+/* no islands left */
+.w-empty { display: grid; place-items: center; align-content: center; gap: 24px; min-height: 360px; text-align: center; }
+.w-empty h2 { margin: 0; font-size: 22px; font-weight: 700; color: #E33563; }
+.w-empty__opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
+.w-empty__opt { width: 230px; display: grid; justify-items: center; gap: 8px; padding: 24px 20px; border: 0; border-radius: 16px; background: #fff; color: #2A2577; font: inherit; cursor: pointer; box-shadow: inset 0 0 0 1.5px var(--a-line); transition: box-shadow .15s, background-color .15s; }
+.w-empty__opt:hover { background: #FFF5F7; box-shadow: inset 0 0 0 1.5px #F1C5D2; }
+.w-empty__opt:focus-visible { outline: none; box-shadow: inset 0 0 0 1.5px #E33563, 0 0 0 3px rgba(227, 53, 99, .25); }
+.w-empty__opt .w-plus__ic { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: #FDEBF0; color: #E33563; }
+.w-empty__opt .w-plus__ic svg { width: 28px; height: 28px; }
+.w-empty__opt b { font-size: 16px; }
+.w-empty__opt small { font-size: 13px; color: #6B6890; }

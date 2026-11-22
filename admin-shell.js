@@ -445,6 +445,32 @@
       document.addEventListener('keydown', onKey, true);
       dlg.querySelector('[data-leave-stay]').focus();
     },
+    // a confirm dialog in the page's look: a question, an optional note, and two buttons
+    confirm({ title, note, ok, cancel }, onOk) {
+      const dlg = document.createElement('div');
+      dlg.className = 'a-leave';
+      dlg.innerHTML = `<div class="a-leave__card" role="alertdialog" aria-modal="true" aria-labelledby="a-cf-t" aria-describedby="a-cf-n">
+          <p class="a-leave__t" id="a-cf-t">${UI.esc(title)}</p>
+          ${note ? `<p class="a-leave__n" id="a-cf-n">${UI.esc(note)}</p>` : ''}
+          <div class="a-leave__btns">
+            <button type="button" class="a-btn a-btn--ghost" data-cf-no>${UI.esc(cancel || 'ביטול')}</button>
+            <button type="button" class="a-btn a-leave__stay" data-cf-ok>${UI.esc(ok || 'אישור')}</button>
+          </div>
+        </div>`;
+      document.body.append(dlg);
+      const back = document.activeElement;
+      const close = () => { document.removeEventListener('keydown', onKey, true); dlg.remove(); if (back && back.focus && document.contains(back)) back.focus(); };
+      const onKey = (e) => {
+        if (e.key === 'Escape') { e.preventDefault(); close(); }
+        if (e.key === 'Tab') { const bs = [...dlg.querySelectorAll('button')]; const i = bs.indexOf(document.activeElement); e.preventDefault(); bs[(i + (e.shiftKey ? bs.length - 1 : 1)) % bs.length].focus(); }
+      };
+      dlg.addEventListener('click', (e) => {
+        if (e.target.closest('[data-cf-ok]')) { close(); onOk(); return; }
+        if (e.target.closest('[data-cf-no]') || e.target === dlg) close();
+      });
+      document.addEventListener('keydown', onKey, true);
+      dlg.querySelector('[data-cf-ok]').focus();
+    },
     ICON: {
       chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
       edit: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>',
