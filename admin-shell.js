@@ -23,74 +23,65 @@
     : `<span${role} class="a-sub__item a-sub__item--soon" aria-disabled="true"><span>${name}</span><small>בקרוב</small></span>`);
   const page = document.body.dataset.page;
 
-  /* ---------- top bar ---------- */
-  const top = document.createElement('header');
-  top.className = 'a-top';
-  // as the student site's top bar: menu, home and the greeting on the right, the
-  // logo in the middle, the four admin pages on the left (no coins, chests or music)
-  const hour = new Date().getHours();
-  const hello = hour < 12 ? 'בוקר טוב,' : hour < 17 ? 'צהריים טובים,' : 'ערב טוב,';
-  // a page may give a short explanation for the ⓘ beside the breadcrumb (body data-info)
-  const info = (document.body.dataset.info || '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-  top.innerHTML = `
-    <div class="a-top__in">
-      <div class="a-top__start">
-        <div class="a-menu">
-          <button class="a-menu__btn" type="button" id="a-menu-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-menu" aria-label="תפריט"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M8 12h12M4 17h16"/></svg></button>
-          <div class="a-menu__list" id="a-menu" role="menu" hidden>
-            ${PAGES.map(([k, href, name, icon]) => `<a role="menuitem" href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>${k === 'content' ? `<div class="a-menu__sub">${CONTENT_SUB.map((x) => subLink(x, ' role="menuitem"')).join('')}</div>` : ''}`).join('')}
-            <span class="a-menu__soon" role="menuitem" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-2.8 1.2V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-2.8-1.2l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0-1.2-2.8H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.2-2.8l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.8.3h.1A1.7 1.7 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 2.8 1.2l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>הגדרות</span><small>בקרוב</small></span>
-            <hr class="a-menu__line">
-            <a role="menuitem" href="index.html?view=admin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span>לאתר התלמידים</span></a>
-          </div>
-        </div>
-        <div class="a-me-wrap">
-          <button class="a-me" type="button" id="a-me-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="a-me-menu"><img src="assets/team-einat.webp" alt=""><span class="a-me__text"><span class="a-me__hello">${hello}</span><b class="a-me__name">עינת</b></span></button>
-          <div class="a-me__menu" id="a-me-menu" role="menu" hidden>
-            <a role="menuitem" class="a-me__item a-me__item--main" href="index.html?view=admin"><span>לאתר התלמידים</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
-            <a role="menuitem" class="a-me__item" href="profile.html?view=admin"><span>הפרופיל שלי</span></a>
-            <a role="menuitem" class="a-me__item" href="index.html?intro&amp;view=admin"><span>הסבר על האתר</span></a>
-            <a role="menuitem" class="a-me__item a-me__item--out" href="index.html?view=off"><span>התנתקות</span></a>
-          </div>
-        </div>
+  /* ---------- the side rail: a narrow menu on the right, one icon per admin page ---------- */
+  const sub = document.body.dataset.sub || 'islands';
+  const I = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  // [key, href (none = not built yet), name, icon, is this the page]
+  const RAIL = [
+    ['home', 'admin-home.html', 'ראשי', I('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>'), page === 'home'],
+    '-',
+    ['islands', 'admin-content.html', 'עריכת איים', I('<path d="M3 18c2.5-1.5 5-1.5 7.5 0s5 1.5 7.5 0 3-1 3-1"/><path d="M6 14c1-3 3.5-5 6-5s5 2 6 5"/><path d="M12 9V4l4 2-4 2"/>'), page === 'content' && sub === 'islands'],
+    ['about', 'admin-about.html', 'עריכת אודות', I('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'), page === 'content' && sub === 'about'],
+    ['intro', 'admin-intro.html', 'הסבר על האתר', I('<path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/>'), page === 'content' && sub === 'intro'],
+    ['cards', 'admin-cards.html', 'חנות כרטיסים', I('<rect x="3" y="6" width="13" height="15" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v13"/>'), page === 'content' && sub === 'cards'],
+    ['raffle', 'admin-sentences.html', 'משפטי הגרלה', I('<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.2"/><circle cx="15.5" cy="15.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/>'), page === 'content' && sub === 'raffle'],
+    '-',
+    ['users', 'admin.html', 'משתמשים', I('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14a6.5 6.5 0 0 1 3.5 6"/>'), page === 'users'],
+    ['stats', 'admin-stats.html', 'התמדה', I('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'), page === 'stats'],
+    ['coins', 'admin-coins.html', 'מטבעות', I('<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5"/><path d="M12 9.5v5"/>'), page === 'coins'],
+    ['settings', '', 'הגדרות (בקרוב)', I('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9 7 7M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/>'), false],
+    ['site', 'index.html?view=admin', 'לאתר התלמידים', I('<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'), false],
+  ];
+  const railItem = (x) => {
+    if (x === '-') return '<li class="a-rail__sep" aria-hidden="true"></li>';
+    const [k, href, name, icon, on] = x;
+    return `<li>${href
+      ? `<a class="a-rail__item" href="${href}" aria-label="${name}"${on ? ' aria-current="page"' : ''} data-rail="${k}">${icon}<span class="a-tip" aria-hidden="true">${name}</span></a>`
+      : `<span class="a-rail__item is-soon" role="link" aria-disabled="true" aria-label="${name}">${icon}<span class="a-tip" aria-hidden="true">${name}</span></span>`}</li>`;
+  };
+  const rail = document.createElement('nav');
+  rail.className = 'a-rail';
+  rail.setAttribute('aria-label', 'מערכת ניהול');
+  rail.innerHTML = `
+    <a class="a-rail__logo" href="admin-home.html" aria-label="מדקדקים באנגלית – מערכת ניהול, ראשי"><span class="logo__mark" aria-hidden="true"><img class="logo__ring" src="assets/logo-ring.svg" alt=""><span class="logo__tile logo__tile--a">a</span><span class="logo__tile logo__tile--c">c</span><span class="logo__tile logo__tile--b">b</span></span></a>
+    <div class="a-find">
+      <button class="a-rail__item a-rail__search" type="button" aria-label="חיפוש עמוד" aria-expanded="false" aria-controls="a-find-box">${I('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>')}<span class="a-tip" aria-hidden="true">חיפוש עמוד</span></button>
+      <div class="a-find__box" id="a-find-box" role="dialog" aria-label="חיפוש עמוד" hidden>
+        <input type="search" placeholder="לאיזה עמוד?" aria-label="שם העמוד">
+        <ul class="a-find__list">${RAIL.filter((x) => x !== '-' && x[1]).map(([, href, name, icon]) => `<li><a href="${href}">${icon}<span>${name}</span></a></li>`).join('')}</ul>
       </div>
-      <div class="a-top__mid">
-        <a class="a-logo" href="admin-home.html" aria-label="מדקדקים באנגלית – מערכת ניהול, ראשי"><span class="logo__mark" aria-hidden="true"><img class="logo__ring" src="assets/logo-ring.svg" alt=""><span class="logo__tile logo__tile--a">a</span><span class="logo__tile logo__tile--c">c</span><span class="logo__tile logo__tile--b">b</span></span></a>
-        <nav class="a-crumb" aria-label="מיקום"><a href="admin-home.html">מדקדקים באנגלית</a><span class="a-crumb__sep" aria-hidden="true">/</span><b>מערכת ניהול</b>${info ? `<span class="a-info"><button class="a-info__btn" type="button" aria-describedby="a-info-tip" aria-label="הסבר על העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><span class="a-info__tip" id="a-info-tip" role="tooltip">${info}</span></span>` : ''}</nav>
-      </div>
-      <nav class="a-nav" aria-label="ניהול">
-        ${PAGES.map(([k, href, name, icon]) => (k === 'content'
-          ? `<div class="a-sub"><button class="a-sub__btn" type="button" aria-expanded="false" aria-haspopup="true"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span><svg class="a-sub__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="a-sub__list" hidden>${CONTENT_SUB.map((x) => subLink(x, '')).join('')}</div></div>`
-          : `<a href="${href}"${k === page ? ' aria-current="page"' : ''}>${icon}<span>${name}</span></a>`)).join('')}
-      </nav>
-      <a class="a-back" href="index.html?view=admin" aria-label="לאתר התלמידים"><span class="a-back__label">לאתר התלמידים</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
+    </div>
+    <ul class="a-rail__list">${RAIL.map(railItem).join('')}</ul>
+    <div class="a-rail__foot">
+      <a class="a-rail__me" href="profile.html?view=admin" aria-label="הפרופיל שלי – עינת"><img src="assets/team-einat.webp" alt=""><span>עינת</span></a>
+      <a class="a-rail__item a-rail__out" href="index.html?view=off" aria-label="התנתקות">${I('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 17l-5-5 5-5M5 12h11"/>')}<span class="a-tip" aria-hidden="true">התנתקות</span></a>
     </div>`;
-  document.body.prepend(top);
+  document.body.prepend(rail);
+  document.body.classList.add('has-rail');
   // every page title starts with 'מערכת ניהול –'
   const h1 = document.querySelector('.a-head h1');
   if (h1 && !h1.querySelector('.a-h1-pre')) h1.insertAdjacentHTML('afterbegin', '<span class="a-h1-pre">מערכת ניהול – </span>');
-  // the menu button opens the pages (handy on a phone, where the nav is hidden)
-  const menuBtn = top.querySelector('#a-menu-btn');
-  const menuList = top.querySelector('#a-menu');
-  const setMenu = (on) => { menuList.hidden = !on; menuBtn.setAttribute('aria-expanded', String(on)); };
-  menuBtn.addEventListener('click', () => setMenu(menuList.hidden));
-  document.addEventListener('click', (e) => { if (!menuList.hidden && !e.target.closest('.a-menu')) setMenu(false); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menuList.hidden) { setMenu(false); menuBtn.focus(); } });
-  // the greeting opens Einat's menu
-  const meBtn = top.querySelector('#a-me-btn');
-  const meList = top.querySelector('#a-me-menu');
-  const setMe = (on) => { meList.hidden = !on; meBtn.setAttribute('aria-expanded', String(on)); };
-  meBtn.addEventListener('click', () => setMe(meList.hidden));
-  document.addEventListener('click', (e) => { if (!meList.hidden && !e.target.closest('.a-me-wrap')) setMe(false); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !meList.hidden) { setMe(false); meBtn.focus(); } });
-  // 'עריכת תוכן' in the bar opens to its four parts
-  const sub = top.querySelector('.a-sub');
-  const subBtn = sub.querySelector('.a-sub__btn');
-  const subList = sub.querySelector('.a-sub__list');
-  const setSub = (on) => { subList.hidden = !on; subBtn.setAttribute('aria-expanded', String(on)); };
-  subBtn.addEventListener('click', () => setSub(subList.hidden));
-  document.addEventListener('click', (e) => { if (!subList.hidden && !sub.contains(e.target)) setSub(false); });
-  sub.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !subList.hidden) { setSub(false); subBtn.focus(); } });
+  // the search button: a small box to find an admin page by its name
+  const findBtn = rail.querySelector('.a-rail__search');
+  const findBox = rail.querySelector('.a-find__box');
+  const findIn = findBox.querySelector('input');
+  const setFind = (on) => { findBox.hidden = !on; findBtn.setAttribute('aria-expanded', String(on)); if (on) { findIn.value = ''; filterFind(); findIn.focus(); } };
+  const filterFind = () => { const q = findIn.value.trim(); findBox.querySelectorAll('li').forEach((li) => { li.hidden = !!q && !li.textContent.includes(q); }); };
+  findBtn.addEventListener('click', () => setFind(findBox.hidden));
+  findIn.addEventListener('input', filterFind);
+  findIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const a = findBox.querySelector('li:not([hidden]) a'); if (a) a.click(); } });
+  document.addEventListener('click', (e) => { if (!findBox.hidden && !e.target.closest('.a-find')) setFind(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !findBox.hidden) { setFind(false); findBtn.focus(); } });
 
   /* ---------- storage (per browser, demo) ---------- */
   const read = (k, fallback) => { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; } catch (e) { return fallback; } };

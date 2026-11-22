@@ -78,3 +78,5 @@
   .u-scroll { overflow: visible; }
   .u-scroll thead th { top: 56px; }
 }
+/* no header above any more: the column titles stick to the very top */
+@media (min-width: 1100px) { .u-scroll thead th { top: 0; } }

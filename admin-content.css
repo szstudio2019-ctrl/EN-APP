@@ -559,3 +559,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
   .w-toprow { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 10px 16px; margin: -16px -16px 16px; }
   .w-toprow__mid { order: 3; width: 100%; overflow-x: auto; }
 }
+/* no header above any more: the card and the list take the full height */
+@media (min-width: 861px) {
+  .a-main { padding-top: 24px; padding-bottom: 24px; }
+  .w-layout { height: calc(100vh - 48px); }
+}
+.w-toprow__name { display: inline-flex; align-items: center; gap: 4px; }
+.w-toprow__name { overflow: visible; } .w-toprow__name b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (min-width: 861px) { .has-rail .a-main { padding-right: 0; } }

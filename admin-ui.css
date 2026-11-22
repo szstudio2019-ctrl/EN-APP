@@ -467,3 +467,73 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 .a-top .a-logo { position: relative; width: 54px; height: 42px; }
 .a-top .a-logo .logo__mark { top: 2px; left: 2px; transform: scale(.56); transform-origin: top left; }
 .a-top .a-logo { width: 56px; height: 30px; }
+
+/* ================= side rail: replaces the top header on every admin page (the student pages are untouched) ================= */
+.a-rail { position: fixed; top: 12px; right: 12px; bottom: 12px; z-index: 60; width: 72px; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 0; border-radius: 16px; background: #2A2577; box-shadow: 0 10px 30px rgba(20, 18, 74, .22); color: #fff; }
+.a-rail__logo { position: relative; flex: none; width: 40px; height: 34px; display: block; }
+.a-rail__logo .logo__mark { position: absolute; top: 1px; left: -2px; width: 56.122px; height: 64.766px; transform: scale(.47); transform-origin: top left; }
+.a-rail__logo .logo__ring { position: absolute; top: -3.01px; left: -2.99px; width: 59.107px; height: 72.002px; }
+.a-rail__logo .logo__tile { position: absolute; width: 26.31px; height: 33.1px; border-radius: 4.244px; display: flex; align-items: center; justify-content: center; font: 700 35.977px/1 'Varela Round', 'Rubik', sans-serif; color: #fff; }
+.a-rail__logo .logo__tile--a { top: 14.39px; left: 22.7px; background: #fff; color: #1d2b7a; transform: rotate(-10.69deg); }
+.a-rail__logo .logo__tile--c { top: 14.38px; left: 65.7px; background: #e33563; transform: rotate(-10.72deg); }
+.a-rail__logo .logo__tile--b { top: 14.38px; left: 44.7px; background: #eeb741; transform: rotate(6.68deg); }
+.a-rail__list { list-style: none; flex: 1; min-height: 0; width: 100%; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; overflow-y: auto; overflow-x: visible; scrollbar-width: none; }
+.a-rail__list::-webkit-scrollbar { display: none; }
+.a-rail__sep { flex: none; width: 28px; height: 1px; margin: 4px 0; background: rgba(255, 255, 255, .16); }
+/* each page: a 20px stroke icon in a 44×44 target */
+.a-rail__item { position: relative; flex: none; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 12px; background: none; color: rgba(255, 255, 255, .66); text-decoration: none; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.a-rail__item > svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.a-rail__item:hover, .a-rail__item:focus-visible { background: rgba(255, 255, 255, .1); color: #fff; }
+.a-rail__item[aria-current="page"] { background: rgba(255, 255, 255, .16); color: #fff; }
+/* the page you are on: a pink line at the rail's edge */
+.a-rail__item[aria-current="page"]::before { content: ''; position: absolute; top: 10px; bottom: 10px; right: -14px; width: 4px; border-radius: 2px 0 0 2px; background: #E33563; }
+.a-rail__item.is-soon { color: rgba(255, 255, 255, .32); cursor: default; }
+.a-rail__item.is-soon:hover { background: none; color: rgba(255, 255, 255, .45); }
+.a-rail__search { border-radius: 12px; background: rgba(255, 255, 255, .08); }
+/* the page's name on hover, opening to the left */
+.a-tip { position: absolute; top: 50%; right: calc(100% + 14px); z-index: 2; padding: 6px 12px; border-radius: 8px; background: #1E1A5C; color: #fff; font-size: 13.5px; font-weight: 500; white-space: nowrap; pointer-events: none; box-shadow: 0 6px 16px rgba(20, 18, 74, .25); opacity: 0; visibility: hidden; transform: translate(4px, -50%); transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+.a-tip::after { content: ''; position: absolute; top: 50%; right: -4px; width: 8px; height: 8px; background: inherit; transform: translateY(-50%) rotate(45deg); }
+.a-rail__item:hover .a-tip, .a-rail__item:focus-visible .a-tip { opacity: 1; visibility: visible; transform: translate(0, -50%); }
+.a-rail__search[aria-expanded="true"] .a-tip { display: none; }
+/* the search box: find a page by its name */
+.a-find { position: relative; flex: none; }
+.a-find__box { position: absolute; top: 0; right: calc(100% + 16px); z-index: 3; width: 260px; padding: 10px; border-radius: 14px; background: #fff; color: var(--a-text); box-shadow: 0 14px 34px rgba(20, 18, 74, .25), 0 0 0 1px var(--a-line); }
+.a-find__box input { width: 100%; min-height: 40px; padding: 8px 12px; border: 1.5px solid var(--a-field); border-radius: 10px; }
+.a-find__box input:focus-visible { border-color: var(--a-bar); box-shadow: 0 0 0 3px rgba(80, 65, 146, .25); }
+.a-find__list { list-style: none; max-height: 320px; margin: 8px 0 0; padding: 0; overflow-y: auto; }
+.a-find__list a { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: 8px; color: var(--a-text); text-decoration: none; font-weight: 500; }
+.a-find__list a:hover, .a-find__list a:focus-visible { background: var(--a-picked); }
+.a-find__list svg { width: 18px; height: 18px; flex: none; fill: none; stroke: #504192; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+/* at the bottom: Einat, her name, and signing out */
+.a-rail__foot { flex: none; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.a-rail__me { display: flex; flex-direction: column; align-items: center; gap: 3px; color: #fff; text-decoration: none; font-size: 11.5px; font-weight: 600; }
+.a-rail__me img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, .8); }
+.a-rail__me:hover img { border-color: #E33563; }
+.a-rail__out:hover { color: #FF8FB0; }
+
+/* the page: beside the rail, the full width and height left */
+.a-body.has-rail { min-height: 100vh; }
+.has-rail .a-top { display: none; }
+.has-rail .a-main { max-width: none; min-height: 100vh; margin: 0 108px 0 0; padding: 24px 24px 24px 0; }
+
+/* a phone: the rail lies along the bottom */
+@media (max-width: 760px) {
+  .a-rail { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: 60px; flex-direction: row; padding: 0 10px; gap: 6px; }
+  .a-rail__logo, .a-rail__me span, .a-tip { display: none; }
+  .a-rail__list { flex-direction: row; overflow-x: auto; overflow-y: hidden; height: 100%; align-items: center; }
+  .a-rail__sep { width: 1px; height: 24px; margin: 0 4px; }
+  .a-rail__item[aria-current="page"]::before { top: auto; bottom: -8px; right: 12px; left: 12px; width: auto; height: 3px; border-radius: 2px 2px 0 0; }
+  .a-rail__foot { flex-direction: row; }
+  .a-rail__me img { width: 32px; height: 32px; }
+  .a-find__box { top: auto; bottom: calc(100% + 12px); right: 0; }
+  .has-rail .a-main { margin: 0; padding: 16px 16px 88px; }
+}
+.a-rail__list { overflow: visible; }
+@media (min-width: 761px) and (max-height: 820px) { .a-rail { gap: 8px; padding: 10px 0; } .a-rail__item { height: 38px; } .a-rail__sep { margin: 2px 0; } }
+/* the ⓘ with a page's explanation (in a page's own top row) */
+.a-info { position: relative; display: inline-flex; vertical-align: middle; }
+.a-info__btn { width: 28px; height: 28px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--a-text-2); cursor: help; }
+.a-info__btn:hover, .a-info__btn:focus-visible { color: #2A2577; background: var(--a-picked); }
+.a-info__btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.a-info__tip { position: absolute; top: calc(100% + 8px); right: 0; z-index: 80; width: max-content; max-width: 300px; padding: 10px 14px; border-radius: 10px; background: #fff; color: var(--a-text); font-size: 13.5px; font-weight: 400; line-height: 1.5; white-space: normal; box-shadow: 0 10px 28px rgba(20, 18, 74, .2), 0 0 0 1px var(--a-line); opacity: 0; visibility: hidden; transition: opacity .15s ease, visibility .15s; }
+.a-info:hover .a-info__tip, .a-info__btn:focus-visible + .a-info__tip { opacity: 1; visibility: visible; }
