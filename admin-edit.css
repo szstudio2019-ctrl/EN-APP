@@ -180,3 +180,19 @@
 .t-combo__pic { overflow: hidden; }
 .t-combo__pics { height: 126px; }
 .t-combo__pics img { max-height: 126px; height: auto; }
+
+/* the shop's cards: the picture alone; the letters and 'נמכרת בחנות' face each other; a small switch and a picture button */
+.c-card__art { cursor: default; }
+.c-card__row { align-items: center; }
+.c-card__row .c-card__state { text-align: left; line-height: 1.3; }
+.c-card__tools { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.c-card__tools .a-switch { min-height: 0; }
+.c-card__tools .a-switch input { width: 36px; height: 22px; }
+.c-card__tools .a-switch__track { width: 36px; height: 22px; border-radius: 11px; }
+.c-card__tools .a-switch__track::after { top: 3px; right: 3px; width: 16px; height: 16px; }
+.c-card__tools .a-switch input:checked + .a-switch__track::after { transform: translateX(-14px); }
+.c-card__pic { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: #2A2577; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.c-card__pic:hover { background: var(--a-picked); color: #E33563; }
+.c-card__pic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.c-card__tools input[type="file"]:focus-visible + .c-card__pic, .c-card__pic:focus-visible { box-shadow: var(--a-focus); }
+.c-card__tools { justify-content: flex-start; gap: 6px; }
