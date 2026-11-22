@@ -567,3 +567,12 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-toprow__name { display: inline-flex; align-items: center; gap: 4px; }
 .w-toprow__name { overflow: visible; } .w-toprow__name b { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (min-width: 861px) { .has-rail .a-main { padding-right: 0; } }
+/* the page title is back on top (as on every admin page); the card and the list fill the height left under it */
+@media (min-width: 861px) {
+  .has-rail .a-main { display: flex; flex-direction: column; height: 100vh; }
+  .a-head { display: flex; flex: none; margin: 0 0 16px; padding-inline-start: 0; }
+  .a-head p { display: none; }
+  .a-head h1 .a-h1-island { display: none; }
+  .w-layout { flex: 1; height: auto; min-height: 0; }
+}
+.has-rail .a-head { justify-content: flex-start; text-align: start; padding-inline-start: 0; }
