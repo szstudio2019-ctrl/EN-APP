@@ -540,3 +540,6 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* the same space on both sides of every page: 24px from the rail on the right, 24px from the screen's edge on the left */
 .has-rail .a-main { margin: 0 108px 0 0; padding: 24px 0 24px 24px; }
 @media (max-width: 760px) { .has-rail .a-main { margin: 0; padding: 16px 16px 88px; } }
+/* the coins page: the site's own coloured coin instead of a line icon */
+.a-rail__item > .a-rail__img { width: 24px; height: 24px; object-fit: contain; }
+.a-find__list img { width: 18px; height: 18px; flex: none; object-fit: contain; }
