@@ -736,3 +736,8 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 @container wedit (max-width: 640px) {
   .w-toprow .w-steps span { display: none; }
 }
+
+/* the picked island: a blue border; the fade under the list's head shows only once the list is scrolled */
+.w-item[aria-current="true"] { box-shadow: inset 0 0 0 1.5px #504192; }
+.w-list__head::after { transition: opacity .2s ease; }
+.w-list:not(.is-scrolled) .w-list__head::after { opacity: 0; }

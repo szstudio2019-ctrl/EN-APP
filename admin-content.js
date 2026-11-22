@@ -176,6 +176,8 @@
   tools.className = 'w-list__tools';
   tools.append(archBtn, plus);
   listHead.append(listTitle, tools);
+  const listBox = listHead.closest('.w-list');
+  if (listBox) listBox.addEventListener('scroll', () => listBox.classList.toggle('is-scrolled', listBox.scrollTop > 2), { passive: true });
   const paintArchBtn = () => {
     const n = arch.islands.length + arch.stages.length;
     archBtn.setAttribute('aria-pressed', String(showArch));
