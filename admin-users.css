@@ -99,3 +99,11 @@
 /* the short explanation, on hover */
 .u-chip__tip { position: absolute; top: calc(100% + 8px); right: 50%; z-index: 20; padding: 6px 12px; border-radius: 8px; background: #1E1A5C; color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; opacity: 0; visibility: hidden; transform: translateX(50%); transition: opacity .15s ease, visibility .15s; }
 .u-chip:hover .u-chip__tip, .u-chip:focus-visible .u-chip__tip { opacity: 1; visibility: visible; }
+/* picked: the chip keeps its pastel; only the ✓ shows, in a circle of the chip's strong colour */
+.u-chip--top[aria-pressed="true"] { background: #FFF4D6; color: #8A6100; }
+.u-chip--steady[aria-pressed="true"] { background: #FFEADB; color: #9A4A12; }
+.u-chip--top[aria-pressed="true"]:hover { background: #FFEBB3; }
+.u-chip--steady[aria-pressed="true"]:hover { background: #FFDCC2; }
+.u-chip[aria-pressed="true"] .u-chip__check { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; color: #fff; font-size: 12px; line-height: 1; }
+.u-chip--top .u-chip__check { background: #F2B705; }
+.u-chip--steady .u-chip__check { background: #F08A3C; }
