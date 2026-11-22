@@ -672,3 +672,34 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tip { position: absolute; top: calc(100% + 10px); left: 50%; z-index: 30; width: max-content; padding: 7px 12px; border-radius: 10px; background: #fff; color: #2A2577; font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; box-shadow: 0 8px 22px rgba(20, 18, 74, .16), 0 0 0 1px var(--a-line); opacity: 0; visibility: hidden; transform: translate(-50%, -4px); transition: opacity .15s ease, transform .15s ease, visibility .15s; }
 .w-tip::before { content: ''; position: absolute; bottom: 100%; left: 50%; width: 10px; height: 10px; background: #fff; box-shadow: -1px -1px 0 var(--a-line); transform: translate(-50%, 5px) rotate(45deg); }
 .w-delete:hover .w-tip, .w-delete:focus-visible .w-tip { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+/* duplicate + archive: shared white tooltips, the archive button beside "הוספה", the archive list, a wider islands list */
+.w-tipped { position: relative; overflow: visible; }
+.w-tipped:hover .w-tip, .w-tipped:focus-visible .w-tip { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+.w-tip--l { left: 0; transform: translate(0, -4px); }
+.w-tip--l::before { left: 14px; transform: translate(0, 5px) rotate(45deg); }
+.w-tipped:hover .w-tip--l, .w-tipped:focus-visible .w-tip--l { transform: translate(0, 0); }
+.w-dup svg, .w-st__dup svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.w-dup, .w-st__dup { color: #2A2577 !important; }
+.w-dup:hover, .w-st__dup:hover { color: #E33563 !important; }
+.w-st__end .w-lrow__del { background: none; box-shadow: none; }
+.w-list__tools { display: inline-flex; align-items: center; gap: 6px; }
+.w-archbtn { height: 34px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border: 0; border-radius: 17px; background: #F1EFFA; color: #2A2577; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background-color 150ms ease; }
+.w-archbtn:hover, .w-archbtn[aria-pressed="true"] { background: #E6E3F6; }
+.w-archbtn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(80, 65, 146, .3); }
+.w-archbtn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.w-archbtn i { min-width: 18px; height: 18px; padding: 0 5px; display: grid; place-items: center; border-radius: 9px; background: #fff; color: #504192; font-style: normal; font-size: 11.5px; font-weight: 700; }
+.w-arch__h { margin: 14px 6px 6px; font-size: 13px; font-weight: 600; color: #8C8EA6; list-style: none; }
+.w-arch__h:first-child { margin-top: 4px; }
+.w-arch { display: grid; grid-template-columns: 56px minmax(0, 1fr) 36px; align-items: center; gap: 12px; padding: 8px 6px; border-bottom: 1px solid var(--a-line); list-style: none; }
+.w-arch .w-pic { width: 56px; height: 56px; object-fit: contain; opacity: .7; filter: grayscale(.4); }
+.w-arch__ic { width: 44px; height: 44px; margin: 0 auto; display: grid; place-items: center; border-radius: 12px; background: #F1EFFA; color: #8C8EA6; }
+.w-arch__ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.w-arch__body { display: grid; gap: 2px; min-width: 0; }
+.w-arch__body b { font-size: 15px; font-weight: 600; color: #2A2577; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-arch__body small { font-size: 12.5px; color: #8C8EA6; }
+.w-arch__back { width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: #fff; color: #2A2577; box-shadow: inset 0 0 0 1.5px var(--a-line); cursor: pointer; }
+.w-arch__back:hover { color: #E33563; box-shadow: inset 0 0 0 1.5px #F1C5D2; background: #FFF5F7; }
+.w-arch__back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.w-arch__empty { padding: 28px 12px; text-align: center; font-size: 14px; line-height: 1.6; color: #8C8EA6; list-style: none; }
+@media (min-width: 1241px) { .w-layout { grid-template-columns: 390px minmax(0, 1fr); } }
