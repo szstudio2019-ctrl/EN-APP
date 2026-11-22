@@ -26,3 +26,4 @@
   .h-content h2 { font-size: 22px; }
   .h-content__grid, .h-areas { grid-template-columns: 1fr; }
 }
+.h-tile__icon svg.is-fill, .h-area__icon svg.is-fill { fill: var(--c); stroke: none; width: 30px; }

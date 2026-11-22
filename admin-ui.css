@@ -572,3 +572,6 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
   body[data-page="me"] .a-main { display: flex; flex-direction: column; height: 100vh; }
   body[data-page="me"] .me-card { flex: 1; min-height: 0; }
 }
+/* the game's own island icon (a filled shape): it takes the colour around it */
+.a-rail__item > svg.is-fill, .a-find__list svg.is-fill { fill: currentColor; stroke: none; width: 24px; }
+.a-find__list svg.is-fill { fill: #504192; }
