@@ -729,11 +729,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 
 /* a narrow card: the steps drop their labels (the current one keeps it), so the top row never spills out */
 .w-edit { container-type: inline-size; container-name: wedit; }
-@container wedit (max-width: 900px) {
+@container wedit (max-width: 760px) {
   .w-toprow .w-steps li:not(:has([aria-current="step"])) span { display: none; }
   .w-toprow .w-steps li + li::before { width: 12px; margin: 0 6px; }
 }
-@container wedit (max-width: 640px) {
+@container wedit (max-width: 600px) {
   .w-toprow .w-steps span { display: none; }
 }
 
