@@ -594,3 +594,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-ladd:hover { background: #FDE8EE; }
 .w-ladd:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(224, 52, 92, .35); }
 .w-ladd svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+/* more room inside the editing card */
+@media (min-width: 861px) {
+  .w-edit > .w-sections.w-tabbed { padding: 32px 40px 28px; }
+  .w-edit > .w-sections.w-tabbed > .w-toprow { margin: -32px -40px 28px; padding: 0 28px; min-height: 60px; }
+  .w-edit > .w-sections.w-tabbed > .w-stepnav { padding-top: 20px; }
+  .w-sections section .a-field + .a-field, .w-sections section .a-grid + .a-field, .w-sections section .a-field + .a-grid { margin-top: 22px; }
+  .w-sections section .a-grid { gap: 20px; }
+}
