@@ -559,3 +559,16 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 .me-photo__btns { display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: 160px; }
 .me-grid { flex: 1; }
 @media (max-width: 760px) { .me-card { flex-direction: column; align-items: stretch; } .me-grid { grid-template-columns: minmax(0, 1fr); } }
+/* admin-profile.html: the white card across the whole page, roomier */
+.me-card { max-width: none; gap: 48px; padding: 40px; }
+.me-photo__pic { width: 168px; height: 168px; }
+.me-photo__btns { max-width: 190px; }
+.me-grid { gap: 22px 24px; }
+.me-grid .a-field > span { font-size: 15px; }
+.me-grid input { min-height: 52px; font-size: 16px; }
+@media (max-width: 760px) { .me-card { padding: 20px; gap: 24px; } }
+/* admin-profile.html: the white card fills the screen down to the bottom */
+@media (min-width: 761px) {
+  body[data-page="me"] .a-main { display: flex; flex-direction: column; height: 100vh; }
+  body[data-page="me"] .me-card { flex: 1; min-height: 0; }
+}

@@ -206,3 +206,35 @@
 @media (max-width: 760px) { .s-row { grid-template-columns: 26px minmax(0, 1fr) auto; } }
 /* the shop's cards sit straight on the page, no white panel around them */
 .c-wrap { padding: 0; background: none; box-shadow: none; }
+
+/* ---------- raffle sentences: adding several at once ---------- */
+.s-add { display: grid; gap: 14px; }
+.s-add textarea { min-height: 112px; resize: vertical; font: inherit; line-height: 1.6; }
+.s-pre { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.s-pre:empty { display: none; }
+.s-pre__row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; min-height: 40px; padding: 6px 14px; border-radius: 10px; background: #F4F3FA; }
+.s-pre__row.is-dup .s-pre__en { text-decoration: line-through; color: var(--a-text-2); }
+.s-pre__en { flex: 1; min-width: 0; text-align: left; font-weight: 500; }
+.s-pre__n { font-size: 13px; color: var(--a-text-2); white-space: nowrap; }
+.s-flag { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 999px; background: #FFEADB; color: #9A4A12; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.s-flag svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.s-add__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.s-add__msg { margin: 0; font-size: 14px; font-weight: 500; color: #1B7A53; }
+.s-add .a-btn:disabled { opacity: .45; cursor: default; }
+
+/* ---------- raffle sentences: a cleaner, lower row ---------- */
+.s-row { grid-template-columns: 34px minmax(0, 1fr) 120px 40px; min-height: 48px; padding: 4px 0; }
+.s-row__edit { position: relative; display: block; min-width: 0; }
+.s-row .s-row__edit input { width: 100%; min-height: 38px; padding: 6px 12px; border: 1.5px solid transparent; border-radius: 10px; background: transparent; font-size: 15px; transition: border-color .15s ease, background .15s ease; }
+.s-row .s-row__edit input:hover { border-color: var(--a-line); background: #fff; }
+.s-row .s-row__edit input:focus-visible { border-color: var(--a-bar); background: #fff; box-shadow: 0 0 0 3px rgba(80, 65, 146, .2); }
+.s-saved { position: absolute; top: 50%; right: 10px; transform: translateY(-50%); font-size: 12.5px; font-weight: 600; color: #1B7A53; pointer-events: none; }
+.s-row__meta { text-align: left; }
+.s-arch { width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%; background: none; color: #5B5780; cursor: pointer; }
+.s-arch:hover { background: var(--a-picked); color: #2A2577; }
+.s-arch svg, .s-back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.s-row--arch { grid-template-columns: 34px minmax(0, 1fr) auto auto; }
+.s-row__text { min-width: 0; padding: 0 12px; text-align: left; color: var(--a-text-2); }
+.s-back { min-height: 36px; padding: 0 14px; font-size: 14px; }
+.s-tools { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+@media (max-width: 760px) { .s-row, .s-row--arch { grid-template-columns: 26px minmax(0, 1fr) 40px; } .s-row__meta { display: none; } }

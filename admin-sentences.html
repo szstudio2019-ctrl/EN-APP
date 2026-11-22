@@ -9,29 +9,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin-ui.css?v=20261122m">
-  <link rel="stylesheet" href="admin-edit.css?v=20261122f">
+  <link rel="stylesheet" href="admin-ui.css?v=20261122o">
+  <link rel="stylesheet" href="admin-edit.css?v=20261122g">
 </head>
 <body class="a-body" data-page="content" data-sub="raffle">
   <main class="a-main">
     <div class="a-head">
       <div>
         <h1>משפטי הגרלה</h1>
-        <p>המשפטים שהילדים מגרילים בחנות האותיות: המשפט באנגלית והתרגום. אפשר להוסיף, לערוך ולמחוק.</p>
+        <p>המשפטים שהילדים מגרילים בחנות האותיות. אפשר להוסיף כמה יחד, לערוך ולהעביר לארכיון.</p>
       </div>
     </div>
     <section class="a-card s-newcard" aria-labelledby="s-new-title">
-      <h2 class="t-h" id="s-new-title">הוספת משפט</h2>
-      <form class="s-new" id="s-new" novalidate>
-        <label class="a-field"><span>משפט חדש באנגלית</span><input id="s-en" dir="ltr" lang="en" placeholder="You can do it!" required></label>
-        <label class="a-field"><span>התרגום לעברית</span><input id="s-he" placeholder="אתה יכול לעשות את זה!"></label>
-        <button class="a-btn a-btn--primary" type="submit">+ הוספת משפט</button>
+      <h2 class="t-h" id="s-new-title">הוספת משפטים</h2>
+      <form class="s-add" id="s-new" novalidate>
+        <label class="a-field"><span>משפטים חדשים באנגלית – שורה לכל משפט</span>
+          <textarea id="s-lines" rows="4" dir="ltr" lang="en" placeholder="You can do it!&#10;Believe in yourself!"></textarea></label>
+        <ul class="s-pre" id="s-pre" aria-live="polite"></ul>
+        <div class="s-add__foot">
+          <p class="s-add__msg" id="s-msg" role="status"></p>
+          <button class="a-btn a-btn--primary" type="submit" id="s-add-btn" disabled>הוספת משפט</button>
+        </div>
       </form>
     </section>
     <section class="a-card">
       <div class="s-tools">
-        <h2 class="t-h" style="margin:0" id="s-count"></h2>
-        <label class="a-search" style="flex:0 1 260px"><span class="sr-only">חיפוש משפט</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="s-search" placeholder="חיפוש משפט" style="border-radius:999px"></label>
+        <div id="s-tabs"></div>
+        <label class="a-search" id="s-search-box" style="flex:0 1 260px"><span class="sr-only">חיפוש משפט</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="s-search" placeholder="חיפוש משפט" style="border-radius:999px"></label>
       </div>
       <ol class="s-list" id="s-list"></ol>
     </section>
@@ -42,55 +46,127 @@
     (function () {
       const { UI } = window.Admin;
       const KEY = 'en-app:admin-sentences';
+      // a sentence with more different letters than this gets a warning (it is hard to fill in the shop)
+      const MAX_LETTERS = 16;
       const POOL = [
         ['You can do it!', 'אתה יכול לעשות את זה!'], ['Believe in yourself!', 'תאמין בעצמך!'], ['You are amazing!', 'אתה מדהים!'],
         ['Your best is enough.', 'הכי טוב שלך זה מספיק.'], ['Mistakes help you grow.', 'טעויות עוזרות לך לצמוח.'], ['Never give up!', 'לעולם אל תוותר!'],
         ['Every day is a fresh start.', 'כל יום הוא התחלה חדשה.'], ['Practice makes progress.', 'תרגול מביא התקדמות.'], ['Dream big!', 'חלום בגדול!'],
         ['Keep shining!', 'תמשיך להאיר!'], ['Be brave!', 'תהיה אמיץ!'], ['Choose to be kind.', 'בחר להיות נחמד.'],
       ].map(([en, he]) => ({ en, he }));
-      let saved;
-      try { saved = JSON.parse(localStorage.getItem(KEY)); } catch (e) { saved = null; }
-      if (!Array.isArray(saved)) saved = POOL;
-      let cur = JSON.parse(JSON.stringify(saved));
-      const list = document.getElementById('s-list');
-      const search = document.getElementById('s-search');
-      const letters = (t) => new Set(t.toLowerCase().replace(/[^a-z]/g, '')).size;
-      const draw = () => {
-        const q = search.value.trim().toLowerCase();
-        const rows = cur.map((s, i) => [s, i]).filter(([s]) => !q || `${s.en} ${s.he}`.toLowerCase().includes(q));
-        document.getElementById('s-count').textContent = `${cur.length} משפטים`;
-        list.innerHTML = rows.length ? rows.map(([s, i]) => `<li class="s-row">
-            <span class="s-row__n">${i + 1}</span>
-            <input data-en="${i}" dir="ltr" lang="en" value="${UI.esc(s.en)}" aria-label="משפט ${i + 1} באנגלית">
-            <input data-he="${i}" value="${UI.esc(s.he)}" aria-label="משפט ${i + 1} בעברית">
-            <span class="s-row__meta" data-meta="${i}">${letters(s.en)} אותיות שונות</span>
-            <button class="t-round t-round--del" type="button" data-del="${i}" aria-label="מחיקת המשפט ${UI.esc(s.en)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button>
-          </li>`).join('') : '<li class="s-empty">לא נמצאו משפטים</li>';
+      let cur;
+      try { cur = JSON.parse(localStorage.getItem(KEY)); } catch (e) { cur = null; }
+      if (!Array.isArray(cur)) cur = POOL;
+      // every change is kept straight away (a translation already in the data stays there untouched)
+      const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cur)); } catch (e) { /* blocked */ } };
+      const $ = (id) => document.getElementById(id);
+      const list = $('s-list');
+      const search = $('s-search');
+      const letters = (t) => new Set(String(t).toLowerCase().replace(/[^a-z]/g, '')).size;
+      const norm = (t) => String(t).trim().replace(/\s+/g, ' ').toLowerCase();
+      const fmt = (d) => new Date(d).toLocaleDateString('he-IL', { day: 'numeric', month: 'numeric', year: 'numeric' });
+      const ICON = {
+        archive: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/></svg>',
+        back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14l-5-5 5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>',
+        warn: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17v.5"/></svg>',
       };
-      // no save button: every change is kept straight away
-      const changed = () => { saved = JSON.parse(JSON.stringify(cur)); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* blocked */ } };
+      let tab = 'active';
+
+      /* ---------- adding several at once, with a live preview ---------- */
+      const lines = () => $('s-lines').value.split('\n').map((l) => l.trim().replace(/\s+/g, ' ')).filter(Boolean);
+      function preview() {
+        const have = new Set(cur.map((s) => norm(s.en)));
+        const seen = new Set();
+        const items = lines().map((en) => {
+          const k = norm(en);
+          const dup = have.has(k) || seen.has(k);
+          seen.add(k);
+          return { en, n: letters(en), dup, long: letters(en) > MAX_LETTERS };
+        });
+        $('s-pre').innerHTML = items.map((it) => `<li class="s-pre__row${it.dup ? ' is-dup' : ''}">
+            <span class="s-pre__en" dir="ltr" lang="en">${UI.esc(it.en)}</span>
+            <span class="s-pre__n">${it.n} אותיות שונות</span>
+            ${it.dup ? `<span class="s-flag">${ICON.warn}כבר ברשימה – לא יתווסף</span>` : ''}
+            ${it.long ? `<span class="s-flag">${ICON.warn}ארוך מדי (מעל ${MAX_LETTERS} אותיות שונות)</span>` : ''}
+          </li>`).join('');
+        const n = items.filter((it) => !it.dup).length;
+        const btn = $('s-add-btn');
+        btn.disabled = !n;
+        btn.textContent = n > 1 ? `הוספת ${n} משפטים` : 'הוספת משפט';
+        return items;
+      }
+      $('s-lines').addEventListener('input', () => { $('s-msg').textContent = ''; preview(); });
+      $('s-new').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const items = preview();
+        const add = items.filter((it) => !it.dup);
+        const skipped = items.length - add.length;
+        if (!add.length) return;
+        // each line is its own sentence
+        add.forEach((it) => cur.push({ en: it.en, archived: false }));
+        save();
+        $('s-lines').value = '';
+        search.value = '';
+        tab = 'active';
+        preview(); draw();
+        $('s-msg').textContent = `${add.length === 1 ? 'נוסף משפט אחד' : `נוספו ${add.length} משפטים`}${skipped ? ` · ${skipped} כפולים לא נוספו` : ''}`;
+        $('s-lines').focus();
+      });
+
+      /* ---------- the list: active / archive ---------- */
+      function draw() {
+        const active = cur.map((s, i) => [s, i]).filter(([s]) => !s.archived);
+        const archived = cur.map((s, i) => [s, i]).filter(([s]) => s.archived);
+        $('s-tabs').innerHTML = UI.segHtml('משפטים פעילים וארכיון', [['active', 'פעילים', active.length], ['archive', 'ארכיון', archived.length]], tab);
+        $('s-search-box').hidden = tab !== 'active';
+        if (tab === 'archive') {
+          list.innerHTML = archived.length ? archived.map(([s, i], k) => `<li class="s-row s-row--arch">
+              <span class="s-row__n">${k + 1}</span>
+              <span class="s-row__text" dir="ltr" lang="en">${UI.esc(s.en)}</span>
+              <span class="s-row__meta">בארכיון מ־${s.archivedAt ? fmt(s.archivedAt) : '—'}</span>
+              <button class="a-btn a-btn--ghost s-back" type="button" data-back="${i}">${ICON.back}החזרה להגרלה</button>
+            </li>`).join('') : '<li class="s-empty">אין משפטים בארכיון</li>';
+          return;
+        }
+        // the search works on the active ones
+        const q = search.value.trim().toLowerCase();
+        const rows = active.map(([s, i], k) => [s, i, k]).filter(([s]) => !q || s.en.toLowerCase().includes(q));
+        list.innerHTML = rows.length ? rows.map(([s, i, k]) => `<li class="s-row">
+            <span class="s-row__n">${k + 1}</span>
+            <span class="s-row__edit"><input data-en="${i}" dir="ltr" lang="en" value="${UI.esc(s.en)}" aria-label="משפט ${k + 1}"><span class="s-saved" data-saved="${i}" role="status"></span></span>
+            <span class="s-row__meta" data-meta="${i}">${letters(s.en)} אותיות שונות</span>
+            <button class="t-round s-arch" type="button" data-arch="${i}" aria-label="העברה לארכיון: ${UI.esc(s.en)}" title="העברה לארכיון">${ICON.archive}</button>
+          </li>`).join('') : `<li class="s-empty">${q ? 'לא נמצאו משפטים' : 'אין משפטים פעילים'}</li>`;
+      }
+      UI.wireSeg($('s-tabs'), (k) => { tab = k; draw(); });
+      search.addEventListener('input', draw);
+      // editing in the row: the letters count follows as you type; kept when leaving the field, with "נשמר ✓"
       list.addEventListener('input', (e) => {
         const t = e.target;
-        if (t.dataset.en != null) { cur[t.dataset.en].en = t.value; list.querySelector(`[data-meta="${t.dataset.en}"]`).textContent = `${letters(t.value)} אותיות שונות`; }
-        if (t.dataset.he != null) cur[t.dataset.he].he = t.value;
-        changed();
+        if (t.dataset.en == null) return;
+        list.querySelector(`[data-meta="${t.dataset.en}"]`).textContent = `${letters(t.value)} אותיות שונות`;
       });
+      list.addEventListener('focusout', (e) => {
+        const t = e.target;
+        if (t.dataset.en == null) return;
+        const i = Number(t.dataset.en);
+        const v = t.value.trim().replace(/\s+/g, ' ');
+        // an emptied sentence goes back to what it was
+        if (!v) { t.value = cur[i].en; list.querySelector(`[data-meta="${i}"]`).textContent = `${letters(cur[i].en)} אותיות שונות`; return; }
+        if (v === cur[i].en) return;
+        cur[i].en = v; t.value = v; save();
+        const ok = list.querySelector(`[data-saved="${i}"]`);
+        ok.textContent = 'נשמר ✓';
+        clearTimeout(ok._t); ok._t = setTimeout(() => { ok.textContent = ''; }, 1800);
+      });
+      list.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.dataset.en != null) e.target.blur(); });
       list.addEventListener('click', (e) => {
-        const b = e.target.closest('[data-del]');
-        if (!b) return;
-        if (!confirm(`למחוק את המשפט "${cur[b.dataset.del].en}"?`)) return;
-        cur.splice(Number(b.dataset.del), 1);
-        draw(); changed();
+        const a = e.target.closest('[data-arch]');
+        if (a) { const s = cur[a.dataset.arch]; s.archived = true; s.archivedAt = new Date().toISOString(); save(); draw(); return; }
+        const b = e.target.closest('[data-back]');
+        if (b) { const s = cur[b.dataset.back]; s.archived = false; delete s.archivedAt; save(); draw(); }
       });
-      search.addEventListener('input', draw);
-      document.getElementById('s-new').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const en = document.getElementById('s-en'), he = document.getElementById('s-he');
-        if (!/[a-z]/i.test(en.value)) { en.focus(); return; }
-        cur.push({ en: en.value.trim(), he: he.value.trim() });
-        en.value = ''; he.value = ''; search.value = '';
-        draw(); changed(); en.focus();
-      });
+      preview();
       draw();
     })();
   </script>
