@@ -17,8 +17,11 @@
   const live = $('w-live');
   const head = document.querySelector('.a-head');
 
+  // a new island (not saved yet) goes through the steps in order; an island already saved can jump to any step
+  const fresh = new Set();
+  const reached = {};
   const bar = UI.saveBar({
-    onSave: () => { Worlds.save(list); saved = JSON.parse(JSON.stringify(list)); },
+    onSave: () => { Worlds.save(list); saved = JSON.parse(JSON.stringify(list)); fresh.clear(); },
     onCancel: () => { list = JSON.parse(JSON.stringify(saved)); if (!list.some((w) => w.id === pickedId)) pickedId = (list[0] || {}).id; mode = 'edit'; drawAll(); },
   });
   head.appendChild(bar.el);
@@ -28,9 +31,12 @@
     const b = edit.querySelector('[data-save-now]');
     if (!b) return;
     const st = bar.save.status();
-    b.dataset.status = st;
-    b.disabled = st !== 'dirty';
-    b.innerHTML = st === 'saving' ? '<span class="a-savebtn__spin" aria-hidden="true"></span>שומר…' : st === 'saved' ? 'נשמר ✓' : 'שמירה';
+    const w = picked();
+    // "שמירה ופרסום": open when there are changes, or when the island is not published yet
+    const ready = st === 'dirty' || (st === 'idle' && w && !w.published);
+    b.dataset.status = ready ? 'dirty' : st;
+    b.disabled = !ready;
+    b.innerHTML = st === 'saving' ? '<span class="a-savebtn__spin" aria-hidden="true"></span>שומר…' : st === 'saved' ? 'נשמר ✓' : 'שמירה ופרסום';
   }
   bar.save.onStatus(() => syncSaveNow());
   const picked = () => list.find((w) => w.id === pickedId);
@@ -89,6 +95,8 @@
     startNew(kind);
     const w = { ...draft, name: draft.name || 'עולם חדש' };
     list.push(w);
+    fresh.add(w.id);
+    reached[w.id] = 0;
     pickedId = w.id;
     mode = 'edit';
     draft = null;
@@ -368,7 +376,7 @@
       <button type="button" role="tab" data-wtab="view" aria-selected="${viewTab === 'view'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>צפייה</button>
     </div>`;
   const stepsBar = () => `<ol class="w-steps">${STEPS.map((t, k) => `<li class="${k < step ? 'is-done' : ''}">
-      <button type="button" data-go="${k}"${k === step ? ' aria-current="step"' : ''}><i aria-hidden="true">${k + 1}</i><span>${t}</span></button>
+      <button type="button" data-go="${k}"${k === step ? ' aria-current="step"' : ''}${fresh.has(pickedId) && k > (reached[pickedId] || 0) ? ' disabled' : ''}><i aria-hidden="true">${k + 1}</i><span>${t}</span></button>
     </li>`).join('')}</ol>`;
   // the page's explanation, in an ⓘ beside the island's name
   const info = document.body.dataset.info ? `<span class="a-info"><button class="a-info__btn" type="button" aria-describedby="a-info-tip" aria-label="הסבר על העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><span class="a-info__tip" id="a-info-tip" role="tooltip">${UI.esc(document.body.dataset.info)}</span></span>` : '';
@@ -380,7 +388,7 @@
       <button class="a-btn a-btn--ghost" type="button" data-go="${step - 1}"${step === 0 ? ' disabled' : ''}>חזור</button>
       <div class="w-stepnav__end">${step < STEPS.length - 1
         ? `<button class="a-btn w-draft" type="button" data-save-draft>שמור כטיוטה</button><button class="a-btn a-btn--primary" type="button" data-go="${step + 1}">הבא</button>`
-        : '<button class="a-savebtn" type="button" data-save-now>שמירה</button>'}</div>
+        : '<button class="a-savebtn" type="button" data-save-now>שמירה ופרסום</button>'}</div>
     </div>`;
   /* ---------- the stages: each opens to its lessons and its practices (two-level accordion) ---------- */
   // read from what the island already has; nothing is written until something is edited
@@ -841,11 +849,13 @@
     const t = e.target.closest('[data-wtab]');
     if (t) { viewTab = t.dataset.wtab; drawEdit(); const b = edit.querySelector(`[data-wtab="${viewTab}"]`); if (b && e.detail === 0) b.focus(); return; }
     const st = e.target.closest("[data-go]");
-    if (st) { step = Number(st.dataset.go); drawEdit(); edit.scrollTop = 0; const b = edit.querySelector('[aria-current="step"]'); if (b && e.detail === 0) b.focus(); return; }
+    if (st) { step = Number(st.dataset.go); if (fresh.has(w.id)) reached[w.id] = Math.max(reached[w.id] || 0, step); drawEdit(); edit.scrollTop = 0; const b = edit.querySelector('[aria-current="step"]'); if (b && e.detail === 0) b.focus(); return; }
     // saving is at the end of the steps; "שמור כטיוטה" keeps the island hidden from the students
     const sv = e.target.closest('[data-save-draft],[data-save-now]');
     if (sv) {
       if (sv.hasAttribute('data-save-draft')) { w.published = false; drawList(); drawPreview(); changed(); }
+      // the last step saves and publishes
+      if (sv.hasAttribute('data-save-now') && !w.published) { w.published = true; drawList(); drawPreview(); changed(); }
       // the shared save button does the saving (spinner, "נשמר ✓", or a note if it failed)
       bar.save.run();
       live.textContent = 'השינויים נשמרו';

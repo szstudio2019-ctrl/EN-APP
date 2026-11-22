@@ -608,3 +608,30 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
   .me-grid { grid-template-columns: minmax(0, 1fr); }
 }
 .a-body .a-savebtn { min-width: 120px; }
+
+/* ================= ActionBar: one sticky bar at the bottom of the page's content ================= */
+.a-actbar { position: sticky; bottom: 0; z-index: 30; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; margin: 24px 0 0; padding: 0 20px; border-top: 1px solid #ECEDF3; border-radius: 14px 14px 0 0; background: #fff; box-shadow: 0 -6px 18px rgba(42, 37, 97, .05); }
+.a-actbar__start, .a-actbar__end { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.a-actbar__dirty { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #6E6B8C; white-space: nowrap; }
+.a-actbar__dirty[hidden], .a-actbar__cancel[hidden] { display: none !important; }
+.a-actbar__dirty i { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #F08A3C; }
+.a-actbar__cancel { min-height: 40px; padding: 0 10px; border: 0; border-radius: 10px; background: none; color: var(--a-text-2); font: inherit; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.a-actbar__cancel:hover { color: #2A2577; background: var(--a-page); }
+/* a page whose content fills the screen: the bar stays at its bottom */
+.has-rail .a-main:has(> .a-actbar) { display: flex; flex-direction: column; min-height: 100vh; padding-bottom: 0; }
+.has-rail .a-main:has(> .a-actbar) > .a-actbar { margin-top: auto; }
+.has-rail .a-main:has(> .a-actbar) > :nth-last-child(2) { margin-bottom: 24px; }
+@media (max-width: 760px) { .a-actbar { bottom: 76px; padding: 0 14px; } .a-actbar__dirty { display: none !important; } }
+
+/* leaving with unsaved changes */
+.a-leave { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 16px; background: rgba(30, 26, 92, .35); }
+.a-leave[hidden] { display: none; }
+.a-leave__card { width: min(420px, 100%); padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 20px 50px rgba(20, 18, 74, .3); animation: a-rise .18s ease both; }
+.a-leave__t { margin: 0 0 20px; font-size: 17px; font-weight: 600; color: var(--a-text); }
+.a-leave__btns { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.a-body .a-leave__stay { background: #E0345C; color: #fff; }
+.a-body .a-leave__stay:hover { background: #C42A4E; }
+
+/* every small action icon (trash, replace picture, edit, open…): a thinner line, like the side menu */
+.a-body .w-delete svg, .a-body .s-arch svg, .a-body .c-card__pic svg, .a-body .t-round svg, .a-body .w-lrow__del svg, .a-body .w-lrow__open svg,
+.a-body .w-lrow__edit svg, .a-body .u-round svg, .a-body .a-icon-btn svg, .a-body .w-row__add svg, .a-body .s-back svg { stroke-width: 1.6 !important; }

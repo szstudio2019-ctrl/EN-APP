@@ -602,3 +602,27 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
   .w-sections section .a-field + .a-field, .w-sections section .a-grid + .a-field, .w-sections section .a-field + .a-grid { margin-top: 22px; }
   .w-sections section .a-grid { gap: 20px; }
 }
+
+/* the shared bar lives in the top row here: only "ביטול שינויים" shows (the steps' own bar saves) */
+.w-actions .a-actbar { position: static; height: auto; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.w-actions .a-actbar__dirty, .w-actions .a-actbar [data-save], .w-actions .a-savebtn-wrap { display: none !important; }
+.w-actions .a-actbar__cancel { min-height: 34px; font-size: 14px; }
+/* the steps' bar: the ActionBar's look (68px, a thin line above) */
+.w-edit > .w-tabbed > .w-stepnav { flex: none; height: 68px; margin: 0 -40px -28px; padding: 0 20px; align-items: center; border-top: 1px solid #ECEDF3; background: #fff; border-radius: 0 0 var(--a-radius-card) var(--a-radius-card); }
+.w-steps button:disabled { cursor: not-allowed; opacity: .45; }
+/* the same space above the top row as on its sides */
+@media (min-width: 861px) {
+  .w-edit > .w-sections.w-tabbed > .w-toprow { margin-top: -32px; padding: 20px 28px; min-height: 0; }
+  .w-edit > .w-viewcard > .w-toprow { padding-top: 12px; padding-bottom: 12px; }
+}
+/* the "+ הוספה" beside "האיים": softer – a light pink pill with pink text */
+.w-list__head .w-plus__btn { height: 34px; min-height: 34px; padding: 0 12px 0 14px; background: #FDEBF0; color: #D12E56; font-weight: 600; font-size: 13.5px; }
+.w-list__head .w-plus .w-plus__btn, .w-list__head .w-plus .w-plus__btn span { color: #D12E56 !important; }
+.w-list__head .w-plus__btn:hover { background: #FAD7E1; }
+.w-list__head .w-plus__btn:active { background: #F6C3D1; }
+.w-list__head .w-plus__btn[aria-expanded="true"] { background: #FAD7E1; }
+.w-list__head .w-plus__btn svg { width: 16px; height: 16px; stroke-width: 2; }
+/* the editing card: all four corners rounded (the old tabs' square corner is gone) */
+.w-tabbed { border-top-right-radius: var(--a-radius-card) !important; }
+/* the scrollbars keep clear of the rounded corners */
+.w-list::-webkit-scrollbar-track, .w-edit > .w-tabbed > section::-webkit-scrollbar-track { margin: 18px 0; }

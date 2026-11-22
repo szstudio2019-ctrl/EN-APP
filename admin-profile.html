@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin-ui.css?v=20261122r">
+  <link rel="stylesheet" href="admin-ui.css?v=20261122u">
 </head>
 <body class="a-body" data-page="me">
   <main class="a-main">
@@ -36,14 +36,11 @@
         <label class="a-field"><span>טלפון</span><input id="me-phone" type="tel" dir="ltr" autocomplete="tel"></label>
         <label class="a-field a-wide"><span>תפקיד</span><input id="me-role"></label>
       </div>
-      <div class="me-foot">
-        <button type="submit" id="me-save">שמירה</button>
-      </div>
     </form>
   </main>
 
   <script src="islands.js"></script>
-  <script src="admin-shell.js?v=20261122r"></script>
+  <script src="admin-shell.js?v=20261122u"></script>
   <script>
     (function () {
       const { UI, Me } = window.Admin;
@@ -55,18 +52,20 @@
         Object.entries(FIELDS).forEach(([k, id]) => { $(id).value = cur[k] || ''; });
         $('me-img').src = cur.photo || 'assets/team-einat.webp';
       };
-      // "יש שינויים" = the form differs from what is saved
-      const save = UI.saveButton($('me-save'), { onSave: () => { saved = { ...cur }; Me.save(saved); Me.paint(saved); } });
-      const changed = () => save.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
-      Object.entries(FIELDS).forEach(([k, id]) => $(id).addEventListener('input', (e) => { cur[k] = e.target.value.trim(); if (k === 'email') $('me-email-err').textContent = ''; changed(); }));
-      // a basic check of the email before saving
-      $('me-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = $('me-email');
-        if (email.value.trim() && !email.checkValidity()) { $('me-email-err').textContent = 'כתובת האימייל לא תקינה'; email.focus(); return; }
-        save.run();
+      // the sticky bar at the bottom: "יש שינויים" = the form differs from what is saved; the email is checked first
+      const bar = UI.saveBar({
+        onSave: () => { saved = { ...cur }; Me.save(saved); Me.paint(saved); },
+        onCancel: () => { cur = { ...saved }; fill(); $('me-email-err').textContent = ''; },
+        validate: () => {
+          const email = $('me-email');
+          if (email.value.trim() && !email.checkValidity()) { $('me-email-err').textContent = 'כתובת האימייל לא תקינה'; email.focus(); return false; }
+          return true;
+        },
       });
-      window.addEventListener('beforeunload', (e) => { if (save.isDirty()) { e.preventDefault(); e.returnValue = ''; } });
+      bar.mount();
+      const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
+      Object.entries(FIELDS).forEach(([k, id]) => $(id).addEventListener('input', (e) => { cur[k] = e.target.value.trim(); if (k === 'email') $('me-email-err').textContent = ''; changed(); }));
+            $('me-form').addEventListener('submit', (e) => { e.preventDefault(); bar.save.run(); });
       $('me-file').addEventListener('change', (e) => {
         const f = e.target.files && e.target.files[0];
         if (!f || !f.type.startsWith('image/')) return;

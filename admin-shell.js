@@ -320,7 +320,7 @@
     // idle (no changes, disabled) · dirty · saving (spinner, locked, same width) · saved (green "נשמר ✓" for 2s, then idle).
     // A failed save goes back to dirty with a small red note under the button.
     // saveButton(btn, { onSave, label }) → { setDirty, isDirty, run, status, onStatus }
-    saveButton(btn, { onSave, label = 'שמירה' } = {}) {
+    saveButton(btn, { onSave, validate, label = 'שמירה' } = {}) {
       btn.classList.add('a-savebtn');
       btn.classList.remove('a-btn--primary');
       let wrap = btn.parentElement && btn.parentElement.classList.contains('a-savebtn-wrap') ? btn.parentElement : null;
@@ -351,6 +351,7 @@
         },
         run() {
           if (status !== 'dirty') return;
+          if (validate && validate() === false) return;
           err.textContent = '';
           btn.style.width = `${btn.offsetWidth}px`;
           set('saving');
@@ -369,37 +370,80 @@
       paint();
       return api;
     },
-    // the sticky save bar: { el, setDirty(bool) }; leaving the page with unsaved changes asks first
-    saveBar({ onSave, onCancel }) {
+    // ActionBar: the page's sticky bar at the bottom of the content. Start (right): "יש שינויים שלא נשמרו"
+    // (only with changes); end (left): "ביטול שינויים" (only with changes) and the SaveButton.
+    // saveBar({ onSave, onCancel, validate }) → { el, setDirty, isDirty, save, mount() }
+    saveBar({ onSave, onCancel, validate }) {
       const el = document.createElement('div');
-      el.className = 'a-save';
-      el.innerHTML = `<div class="a-save__in">
+      el.className = 'a-save a-actbar';
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-label', 'שמירה');
+      el.innerHTML = `<div class="a-actbar__start">
+          <span class="a-actbar__dirty" hidden><i aria-hidden="true"></i>יש שינויים שלא נשמרו</span>
           <span class="a-save__status" role="status" aria-live="polite">כל השינויים נשמרו</span>
-          <div class="a-save__actions">
-            <button type="button" class="a-btn a-btn--ghost" data-cancel>נקה שינויים</button>
-            <button type="button" data-save>שמירה</button>
-          </div>
+        </div>
+        <div class="a-actbar__end">
+          <button type="button" class="a-actbar__cancel" data-cancel hidden>ביטול שינויים</button>
+          <button type="button" data-save>שמירה</button>
         </div>`;
       const status = el.querySelector('.a-save__status');
-      const save = UI.saveButton(el.querySelector('[data-save]'), { onSave });
-      const setDirty = (d) => {
-        save.setDirty(d);
-        el.classList.toggle('is-dirty', d);
-        status.textContent = d ? 'יש שינויים שלא נשמרו' : 'כל השינויים נשמרו';
-      };
-      save.onStatus((s) => { if (s === 'saved') { el.classList.remove('is-dirty'); status.textContent = 'כל השינויים נשמרו'; } });
-      el.querySelector('[data-cancel]').addEventListener('click', () => { onCancel(); setDirty(false); });
-      window.addEventListener('beforeunload', (e) => { if (save.isDirty()) { e.preventDefault(); e.returnValue = ''; } });
-      // links inside the admin ask too, in Hebrew
+      const dirtyNote = el.querySelector('.a-actbar__dirty');
+      const cancel = el.querySelector('[data-cancel]');
+      const save = UI.saveButton(el.querySelector('[data-save]'), { onSave, validate });
+      const show = (d) => { dirtyNote.hidden = !d; cancel.hidden = !d; el.classList.toggle('is-dirty', d); status.textContent = d ? 'יש שינויים שלא נשמרו' : 'כל השינויים נשמרו'; };
+      const setDirty = (d) => { save.setDirty(d); show(save.isDirty()); };
+      save.onStatus((s) => { if (s === 'saved' || s === 'idle') show(false); });
+      cancel.addEventListener('click', () => { onCancel(); setDirty(false); });
+      UI.guardLeave(save.isDirty);
+      setDirty(false);
+      // one bar for the page, at the bottom of the content area
+      const mount = () => { const main = document.querySelector('.a-main'); if (main) main.appendChild(el); };
+      return { el, setDirty, isDirty: save.isDirty, save, mount };
+    },
+    // leaving with unsaved changes asks first: "להישאר" / "לצאת בלי לשמור" (closing the tab gets the browser's own question)
+    guardLeave(isDirty) {
+      UI._dirtyChecks = UI._dirtyChecks || [];
+      UI._dirtyChecks.push(isDirty);
+      if (UI._guarded) return;
+      UI._guarded = true;
+      const anyDirty = () => UI._dirtyChecks.some((f) => f());
       let leaving = false;
+      window.addEventListener('beforeunload', (e) => { if (!leaving && anyDirty()) { e.preventDefault(); e.returnValue = ''; } });
       document.addEventListener('click', (e) => {
         const a = e.target.closest('a[href]');
-        if (!a || leaving || !save.isDirty() || a.target === '_blank') return;
-        if (!confirm('יש שינויים שלא נשמרו. לצאת בלי לשמור?')) e.preventDefault();
-        else leaving = true;
+        if (!a || leaving || !anyDirty() || a.target === '_blank' || a.getAttribute('href').startsWith('#')) return;
+        e.preventDefault();
+        UI.confirmLeave(() => { leaving = true; location.href = a.href; });
       }, true);
-      setDirty(false);
-      return { el, setDirty, isDirty: save.isDirty, save };
+    },
+    confirmLeave(onLeave) {
+      let dlg = document.getElementById('a-leave');
+      if (!dlg) {
+        dlg = document.createElement('div');
+        dlg.id = 'a-leave';
+        dlg.className = 'a-leave';
+        dlg.innerHTML = `<div class="a-leave__card" role="alertdialog" aria-modal="true" aria-labelledby="a-leave-t">
+            <p class="a-leave__t" id="a-leave-t">יש שינויים שלא נשמרו. לצאת בלי לשמור?</p>
+            <div class="a-leave__btns">
+              <button type="button" class="a-btn a-btn--ghost" data-leave-go>לצאת בלי לשמור</button>
+              <button type="button" class="a-btn a-leave__stay" data-leave-stay>להישאר</button>
+            </div>
+          </div>`;
+        document.body.append(dlg);
+      }
+      const back = document.activeElement;
+      const close = () => { dlg.hidden = true; document.removeEventListener('keydown', onKey, true); if (back && back.focus) back.focus(); };
+      const onKey = (e) => {
+        if (e.key === 'Escape') { e.preventDefault(); close(); }
+        if (e.key === 'Tab') { const bs = [...dlg.querySelectorAll('button')]; const i = bs.indexOf(document.activeElement); e.preventDefault(); bs[(i + (e.shiftKey ? bs.length - 1 : 1)) % bs.length].focus(); }
+      };
+      dlg.onclick = (e) => {
+        if (e.target.closest('[data-leave-go]')) { close(); onLeave(); return; }
+        if (e.target.closest('[data-leave-stay]') || e.target === dlg) close();
+      };
+      dlg.hidden = false;
+      document.addEventListener('keydown', onKey, true);
+      dlg.querySelector('[data-leave-stay]').focus();
     },
     ICON: {
       chart: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',

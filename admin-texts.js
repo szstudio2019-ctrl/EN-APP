@@ -96,7 +96,7 @@
     onSave: () => { saved = clone(cur); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* blocked */ } },
     onCancel: () => { cur = clone(saved); draw(); },
   });
-  document.querySelector('.a-head').appendChild(bar.el);
+  bar.mount();
   const changed = () => bar.setDirty(JSON.stringify(cur) !== JSON.stringify(saved));
 
   const setAt = (path, v) => { const p = path.split('.'); if (p.length === 3) cur[p[0]][Number(p[1])][p[2]] = v; else cur[path] = v; };
