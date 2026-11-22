@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css?v=20261123g">
-  <link rel="stylesheet" href="admin-edit.css?v=20261123d">
+  <link rel="stylesheet" href="admin-edit.css?v=20261123e">
 </head>
 <body class="a-body" data-page="content" data-sub="about">
   <main class="a-main">
@@ -61,21 +61,25 @@
         { list: 'cards', title: 'כרטיסי השיטה', itemName: 'כרטיס',
           fields: [{ key: 'pic', label: 'אייקון', image: true, help: 'אייקון בקו דק · SVG, PNG או WEBP' }, { key: 'title', label: 'כותרת' }, { key: 'text', label: 'טקסט', long: true }] },
       ],
-      // the view: the page's background over the whole white area, the content across its full width
-      preview: (d, esc) => `<div class="pv-about pv-about--plain pv-about--full"${d.bg ? ` style="background-image:url('${d.bg}')"` : ''}>
-          <div class="pv-about__hero">
-            ${d.photo ? `<img class="pv-about__photo" src="${d.photo}" alt="">` : ''}
-            <div>
-              <p class="pv-about__kicker">${esc(d.kicker)}</p>
-              <p class="pv-about__name">${esc(d.name)}</p>
-              <p class="pv-about__role">${esc(d.role)}</p>
+      // the view: as the real "about" page – the clouds behind, a white card: the photo with its pink ring and the intro beside it,
+      // the quote on its pink-to-yellow band, "השיטה" with its line, and the method cards
+      preview: (d, esc) => `<div class="pva"${d.bg ? ` style="background-image:url('${d.bg}')"` : ''}>
+          <div class="pva__page">
+            <div class="pva__hero">
+              ${d.photo ? `<div class="pva__photo"><img src="${d.photo}" alt=""></div>` : ''}
+              <div class="pva__intro">
+                <p class="pva__kicker">${esc(d.kicker)}</p>
+                <p class="pva__name">${esc(d.name)}</p>
+                <p class="pva__role">${esc(d.role)}</p>
+                <p class="pva__p">${esc(d.p1)}</p>
+                <p class="pva__p">${esc(d.p2)}</p>
+              </div>
             </div>
+            <blockquote class="pva__quote">${esc(d.quote)}<cite>${esc(d.cite)}</cite></blockquote>
+            <p class="pva__h2">${esc(d.mTitle)}</p>
+            <p class="pva__lead">${esc(d.mLead)}</p>
+            <div class="pva__method">${d.cards.map((c) => `<div class="pva__card">${c.pic ? `<img class="pva__ic" src="${c.pic}" alt="">` : `<span class="pva__emoji">${esc(c.icon || '')}</span>`}<b>${esc(c.title)}</b><span>${esc(c.text)}</span></div>`).join('')}</div>
           </div>
-          <p>${esc(d.p1)}</p><p>${esc(d.p2)}</p>
-          <blockquote>${esc(d.quote)}<cite>${esc(d.cite)}</cite></blockquote>
-          <p class="pv-about__name" style="font-size:20px">${esc(d.mTitle)}</p>
-          <p>${esc(d.mLead)}</p>
-          <div class="pv-about__cards">${d.cards.map((c) => `<div>${c.pic ? `<img class="pv-about__ic" src="${c.pic}" alt="">` : esc(c.icon || '')}<b>${esc(c.title)}</b>${esc(c.text)}</div>`).join('')}</div>
         </div>`,
     };
   </script>

@@ -271,3 +271,28 @@
 .pv-about--full blockquote, .pv-about--full .pv-about__cards div { background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
 .pv-about--full > p { padding: 10px 16px; border-radius: 14px; background: rgba(255, 255, 255, .62); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); color: #2F2B66; text-shadow: none; }
 .pv-about--full > p + p { margin-top: -2px; }
+
+/* ---------- about – the view, as the real page (scaled to the admin) ---------- */
+.t-layout.is-tabs .t-side:has(.pva) { padding: 0; overflow: hidden; }
+.pva { min-height: 100%; padding: 32px 40px 40px; background: #EEE9F8 center / cover no-repeat; text-align: right; color: #2a2968; }
+.pva__page { max-width: 1100px; margin: 0 auto; padding: 36px 48px 44px; border-radius: 26px; background: #fff; box-shadow: 0 20px 50px rgba(36, 34, 117, .14); }
+.pva__hero { display: flex; gap: 40px; align-items: center; }
+.pva__photo { flex: none; width: 210px; height: 210px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 6px #fff, 0 0 0 9px #E33563, 0 18px 32px rgba(36, 34, 117, .2); }
+.pva__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pva__intro { min-width: 0; }
+.pva p { margin: 0; }
+.pva__kicker { font-size: 15px; font-weight: 600; color: #E33563; }
+.pva__name { margin-top: 4px !important; font-size: 38px; font-weight: 700; line-height: 1.1; color: #2a2968; }
+.pva__role { margin: 6px 0 12px !important; font-size: 16px; font-weight: 500; color: #6b6a92; }
+.pva__p { margin: 0 0 8px !important; font-size: 15px; line-height: 1.65; color: #333; }
+.pva__quote { margin: 30px 0 0; padding: 20px 28px; border-radius: 18px; background: linear-gradient(120deg, #ffe7ef, #fff6dc); font-size: 22px; font-weight: 700; line-height: 1.35; color: #E33563; text-align: center; }
+.pva__quote cite { display: block; margin-top: 6px; font-size: 13.5px; font-style: normal; font-weight: 500; color: #6b6a92; }
+.pva__h2 { margin-top: 34px !important; padding-bottom: 10px; border-bottom: 1px solid #ececf3; font-size: 28px; font-weight: 700; color: #2a2968; }
+.pva__lead { margin-top: 12px !important; font-size: 15px; line-height: 1.65; color: #333; }
+.pva__method { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.pva__card { padding: 18px 16px; border-radius: 16px; background: #f4f5fb; box-shadow: inset 0 0 0 1.5px #e7e8f3; }
+.pva__ic { display: block; width: 32px; height: 32px; object-fit: contain; }
+.pva__emoji { display: block; font-size: 28px; line-height: 1; }
+.pva__card b { display: block; margin: 8px 0 6px; font-size: 16px; color: #E33563; }
+.pva__card span:last-child { display: block; font-size: 13px; line-height: 1.55; color: #444; }
+@media (max-width: 1100px) { .pva__method { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pva__hero { flex-direction: column; align-items: flex-start; } }
