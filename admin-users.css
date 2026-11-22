@@ -140,3 +140,7 @@
 /* the chips' tooltip: white, above the chip */
 .u-chips .u-chip__tip { top: auto; bottom: calc(100% + 10px); background: #fff; color: var(--a-text); box-shadow: 0 8px 22px rgba(20, 18, 74, .18), 0 0 0 1px var(--a-line); }
 .u-chips .u-chip__tip::after { content: ''; position: absolute; top: 100%; right: 50%; width: 10px; height: 10px; background: #fff; box-shadow: 1px 1px 0 var(--a-line); transform: translate(50%, -5px) rotate(45deg); }
+/* a ticked chip: a thin, soft bluish line (the achievements keep their colour, just as thin) */
+.u-chips .u-chip:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #B4AFDD; }
+.u-chips .u-chip--top:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #F2B705; }
+.u-chips .u-chip--steady:has(.u-chip__box:checked) { box-shadow: inset 0 0 0 1px #F08A3C; }
