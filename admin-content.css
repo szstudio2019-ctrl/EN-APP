@@ -626,3 +626,7 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tabbed { border-top-right-radius: var(--a-radius-card) !important; }
 /* the scrollbars keep clear of the rounded corners */
 .w-list::-webkit-scrollbar-track, .w-edit > .w-tabbed > section::-webkit-scrollbar-track { margin: 18px 0; }
+/* the steps' bar: the buttons in its middle (same space above and below) */
+.w-edit > .w-tabbed > .w-stepnav, .w-edit > .w-sections.w-tabbed > .w-stepnav { padding: 0 20px; }
+/* the card and the list reach down to the side menu's bottom line (12px from the screen's edge) */
+@media (min-width: 861px) { .has-rail .a-main { padding-bottom: 12px; } }
