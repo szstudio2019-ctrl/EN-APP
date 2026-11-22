@@ -703,3 +703,26 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-arch__back svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .w-arch__empty { padding: 28px 12px; text-align: center; font-size: 14px; line-height: 1.6; color: #8C8EA6; list-style: none; }
 @media (min-width: 1241px) { .w-layout { grid-template-columns: 390px minmax(0, 1fr); } }
+
+/* the new stage form: white (no bluish panels), each template group on one row of small pills */
+.w-newstage, .w-newstage section, .w-newstage .a-field, .w-newstage fieldset { background: #fff !important; box-shadow: none; }
+.w-newstage .w-tplset { margin: 22px 0 0; padding: 0; border: 0; min-width: 0; }
+.w-newstage .w-tplset legend { padding: 0; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: var(--a-text, #2A2577); }
+.w-radios { display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.w-radio { position: relative; flex: none; cursor: pointer; }
+.w-radio input { position: absolute; opacity: 0; pointer-events: none; }
+.w-radio span { display: inline-flex; align-items: center; height: 34px; padding: 0 14px; border-radius: 17px; background: #fff; color: #2A2577; font-size: 13.5px; font-weight: 500; white-space: nowrap; box-shadow: inset 0 0 0 1.5px var(--a-line); transition: background-color .15s, box-shadow .15s, color .15s; }
+.w-radio:hover span { box-shadow: inset 0 0 0 1.5px #F1C5D2; }
+.w-radio input:checked + span { background: #FDE7EC; color: #C42A4E; font-weight: 600; box-shadow: inset 0 0 0 1.5px #E33563; }
+.w-radio input:focus-visible + span { box-shadow: inset 0 0 0 1.5px #E33563, 0 0 0 3px rgba(227, 53, 99, .25); }
+.w-newstage__note { margin: 22px 0 0; }
+.w-addscreen { margin: 4px 0 8px; }
+
+/* the picked island in the list: a pink border */
+.w-item[aria-current="true"] { box-shadow: inset 0 0 0 1.5px #E33563; }
+
+/* the card's top row keeps one height in editing and viewing, so the buttons stay put */
+.w-edit .w-toprow { height: 72px; min-height: 72px !important; padding: 0 28px !important; box-sizing: border-box; }
+.w-radios { overflow-y: hidden; align-items: center; }
+.w-radio { display: flex; }
+.w-new .w-dup, .w-new .w-delete { display: none !important; }

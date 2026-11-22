@@ -201,7 +201,7 @@
         ${back(`i:${i}`, a.w.name || 'האי')}
       </li>`).join('');
     const sts = arch.stages.map((a, i) => {
-      const nm = (a.stage.lessons[0] || {}).name;
+      const nm = stName(a.stage);
       return `<li class="w-arch">
         <span class="w-arch__ic" aria-hidden="true">${ARCH_ICON}</span>
         <span class="w-arch__body"><b>שלב${a.n ? ` ${a.n}` : ''}${nm ? ` · ${UI.esc(nm)}` : ''}</b><small>מתוך ${UI.esc(a.worldName || 'אי')} · נמחק ב־${dateOf(a.at)}</small></span>
@@ -246,7 +246,7 @@
     const rows = stagesOf(w).map((st, k) => {
       const key = `${w.id}:${k}`;
       const isOpen = subOpen.has(key);
-      const name = st.lessons[0].name;
+      const name = stName(st);
       const label = `שלב ${k + 1}${name ? ` · ${UI.esc(name)}` : ''}`;
       const part = (kind, word) => st[kind].map((p, i) => `<li><button class="w-sub2__item" type="button" data-sub-lesson="${k}"><span>${word} ${i + 1}${p.name ? ` · ${UI.esc(p.name)}` : ''}</span><small>${isWritten(p) ? 'נכתב' : 'חסר'}</small></button></li>`).join('');
       return `<li>
@@ -496,9 +496,10 @@
     'doctor3-lesson.html': 'doctor3-practice.html', 'single-lesson.html': 'single-practice.html',
   };
   const practiceOf = (page) => (page in PRACTICE_OF ? PRACTICE_OF[page] : page.replace('-lesson.html', '.html'));
-  const TEMPLATE_NAMES = ['שיר האותיות', 'אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
+  const TEMPLATE_NAMES = ['הסבר', 'הסבר בלשוניות', 'שיר האותיות', 'אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
   const blankPart = (name) => ({ name: name || '', desc: '', template: '', page: '' });
   const blankStage = (name) => ({ published: false, lessons: [blankPart(name)], practices: [blankPart()] });
+  const stName = (st) => (st.lessons[0] || {}).name || st.name || '';
   function seedStage(w, k) {
     const page = (w.lessonPages || [])[k] || '';
     const s = blankStage((w.lessonNames || [])[k]);
@@ -521,11 +522,13 @@
   function editStages(w) { w.stages = stagesOf(w); return w.stages; }
   const isWritten = (p) => !!p.page || !!(p.desc || '').trim() || !!(p.song && (p.song.title || p.song.fileName));
   const allWritten = (arr) => arr.length > 0 && arr.every(isWritten);
-  const isReady = (s) => allWritten(s.lessons) && allWritten(s.practices);
+  // a part the stage has none of ("בלי מסך שיעור" / "בלי תרגול") does not hold it back
+  const partOk = (arr) => !arr.length || allWritten(arr);
+  const isReady = (s) => (s.lessons.length + s.practices.length > 0) && partOk(s.lessons) && partOk(s.practices);
   // a stage's progress in 4 bars (grey, light pink when done): a name, lessons written, practices written, published
   function stageBars(st) {
     const parts = [
-      ['שם לשלב', !!(st.lessons[0] && st.lessons[0].name)],
+      ['שם לשלב', !!stName(st)],
       ['שיעורים נכתבו', allWritten(st.lessons)],
       ['תרגולים נכתבו', allWritten(st.practices)],
       ['פורסם', !!st.published],
@@ -535,8 +538,8 @@
     return `<span class="w-bars" role="img" aria-label="${done} מתוך 4 הושלמו: ${tip}" title="${tip}">${parts.map(([, ok]) => `<i class="${ok ? 'is-done' : ''}"></i>`).join('')}</span>`;
   }
   function missingText(s) {
-    const noL = !allWritten(s.lessons);
-    const noP = !allWritten(s.practices);
+    const noL = !partOk(s.lessons);
+    const noP = !partOk(s.practices);
     if (noL && noP) return 'חסרים שיעור ותרגול לפרסום';
     if (noL) return 'חסר שיעור לפרסום';
     return noP ? 'חסר תרגול לפרסום' : '';
@@ -771,6 +774,7 @@
         </div>
       </div>`;
   }
+  const addScreen = (k, kind) => `<button class="w-addrow w-addscreen" type="button" data-row-add="${k}:${kind}:-1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>מסך ${kind === 'lessons' ? 'שיעור' : 'תרגול'}</button>`;
   function stageCard(s, k, isLast) {
     const msg = stageMsg.has(k) ? missingText(s) : '';
     if (!msg) stageMsg.delete(k);
@@ -788,9 +792,9 @@
           </span>
         </div>
         <div class="w-fold"><div class="w-fold__in">
-          <h4 class="w-st__title">שיעורים</h4>${rows('lessons')}
+          <h4 class="w-st__title">שיעורים</h4>${rows('lessons') || addScreen(k, 'lessons')}
           <hr class="w-st__line">
-          <h4 class="w-st__title">תרגולים</h4>${rows('practices')}
+          <h4 class="w-st__title">תרגולים</h4>${rows('practices') || addScreen(k, 'practices')}
           <div class="w-row__btns">
             <button class="a-btn w-draft" type="button" data-st-save="${k}:close">שמור וסגור</button>
             ${isLast ? '' : `<button class="a-btn a-btn--primary" type="button" data-st-save="${k}:next">שמור והמשך לשלב הבא</button>`}
@@ -929,24 +933,24 @@
         ${newFoot('יצירת החזרה')}
       </form>`;
   }
+  const LESSON_TPL = [['הסבר', 'הסבר'], ['הסבר בלשוניות', 'הסבר בלשוניות'], ['שיר האותיות', 'שיר האותיות'], ['none', 'בלי מסך שיעור']];
+  const PRACTICE_TPL = [['אותיות', 'אותיות'], ['מילים', 'מילים'], ['מילים עם הברות', 'מילים בהברות'], ['משפטים', 'משפטים'], ['none', 'בלי תרגול']];
+  const radios = (name, opts, cur) => `<div class="w-radios" role="radiogroup">${opts.map(([v, t]) => `<label class="w-radio"><input type="radio" name="${name}" value="${v}"${v === cur ? ' checked' : ''}><span>${t}</span></label>`).join('')}</div>`;
   function drawNewLesson() {
     const d = draft;
-    const worlds = list.filter((w) => !w.review);
-    const w = list.find((x) => x.id === d.worldId) || worlds[0];
-    if (!w) { edit.innerHTML = '<div class="a-card"><p class="a-muted">אין עולמות שאפשר להוסיף להם שלב.</p></div>'; return; }
-    const at = d.at == null ? w.planned : d.at;
-    edit.innerHTML = `<form class="a-card w-sections w-new" id="w-new-form" novalidate>
+    const w = list.find((x) => x.id === d.worldId) || list.find((x) => !x.review);
+    if (!w) { edit.innerHTML = '<div class="a-card"><p class="a-muted">אין איים שאפשר להוסיף להם שלב.</p></div>'; return; }
+    d.worldId = w.id;
+    edit.innerHTML = `<form class="a-card w-sections w-new w-newstage" id="w-new-form" novalidate>
         <section aria-labelledby="w-title">
-          <p class="w-kind">שלב חדש</p>
-          <h2 class="w-name" id="w-title">${UI.esc(d.name) || 'שלב חדש'}</h2>
-          <label class="a-field"><span>באיזה אי</span><select id="n-world">${worlds.map((x) => `<option value="${x.id}"${x.id === w.id ? ' selected' : ''}>${UI.esc(x.name)}</option>`).join('')}</select></label>
-          <label class="a-field"><span>שם השלב</span><input id="n-name" value="${UI.esc(d.name)}" placeholder="למשל: קריאת משפטים" required></label>
-          <label class="a-field"><span>מיקום באי</span><select id="n-at">
-            <option value="0"${at === 0 ? ' selected' : ''}>בהתחלה</option>
-            ${Array.from({ length: w.planned }, (_, k) => `<option value="${k + 1}"${at === k + 1 ? ' selected' : ''}>אחרי שיעור ${(w.firstLesson || 1) + k}</option>`).join('')}
-          </select><small class="a-help">השלב יקבל את המספר שלו לפי המקום. דף השלב ייכתב בנפרד, ועד אז הוא "טרם נכתב".</small></label>
+          <p class="w-kind">${UI.esc(w.name)}</p>
+          <h2 class="w-name" id="w-title">שלב חדש</h2>
+          <label class="a-field"><span>שם השלב</span><input id="n-name" value="${UI.esc(d.name)}" placeholder="למשל: האות של הרופאה" required></label>
+          <fieldset class="a-field w-tplset"><legend>מסך השיעור – לפי איזו תבנית?</legend>${radios('n-ltpl', LESSON_TPL, d.ltpl || 'הסבר')}</fieldset>
+          <fieldset class="a-field w-tplset"><legend>התרגול – לפי איזו תבנית?</legend>${radios('n-ptpl', PRACTICE_TPL, d.ptpl || 'אותיות')}</fieldset>
+          <p class="a-help w-newstage__note">השלב נוצר כטיוטה, עם המסכים שבחרת. אחר כך ממלאים את התוכן ומפרסמים. אפשר להוסיף מסכים גם אחר כך (+ מסך).</p>
         </section>
-        ${newFoot('הוספת השלב')}
+        ${newFoot('יצירת השלב')}
       </form>`;
   }
 
@@ -985,18 +989,7 @@
       live.textContent = 'השינויים נשמרו';
       return;
     }
-    if (e.target.closest('[data-wtab-add]')) {
-      const stages = editStages(w);
-      stages.push(blankStage());
-      w.planned = stages.length;
-      w.lessonNames = w.lessonNames || [];
-      while (w.lessonNames.length < w.planned) w.lessonNames.push('');
-      openStage = stages.length - 1;
-      drawList(); drawEdit(); changed();
-      const f = edit.querySelector(`[data-st-name="${openStage}:lessons:0"]`); if (f) f.focus();
-      revealOpen();
-      return;
-    }
+    if (e.target.closest('[data-wtab-add]')) { startNew('lesson', w.id); return; }
     const delStage = e.target.closest('[data-st-del]');
     if (delStage) {
       const k = Number(delStage.dataset.stDel);
@@ -1185,15 +1178,19 @@
     if (!name) { $('n-name').focus(); return; }
     if (mode === 'lesson') {
       const w = list.find((x) => x.id === draft.worldId);
-      const at = Number($('n-at').value);
+      const pickV = (n) => (edit.querySelector(`input[name="${n}"]:checked`) || {}).value || 'none';
+      const lt = pickV('n-ltpl');
+      const pt = pickV('n-ptpl');
+      const stages = editStages(w);
+      stages.push({ published: false, name, lessons: lt === 'none' ? [] : [{ ...blankPart(name), template: lt }], practices: pt === 'none' ? [] : [{ ...blankPart(), template: pt }] });
       w.lessonNames = w.lessonNames || [];
-      while (w.lessonNames.length < w.planned) w.lessonNames.push('');
-      w.lessonNames.splice(at, 0, name);
-      if (w.stages) w.stages.splice(at, 0, blankStage(name));
-      w.planned += 1;
+      while (w.lessonNames.length < stages.length - 1) w.lessonNames.push('');
+      w.lessonNames.push(name);
+      w.planned = stages.length;
       opened.add(w.id);
       pickedId = w.id;
-      live.textContent = `השלב "${name}" נוסף ל${w.name}`;
+      step = 3; viewTab = 'edit'; stagesFor = w.id; openStage = stages.length - 1; stageMsg.clear();
+      live.textContent = `השלב "${name}" נוצר כטיוטה ב${w.name}`;
     } else {
       if (mode === 'review' && !($('n-reviewof').value || '').trim()) { $('n-reviewof').focus(); return; }
       const at = Number($('n-at').value);
