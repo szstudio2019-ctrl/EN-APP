@@ -52,7 +52,7 @@
       ${chip('st', 'active', '<span>פעילים</span>', users.filter(STATUS.active).length, st.has('active'))}
       ${chip('st', 'inactive', '<span>לא פעילים</span>', users.filter(STATUS.inactive).length, st.has('inactive'))}
       ${chip('st', 'expiring', '<span>המנוי פג בקרוב</span>', users.filter(STATUS.expiring).length, st.has('expiring'))}
-      ${CHIPS.map(([k, name, tip, icon]) => chip('ach', k, `${icon}<span>${name}</span><span class="u-chip__tip" role="tooltip">${tip}</span>`, base.filter((u) => levelOf(u) === k).length, ach.has(k), ` title="${tip}"`)).join('')}
+      ${CHIPS.map(([k, name, tip, icon]) => chip('ach', k, `${icon}<span>${name}</span><span class="u-chip__tip" role="tooltip">${tip}</span>`, base.filter((u) => levelOf(u) === k).length, ach.has(k))).join('')}
     </div>`;
   }
   filterBox.addEventListener('change', (e) => {

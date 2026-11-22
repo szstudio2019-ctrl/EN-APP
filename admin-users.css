@@ -137,3 +137,6 @@
 .u-chips .u-chip--steady:has(.u-chip__box:checked) b, .u-chip--steady .u-chip__box:checked + .u-chip__tick { background: #F08A3C; border-color: #F08A3C; color: #fff; }
 .u-chips .u-chip img, .u-chips .u-chip svg { width: 20px; height: 20px; flex: none; }
 .u-chips .u-chip:hover .u-chip__tip { opacity: 1; visibility: visible; }
+/* the chips' tooltip: white, above the chip */
+.u-chips .u-chip__tip { top: auto; bottom: calc(100% + 10px); background: #fff; color: var(--a-text); box-shadow: 0 8px 22px rgba(20, 18, 74, .18), 0 0 0 1px var(--a-line); }
+.u-chips .u-chip__tip::after { content: ''; position: absolute; top: 100%; right: 50%; width: 10px; height: 10px; background: #fff; box-shadow: 1px 1px 0 var(--a-line); transform: translate(50%, -5px) rotate(45deg); }
