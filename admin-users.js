@@ -58,8 +58,8 @@
         <td>${fmt(u.start)}</td>
         <td>${fmt(u.end)}${note}</td>
         <td><button class="u-round" type="button" data-data="${i}" aria-expanded="${i === dataOpen}" aria-label="הנתונים של ${name}" title="נתונים">${UI.ICON.chart}</button></td>
-        <td>${UI.switchHtml(`act-${i}`, u.active, `${u.first} ${u.last} פעיל`)}</td>
         <td><button class="u-round" type="button" data-edit="${i}" aria-expanded="${i === inline}" aria-label="עריכת ${name}" title="עריכה">${UI.ICON.edit}</button></td>
+        <td>${UI.switchHtml(`act-${i}`, u.active, `${u.first} ${u.last} פעיל`)}</td>
       </tr>${i === inline ? editorRow(u, i) : i === dataOpen ? dataPanel(u) : ''}`;
     }).join('');
   }
