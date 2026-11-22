@@ -460,3 +460,6 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
   .a-top .a-top__in { height: 56px; padding: 0 10px; border-radius: 0; }
   .a-crumb > a, .a-crumb__sep { display: none; }
 }
+/* the bar stays full width, but its contents line up with the page's content (same width as .a-main) */
+.a-top .a-top__in { max-width: 1392px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 760px) { .a-top .a-top__in { padding: 0 16px; } }
