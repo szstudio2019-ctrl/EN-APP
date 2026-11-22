@@ -648,3 +648,5 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
   .a-body .a-field select option:hover, .a-body .a-field select option:focus-visible { background: #F1EFFA; outline: none; }
   .a-body .a-field select option:checked { background: #FDE7EC; color: #C42A4E; font-weight: 600; }
 }
+/* the bottom bar: semi-transparent glass – what scrolls under it shows through, blurred */
+.a-actbar { background: rgba(255, 255, 255, .62); -webkit-backdrop-filter: blur(16px) saturate(1.6); backdrop-filter: blur(16px) saturate(1.6); border-top: 1px solid rgba(236, 237, 243, .9); box-shadow: 0 -8px 24px rgba(42, 37, 97, .06), inset 0 1px 0 rgba(255, 255, 255, .7); }
