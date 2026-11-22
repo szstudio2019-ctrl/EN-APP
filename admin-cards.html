@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css?v=20261123f">
-  <link rel="stylesheet" href="admin-edit.css?v=20261122h">
+  <link rel="stylesheet" href="admin-edit.css?v=20261123a">
 </head>
 <body class="a-body" data-page="content" data-sub="cards">
   <main class="a-main">
@@ -47,8 +47,8 @@
           return `<div class="c-card${c.on ? '' : ' is-off'}">
             <div class="c-card__art"><img src="${c.img || `assets/cards/card-${l}.webp`}" alt="כרטיסיית האות ${l}"></div>
             <div class="c-card__row"><span class="c-card__letter" dir="ltr">${l.toUpperCase()} ${l}</span><span class="c-card__state">${c.on ? 'נמכרת בחנות' : 'מוסתרת מהחנות'}${c.img ? '<br>תמונה חדשה' : ''}</span></div>
-            <div class="c-card__tools">${UI.switchHtml(`c-on-${l}`, c.on, `האות ${l} נמכרת בחנות`)}
-              <label class="c-card__pic" for="c-img-${l}" title="החלפת תמונה" aria-label="החלפת התמונה של האות ${l}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg></label>
+            <div class="c-card__tools"><span class="c-tip">${UI.switchHtml(`c-on-${l}`, c.on, `האות ${l} נמכרת בחנות`)}<span class="c-tip__t" aria-hidden="true">${c.on ? 'מוצגת בחנות – לחיצה תסתיר אותה' : 'מוסתרת מהחנות – לחיצה תציג אותה'}</span></span>
+              <label class="c-card__pic c-tip" for="c-img-${l}" aria-label="החלפת התמונה של האות ${l}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/><circle cx="15.5" cy="9" r="1.5"/></svg><span class="c-tip__t" aria-hidden="true">החלפת התמונה</span></label>
               <input id="c-img-${l}" data-img="${l}" type="file" accept="image/*" class="sr-only"></div>
           </div>`;
         }).join('');
