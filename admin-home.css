@@ -1,11 +1,11 @@
 /* admin-home.html: content management on top, the other areas below */
-.h-content { padding: 28px; border-radius: 22px; background: #fff; color: var(--a-text); box-shadow: 0 1px 2px rgba(42, 37, 97, .06), 0 0 0 1px var(--a-line); }
+.h-content { color: var(--a-text); }
 .h-content__head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
 .h-content__icon { flex: none; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 16px; background: #E33563; box-shadow: 0 8px 18px rgba(227, 53, 99, .3); }
 .h-content__icon svg { width: 28px; height: 28px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .h-content h2 { margin: 0; font-size: 26px; font-weight: 600; }
 .h-content__head p { margin: 4px 0 0; color: var(--a-text-2); }
-.h-content__grid, .h-areas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.h-content__grid, .h-areas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
 
 /* every card (the content pages and the areas below): icon on top, the words under it */
 .a-body .h-tile, .a-body .h-area { display: flex; flex-direction: column; gap: 4px; height: 100%; padding: 22px; border-radius: var(--a-radius-card); background: #fff; color: var(--a-text); text-decoration: none; box-shadow: 0 1px 2px rgba(42, 37, 97, .06), 0 0 0 1px var(--a-line); border-top: 5px solid var(--c); transition: transform .18s ease, box-shadow .18s ease; }
@@ -22,7 +22,7 @@
 .h-area em { margin-inline-start: 6px; padding: 2px 8px; border-radius: 999px; background: var(--bg); color: var(--c); font-size: 12px; font-style: normal; font-weight: 600; vertical-align: middle; }
 
 @media (max-width: 760px) {
-  .h-content { padding: 20px 16px; border-radius: 18px; }
+
   .h-content h2 { font-size: 22px; }
   .h-content__grid, .h-areas { grid-template-columns: 1fr; }
 }
