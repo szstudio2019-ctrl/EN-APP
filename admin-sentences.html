@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Playpen+Sans+Hebrew:wght@400;500&family=Varela+Round&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="admin-ui.css?v=20261122e">
-  <link rel="stylesheet" href="admin-edit.css?v=20261122d">
+  <link rel="stylesheet" href="admin-edit.css?v=20261122e">
 </head>
 <body class="a-body" data-page="content" data-sub="raffle">
   <main class="a-main">
@@ -20,17 +20,20 @@
         <p>המשפטים שהילדים מגרילים בחנות האותיות: המשפט באנגלית והתרגום. אפשר להוסיף, לערוך ולמחוק.</p>
       </div>
     </div>
+    <section class="a-card s-newcard" aria-labelledby="s-new-title">
+      <h2 class="t-h" id="s-new-title">הוספת משפט</h2>
+      <form class="s-new" id="s-new" novalidate>
+        <label class="a-field"><span>משפט חדש באנגלית</span><input id="s-en" dir="ltr" lang="en" placeholder="You can do it!" required></label>
+        <label class="a-field"><span>התרגום לעברית</span><input id="s-he" placeholder="אתה יכול לעשות את זה!"></label>
+        <button class="a-btn a-btn--primary" type="submit">+ הוספת משפט</button>
+      </form>
+    </section>
     <section class="a-card">
       <div class="s-tools">
         <h2 class="t-h" style="margin:0" id="s-count"></h2>
         <label class="a-search" style="flex:0 1 260px"><span class="sr-only">חיפוש משפט</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input type="search" id="s-search" placeholder="חיפוש משפט" style="border-radius:999px"></label>
       </div>
       <ol class="s-list" id="s-list"></ol>
-      <form class="s-new" id="s-new" novalidate>
-        <label class="a-field"><span>משפט חדש באנגלית</span><input id="s-en" dir="ltr" lang="en" placeholder="You can do it!" required></label>
-        <label class="a-field"><span>התרגום לעברית</span><input id="s-he" placeholder="אתה יכול לעשות את זה!"></label>
-        <button class="a-btn a-btn--primary" type="submit">+ הוספת משפט</button>
-      </form>
     </section>
   </main>
   <script src="islands.js"></script>

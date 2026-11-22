@@ -196,3 +196,11 @@
 .c-card__pic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .c-card__tools input[type="file"]:focus-visible + .c-card__pic, .c-card__pic:focus-visible { box-shadow: var(--a-focus); }
 .c-card__tools { justify-content: flex-start; gap: 6px; }
+
+/* raffle sentences: adding a sentence in its own white card above the list; the rows without a background, a thin line between them */
+.s-newcard .t-h { margin: 0 0 14px; }
+.s-newcard .s-new { margin-top: 0; padding-top: 0; border-top: 0; }
+.s-list { gap: 0; }
+.s-row { grid-template-columns: 34px minmax(0, 1fr) minmax(0, 1fr) 104px auto; padding: 12px 0; border-radius: 0; background: none; }
+.s-row + .s-row { border-top: 1px solid var(--a-line); }
+@media (max-width: 760px) { .s-row { grid-template-columns: 26px minmax(0, 1fr) auto; } }
