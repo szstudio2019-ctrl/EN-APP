@@ -1,0 +1,7 @@
+שלב 1 – תרגול 1: קריאת מילים עם הצליל o (36 מילים וצלילים מהמסמך)
+קול: ZEBRA T_EN (מבטא אנגלי), הוקלט 23.11. קובץ אחד לכל מילה בשם המילה.
+
+18 מילים רגילות: on, of, go, so, no, dog, dot, fog, for, job, log, old, long, most, pond, port, song, from
+
+18 מילים בהברות – קובץ אחד: ההברות ואז המילה → <מילה>-syllables.mp3:
+ro.bot, doc.tor, ta.co, lo.cal, man.go, hip.po, cof.fee, so.lid, or.ange, of.fice, ac.ross, pi.an.o, o.pin.ion, his.to.ry, op.pos.ite, tro.pi.cal, dip.lo.ma.cy, port.fo.li.o
