@@ -1,0 +1,20 @@
+הקלטות ZEBRA T_EN (23.11.2026) – תרגול הצליל e (משמאל לימין לפי השורות במסמך)
+קובץ אחד לכל שלישייה: העיצור קצר כצליל, ואז ההברה עם a ועם e.
+
+d-da-de.mp3 → d - da - de   (prompt: [very short, clipped] d'. ... dah. ... deh.)
+f-fa-fe.mp3 → f - fa - fe   (prompt: [very short, clipped] f'. ... fah. ... feh.)
+g-ga-ge.mp3 → g - ga - ge   (prompt: [very short, clipped] g'. ... gah. ... geh.)
+j-ja-je.mp3 → j - ja - je   (prompt: [very short, clipped] j'. ... jah. ... jeh.)
+k-ka-ke.mp3 → k - ka - ke   (prompt: [very short, clipped] k'. ... kah. ... keh.)
+l-la-le.mp3 → l - la - le   (prompt: [very short, clipped] l'. ... lah. ... leh.)
+m-ma-me.mp3 → m - ma - me   (prompt: [very short, clipped] m'. ... mah. ... meh.)
+n-na-ne.mp3 → n - na - ne   (prompt: [very short, clipped] n'. ... nah. ... neh.)
+p-pa-pe.mp3 → p - pa - pe   (prompt: [very short, clipped] p'. ... pah. ... peh.)
+r-ra-re.mp3 → r - ra - re   (prompt: [very short, clipped] r'. ... rah. ... reh.)
+s-sa-se.mp3 → s - sa - se   (prompt: [very short, clipped] s'. ... sah. ... seh.)
+t-ta-te.mp3 → t - ta - te   (prompt: [very short, clipped] t'. ... tah. ... teh.)
+v-va-ve.mp3 → v - va - ve   (prompt: [very short, clipped] v'. ... vah. ... veh.)
+y-ya-ye.mp3 → y - ya - ye   (prompt: [very short, clipped] y'. ... yah. ... yeh.)
+z-za-ze.mp3 → z - za - ze   (prompt: [very short, clipped] z'. ... zah. ... zeh.)
+
+בשונות: ההקלטות הגולמיות (-raw). ב-11 מהן היה צליל מיותר בין העיצור להברה הראשונה – נחתך בעריכה (j, r, s היו נקיות).
