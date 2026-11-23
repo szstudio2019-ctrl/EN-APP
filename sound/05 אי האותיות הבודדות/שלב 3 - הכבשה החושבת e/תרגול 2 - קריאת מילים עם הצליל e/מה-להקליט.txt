@@ -1,0 +1,40 @@
+הקלטות ZEBRA T_EN (23.11.2026) – קריאת מילים עם הצליל e
+
+bed.mp3 → bed
+beg.mp3 → beg
+egg.mp3 → egg
+end.mp3 → end
+get.mp3 → get
+hen.mp3 → hen
+leg.mp3 → leg
+pen.mp3 → pen
+red.mp3 → red
+ten.mp3 → ten
+wet.mp3 → wet
+yes.mp3 → yes
+best.mp3 → best
+bell.mp3 → bell
+desk.mp3 → desk
+help.mp3 → help
+next.mp3 → next
+mess.mp3 → mess
+nest.mp3 → nest
+rent.mp3 → rent
+rest.mp3 → rest
+self.mp3 → self
+send.mp3 → send
+tell.mp3 → tell
+tent.mp3 → tent
+test.mp3 → test
+well.mp3 → well
+when.mp3 → when
+went.mp3 → went
+smell.mp3 → smell
+where.mp3 → where
+
+מילים בהברות (קובץ אחד: ההברות ואז המילה):
+enter-syllables.mp3 → en. ter. ... enter.
+event-syllables.mp3 → e. vent. ... event.
+seven-syllables.mp3 → sev. en. ... seven.
+clever-syllables.mp3 → clev. er. ... clever.
+member-syllables.mp3 → mem. ber. ... member.
