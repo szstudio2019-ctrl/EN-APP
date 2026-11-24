@@ -286,3 +286,10 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 
 /* the save bar: quiet when everything is saved */
 .w-foot .a-actbar:not(.is-dirty) .a-save__status { color: #8C8EA6; }
+
+/* the open island: no grey background, only a soft pink frame; hover only a very light background */
+.w-item[aria-current="true"], .w-item:has(> .w-tree) { background: #fff !important; box-shadow: inset 0 0 0 1px #F4C0D1 !important; border-radius: 12px; }
+.w-item:hover:not([aria-current="true"]):not(:has(> .w-tree)) { background: #FAF9FD !important; }
+/* "+ שיעור / תרגול": always pink, no frame or background; on hover a soft pink with the straight bar */
+.w-tn .w-tn__add { color: #D4537E !important; font-size: 13px; }
+.w-tn .w-tn__add:hover, .w-tn .w-tn__add.is-on { background: #FBEAF0 !important; border-right-color: #D4537E !important; }
