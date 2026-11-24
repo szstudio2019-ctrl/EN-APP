@@ -311,3 +311,6 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .m-ic svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .w-more .m-del .m-ic { color: #C81E55; }
 .w-more .m-it:disabled .m-ic { opacity: .45; }
+
+/* the type tags in the tree: smaller */
+.w-tn .w-tag { padding: 0 5px; border-radius: 4px; font-size: 10px; font-weight: 600; line-height: 1.6; }
