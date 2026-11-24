@@ -329,3 +329,24 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-sec > summary { background: #F1F0FA; }
 .scr-sec[open] > summary { border-bottom-color: #E2E0F2; }
 .scr-sec > summary:hover { background: #E9E7F7; }
+
+/* the song's player: one row (play · time · quick marking), then the timeline across the width */
+.scr-player { display: flex; align-items: center; gap: 12px; }
+.scr-player__t { font-variant-numeric: tabular-nums; }
+.scr-quick { margin-right: auto; display: flex; align-items: center; gap: 12px; }
+.scr-line-t { position: relative; flex: none; width: 100%; height: 56px; border-radius: 10px; background: #F1F0FA; box-shadow: inset 0 0 0 1px #E2E0F2; overflow: hidden; cursor: pointer; }
+.scr-line-t > i { position: absolute; top: 0; right: 0; bottom: 0; width: 0; background: rgba(227, 53, 99, .1); border-left: 2px solid #E33563; pointer-events: none; }
+.scr-mark { position: absolute; top: 0; bottom: 0; width: 14px; height: auto; margin-right: -7px; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; cursor: grab; touch-action: none; }
+.scr-mark::before { content: ''; position: absolute; top: 22px; bottom: 6px; right: 6px; width: 2px; border-radius: 1px; background: #B4AFDD; }
+.scr-mark span { position: absolute; top: 5px; right: 50%; transform: translateX(50%); min-width: 16px; padding: 0 3px; border-radius: 4px; background: #fff; color: #2A2577; font-size: 11px; font-weight: 700; line-height: 16px; text-align: center; box-shadow: 0 1px 2px rgba(42, 37, 97, .15); }
+.scr-mark.is-low span { top: 26px; }
+.scr-mark.is-low::before { top: 6px; bottom: 32px; }
+.scr-mark:hover span, .scr-mark:focus-visible span { background: #E33563; color: #fff; }
+.scr-mark:hover::before { background: #E33563; }
+
+/* the song's letters: sound upload + recording side by side, ⋯ for the picture and deleting */
+.scr-lt__snd { display: inline-flex; gap: 6px; padding: 3px; border-radius: 10px; background: #F1F0FA; }
+.scr-lt__snd .scr-ib { background: #fff; }
+.scr-lt__snd .scr-ib.is-on { color: #1E9A5A; }
+.scr-pop--menu { min-width: 190px; }
+.scr-pop__del { color: #C81E55 !important; }

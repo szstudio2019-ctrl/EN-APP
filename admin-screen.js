@@ -73,6 +73,8 @@
     pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor"/></svg>',
     clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg>',
     speaker: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>',
+    cloud: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5"/><path d="M12 19v-7M9 14.5l3-3 3 3"/></svg>',
+    img: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M5 17l4.5-4.5 3 3 2.5-2.5L19 17"/></svg>',
     dots: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>',
     plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   };
@@ -249,7 +251,7 @@
       const s = view(it).song;
       const url = ctx.urls.get(`song:${key}`) || s.file || '';
       const dur = durations.get(key) || 0;
-      const marks = dur ? s.letters.map((r, n) => (r.t === '' || r.t == null ? '' : `<button type="button" class="scr-mark" style="right:${Math.min(100, (Number(r.t) / dur) * 100)}%" data-mark="${n}" aria-label="${esc(r.l)} – ${fmtT(r.t)}">${esc(r.l)}</button>`)).join('') : '';
+      const marks = dur ? s.letters.map((r, n) => (r.t === '' || r.t == null ? '' : `<button type="button" class="scr-mark${n % 2 ? ' is-low' : ''}" style="right:calc(14px + (100% - 28px) * ${Math.min(1, Number(r.t) / dur)})" data-mark="${n}" aria-label="${esc(r.l)} – ${fmtT(r.t)}" title="${esc(r.l)} · ${fmtT(r.t)}"><span>${esc(r.l)}</span></button>`)).join('') : '';
       const next = mark && mark.key === key ? s.letters.findIndex((r) => r.t === '' || r.t == null) : -1;
       const file = url
         ? `<div class="scr-file"><span class="scr-file__n" dir="ltr">${esc(s.fileName || url.split('/').pop())}</span><small>${dur ? fmtT(dur).replace(/\.\d$/, '') : ''}</small><label class="scr-link">החלפה<input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file></label><button type="button" class="scr-link" data-song-del>הסרה</button></div>`
@@ -258,17 +260,21 @@
           <div class="scr-player">
             ${btn('data-song-toggle', 'ניגון / עצירה', 'play', ' scr-ib--big')}
             <span class="scr-player__t" data-song-time>0:00 / ${dur ? fmtT(dur).replace(/\.\d$/, '') : '–'}</span>
-            <div class="scr-line-t" data-song-line><i data-song-prog></i>${marks}</div>
+            <span class="scr-quick">${mark && mark.key === key ? `<button type="button" class="a-btn a-btn--primary scr-now" data-mark-now>עכשיו! (רווח)</button><button type="button" class="scr-link" data-mark-stop>עצירה (Esc)</button>` : '<button type="button" class="a-btn" data-mark-start>סימון מהיר</button>'}</span>
           </div>
-          <div class="scr-quick">${mark && mark.key === key ? `<button type="button" class="a-btn a-btn--primary scr-now" data-mark-now>עכשיו! (רווח)</button><button type="button" class="scr-link" data-mark-stop>עצירה (Esc)</button>` : '<button type="button" class="a-btn" data-mark-start>סימון מהיר</button>'}</div>` : '';
+          <div class="scr-line-t" data-song-line><i data-song-prog></i>${marks}</div>` : '';
       const rows = s.letters.map((r, n) => `<li class="scr-lt${n === next ? ' is-next' : ''}" data-sort-group="xs:${key}">
           <button type="button" class="w-handle" data-drag aria-label="גרירה">${ICON.grip}</button>
           <input class="scr-lt__l" dir="ltr" maxlength="3" data-f="${key}|song.letters.${n}.l" value="${esc(r.l)}" aria-label="האות">
           <input class="scr-lt__t${r.t === '' || r.t == null ? ' is-none' : ''}" dir="ltr" data-song-t="${n}" value="${fmtT(r.t)}" aria-label="הזמן של ${esc(r.l)}">
           ${btn(`data-song-stamp="${n}"`, 'קביעה לפי הזמן בנגן', 'clock', url ? '' : ' is-off')}
           ${btn(`data-song-play="${n}"`, 'ניגון מהזמן של האות', 'play', url && r.t !== '' && r.t != null ? '' : ' is-off')}
-          <img class="scr-lt__pic" src="assets/cards/card-${esc((r.l || '').toLowerCase())}.webp" alt="" onerror="this.style.visibility='hidden'">
-          ${btn(`data-arr-del="song.letters|${n}"`, 'מחיקה', 'trash', ' scr-hov')}
+          <span class="scr-lt__snd">
+            <label class="scr-ib${ctx.urls.has(`word:${r.l}`) ? ' is-on' : ''}" title="העלאת קובץ שמע של האות" aria-label="העלאת קובץ שמע של ${esc(r.l)}">${ICON.cloud}<input class="sr-only" type="file" accept="audio/*" data-wfile="${esc(r.l)}"></label>
+            ${btn(`data-item-rec="${esc(r.l)}"`, `הקלטת ${r.l}`, 'mic', ctx.urls.has(`word:${r.l}`) ? ' is-on' : '')}
+          </span>
+          <img class="scr-lt__pic" src="${((view(it).levels || {}).pics || {})[r.l] ? ctx.urls.get(`pic:${r.l}`) || '' : `assets/cards/card-${esc((r.l || '').toLowerCase())}.webp`}" alt="" onerror="this.style.visibility='hidden'">
+          ${btn(`data-slt-menu="${n}"`, 'אפשרויות', 'dots', ' scr-lt__more')}
         </li>`).join('');
       return det(key, 'song', 'השיר', `${s.letters.filter((r) => r.t !== '' && r.t != null).length}/${s.letters.length} אותיות סומנו`, `
           <div class="scr-sub">קובץ השיר</div>${file}
@@ -472,7 +478,7 @@
           if (hadTimes) UI.confirm({ title: 'הזמנים שסומנו לא יתאימו לשיר החדש. לאפס אותם?', ok: 'איפוס זמנים', cancel: 'השארה' }, () => { m.song.letters.forEach((r) => { r.t = ''; }); touched(key, true); });
           return;
         }
-        if (t.dataset.lpic) { const l = t.dataset.lpic; ctx.urls.set(`pic:${l}`, URL.createObjectURL(f)); const m = ensure(it); m.levels.pics = m.levels.pics || {}; m.levels.pics[l] = f.name; closePop(); touched(key, true); }
+        if (t.dataset.lpic) { const l = t.dataset.lpic; ctx.urls.set(`pic:${l}`, URL.createObjectURL(f)); const m = ensure(it); m.levels = m.levels || {}; m.levels.pics = m.levels.pics || {}; m.levels.pics[l] = f.name; closePop(); touched(key, true); }
         if (t.dataset.wfile) { ctx.urls.set(`word:${t.dataset.wfile}`, URL.createObjectURL(f)); closePop(); touched(key, true); }
       });
       root.addEventListener('toggle', (e) => {
@@ -520,8 +526,9 @@
         if ((v = q('data-lv-dup')) != null) { const m = ensure(it); const n = Number(v); m.levels.list.splice(n + 1, 0, clone(m.levels.list[n])); closePop(); touched(key, true); return; }
         if ((v = q('data-lv-del')) != null) { closePop(); guard(key, () => { ensure(it).levels.list.splice(Number(v), 1); touched(key, true); }); return; }
         if ((v = q('data-add-letter-open')) != null) { pop = { type: 'addLetter', key, n: Number(v) }; ctx.redraw(); focus(`[data-add-letter="${v}"]`); return; }
+        if ((v = q('data-slt-menu')) != null) { songLetterPop(key, it, Number(v), t.closest('[data-slt-menu]')); return; }
         if ((v = q('data-lcard'))) { letterPop(key, it, v, t.closest('[data-lcard]')); return; }
-        if ((v = q('data-lpic-auto'))) { const m = ensure(it); delete (m.levels.pics || {})[v]; closePop(); touched(key, true); return; }
+        if ((v = q('data-lpic-auto'))) { const m = ensure(it); delete ((m.levels || {}).pics || {})[v]; closePop(); touched(key, true); return; }
         if ((v = q('data-hard'))) { const m = ensure(it); const h = new Set(m.levels.hard || []); if (h.has(v)) h.delete(v); else h.add(v); m.levels.hard = [...h]; touched(key, true); return; }
         if ((v = q('data-wpop'))) { wordPop(key, v, t.closest('[data-wpop]')); return; }
         if ((v = q('data-wplay'))) { const u = ctx.urls.get(`word:${v}`); if (u) new Audio(u).play(); else speak(v); return; }
@@ -551,7 +558,7 @@
         const tEl = box.querySelector('[data-song-time]'); const p = box.querySelector('[data-song-prog]');
         const d = a.duration || 0;
         if (tEl) tEl.textContent = `${fmtT(a.currentTime).replace(/\.\d$/, '')} / ${d ? fmtT(d).replace(/\.\d$/, '') : '–'}`;
-        if (p && d) p.style.width = `${(a.currentTime / d) * 100}%`;
+        if (p && d) p.style.width = `calc(14px + (100% - 28px) * ${a.currentTime / d})`;
         const tg = box.querySelector('[data-song-toggle]'); if (tg) tg.innerHTML = a.paused ? ICON.play : ICON.pause;
       }, true);
       ['play', 'pause'].forEach((ev) => root.addEventListener(ev, (e) => { const a = e.target; if (!a.matches || !a.matches('[data-song-el]')) return; const tg = a.closest('[data-scr]').querySelector('[data-song-toggle]'); if (tg) tg.innerHTML = a.paused ? ICON.play : ICON.pause; }, true));
@@ -561,13 +568,13 @@
         if (!line) return;
         const key = keyOf(line); const a = line.closest('[data-scr]').querySelector('[data-song-el]'); const d = durations.get(key);
         if (!a || !d) return;
-        const at = (x) => { const r = line.getBoundingClientRect(); return Math.max(0, Math.min(1, (r.right - x) / r.width)) * d; };
+        const at = (x) => { const r = line.getBoundingClientRect(); return Math.max(0, Math.min(1, (r.right - 14 - x) / (r.width - 28))) * d; };
         if (mk) { e.preventDefault(); markDrag = { key, n: Number(mk.dataset.mark), el: mk, at }; mk.setPointerCapture(e.pointerId); }
         else a.currentTime = at(e.clientX);
       });
-      root.addEventListener('pointermove', (e) => { if (!markDrag) return; const t = Math.round(markDrag.at(e.clientX) * 10) / 10; const d = durations.get(markDrag.key); markDrag.el.style.right = `${(t / d) * 100}%`; markDrag.t = t; });
+      root.addEventListener('pointermove', (e) => { if (!markDrag) return; const t = Math.round(markDrag.at(e.clientX) * 10) / 10; const d = durations.get(markDrag.key); markDrag.el.style.right = `calc(14px + (100% - 28px) * ${t / d})`; markDrag.t = t; });
       root.addEventListener('pointerup', () => { if (!markDrag) return; const md = markDrag; markDrag = null; if (md.t != null) { ensure(part(md.key)).song.letters[md.n].t = md.t; touched(md.key, true); } });
-      document.addEventListener('click', (e) => { if (pop && pop.el && !pop.el.contains(e.target) && !e.target.closest('[data-lcard],[data-wpop],[data-lv-menu],[data-zlib],[data-add-letter-open],[data-add-letter]')) closePop(); });
+      document.addEventListener('click', (e) => { if (pop && pop.el && !pop.el.contains(e.target) && !e.target.closest('[data-lcard],[data-slt-menu],[data-wpop],[data-lv-menu],[data-zlib],[data-add-letter-open],[data-add-letter]')) closePop(); });
     }
     function stamp(key) {
       const it = part(key); const a = ctx.root.querySelector(`[data-scr="${key}"] [data-song-el]`);
@@ -618,6 +625,11 @@
       showPop(anchor, `<label class="a-field"><span>האות</span><input dir="ltr" maxlength="3" data-f="${key}|levels.list.${n}.items.${j}" value="${esc(l)}"></label>
           <div class="scr-pop__row"><label class="scr-link">החלפת התמונה<input class="sr-only" type="file" accept="image/*" data-lpic="${esc(l)}"></label>${custom ? `<button type="button" class="scr-link" data-lpic-auto="${esc(l)}">חזרה לתמונה האוטומטית</button>` : ''}</div>`);
       pop.el.addEventListener('change', () => ctx.redraw(), { once: true });
+    }
+    function songLetterPop(key, it, n, anchor) {
+      const l = view(it).song.letters[n].l || '';
+      const custom = !!((view(it).levels || {}).pics || {})[l];
+      showPop(anchor, `<div class="scr-pop__col">${l ? `<label>${ICON.img} החלפת התמונה<input class="sr-only" type="file" accept="image/*" data-lpic="${esc(l)}"></label>` : ''}${custom ? `<button type="button" data-lpic-auto="${esc(l)}">${ICON.img} חזרה לתמונה האוטומטית</button>` : ''}<button type="button" class="scr-pop__del" data-arr-del="song.letters|${n}">${ICON.trash} מחיקת האות</button></div>`, 'scr-pop--menu');
     }
     function wordPop(key, w, anchor) {
       const has = ctx.urls.has(`word:${w}`);
