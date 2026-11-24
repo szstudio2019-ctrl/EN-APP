@@ -862,3 +862,7 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tabc__sounds { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; }
 .w-tabc__sounds li { display: flex; align-items: center; gap: 6px; }
 .w-tabc__sounds input { width: 76px; min-height: 38px; padding: 4px 10px; border: 1.5px solid var(--a-line); border-radius: 10px; background: #fff; color: #2A2577; font-family: inherit; font-size: 16px; font-weight: 600; text-align: center; }
+
+/* a lesson / practice row: no frame around it, just the content (a thin line between rows) */
+.w-st .w-row[data-row] { padding: 6px 0 18px; border: 0; border-radius: 0; }
+.w-st .w-row[data-row] + .w-row[data-row] { border-top: 1px solid var(--a-line); padding-top: 14px; }
