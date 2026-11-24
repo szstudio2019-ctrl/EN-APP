@@ -866,3 +866,14 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 /* a lesson / practice row: no frame around it, just the content (a thin line between rows) */
 .w-st .w-row[data-row] { padding: 6px 0 18px; border: 0; border-radius: 0; }
 .w-st .w-row[data-row] + .w-row[data-row] { border-top: 1px solid var(--a-line); padding-top: 14px; }
+
+/* shorter stage tiles: the buttons sit on the bars' row (bars on the right, buttons on the left) */
+.w-tile { position: relative; }
+.w-tile__main { gap: 4px; padding: 12px 14px 12px 34px; }
+.w-tile__main small { padding-left: 0; }
+.w-tile .w-bars { margin-top: 4px; width: 88px; }
+.w-tile__acts { position: absolute; left: 6px; bottom: 6px; padding: 0; gap: 0; }
+.w-tile__acts .w-lrow__del, .w-tile__acts .w-morebtn { width: 28px; height: 28px; }
+.w-tile__acts svg { width: 16px; height: 16px; }
+.w-tile--add .w-addrow { min-height: 0; height: 100%; }
+.w-tile--new .w-tile__main { padding-bottom: 12px; }
