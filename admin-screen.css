@@ -293,3 +293,14 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 /* "+ שיעור / תרגול": always pink, no frame or background; on hover a soft pink with the straight bar */
 .w-tn .w-tn__add { color: #D4537E !important; font-size: 13px; }
 .w-tn .w-tn__add:hover, .w-tn .w-tn__add.is-on { background: #FBEAF0 !important; border-right-color: #D4537E !important; }
+
+/* the screen is viewed on its own ("צפייה" in the title, as for the island) – no preview at the side */
+.scr { display: block !important; }
+.scr__pv { display: none !important; }
+.w-ed__acts .w-tabs { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: #EFEFF8; }
+.w-ed__acts .w-tabs [data-wtab] { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 12px; border: 0; border-radius: 999px; background: transparent; color: #2A2577; font: inherit; font-size: 14px; cursor: pointer; }
+.w-ed__acts .w-tabs [data-wtab][aria-selected="true"] { background: #fff; color: #E33563; box-shadow: 0 1px 3px rgba(42, 37, 97, .15); }
+.w-ed__acts .w-tabs svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.w-ed__view { margin-top: 6px; }
+.w-frame--screen { width: 100%; height: calc(100vh - 300px); min-height: 480px; border: 0; border-radius: 14px; box-shadow: 0 0 0 1px var(--a-line); background: #fff; }
+.w-ed__pv { max-width: 560px; margin: 0 auto; display: grid; gap: 10px; text-align: center; }

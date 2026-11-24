@@ -629,6 +629,7 @@
 
     return {
       render(key, it, meta) { lastMeta = meta; return render(key, it, meta); },
+      preview(key, it, meta) { lastMeta = meta; return preview(key, it, meta); },
       hasContent,
       view,
       wire,

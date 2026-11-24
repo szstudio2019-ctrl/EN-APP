@@ -1280,7 +1280,7 @@
       return;
     }
     setH1(w.name);
-    if (viewTab === 'view') {
+    if (viewTab === 'view' && sel.type === 'island') {
       const bg = bgOf(w);
       edit.innerHTML = `<div class="a-card w-tabbed w-viewcard" role="tabpanel">${topRow(w, '')}<h2 class="sr-only" id="w-title">צפייה בעמוד הראשי של האי</h2>${w.page
         ? `<iframe class="w-frame" src="${w.page}" title="העמוד הראשי של ${UI.esc(w.name)}"></iframe>`
@@ -1491,14 +1491,16 @@
           <h2 class="w-ed__h" id="w-title">${tagPart(kind, i)}<span>${UI.esc(it.name) || word}</span>${dot(partStatus(s, it))}<span class="a-tag ${isWritten(it) ? 'a-tag--live' : 'a-tag--draft'} sr-only">${isWritten(it) ? 'נכתב' : 'חסר'}</span></h2>
           <span class="w-ed__acts">
             ${pubSwitch('pt-pub', partOn(it), word)}
-            <button class="w-lrow__open w-tipped" type="button" data-scr-eye${it.page ? ` data-page="${it.page}"` : ''} aria-label="תצוגה כמו תלמיד">${EYE_ICON}<span class="w-tip w-tip--l" aria-hidden="true">תצוגה כמו תלמיד</span></button>
+            ${viewTabs()}
             <button class="w-lrow__del w-tipped" type="button" data-row-dup="${key}" aria-label="שכפול ה${word}">${COPY_ICON}<span class="w-tip w-tip--l" aria-hidden="true">שכפול</span></button>
             <button class="w-morebtn w-ed__morebtn" type="button" data-more data-more-g="tpr:${picked().id}:${k}:${kind}" data-more-i="${i}" data-more-n="${s[kind].length}" aria-haspopup="menu" aria-label="אפשרויות">${DOTS3}</button>
           </span>
         </div>
         <p class="w-ed__info">תבנית: ${UI.esc(tplName)}${code ? ` · קוד מסך: <span dir="ltr">${UI.esc(code)}</span>` : ''}</p>
         ${off ? `<p class="a-help w-ed__hidden">${!picked().published ? 'האי' : 'השלב'} לא מפורסם, ולכן גם ה${word} מוסתר מהתלמידים. הסטטוס שלו נשמר.</p>` : ''}
-        ${SE.render(key, it, { kind, word, isNew: !!(freshPart && freshPart.k === k && freshPart.kind === kind && freshPart.i === i), templateSelect: select })}
+        ${viewTab === 'view'
+          ? `<div class="w-ed__view">${it.page ? `<iframe class="w-frame w-frame--screen" src="${it.page}?view=admin" title="צפייה ב${UI.esc(it.name || word)} כמו תלמיד"></iframe>` : `<div class="w-ed__pv">${SE.preview(key, it, { kind, word })}<p class="a-help">למסך הזה עוד אין עמוד באתר – כך הוא ייראה לפי מה שמולא.</p></div>`}</div>`
+          : SE.render(key, it, { kind, word, isNew: !!(freshPart && freshPart.k === k && freshPart.kind === kind && freshPart.i === i), templateSelect: select })}
       </div>`;
   }
 
