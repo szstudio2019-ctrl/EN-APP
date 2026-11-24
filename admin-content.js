@@ -1238,7 +1238,6 @@
             <label class="a-field"><span>הכותרת בדף האי – שורה 1</span><input id="f-head1" value="${UI.esc(w.head1 || '')}"></label>
             <label class="a-field"><span>שורה 2</span><input id="f-head2" value="${UI.esc(w.head2 || '')}"></label>
           </div>
-          <div class="w-pubin" id="w-pubin"></div>
           ${w.review ? `<label class="a-field"><span>על אילו שיעורים החזרה</span><input id="f-reviewof" dir="ltr" value="${UI.esc(w.reviewOf || '')}" placeholder="1-10"></label>` : ''}
           <h3 class="w-ed__sec">טקסטים</h3>
           <label class="a-field"><span>כותרת ה"אודות" במפה</span><input id="f-title" value="${UI.esc(w.title)}"></label>
