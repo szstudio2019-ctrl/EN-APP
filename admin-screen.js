@@ -124,12 +124,13 @@
         m.zebra.says = '';
         m.instr = { hint: '', says: L.says || it.desc || '', voice: '', helpSong: L.helpSong !== false && tpl === 'אותיות' };
         const lv = (L.levels || []).map((x) => (Array.isArray(x) ? { name: '', instr: null, items: x.slice() } : { name: x.name || '', instr: x.instr == null || x.instr === '' ? null : x.instr, items: (x.items || []).slice() }));
-        m.levels = { word: L.levelWord || 'רמה', title: L.levelsTitle || '', visible: L.levelsVisible || '', list: lv, hard: [], pics: {} };
+        m.levels = { word: tpl === 'אותיות' ? 'שלב' : L.levelWord || 'רמה', title: tpl === 'אותיות' ? '' : L.levelsTitle || '', visible: L.levelsVisible || '', list: lv, hard: [], pics: {} };
       }
       return m;
     }
     const view = (it) => it.scr || build(it);
     const ensure = (it) => { if (!it.scr) it.scr = build(it); return it.scr; };
+    const stepOf = new Map();
     const isOpen = (key, sec, dflt) => (open.has(`${key}|${sec}`) ? open.get(`${key}|${sec}`) : dflt);
     // is there content of the template's own (then the template can't be changed)
     function hasContent(it) {
@@ -302,7 +303,7 @@
       const L = view(it).levels;
       const type = PRACTICE_T[it.template] || 'word';
       const [one, many, ph] = ITEM[type];
-      const word = L.word || 'רמה';
+      const word = (L.word === 'טור' ? 'שלב' : L.word) || 'רמה';
       const hard = new Set(L.hard || []);
       const cards = L.list.map((lv, n) => {
         const items = lv.items;
@@ -337,6 +338,25 @@
             </details>
           </li>`;
       }).join('');
+      if (type === 'letter') {
+        const cur = Math.max(0, Math.min(stepOf.get(key) || 0, L.list.length - 1));
+        const steps = L.list.map((lv, n) => `<button type="button" class="scr-step${n === cur ? ' is-cur' : ''}${lv.items.length ? '' : ' is-empty'}" data-lv-go="${n}" aria-label="${esc(word)} ${n + 1}" aria-pressed="${n === cur}"><span>${n + 1}</span></button>`).join('');
+        const lv = L.list[cur];
+        let panel = '<p class="scr-note">אין עדיין שלבים. מוסיפים שלב ראשון</p>';
+        if (lv) {
+          const box = document.createElement('div'); box.innerHTML = cards;
+          const one = box.querySelectorAll('.scr-lv')[cur];
+          const inner = one ? one.querySelector('.scr-card__in').innerHTML : '';
+          panel = `<div class="scr-stepbox">
+              <div class="scr-stepbox__h"><b>${esc(lv.name || `${word} ${cur + 1}`)}</b><span class="scr-sec__sum">${lv.items.length} אותיות</span><span class="scr-lvmenu">${btn(`data-lv-menu="${cur}"`, 'אפשרויות', 'dots')}</span></div>
+              ${inner}
+            </div>`;
+        }
+        return det(key, 'levels', 'השלבים', `${L.list.length} שלבים`, `
+          <p class="a-help">כמו באתר: כל מספר הוא שלב. לוחצים על מספר כדי לערוך את האותיות שלו, ועל כרטיס כדי לשנות את האות או את התמונה</p>
+          <div class="scr-steps">${steps}<button type="button" class="scr-step scr-step--add" data-lv-add aria-label="הוספת שלב" title="הוספת שלב">${ICON.plus}</button></div>
+          ${panel}`, true);
+      }
       return det(key, 'levels', 'הרמות', `${L.list.length} ${word === 'רמה' ? 'רמות' : word}`, `
           <div class="scr-lvset">
             ${field(key, 'levels.word', 'איך נקראת כל רמה', L.word, { ph: 'רמה' })}
@@ -520,8 +540,9 @@
         if ((v = q('data-say-path'))) { speak(getPath(view(it), v)); return; }
         if ((v = q('data-extra-menu')) != null) { const mn = t.closest('.scr-addmenu').querySelector('.scr-menu'); mn.hidden = !mn.hidden; return; }
         if ((v = q('data-extra-add'))) { const m = ensure(it); const x = { type: v, title: EXTRAS[v][0] }; if (v === 'join') x.rows = [['b', 'a', 'ba']]; else if (v === 'ways') x.lines = ['']; else x.text = ''; m.extras.push(x); open.set(`${key}|ex${m.extras.length - 1}`, true); touched(key, true); return; }
-        if (t.closest('[data-lv-add]')) { const m = ensure(it); m.levels.list.push({ name: '', instr: null, items: [] }); open.set(`${key}|lv${m.levels.list.length - 1}`, true); touched(key, true); return; }
+        if (t.closest('[data-lv-add]')) { const m = ensure(it); m.levels.list.push({ name: '', instr: null, items: [] }); open.set(`${key}|lv${m.levels.list.length - 1}`, true); stepOf.set(key, m.levels.list.length - 1); touched(key, true); return; }
         if ((v = q('data-lv-instr')) != null) { ensure(it).levels.list[Number(v)].instr = ''; touched(key, true); focus(`[data-f="${key}|levels.list.${v}.instr"]`); return; }
+        if ((v = q('data-lv-go')) != null) { stepOf.set(key, Number(v)); ctx.redraw(); return; }
         if ((v = q('data-lv-menu')) != null) { e.preventDefault(); lvMenu(key, Number(v), t.closest('button')); return; }
         if ((v = q('data-lv-dup')) != null) { const m = ensure(it); const n = Number(v); m.levels.list.splice(n + 1, 0, clone(m.levels.list[n])); closePop(); touched(key, true); return; }
         if ((v = q('data-lv-del')) != null) { closePop(); guard(key, () => { ensure(it).levels.list.splice(Number(v), 1); touched(key, true); }); return; }

@@ -353,3 +353,20 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 
 /* the "+ הוספת שלב" tile stays inside the open island's frame */
 .w-tn__addli--stage { width: auto !important; margin: 6px 6px 4px 6px; }
+
+/* the letters practice: numbered steps like the site, the chosen step's letters below */
+.scr-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 6px 0 14px; padding: 12px 14px; border-radius: 14px; background: #F7F6FC; }
+.scr-step { width: 38px; height: 38px; display: grid; place-items: center; padding: 0; border-radius: 50%; border: 2px solid #E8799D; background: #fff; color: #2A2577; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.scr-step:hover { background: #FBEAF0; }
+.scr-step.is-cur { background: #E33563; border-color: #E33563; color: #fff; box-shadow: 0 0 0 4px #FBD5E1; }
+.scr-step.is-empty:not(.is-cur) { border-style: dashed; color: #8C8EA6; }
+.scr-step--add { border: 1px dashed #B4AFDD; color: #6B6890; }
+.scr-step--add svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+.scr-stepbox { border: 1px solid #E2E0F2; border-radius: 14px; padding: 12px 14px; background: #fff; }
+.scr-stepbox__h { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.scr-stepbox__h b { font-size: 16px; color: #2A2577; }
+.scr-stepbox__h .scr-lvmenu { margin-right: auto; }
+
+/* the song's letters: two columns with room between them */
+.scr-lts { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; row-gap: 12px; }
+@media (max-width: 1100px) { .scr-lts { grid-template-columns: 1fr; } }
