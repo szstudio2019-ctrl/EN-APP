@@ -515,7 +515,9 @@
   // the page's explanation, in an ⓘ beside the island's name
   const info = document.body.dataset.info ? `<span class="a-info"><button class="a-info__btn" type="button" aria-describedby="a-info-tip" aria-label="הסבר על העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><span class="a-info__tip" id="a-info-tip" role="tooltip">${UI.esc(document.body.dataset.info)}</span></span>` : '';
   // one row on top of the card: the island's name, the stepper in the middle, the switch and the buttons at the end
-  const topRow = (w, middle) => `<div class="w-toprow"><div class="w-toprow__name"><b aria-hidden="true">${UI.esc(w.name)}</b></div><div class="w-toprow__mid">${middle}</div><div class="w-toprow__end">${viewTabs()}</div></div>`;
+  const topRow = (w, middle) => `<div class="w-toprow"><div class="w-toprow__name"><b aria-hidden="true">${UI.esc(w.name)}</b></div><div class="w-toprow__mid">${middle}</div><div class="w-toprow__end">${topPub(w)}${viewTabs()}</div></div>`;
+  // the island's publish switch, beside the steps: "פורסם" / "לא פורסם"
+  const topPub = (w) => `<span class="w-toppub">${UI.switchHtml('w-pub-top', w.published, 'פרסום האי')}<span class="w-toppub__t${w.published ? ' is-on' : ''}">${w.published ? 'פורסם' : 'לא פורסם'}</span></span>`;
   // the page's buttons (cancel, delete, +) move into that row; without it they go back above the card
   const placeActions = () => { const slot = edit.querySelector('.w-toprow__end') || edit.querySelector('.w-new'); (slot || document.querySelector('.w-layout')).appendChild(actions); };
   const stepNav = () => `<div class="w-stepnav">
@@ -1357,6 +1359,7 @@
     const w = picked();
     if (!w) return;
     const t = e.target;
+    if (t.id === 'w-pub-top') { w.published = t.checked; drawList(); drawEdit(); drawPreview(); changed(); const b = $('w-pub-top'); if (b) b.focus(); live.textContent = w.published ? 'האי פורסם' : 'האי לא מפורסם'; return; }
     if (t.id && (t.id.startsWith('st-pub-') || t.id.startsWith('tl-pub-'))) {
       const k = Number(t.id.slice(7));
       if (t.checked && !isReady(stagesOf(w)[k])) {

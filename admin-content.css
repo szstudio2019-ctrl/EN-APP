@@ -897,3 +897,12 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 
 /* "הוספת אות / טור / צליל / לשונית" look like "הוספת שלב": a dashed pink row across */
 .w-addrow--in { width: 100%; margin: 4px 0 0; }
+
+/* the top row: the island's publish switch beside the steps; the duplicate / delete icons closer together */
+.w-toprow__end { gap: 14px; }
+.w-toppub { display: inline-flex; align-items: center; gap: 8px; }
+.w-toppub .a-switch { min-height: 0; }
+.w-toppub__t { font-size: 14px; font-weight: 600; color: #8C8EA6; white-space: nowrap; }
+.w-toppub__t.is-on { color: #1C9A55; }
+.w-toprow .w-actions { gap: 0 !important; }
+.w-toprow .w-delete { width: 30px !important; min-width: 30px !important; padding: 0 !important; }
