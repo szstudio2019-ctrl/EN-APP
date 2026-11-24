@@ -319,6 +319,12 @@
   }
   // a world opens to its tree (a review world: what it goes over)
   const subOpen = new Set();
+  // an island opens with all its stages open (their lessons and practices showing)
+  function openAll(id) {
+    opened.add(id);
+    const w = list.find((x) => x.id === id);
+    if (w && !w.review) stagesOf(w).forEach((_, k) => subOpen.add(`${id}:${k}`));
+  }
   const STATUS = { pub: 'פורסם', written: 'נכתב', draft: 'טיוטה' };
   const dot = (st) => `<i class="w-dot w-dot--${st}" role="img" aria-label="${STATUS[st]}" title="${STATUS[st]}"></i>`;
   const stageStatus = (st) => (st.published ? 'pub' : isReady(st) ? 'written' : 'draft');
@@ -390,7 +396,7 @@
     if (!li || e.target.closest('[data-grip]')) return;
     if (e.target.closest('.w-sub a')) return; // a lesson link opens its page
     if (e.target.closest('[data-open]')) {
-      if (opened.has(li.dataset.id)) opened.delete(li.dataset.id); else opened.add(li.dataset.id);
+      if (opened.has(li.dataset.id)) opened.delete(li.dataset.id); else openAll(li.dataset.id);
       drawList();
       const b = items.querySelector(`.w-item[data-id="${li.dataset.id}"] [data-open]`);
       if (b) b.focus();
@@ -450,6 +456,7 @@
     pickedId = li.dataset.id;
     mode = 'edit';
     sel = { type: 'island' };
+    if (!opened.has(li.dataset.id)) openAll(li.dataset.id);
     viewTab = 'edit';
     drawAll();
   });
