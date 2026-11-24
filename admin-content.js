@@ -873,7 +873,7 @@
           <p class="a-help w-newstage__note">השלב נוצר כטיוטה, עם המסכים שבחרת. אחר כך ממלאים את התוכן ומפרסמים. אפשר להוסיף מסכים גם אחר כך (+ מסך).</p>
           <div class="w-new__foot"><button class="a-btn a-btn--primary" type="submit">יצירת השלב</button><button class="a-btn a-btn--ghost" type="button" data-newstage-cancel>ביטול</button></div>
         </form>` : '';
-    return `<ul class="w-tiles">${stages.map(tile).join('')}${newTile}<li class="w-tile w-tile--add"${adding ? ' hidden' : ''}><button class="w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>
+    return `<ul class="w-tiles">${stages.map(tile).join('')}${newTile}<li class="w-tile w-tile--add"><button class="w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>
         ${form}<ol class="w-stages w-stages--tiles"${adding ? ' hidden' : ''}>${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
         <button class="w-ladd w-addrow" type="button" data-wtab-add hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
   }
@@ -1065,7 +1065,7 @@
       live.textContent = 'השינויים נשמרו';
       return;
     }
-    if (e.target.closest('[data-wtab-add]')) { openNewStage(w.id); return; }
+    if (e.target.closest('[data-wtab-add]')) { if (newStageFor === w.id) { const f = $('n-name'); if (f) f.focus(); return; } openNewStage(w.id); return; }
     if (e.target.closest('[data-newstage-cancel]')) { newStageFor = null; drawEdit(); const b = edit.querySelector('[data-wtab-add]'); if (b) b.focus(); return; }
     const delStage = e.target.closest('[data-st-del]');
     if (delStage) {
