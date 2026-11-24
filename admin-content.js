@@ -230,8 +230,15 @@
   archBtn.addEventListener('click', () => { showArch = !showArch; drawList(); archBtn.focus(); });
 
   /* ---------- the list ---------- */
-  items.insertAdjacentHTML('afterend', '<p class="w-legend" aria-hidden="true"><span><i class="w-dot w-dot--pub"></i>פורסם</span><span><i class="w-dot w-dot--written"></i>נכתב</span><span><i class="w-dot w-dot--draft"></i>טיוטה</span></p>');
-  const opened = new Set();
+
+  // the island open in the tree: one at a time (openIslandId); "opened" keeps the old calls working
+  let openIslandId = null;
+  const opened = {
+    has: (id) => openIslandId === id,
+    add: (id) => { openIslandId = id; },
+    delete: (id) => { if (openIslandId === id) openIslandId = null; },
+    clear: () => { openIslandId = null; },
+  };
   const ARROW = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
   function drawList() {
     const pub = list.filter((w) => w.published).length;
@@ -256,19 +263,20 @@
   }
   // the archive: deleted islands, then deleted stages, each with a round "החזרה" button
   function archList() {
+    const purge = (key) => `<button type="button" class="w-arch__purge" data-purge="${key}">מחיקה לצמיתות</button>`;
     const BACK_TIP = { i: 'האי חוזר לסוף רשימת האיים', s: 'השלב חוזר לסוף האי שלו', p: 'חוזר לסוף השלב שלו' };
     const back = (key, what) => `<button class="w-arch__back w-tipped" type="button" data-restore="${key}" aria-label="שחזור ${UI.esc(what)}">${BACK_ICON}<span>שחזור</span><span class="w-tip w-tip--l" aria-hidden="true">${BACK_TIP[key[0]]}</span></button>`;
     const isl = arch.islands.map((a, i) => `<li class="w-arch">
         ${pic(a.w, 'w-pic')}
         <span class="w-arch__body"><b>${UI.esc(a.w.name) || 'אי בלי שם'}</b><small>${a.w.review ? 'חזרה' : 'אי'} · נמחק ב־${dateOf(a.at)}</small></span>
-        ${back(`i:${i}`, a.w.name || 'האי')}
+        <span class="w-arch__acts">${back(`i:${i}`, a.w.name || 'האי')}${purge(`i:${i}`)}</span>
       </li>`).join('');
     const sts = arch.stages.map((a, i) => {
       const nm = stName(a.stage);
       return `<li class="w-arch">
         <span class="w-arch__ic" aria-hidden="true">${ARCH_ICON}</span>
         <span class="w-arch__body"><b>שלב${a.n ? ` ${a.n}` : ''}${nm ? ` · ${UI.esc(nm)}` : ''}</b><small>מתוך ${UI.esc(a.worldName || 'אי')} · נמחק ב־${dateOf(a.at)}</small></span>
-        ${back(`s:${i}`, 'השלב')}
+        <span class="w-arch__acts">${back(`s:${i}`, 'השלב')}${purge(`s:${i}`)}</span>
       </li>`;
     }).join('');
     const prts = (arch.parts || []).map((a, i) => {
@@ -276,7 +284,7 @@
       return `<li class="w-arch">
         <span class="w-arch__ic" aria-hidden="true">${ARCH_ICON}</span>
         <span class="w-arch__body"><b>${word}${a.part.name ? ` · ${UI.esc(a.part.name)}` : ''}</b><small>שלב ${a.k + 1} ב${UI.esc(a.worldName || 'אי')} · נמחק ב־${dateOf(a.at)}</small></span>
-        ${back(`p:${i}`, `ה${word}`)}
+        <span class="w-arch__acts">${back(`p:${i}`, `ה${word}`)}${purge(`p:${i}`)}</span>
       </li>`;
     }).join('');
     if (!isl && !sts && !prts) return '<li class="w-arch__empty">הארכיון ריק. אי, שלב, שיעור או תרגול שנמחקים מגיעים לכאן, ואפשר להחזיר אותם.</li>';
@@ -299,7 +307,7 @@
       const to = st[Math.min(a.k, st.length - 1)];
       if (!to) { alert('לאי הזה אין שלבים. צריך להוסיף שלב קודם.'); return; }
       arch.parts.splice(i, 1);
-      to[a.kind].push(a.part);
+      to[a.kind].splice(Math.min(a.i == null ? Infinity : a.i, to[a.kind].length), 0, a.part);
       live.textContent = `${a.kind === 'lessons' ? 'השיעור' : 'התרגול'} חזר לסוף שלב ${st.indexOf(to) + 1}`;
     } else {
       const a = arch.stages[i];
@@ -336,15 +344,11 @@
   function toggleStage(w, k) {
     const st = editStages(w)[k];
     if (!st.published && !isReady(st)) { pickedId = w.id; mode = 'edit'; sel = { type: 'stage', k }; stageMsg.add(k); drawAll(); live.textContent = 'השלב עוד לא מוכן לפרסום'; return; }
-    st.published = !st.published;
-    drawAll(); changed();
-    live.textContent = st.published ? 'השלב פורסם' : 'השלב הוסתר מהתלמידים';
+    if (st.published) askHide(w, 'stage', k, () => quickPub(w, 'stage', k, null, null, false)); else quickPub(w, 'stage', k, null, null, true);
   }
   function togglePart(w, k, kind, i) {
     const p = editStages(w)[k][kind][i];
-    p.published = !partOn(p);
-    drawAll(); changed();
-    live.textContent = p.published ? `ה${partWord(kind)} פורסם` : `ה${partWord(kind)} הוסתר`;
+    quickPub(w, 'part', k, kind, i, !partOn(p));
   }
   // the ⋯ menu's actions run as the editor's own buttons, on that island
   function runOn(wid, attrs) {
@@ -364,11 +368,12 @@
     const on = (t, k, kind, i) => mode === 'edit' && w.id === pickedId && sel.type === t && sel.k === k && (t !== 'part' || (sel.kind === kind && sel.i === i));
     const rows = stagesOf(w).map((st, k) => {
       const open = subOpen.has(`${w.id}:${k}`);
-      const parts = (kind) => st[kind].map((p, i) => `<li class="w-tn${partOn(p) ? '' : ' is-off'}" data-sort-group="tpr:${w.id}:${k}:${kind}">
+      const parts = (kind) => st[kind].map((p, i) => `<li class="w-tn${!st.published || !w.published ? ' is-hidden' : ''}" data-sort-group="tpr:${w.id}:${k}:${kind}"${!w.published ? ' title="מוסתר כי האי לא מפורסם"' : !st.published ? ` title="מוסתר כי שלב ${k + 1} לא מפורסם"` : ''}>
           <div class="w-tn__row w-tn__row--part${on('part', k, kind, i) ? ' is-sel' : ''}">
             <button class="w-handle" type="button" data-drag aria-label="גרירת ${partWord(kind)} ${i + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
             <button class="w-tn__main" type="button" data-sel="part:${k}:${kind}:${i}"${on('part', k, kind, i) ? ' aria-current="true"' : ''}>${tagPart(kind, i)}<span class="w-tn__name">${UI.esc(p.name) || partWord(kind)}</span></button>
-            ${dot(partStatus(st, p))}
+            ${JSON.stringify(p) !== JSON.stringify(savedPartOf(w.id, k, kind, i)) ? '<i class="w-tn__dirty" title="יש שינויים שלא נשמרו" aria-label="יש שינויים שלא נשמרו"></i>' : ''}
+            ${partOn(p) ? '' : '<span class="w-draft" title="רק את רואה את זה. התלמידים לא רואים.">טיוטה</span>'}
             <button class="w-morebtn" type="button" data-more aria-label="אפשרויות ל${partWord(kind)} ${i + 1}" aria-haspopup="menu">${DOTS3}</button>
           </div>
         </li>`).join('');
@@ -377,11 +382,11 @@
       const add = choosing
         ? `<span class="w-tn__choose"><button type="button" data-add-part-kind="${k}:lessons">שיעור</button><button type="button" data-add-part-kind="${k}:practices">תרגול</button><button type="button" class="w-tn__x" data-add-part-cancel aria-label="ביטול">✕</button></span>`
         : `<button class="w-tn__add${adding ? ' is-on' : ''}" type="button" data-add-part="${k}"${adding ? ' aria-current="true"' : ''}>+ שיעור / תרגול</button>`;
-      return `<li class="w-tn w-tn--stage${!st.published || !w.published ? ' is-off' : ''}" data-sort-group="stg:${w.id}">
+      return `<li class="w-tn w-tn--stage${!st.published ? ' is-off' : ''}${!w.published ? ' is-hidden' : ''}" data-sort-group="stg:${w.id}"${!w.published ? ' title="מוסתר כי האי לא מפורסם"' : ''}>
           <div class="w-tn__row w-tn__row--stage${on('stage', k) ? ' is-sel' : ''}">
             <button class="w-handle" type="button" data-drag data-grip aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
             <button class="w-tn__main" type="button" data-sel="stage:${k}"${on('stage', k) ? ' aria-current="true"' : ''}>${tagStage(k)}<b class="w-tn__name">${UI.esc(stName(st))}</b></button>
-            ${dot(stageStatus(st))}
+            ${!st.published ? '<span class="w-draft" title="רק את רואה את זה. התלמידים לא רואים.">טיוטה</span>' : (() => { const n = [...st.lessons, ...st.practices].filter((p) => !partOn(p)).length; return n ? `<span class="w-drafts">${n} ${n === 1 ? 'טיוטה' : 'טיוטות'}</span>` : ''; })()}
             <button class="w-morebtn" type="button" data-more aria-label="אפשרויות לשלב ${k + 1}" aria-haspopup="menu">${DOTS3}</button>
             <button class="w-tn__chev" type="button" data-sub-toggle="${k}" aria-expanded="${open}" aria-label="${open ? 'סגירת' : 'פתיחת'} שלב ${k + 1}">${CHEV}</button>
           </div>
@@ -416,15 +421,42 @@
     }).join('');
     return `<ul class="w-sub">${rows}<li class="w-sub__addli"><button class="w-addrow" type="button" data-add-lesson><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>`;
   }
+  items.addEventListener('change', (e) => {
+    const t = e.target;
+    if (!t.dataset || !t.dataset.qpub) return;
+    const li = t.closest('.w-item');
+    const w = list.find((x) => x.id === li.dataset.id);
+    const [type, k, kind, i] = t.dataset.qpub.split(':');
+    const on = t.checked;
+    const kk = k == null ? null : Number(k);
+    const ii = i == null ? null : Number(i);
+    if (type === 'stage' && on && !isReady(stagesOf(w)[kk])) { t.checked = false; showToast(null, 'השלב עוד לא מוכן לפרסום – חסר בו תוכן'); return; }
+    if (!on && (type === 'stage' || type === 'island')) { t.checked = true; askHide(w, type, kk, () => quickPub(w, type, kk, null, null, false)); return; }
+    quickPub(w, type, kk, kind || null, ii, on);
+    const back = items.querySelector(`.w-item[data-id="${w.id}"] [data-qpub="${t.dataset.qpub}"]`); if (back) back.focus();
+  });
   items.addEventListener('click', (e) => {
+    if (e.target.closest('.w-qsw')) return;
     if (e.target.closest('[data-drag],[data-more]')) return;
+    const pg = e.target.closest('[data-purge]');
+    if (pg) {
+      const [t, n] = pg.dataset.purge.split(':');
+      const arr = t === 'i' ? arch.islands : t === 's' ? arch.stages : arch.parts;
+      const a = arr[Number(n)];
+      const name = t === 'i' ? a.w.name : t === 's' ? `השלב מ${a.worldName || 'האי'}` : (a.part.name || partWord(a.kind));
+      UI.confirm({ title: `למחוק לצמיתות את ${name}?`, note: 'אי אפשר יהיה לשחזר אותו.', ok: 'מחיקה לצמיתות', cancel: 'ביטול' }, () => { arr.splice(Number(n), 1); drawList(); changed(); live.textContent = `${name} נמחק לצמיתות`; });
+      return;
+    }
     const rb = e.target.closest('[data-restore]');
     if (rb) { restore(rb.dataset.restore); return; }
     const li = e.target.closest('.w-item');
     if (!li || e.target.closest('[data-grip]')) return;
     if (e.target.closest('.w-sub a')) return; // a lesson link opens its page
     if (e.target.closest('[data-open]')) {
-      if (opened.has(li.dataset.id)) opened.delete(li.dataset.id); else openAll(li.dataset.id);
+      if (opened.has(li.dataset.id)) { opened.delete(li.dataset.id); drawList(); const b0 = items.querySelector(`.w-item[data-id="${li.dataset.id}"] [data-open]`); if (b0) b0.focus(); return; }
+      // opening another island wins: the editor moves to that island's details
+      openAll(li.dataset.id); pickedId = li.dataset.id; mode = 'edit'; draft = null; viewTab = 'edit'; sel = { type: 'island' }; newStageFor = null;
+      drawAll();
       drawList();
       const b = items.querySelector(`.w-item[data-id="${li.dataset.id}"] [data-open]`);
       if (b) b.focus();
@@ -444,7 +476,7 @@
       return;
     }
     const ap = e.target.closest('[data-add-part]');
-    if (ap) { pickedId = li.dataset.id; mode = 'edit'; draft = null; viewTab = 'edit'; newStageFor = null; sel = { type: 'newpart', k: Number(ap.dataset.addPart) }; drawAll(); const f = edit.querySelector('input[name="n-screen"]:checked'); if (f) f.focus(); return; }
+    if (ap) { prevSel = pickedId === li.dataset.id ? sel : null; pickedId = li.dataset.id; mode = 'edit'; draft = null; viewTab = 'edit'; newStageFor = null; sel = { type: 'newpart', k: Number(ap.dataset.addPart) }; drawAll(); const f = edit.querySelector('input[name="n-screen"]:checked'); if (f) f.focus(); return; }
     if (e.target.closest('[data-add-part-cancel]')) { addPartAt = null; drawList(); return; }
     const apk = e.target.closest('[data-add-part-kind]');
     if (apk) {
@@ -631,7 +663,7 @@
     const c = [`<button type="button" data-crumb="island">${UI.esc(w.name)}</button>`];
     const last = (t) => `<span aria-current="page">${t}</span>`;
     if (sel.type === 'newstage') c.push(last('שלב חדש'));
-    if (sel.type === 'newpart') { c.push(`<button type="button" data-crumb="stage">שלב ${sel.k + 1}</button>`); c.push(last('מסך חדש')); }
+    if (sel.type === 'newpart') { c.push(`<button type="button" data-crumb="stage">שלב ${sel.k + 1}</button>`); c.push(last('חדש')); }
     if (sel.type === 'stage') c.push(last(`שלב ${sel.k + 1}`));
     if (sel.type === 'part') { c.push(`<button type="button" data-crumb="stage">שלב ${sel.k + 1}</button>`); c.push(last(`${partWord(sel.kind)} ${sel.i + 1}`)); }
     return `<nav class="w-crumbs" aria-label="מיקום">${c.join('<span class="w-crumbs__sep" aria-hidden="true">›</span>')}</nav>`;
@@ -1335,61 +1367,141 @@
     ['practices', 'מילים עם הברות', 'תרגול מילים בהברות', 'מילים מחולקות להברות בצבעים'],
     ['practices', 'משפטים', 'תרגול משפטים', 'רמות של משפטים, עם מילים קשות'],
   ];
+  let prevSel = null; // where "ביטול" goes back to
+  let freshPart = null; // a new item: left untouched, it is removed
   function newPartForm(k) {
-    return `<div class="w-ed__top"><h2 class="w-ed__h" id="w-title">${tagStage(k)}<span>מסך חדש בשלב</span></h2></div>
-        <form class="w-newpart" id="w-newpart" novalidate aria-labelledby="w-title">
-          <label class="a-field"><span>שם המסך (לא חובה)</span><input id="np-name" placeholder="למשל: זיהוי האותיות"></label>
-          <fieldset class="a-field w-screens"><legend>איזה מסך?</legend>
-            <div class="w-screens__grid">${SCREENS.map(([kind, tpl, title, desc], n) => `<label class="w-screen"><input type="radio" name="n-screen" value="${n}"${n === 0 ? ' checked' : ''}><span class="w-screen__dot" aria-hidden="true"></span><span class="w-screen__t"><b>${title}</b><small>${desc}</small></span>${kind === 'lessons' ? '<span class="w-tag w-tag--lesson">שיעור</span>' : '<span class="w-tag w-tag--practice">תרגול</span>'}</label>`).join('')}</div>
-          </fieldset>
-          <div class="w-new__foot"><button class="a-btn a-btn--primary" type="submit">הוספת המסך</button><button class="a-btn a-btn--ghost" type="button" data-newpart-cancel>ביטול</button></div>
-        </form>`;
+    const group = (kind, label) => `<section class="w-screens">
+        <h3 class="w-screens__h"><span class="w-tag w-tag--${kind === 'lessons' ? 'lesson' : 'practice'}">${label}</span></h3>
+        <div class="w-screens__grid">${SCREENS.map(([kd, , title, desc], n) => (kd !== kind ? '' : `<button type="button" class="w-screen" data-new-screen="${n}"><span class="w-screen__t"><b>${title}</b><small>${desc}</small></span></button>`)).join('')}</div>
+      </section>`;
+    return `<div class="w-ed__top"><h2 class="w-ed__h" id="w-title">${tagStage(k)}<span>בחירת תבנית</span></h2><button type="button" class="scr-link" data-newpart-cancel>ביטול</button></div>
+        <p class="a-help">התבנית קובעת אם זה שיעור או תרגול. לחיצה על תבנית יוצרת את המסך בסוף השלב, כטיוטה.</p>
+        ${group('lessons', 'שיעור')}${group('practices', 'תרגול')}`;
   }
-  edit.addEventListener('submit', (e) => {
-    if (e.target.id !== 'w-newpart') return;
-    e.preventDefault();
+  function createScreen(n) {
     const w = picked();
     if (!w || sel.type !== 'newpart') return;
-    const n = Number((edit.querySelector('input[name="n-screen"]:checked') || {}).value || 0);
     const [kind, tpl] = SCREENS[n];
     const st = editStages(w)[sel.k];
-    const name = ($('np-name').value || '').trim();
-    st[kind].push({ ...blankPart(name), template: tpl });
+    const name = kind === 'lessons' ? 'שיעור חדש' : `תרגול ${st.practices.length + 1}`;
+    st[kind].push({ ...blankPart(name), template: tpl, published: false });
     const k = sel.k;
-    sel = { type: 'part', k, kind, i: st[kind].length - 1 };
+    const i = st[kind].length - 1;
+    sel = { type: 'part', k, kind, i };
+    freshPart = { wid: w.id, k, kind, i, snap: JSON.stringify(st[kind][i]) };
     subOpen.add(`${w.id}:${k}`);
     drawAll(); changed();
-    live.textContent = `${partWord(kind)} חדש נוסף לשלב ${k + 1}`;
+    const f = edit.querySelector('[data-st-name]'); if (f) { f.focus(); f.select(); }
+    live.textContent = `${partWord(kind)} חדש נוצר כטיוטה בסוף שלב ${k + 1}`;
+  }
+  // leaving a new item without filling anything in removes it
+  function dropFresh() {
+    if (!freshPart) return;
+    const f = freshPart;
+    if (sel.type === 'part' && pickedId === f.wid && sel.k === f.k && sel.kind === f.kind && sel.i === f.i) return;
+    freshPart = null;
+    const w = list.find((x) => x.id === f.wid);
+    const arr = w && w.stages && w.stages[f.k] && w.stages[f.k][f.kind];
+    if (arr && arr[f.i] && JSON.stringify(arr[f.i]) === f.snap) { arr.splice(f.i, 1); changed(); live.textContent = 'המסך החדש נמחק כי לא מילאו בו כלום'; }
+  }
+  // the item as it is saved (to know if it has changes that weren't saved)
+  function savedPartOf(wid, k, kind, i) {
+    const w = saved.find((x) => x.id === wid);
+    if (!w) return undefined;
+    const st = stagesOf(w)[k]; // the saved island may not keep its stages yet: they are read the same way
+    return st && st[kind] ? st[kind][i] : undefined;
+  }
+  // publishing is kept at once (it doesn't wait for "שמירה")
+  function pubNow(wid, k, kind, i, val) {
+    [list, saved].forEach((arr, n) => {
+      const w = arr.find((x) => x.id === wid);
+      if (!w) return;
+      if (k == null) { w.published = val; return; }
+      if (n === 1 && !w.stages) return;
+      const st = (n === 0 ? editStages(w) : w.stages)[k];
+      if (!st) return;
+      if (kind == null) { st.published = val; return; }
+      if (n === 1) { const mine = list.find((x) => x.id === wid).stages[k][kind]; if (!st[kind] || st[kind].length !== mine.length) return; }
+      if (st[kind][i]) st[kind][i].published = val;
+    });
+    Worlds.save(saved);
+  }
+  const pubWord = (type, kind) => (type === 'island' ? 'האי' : type === 'stage' ? 'השלב' : kind === 'lessons' ? 'השיעור' : 'התרגול');
+  function quickPub(w, type, k, kind, i, on) {
+    pubNow(w.id, type === 'island' ? null : k, type === 'part' ? kind : null, i, on);
+    drawAll(); changed();
+    const word = pubWord(type, kind);
+    const msg = `${word} ${on ? (type === 'island' || type === 'stage' ? 'פורסם' : 'פורסם') : 'הוסתר'}`;
+    live.textContent = msg;
+    showToast(() => { pubNow(w.id, type === 'island' ? null : k, type === 'part' ? kind : null, i, !on); drawAll(); changed(); live.textContent = 'בוטל'; }, msg);
+  }
+  // a stage / island is hidden only after a question (it hides what is in it too)
+  function askHide(w, type, k, then) {
+    if (type === 'island') {
+      const n = stagesOf(w).length;
+      UI.confirm({ title: `להסתיר את ${w.name} ואת ${n} השלבים שבו מהתלמידים?`, ok: 'הסתרה', cancel: 'ביטול' }, then);
+      return;
+    }
+    const st = stagesOf(w)[k];
+    const n = st.lessons.length + st.practices.length;
+    UI.confirm({ title: `להסתיר את שלב ${k + 1} ואת ${n} הפריטים שבו מהתלמידים?`, ok: 'הסתרה', cancel: 'ביטול' }, then);
+  }
+
+  // the screen editor (admin-screen.js): every template, one shape
+  const SE = window.ScreenEditor({
+    root: edit,
+    urls: songUrls,
+    part: (key) => { const [k, kind, i] = key.split(':'); const w = picked(); return w && editStages(w)[Number(k)] && editStages(w)[Number(k)][kind][Number(i)]; },
+    changed: () => { changed(); drawList(); },
+    redraw: () => drawEdit(),
+    legacy: (it) => (it.template === SONG_TEMPLATE ? (it.song || songDefaults(it)) : it.template === TABS_TEMPLATE ? (it.tabsc || tabsDefaults(it)) : PRACTICE_TPL.some(([v]) => v === it.template) ? pracOf(it) : {}),
+    started: (it) => (it && it.page ? Admin.Users.all().filter((u) => u.active !== false).length : 0),
+    islandHasSong: () => { const w = picked(); return !!w && stagesOf(w).some((st) => st.lessons.some((p) => p.template === SONG_TEMPLATE)); },
+    zebraLibrary: () => { const out = []; list.forEach((w) => (w.stages || []).forEach((st) => [...st.lessons, ...st.practices].forEach((p) => { const m = p.scr && p.scr.zebra && p.scr.zebra.media; if (m && !out.includes(m)) out.push(m); }))); return out; },
   });
+  SE.wire();
+  edit.addEventListener('click', (e) => {
+    const ns = e.target.closest('[data-new-screen]');
+    if (ns) { createScreen(Number(ns.dataset.newScreen)); return; }
+    const eye = e.target.closest('[data-scr-eye]');
+    if (eye) {
+      const sc = edit.querySelector('.scr');
+      if (window.innerWidth > 1400 && eye.dataset.page) window.open(`${eye.dataset.page}?view=admin`, '_blank', 'noopener');
+      else if (sc) sc.classList.toggle('is-pv');
+      return;
+    }
+    const mm = e.target.closest('[data-ed-menu]');
+    if (mm) { const box = mm.parentElement.querySelector('.w-ed__menu'); box.hidden = !box.hidden; }
+  });
+
   function partEditor(s, k, kind, i) {
     const it = s[kind][i];
     const word = partWord(kind);
     const key = `${k}:${kind}:${i}`;
     const id = `${k}-${kind}-${i}`;
-    const canDelete = !it.page;
-    const content = it.template === SONG_TEMPLATE ? songFields(key, it)
-      : kind === 'practices' && it.template === LETTERS_TEMPLATE ? pracFields(key, it)
-        : kind === 'lessons' && it.template === TABS_TEMPLATE ? tabsFields(key, it)
-          : `<label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>`;
+    const locked = SE.hasContent(it);
+    const opts = SCREENS.filter(([kd]) => kd === kind);
+    const known = opts.some(([, v]) => v === it.template);
+    const select = `<select id="tp-${id}" data-st-field="${key}:template"${locked ? ' disabled' : ''}>${known ? '' : `<option value="${UI.esc(it.template || '')}" selected>${UI.esc(it.template || 'לא נבחרה')}</option>`}${opts.map(([, v, title]) => `<option value="${v}"${it.template === v ? ' selected' : ''}>${title}</option>`).join('')}</select>${locked ? '<small class="a-help">התבנית נעולה כי כבר יש תוכן במסך. כדי להחליף תבנית – יוצרים מסך חדש.</small>' : ''}`;
+    const code = it.code || (it.page ? it.page.replace('.html', '') : '');
+    const tplName = (SCREENS.find(([kd, v]) => kd === kind && v === it.template) || [])[2] || it.template || 'לא נבחרה';
+    const off = !s.published || !picked().published;
     return `<div class="w-ed" data-row="${key}">
-        <div class="w-ed__top">
+        <div class="w-ed__top w-ed__top--sticky">
           <h2 class="w-ed__h" id="w-title">${tagPart(kind, i)}<span>${UI.esc(it.name) || word}</span>${dot(partStatus(s, it))}<span class="a-tag ${isWritten(it) ? 'a-tag--live' : 'a-tag--draft'} sr-only">${isWritten(it) ? 'נכתב' : 'חסר'}</span></h2>
           <span class="w-ed__acts">
             ${pubSwitch('pt-pub', partOn(it), word)}
+            <button class="w-lrow__open w-tipped" type="button" data-scr-eye${it.page ? ` data-page="${it.page}"` : ''} aria-label="תצוגה כמו תלמיד">${EYE_ICON}<span class="w-tip w-tip--l" aria-hidden="true">תצוגה כמו תלמיד</span></button>
             <button class="w-lrow__del w-tipped" type="button" data-row-dup="${key}" aria-label="שכפול ה${word}">${COPY_ICON}<span class="w-tip w-tip--l" aria-hidden="true">שכפול</span></button>
-            ${it.page ? `<a class="w-lrow__open w-tipped" href="${it.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה ב${word} (בלשונית חדשה)">${EYE_ICON}<span class="w-tip w-tip--l" aria-hidden="true">צפייה כמו תלמיד</span></a>` : ''}
-            ${canDelete ? `<button class="w-lrow__del w-tipped" type="button" data-row-del="${key}" aria-label="מחיקת ה${word} – עובר לארכיון">${TRASH_ICON}<span class="w-tip w-tip--l" aria-hidden="true">מחיקה – עובר לארכיון</span></button>` : ''}
+            <button class="w-morebtn w-ed__morebtn" type="button" data-more data-more-g="tpr:${picked().id}:${k}:${kind}" data-more-i="${i}" data-more-n="${s[kind].length}" aria-haspopup="menu" aria-label="אפשרויות">${DOTS3}</button>
           </span>
         </div>
-        <div class="a-grid">
-          <label class="a-field"><span>שם ה${word}</span><input data-st-name="${key}" value="${UI.esc(it.name)}" placeholder="שם ה${word} (לא חובה)"></label>
-          <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
-        </div>
-        ${!s.published || !picked().published ? `<p class="a-help w-ed__hidden">${!picked().published ? 'האי' : 'השלב'} לא מפורסם, ולכן גם ה${word} מוסתר מהתלמידים. הסטטוס שלו נשמר.</p>` : ''}
-        ${it.code || it.page ? `<p class="w-ed__code">קוד המסך: <span dir="ltr">${UI.esc(it.code || it.page.replace('.html', ''))}</span></p>` : ''}
-        ${content}
+        <p class="w-ed__info">תבנית: ${UI.esc(tplName)}${code ? ` · קוד מסך: <span dir="ltr">${UI.esc(code)}</span>` : ''}</p>
+        ${off ? `<p class="a-help w-ed__hidden">${!picked().published ? 'האי' : 'השלב'} לא מפורסם, ולכן גם ה${word} מוסתר מהתלמידים. הסטטוס שלו נשמר.</p>` : ''}
+        ${SE.render(key, it, { kind, word, isNew: !!(freshPart && freshPart.k === k && freshPart.kind === kind && freshPart.i === i), templateSelect: select })}
       </div>`;
   }
+
 
   function newFoot(label) {
     return `<div class="w-new__foot"><button class="a-btn a-btn--primary" type="submit">${label}</button><button class="a-btn a-btn--ghost" type="button" data-new-cancel>ביטול</button></div>`;
@@ -1481,7 +1593,7 @@
   edit.addEventListener('click', (e) => {
     const cr = e.target.closest('[data-crumb]');
     if (cr) { sel = cr.dataset.crumb === 'stage' && sel.k != null ? { type: 'stage', k: sel.k } : { type: 'island' }; newStageFor = null; drawAll(); return; }
-    if (e.target.closest('[data-newpart-cancel]')) { sel = { type: 'stage', k: sel.k }; drawAll(); return; }
+    if (e.target.closest('[data-newpart-cancel]')) { sel = prevSel || { type: 'stage', k: sel.k }; prevSel = null; drawAll(); return; }
     const pp = e.target.closest('[data-pick-part]');
     if (pp) { const [k, kind, i] = pp.dataset.pickPart.split(':'); sel = { type: 'part', k: Number(k), kind, i: Number(i) }; subOpen.add(`${pickedId}:${k}`); drawAll(); return; }
     const en = e.target.closest('[data-empty-new]');
@@ -1512,6 +1624,7 @@
       const k = Number(delStage.dataset.stDel);
       const stages = editStages(w);
       const [gone] = stages.splice(k, 1);
+      if (sel.type === 'stage' || sel.type === 'part') { if (sel.k === k) sel = k > 0 ? { type: 'stage', k: k - 1 } : { type: 'island' }; else if (sel.k > k) sel.k -= 1; }
       arch.stages.unshift({ worldId: w.id, worldName: w.name, n: k + 1, stage: gone, name: (w.lessonNames || [])[k] || '', desc: (w.lessonDescs || [])[k] || '', at: Date.now() });
       if (w.lessonNames) w.lessonNames.splice(k, 1);
       if (w.lessonDescs) w.lessonDescs.splice(k, 1);
@@ -1520,7 +1633,7 @@
       stageMsg.clear();
       drawList(); drawEdit(); changed();
       live.textContent = `שלב ${k + 1} עבר לארכיון`;
-      showToast(() => { const i = arch.stages.indexOf(arch.stages.find((a) => a.stage === gone)); if (i >= 0) arch.stages.splice(i, 1); const st = editStages(w); st.splice(k, 0, gone); w.lessonNames = pad(w.lessonNames || [], st.length - 1); w.lessonNames.splice(k, 0, ''); w.planned = st.length; drawAll(); changed(); live.textContent = 'השלב הוחזר'; }, 'השלב נמחק בהצלחה ונשמר בארכיון');
+      showToast(() => { const i = arch.stages.indexOf(arch.stages.find((a) => a.stage === gone)); if (i >= 0) arch.stages.splice(i, 1); const st = editStages(w); st.splice(k, 0, gone); w.lessonNames = pad(w.lessonNames || [], st.length - 1); w.lessonNames.splice(k, 0, ''); w.planned = st.length; drawAll(); changed(); live.textContent = 'השלב הוחזר'; }, `שלב ${k + 1} הועבר לארכיון`);
       return;
     }
     const dupStage = e.target.closest('[data-st-dup]');
@@ -1564,6 +1677,26 @@
       return;
     }
     const delRow = e.target.closest('[data-row-del]');
+    if (delRow && !delRow.dataset.done) {
+      const [k0, kind0, i0] = delRow.dataset.rowDel.split(':');
+      const k = Number(k0); const i = Number(i0); const kind = kind0;
+      const st = editStages(w)[k];
+      const gone = st[kind][i];
+      const name = gone.name || `${partWord(kind)} ${i + 1}`;
+      st[kind].splice(i, 1);
+      arch.parts = arch.parts || [];
+      const entry = { worldId: w.id, worldName: w.name, k, kind, i, part: gone, at: Date.now() };
+      arch.parts.unshift(entry);
+      if (sel.type === 'part' && sel.k === k) {
+        if (sel.kind === kind && sel.i === i) sel = i > 0 ? { type: 'part', k, kind, i: i - 1 } : kind === 'practices' && st.lessons.length ? { type: 'part', k, kind: 'lessons', i: st.lessons.length - 1 } : { type: 'stage', k };
+        else if (sel.kind === kind && sel.i > i) sel.i -= 1;
+      }
+      if (freshPart && freshPart.wid === w.id && freshPart.k === k && freshPart.kind === kind && freshPart.i === i) freshPart = null;
+      drawAll(); changed();
+      live.textContent = `${name} הועבר לארכיון`;
+      showToast(() => { const j = arch.parts.indexOf(entry); if (j >= 0) arch.parts.splice(j, 1); const s2 = editStages(w); if (s2[k]) s2[k][kind].splice(Math.min(i, s2[k][kind].length), 0, gone); sel = { type: 'part', k, kind, i }; drawAll(); changed(); live.textContent = `${name} הוחזר`; }, `${name} הועבר לארכיון`);
+      return;
+    }
     if (delRow) {
       const [k, kind, i] = delRow.dataset.rowDel.split(':');
       const word = kind === 'lessons' ? 'השיעור' : 'התרגול';
@@ -1609,8 +1742,9 @@
     const w = picked();
     if (!w) return;
     const t = e.target;
-    if (t.id === 'pt-pub' && sel.type === 'part') { editStages(w)[sel.k][sel.kind][sel.i].published = t.checked; drawList(); drawEdit(); changed(); const b = $('pt-pub'); if (b) b.focus(); return; }
-    if (t.id === 'w-pub-top') { w.published = t.checked; drawList(); drawEdit(); drawPreview(); changed(); const b = $('w-pub-top'); if (b) b.focus(); live.textContent = w.published ? 'האי פורסם' : 'האי לא מפורסם'; return; }
+    if (t.id === 'pt-pub' && sel.type === 'part') { quickPub(w, 'part', sel.k, sel.kind, sel.i, t.checked); const b = $('pt-pub'); if (b) b.focus(); return; }
+    if (t.id === 'w-pub-top') { if (!t.checked) { t.checked = true; askHide(w, 'island', null, () => quickPub(w, 'island', null, null, null, false)); return; } quickPub(w, 'island', null, null, null, true); return; }
+    if (t.id === 'w-pub-top-old') { w.published = t.checked; drawList(); drawEdit(); drawPreview(); changed(); const b = $('w-pub-top'); if (b) b.focus(); live.textContent = w.published ? 'האי פורסם' : 'האי לא מפורסם'; return; }
     if (t.id && (t.id.startsWith('st-pub-') || t.id.startsWith('tl-pub-'))) {
       const k = Number(t.id.slice(7));
       if (t.checked && !isReady(stagesOf(w)[k])) {
@@ -1618,9 +1752,8 @@
         stageMsg.add(k);
         drawEdit();
       } else {
-        editStages(w)[k].published = t.checked;
         stageMsg.delete(k);
-        drawList(); drawEdit(); changed();
+        if (!t.checked) { t.checked = true; askHide(w, 'stage', k, () => quickPub(w, 'stage', k, null, null, false)); } else quickPub(w, 'stage', k, null, null, true);
       }
       const b = $(t.id); if (b) b.focus();
       return;
@@ -1867,9 +2000,9 @@
   let toastT = 0;
   function showToast(undo, text) {
     clearTimeout(toastT);
-    toast.innerHTML = `<span>${text || 'הסדר עודכן'}</span><button type="button">ביטול</button>`;
+    toast.innerHTML = `<span>${text || 'הסדר עודכן'}</span>${undo ? '<button type="button">ביטול</button>' : ''}`;
     toast.hidden = false;
-    toast.querySelector('button').addEventListener('click', () => { clearTimeout(toastT); toast.hidden = true; undo(); });
+    if (undo) toast.querySelector('button').addEventListener('click', () => { clearTimeout(toastT); toast.hidden = true; undo(); });
     toastT = setTimeout(() => { toast.hidden = true; }, 5000);
   }
   // keep the new order now: in the page and in what is saved, so the "יש שינויים" bar doesn't light up
@@ -1899,6 +2032,7 @@
   }
   function moveIn(g, from, to, opts = {}) {
     if (from === to || to < 0) return;
+    if (SE.isLocal(g)) { SE.move(g, from, to); return; }
     const before = groupEls(g).map((el) => el.getBoundingClientRect());
     if (to >= before.length) return;
     if (opts.lifted) before[from] = opts.lifted;
@@ -2055,94 +2189,115 @@
     live.textContent = `מקום ${n + 1} מתוך ${sibs.length}`;
   });
 
-  // the ⋯ menu: up · down, and for a lesson / practice "העברה לשלב…"
+  // the ⋯ menu: "מפורסם" with its switch, then up · down (· to another stage), then duplicate · delete – questions are asked inside it
   const more = document.createElement('div');
   more.className = 'w-more';
   more.setAttribute('role', 'menu');
   more.hidden = true;
   document.body.appendChild(more);
   let moreCtx = null;
-  const closeMore = (back) => { more.hidden = true; if (back && moreCtx) moreCtx.btn.focus(); moreCtx = null; };
+  const closeMore = (back) => { more.hidden = true; if (back && moreCtx && moreCtx.btn.isConnected) moreCtx.btn.focus(); moreCtx = null; };
+  const TRASH_SM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
+  // what the menu is about: an island, a stage, or a lesson / practice
+  function itemOf(g, i) {
+    if (g === 'isl') { const w = list[i]; return w && { type: 'island', w, on: w.published, name: w.name }; }
+    const p = g.split(':');
+    const w = list.find((x) => x.id === p[1]);
+    if (!w) return null;
+    if (p[0] === 'stg') { const st = stagesOf(w)[i]; return st && { type: 'stage', w, k: i, st, on: st.published, name: `שלב ${i + 1}`, parent: w.published ? '' : 'האי' }; }
+    if (p[0] === 'tpr') { const k = Number(p[2]); const kind = p[3]; const st = stagesOf(w)[k]; const it = st && st[kind][i]; return it && { type: 'part', w, k, kind, i, st, it, on: partOn(it), name: it.name || `${partWord(kind)} ${i + 1}`, parent: !w.published ? 'האי' : !st.published ? `שלב ${k + 1}` : '' }; }
+    return null;
+  }
+  function moreHtml() {
+    const { g, i, ask } = moreCtx;
+    const x = itemOf(g, i);
+    if (!x) return '';
+    const sibs = moreCtx.sibs;
+    const note = x.parent ? `מוסתר כי ${x.parent} לא מפורסם` : x.on ? 'התלמידים רואים את זה' : 'רק את רואה את זה';
+    const items = x.type === 'stage' ? x.st.lessons.length + x.st.practices.length : 0;
+    const islStages = x.type === 'island' ? stagesOf(x.w) : [];
+    const islItems = islStages.reduce((a, st) => a + st.lessons.length + st.practices.length, 0);
+    let h = `<button type="button" class="m-pub" role="menuitemcheckbox" aria-checked="${x.on}" data-act="pub"><span>מפורסם</span><span class="m-sw${x.on ? ' is-on' : ''}" aria-hidden="true"></span></button>
+      <p class="m-note${moreCtx.warn ? ' is-warn' : ''}">${moreCtx.warn || note}</p>`;
+    if (ask === 'hide') h += `<div class="m-confirm"><p>${x.type === 'island' ? `להסתיר גם את ${islStages.length} השלבים שבו?` : `להסתיר גם את ${items} הפריטים שבו?`}</p><div class="m-confirm__btns"><button type="button" data-act="hide-ok">הסתרה</button><button type="button" data-act="ask-cancel">ביטול</button></div></div>`;
+    h += '<hr>';
+    h += `<button type="button" role="menuitem" data-act="up"${i === 0 ? ' disabled' : ''}>הזזה למעלה</button><button type="button" role="menuitem" data-act="down"${i === sibs - 1 ? ' disabled' : ''}>הזזה למטה</button>`;
+    if (x.type === 'part') { const stages = stagesOf(x.w); if (stages.length > 1) h += `<p class="w-more__h">העברה לשלב…</p>${stages.map((st, j) => (j === x.k ? '' : `<button type="button" role="menuitem" data-act="to:${j}">שלב ${j + 1}${stName(st) ? ` · ${UI.esc(stName(st))}` : ''}</button>`)).join('')}`; }
+    h += `<hr><button type="button" role="menuitem" data-act="dup">שכפול</button><button type="button" role="menuitem" class="m-del" data-act="del">${TRASH_SM}מחיקה</button>`;
+    if (ask === 'del') {
+      const started = x.type === 'part' && x.it.page ? Admin.Users.all().filter((u) => u.active !== false).length : 0;
+      const q = x.type === 'part' ? `להעביר את '${UI.esc(x.name)}' לארכיון?` : x.type === 'stage' ? `להעביר את שלב ${x.k + 1} ואת ${items} הפריטים שבו לארכיון?` : `להעביר את האי ואת כל ${islStages.length} השלבים ו-${islItems} הפריטים שבו לארכיון?`;
+      h += `<div class="m-confirm"><p>${q}</p>${started ? `<p class="m-sub">${started} ילדים כבר התחילו. ההתקדמות שלהם תישמר אם תשחזרי.</p>` : ''}<div class="m-confirm__btns"><button type="button" class="is-red" data-act="del-ok">מחיקה</button><button type="button" data-act="ask-cancel">ביטול</button></div></div>`;
+    }
+    return h;
+  }
+  function placeMore() {
+    const btn = moreCtx.btn.isConnected ? moreCtx.btn : moreCtx.anchorRect;
+    const r = btn.getBoundingClientRect ? btn.getBoundingClientRect() : btn;
+    moreCtx.anchorRect = { left: r.left, right: r.right, top: r.top, bottom: r.bottom };
+    const mw = more.offsetWidth;
+    const mh = more.offsetHeight;
+    more.style.left = `${Math.max(8, Math.min(r.right - mw, innerWidth - mw - 8))}px`;
+    more.style.top = `${r.bottom + 6 + mh > innerHeight ? Math.max(8, r.top - mh - 6) : r.bottom + 6}px`;
+  }
+  function showMore(focusSel) { more.innerHTML = moreHtml(); more.hidden = false; placeMore(); const f = more.querySelector(focusSel || 'button:not([disabled])'); if (f) f.focus(); }
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-more]');
     if (btn) {
       if (moreCtx && moreCtx.btn === btn) { closeMore(false); return; }
-      const el = btn.closest('[data-sort-group]');
-      const g = el.dataset.sortGroup;
-      const sibs = groupEls(g);
-      const i = sibs.indexOf(el);
-      let html = `<button type="button" role="menuitem" data-act="up"${i === 0 ? ' disabled' : ''}>הזזה למעלה</button><button type="button" role="menuitem" data-act="down"${i === sibs.length - 1 ? ' disabled' : ''}>הזזה למטה</button>`;
-      if (g.startsWith('stg:')) {
-        const wd = list.find((x) => x.id === g.split(':')[1]);
-        const st = wd && stagesOf(wd)[i];
-        if (st) html += `<p class="w-more__h"></p><button type="button" role="menuitem" data-act="spub">${st.published ? 'הסתרת שלב' : 'פרסום שלב'}</button><button type="button" role="menuitem" data-act="sdup">שכפול</button><button type="button" role="menuitem" data-act="sdel" class="w-more__danger">מחיקה</button>`;
-      }
-      if (g.startsWith('tpr:')) {
-        const [, wid, kk, knd] = g.split(':');
-        const wd = list.find((x) => x.id === wid);
-        const p = wd && stagesOf(wd)[Number(kk)][knd][i];
-        if (p) html += `<p class="w-more__h"></p><button type="button" role="menuitem" data-act="ppub">${partOn(p) ? 'הסתרה' : 'פרסום'}</button><button type="button" role="menuitem" data-act="pdup">שכפול</button><button type="button" role="menuitem" data-act="pdel" class="w-more__danger">מחיקה</button>`;
-      }
-      if (g === 'isl') html += '<p class="w-more__h"></p><button type="button" role="menuitem" data-act="archive" class="w-more__danger">מחיקה – העברה לארכיון</button>';
-      if (g.startsWith('prt') || g.startsWith('tpr')) {
-        const gp = g.split(':');
-        const k = g.startsWith('tpr') ? gp[2] : gp[1];
-        const stages = stagesOf(list.find((x) => x.id === (g.startsWith('tpr') ? gp[1] : pickedId)));
-        if (stages.length > 1) html += `<p class="w-more__h">העברה לשלב…</p>${stages.map((st, j) => (j === Number(k) ? '' : `<button type="button" role="menuitem" data-act="to:${j}">שלב ${j + 1}${stName(st) ? ` · ${UI.esc(stName(st))}` : ''}</button>`)).join('')}`;
-      }
-      more.innerHTML = html;
-      more.hidden = false;
-      const r = btn.getBoundingClientRect();
-      const mw = more.offsetWidth;
-      const mh = more.offsetHeight;
-      more.style.left = `${Math.max(8, Math.min(r.right - mw, innerWidth - mw - 8))}px`;
-      more.style.top = `${r.bottom + 6 + mh > innerHeight ? Math.max(8, r.top - mh - 6) : r.bottom + 6}px`;
-      moreCtx = { btn, g, i };
-      const first = more.querySelector('button:not([disabled])');
-      if (first && e.detail === 0) first.focus();
+      let g; let i; let sibs;
+      if (btn.dataset.moreG) { g = btn.dataset.moreG; i = Number(btn.dataset.moreI); sibs = Number(btn.dataset.moreN); }
+      else { const el = btn.closest('[data-sort-group]'); g = el.dataset.sortGroup; const all = groupEls(g); i = all.indexOf(el); sibs = all.length; }
+      moreCtx = { btn, g, i, sibs, ask: null, warn: '' };
+      showMore(e.detail === 0 ? null : '.m-pub');
       return;
     }
-    if (!more.hidden && !more.contains(e.target)) closeMore(false);
+    // a click inside the menu redraws it (its button is gone by now): that is not a click outside
+    if (!e.target.isConnected) return;
+    if (!more.hidden && !more.contains(e.target) && !e.target.closest('.a-leave')) closeMore(false);
   });
   more.addEventListener('click', (e) => {
     const b = e.target.closest('[data-act]');
     if (!b || !moreCtx) return;
     const { g, i } = moreCtx;
-    const viaKeys = e.detail === 0;
-    closeMore(false);
+    const x = itemOf(g, i);
     const act = b.dataset.act;
-    if (act === 'archive') { const w = list[i]; if (w) askArchive(w); return; }
-    if (act === 'spub' || act === 'sdup' || act === 'sdel') {
-      const wid = g.split(':')[1];
-      const wd = list.find((x) => x.id === wid);
-      if (act === 'spub') { toggleStage(wd, i); return; }
-      sel = { type: 'stage', k: i };
-      runOn(wid, act === 'sdup' ? { 'data-st-dup': i } : { 'data-st-del': i });
+    const viaKeys = e.detail === 0;
+    if (!x) { closeMore(false); return; }
+    // the switch: stays open so the change shows; hiding a stage / island asks inside
+    if (act === 'pub') {
+      moreCtx.warn = '';
+      if (x.on && (x.type === 'stage' || x.type === 'island')) { moreCtx.ask = 'hide'; showMore('[data-act="hide-ok"]'); return; }
+      if (!x.on && x.type === 'stage' && !isReady(x.st)) { moreCtx.warn = 'השלב עוד לא מוכן לפרסום – חסר בו תוכן'; showMore('.m-pub'); return; }
+      quickPub(x.w, x.type, x.k, x.kind || null, x.i, !x.on);
+      moreCtx.ask = null; showMore('.m-pub');
       return;
     }
-    if (act === 'ppub' || act === 'pdup' || act === 'pdel') {
-      const [, wid, kk, knd] = g.split(':');
-      const wd = list.find((x) => x.id === wid);
-      if (act === 'ppub') { togglePart(wd, Number(kk), knd, i); return; }
-      runOn(wid, act === 'pdup' ? { 'data-row-dup': `${kk}:${knd}:${i}` } : { 'data-row-del': `${kk}:${knd}:${i}` });
+    if (act === 'hide-ok') { quickPub(x.w, x.type, x.k, null, null, false); moreCtx.ask = null; showMore('.m-pub'); return; }
+    if (act === 'ask-cancel') { moreCtx.ask = null; showMore(); return; }
+    if (act === 'del') { moreCtx.ask = 'del'; showMore('[data-act="del-ok"]'); return; }
+    closeMore(false);
+    if (act === 'del-ok') {
+      if (x.type === 'island') archiveIsland(x.w);
+      else if (x.type === 'stage') runOn(x.w.id, { 'data-st-del': x.k });
+      else runOn(x.w.id, { 'data-row-del': `${x.k}:${x.kind}:${x.i}` });
+      return;
+    }
+    if (act === 'dup') {
+      if (x.type === 'island') { pickedId = x.w.id; mode = 'edit'; sel = { type: 'island' }; dupBtn.click(); }
+      else if (x.type === 'stage') { sel = { type: 'stage', k: x.k }; runOn(x.w.id, { 'data-st-dup': x.k }); }
+      else runOn(x.w.id, { 'data-row-dup': `${x.k}:${x.kind}:${x.i}` });
       return;
     }
     if (act === 'up' || act === 'down') { moveIn(g, i, i + (act === 'up' ? -1 : 1), viaKeys ? { focus: '[data-more]' } : {}); return; }
     const toK = Number(act.split(':')[1]);
-    const gp = g.split(':');
-    const isT = gp[0] === 'tpr';
-    const wid = isT ? gp[1] : pickedId;
-    const k = isT ? gp[2] : gp[1];
-    const kind = isT ? gp[3] : gp[2];
-    const word = kind === 'lessons' ? 'השיעור' : 'התרגול';
-    openStage = toK;
-    if (wid === pickedId && sel.type === 'part' && sel.k === Number(k) && sel.kind === kind && sel.i === i) { const moved = stagesOf(picked())[toK][kind].length; sel = { type: 'part', k: toK, kind, i: moved }; subOpen.add(`${wid}:${toK}`); }
-    commitOrder((arr) => opPart(arr, wid, Number(k), kind, i, toK, Infinity), `${word} עבר לסוף שלב ${toK + 1}`);
-    revealOpen();
-    if (viaKeys) { const el = groupEls(`prt:${toK}:${kind}`).pop(); if (el) el.querySelector('[data-more]').focus(); }
+    const word = x.kind === 'lessons' ? 'השיעור' : 'התרגול';
+    if (x.w.id === pickedId && sel.type === 'part' && sel.k === x.k && sel.kind === x.kind && sel.i === i) { const moved = stagesOf(x.w)[toK][x.kind].length; sel = { type: 'part', k: toK, kind: x.kind, i: moved }; subOpen.add(`${x.w.id}:${toK}`); }
+    commitOrder((arr) => opPart(arr, x.w.id, x.k, x.kind, i, toK, Infinity), `${word} עבר לסוף שלב ${toK + 1}`);
   });
   more.addEventListener('keydown', (e) => {
     const all = [...more.querySelectorAll('button:not([disabled])')];
+    if (!all.length) return;
     const at = all.indexOf(document.activeElement);
     if (e.key === 'ArrowDown') { e.preventDefault(); all[(at + 1) % all.length].focus(); }
     if (e.key === 'ArrowUp') { e.preventDefault(); all[(at - 1 + all.length) % all.length].focus(); }
@@ -2150,6 +2305,8 @@
   });
   document.addEventListener('scroll', () => { if (!more.hidden) closeMore(false); }, true);
 
-  function drawAll() { drawList(); drawEdit(); drawPreview(); }
+  function drawAll() { dropFresh(); drawList(); drawEdit(); drawPreview(); }
+  // on a fresh page only the picked island is open
+  if (pickedId) openAll(pickedId);
   drawAll();
 })();
