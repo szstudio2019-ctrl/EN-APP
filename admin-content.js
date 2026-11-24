@@ -501,7 +501,8 @@
   let step = 0;
   let viewTab = 'edit';
   let openStage = -1;
-  let newStageFor = null; // a new stage is filled in under the tiles (the tiles stay)
+  let newStageFor = null;
+  let shownStage = -1; // the stage picked in the tiles: its card stays (closed) when its arrow folds it // a new stage is filled in under the tiles (the tiles stay)
   let stagesFor = null;
   const stageMsg = new Set();
   const viewTabs = () => `<div class="w-tabs" role="tablist" aria-label="עריכה וצפייה">
@@ -1038,6 +1039,7 @@
     if (stagesFor !== w.id) { // another island: its first unfinished stage opens
       stagesFor = w.id;
       openStage = stages.findIndex((s) => !isReady(s));
+      shownStage = openStage;
       stageMsg.clear();
     }
     // a tile for every stage (edit · duplicate · delete); the stage being edited opens under the tiles
@@ -1073,6 +1075,8 @@
   }
   // one open at each level; only classes change, so the height animates
   function applyOpen() {
+    if (openStage >= 0) shownStage = openStage;
+    edit.querySelectorAll('[data-st]').forEach((el) => el.classList.toggle('is-shown', Number(el.dataset.st) === shownStage));
     edit.querySelectorAll('[data-tile]').forEach((el) => el.classList.toggle('is-open', Number(el.dataset.tile) === openStage));
     edit.querySelectorAll('[data-st]').forEach((el) => {
       const on = Number(el.dataset.st) === openStage;
@@ -1633,6 +1637,7 @@
     } else if (kind === 'stg' || kind === 'til') {
       const remap = (i) => (i === from ? to : from < i && i <= to ? i - 1 : to <= i && i < from ? i + 1 : i);
       if (openStage >= 0) openStage = remap(openStage);
+      if (shownStage >= 0) shownStage = remap(shownStage);
       stageMsg.clear();
       [...subOpen].forEach((key) => { const [id, k] = key.split(':'); if (id === a) { subOpen.delete(key); subOpen.add(`${id}:${remap(Number(k))}`); } });
       commitOrder((arr) => opStage(arr, a, from, to), `שלב ${from + 1} עבר למקום ${to + 1} מתוך ${n}`);
