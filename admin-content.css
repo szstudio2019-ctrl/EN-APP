@@ -990,3 +990,27 @@ b.w-tn__name { font-weight: 700; }
 .w-one > section { flex: 1; min-height: 0; }
 .w-foot { flex: none; margin: 0 -40px -32px; }
 .w-foot .a-actbar { position: static; margin: 0; border-radius: 0 0 var(--a-radius, 16px) var(--a-radius, 16px); box-shadow: 0 -6px 18px rgba(42, 37, 97, .05); background: rgba(255, 255, 255, .92); }
+
+/* a new screen in a stage: "איזה מסך?" as cards, two or three across */
+.w-newpart { display: grid; gap: 18px; }
+.w-screens { margin: 0; padding: 0; border: 0; min-width: 0; }
+.w-screens legend { padding: 0; margin-bottom: 10px; font-size: 14px; font-weight: 600; color: #2A2577; }
+.w-screens__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.w-screen { position: relative; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: start; gap: 10px; padding: 14px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--a-line); cursor: pointer; transition: box-shadow .15s, background-color .15s; }
+.w-screen:hover { box-shadow: inset 0 0 0 1.5px #F1C5D2; }
+.w-screen input { position: absolute; opacity: 0; pointer-events: none; }
+.w-screen__dot { width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #B4B2C9; background: #fff; }
+.w-screen__t { display: grid; gap: 4px; }
+.w-screen__t b { font-size: 15px; font-weight: 700; color: #2A2577; }
+.w-screen__t small { font-size: 13px; line-height: 1.5; color: #6B6890; }
+.w-screen:has(input:checked) { background: #FFF5F7; box-shadow: inset 0 0 0 1.5px #E33563; }
+.w-screen:has(input:checked) .w-screen__dot { box-shadow: inset 0 0 0 5px #E33563; }
+.w-screen:has(input:checked) .w-screen__t b { color: #C42A4E; }
+.w-screen:has(input:focus-visible) { box-shadow: inset 0 0 0 1.5px #E33563, 0 0 0 3px rgba(227, 53, 99, .25); }
+.w-tn__add.is-on { background: #FDE7EC; border-style: solid; }
+
+/* hidden from the students: a hidden stage (or island) and what is in it are faded in the tree */
+.w-tn.is-off > .w-tn__row, .w-tn.is-off .w-tn__kids { opacity: .5; }
+.w-tn.is-off .w-tn.is-off > .w-tn__row { opacity: 1; }
+.w-ed__hidden { margin: -6px 0 14px; padding: 8px 12px; border-radius: 10px; background: #F4F3F9; color: #6B6890; }
+.w-ed__acts .w-toppub { margin-left: 6px; }

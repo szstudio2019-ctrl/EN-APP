@@ -328,8 +328,34 @@
   }
   const STATUS = { pub: 'פורסם', written: 'נכתב', draft: 'טיוטה' };
   const dot = (st) => `<i class="w-dot w-dot--${st}" role="img" aria-label="${STATUS[st]}" title="${STATUS[st]}"></i>`;
-  const stageStatus = (st) => (st.published ? 'pub' : isReady(st) ? 'written' : 'draft');
-  const partStatus = (st, p) => (!isWritten(p) ? 'draft' : st.published ? 'pub' : 'written');
+  const stageStatus = (st) => (st.published ? 'pub' : 'written');
+  const partOn = (p) => p.published !== false;
+  const partStatus = (st, p) => (!isWritten(p) ? 'draft' : partOn(p) ? 'pub' : 'written');
+  // a publish switch with what it belongs to: "שלב מפורסם" / "לא מפורסם"
+  const pubSwitch = (id, on, word) => `<span class="w-toppub">${UI.switchHtml(id, on, `פרסום ה${word}`)}<span class="w-toppub__t${on ? ' is-on' : ''}">${on ? `${word} מפורסם` : 'לא מפורסם'}</span></span>`;
+  function toggleStage(w, k) {
+    const st = editStages(w)[k];
+    if (!st.published && !isReady(st)) { pickedId = w.id; mode = 'edit'; sel = { type: 'stage', k }; stageMsg.add(k); drawAll(); live.textContent = 'השלב עוד לא מוכן לפרסום'; return; }
+    st.published = !st.published;
+    drawAll(); changed();
+    live.textContent = st.published ? 'השלב פורסם' : 'השלב הוסתר מהתלמידים';
+  }
+  function togglePart(w, k, kind, i) {
+    const p = editStages(w)[k][kind][i];
+    p.published = !partOn(p);
+    drawAll(); changed();
+    live.textContent = p.published ? `ה${partWord(kind)} פורסם` : `ה${partWord(kind)} הוסתר`;
+  }
+  // the ⋯ menu's actions run as the editor's own buttons, on that island
+  function runOn(wid, attrs) {
+    pickedId = wid; mode = 'edit'; draft = null;
+    const b = document.createElement('button');
+    Object.entries(attrs).forEach(([a, v]) => b.setAttribute(a, v));
+    b.hidden = true;
+    edit.appendChild(b);
+    b.click();
+    b.remove();
+  }
   const partWord = (kind) => (kind === 'lessons' ? 'שיעור' : 'תרגול');
   const tagStage = (k) => `<span class="w-tag w-tag--stage">שלב ${k + 1}</span>`;
   const tagPart = (kind, i) => (kind === 'lessons' ? '<span class="w-tag w-tag--lesson">שיעור</span>' : `<span class="w-tag w-tag--practice">תרגול ${i + 1}</span>`);
@@ -338,7 +364,7 @@
     const on = (t, k, kind, i) => mode === 'edit' && w.id === pickedId && sel.type === t && sel.k === k && (t !== 'part' || (sel.kind === kind && sel.i === i));
     const rows = stagesOf(w).map((st, k) => {
       const open = subOpen.has(`${w.id}:${k}`);
-      const parts = (kind) => st[kind].map((p, i) => `<li class="w-tn" data-sort-group="tpr:${w.id}:${k}:${kind}">
+      const parts = (kind) => st[kind].map((p, i) => `<li class="w-tn${partOn(p) ? '' : ' is-off'}" data-sort-group="tpr:${w.id}:${k}:${kind}">
           <div class="w-tn__row w-tn__row--part${on('part', k, kind, i) ? ' is-sel' : ''}">
             <button class="w-handle" type="button" data-drag aria-label="גרירת ${partWord(kind)} ${i + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
             <button class="w-tn__main" type="button" data-sel="part:${k}:${kind}:${i}"${on('part', k, kind, i) ? ' aria-current="true"' : ''}>${tagPart(kind, i)}<span class="w-tn__name">${UI.esc(p.name) || partWord(kind)}</span></button>
@@ -346,11 +372,12 @@
             <button class="w-morebtn" type="button" data-more aria-label="אפשרויות ל${partWord(kind)} ${i + 1}" aria-haspopup="menu">${DOTS3}</button>
           </div>
         </li>`).join('');
-      const choosing = addPartAt === `${w.id}:${k}`;
+      const choosing = false;
+      const adding = mode === 'edit' && w.id === pickedId && sel.type === 'newpart' && sel.k === k;
       const add = choosing
         ? `<span class="w-tn__choose"><button type="button" data-add-part-kind="${k}:lessons">שיעור</button><button type="button" data-add-part-kind="${k}:practices">תרגול</button><button type="button" class="w-tn__x" data-add-part-cancel aria-label="ביטול">✕</button></span>`
-        : `<button class="w-tn__add" type="button" data-add-part="${k}">+ שיעור / תרגול</button>`;
-      return `<li class="w-tn w-tn--stage" data-sort-group="stg:${w.id}">
+        : `<button class="w-tn__add${adding ? ' is-on' : ''}" type="button" data-add-part="${k}"${adding ? ' aria-current="true"' : ''}>+ שיעור / תרגול</button>`;
+      return `<li class="w-tn w-tn--stage${!st.published || !w.published ? ' is-off' : ''}" data-sort-group="stg:${w.id}">
           <div class="w-tn__row w-tn__row--stage${on('stage', k) ? ' is-sel' : ''}">
             <button class="w-handle" type="button" data-drag data-grip aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
             <button class="w-tn__main" type="button" data-sel="stage:${k}"${on('stage', k) ? ' aria-current="true"' : ''}>${tagStage(k)}<b class="w-tn__name">${UI.esc(stName(st))}</b></button>
@@ -417,7 +444,7 @@
       return;
     }
     const ap = e.target.closest('[data-add-part]');
-    if (ap) { addPartAt = `${li.dataset.id}:${ap.dataset.addPart}`; drawList(); const f = items.querySelector('[data-add-part-kind]'); if (f) f.focus(); return; }
+    if (ap) { pickedId = li.dataset.id; mode = 'edit'; draft = null; viewTab = 'edit'; newStageFor = null; sel = { type: 'newpart', k: Number(ap.dataset.addPart) }; drawAll(); const f = edit.querySelector('input[name="n-screen"]:checked'); if (f) f.focus(); return; }
     if (e.target.closest('[data-add-part-cancel]')) { addPartAt = null; drawList(); return; }
     const apk = e.target.closest('[data-add-part-kind]');
     if (apk) {
@@ -597,13 +624,14 @@
   // the page's explanation, in an ⓘ beside the island's name
   const info = document.body.dataset.info ? `<span class="a-info"><button class="a-info__btn" type="button" aria-describedby="a-info-tip" aria-label="הסבר על העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg></button><span class="a-info__tip" id="a-info-tip" role="tooltip">${UI.esc(document.body.dataset.info)}</span></span>` : '';
   // one row on top of the card: the island's name, the stepper in the middle, the switch and the buttons at the end
-  const topRow = (w, middle) => `<div class="w-toprow"><div class="w-toprow__name"><b aria-hidden="true">${UI.esc(w.name)}</b></div><div class="w-toprow__mid">${middle}</div><div class="w-toprow__end">${topPub(w)}${sel.type === 'island' ? viewTabs() : ''}</div></div>`;
+  const topRow = (w, middle) => `<div class="w-toprow"><div class="w-toprow__name"><b aria-hidden="true">${UI.esc(w.name)}</b></div><div class="w-toprow__mid">${middle}</div><div class="w-toprow__end">${sel.type === 'island' ? viewTabs() : ''}</div></div>`;
   // breadcrumbs: each part goes up a level (and picks it in the tree)
   function crumbs(w) {
     if (sel.type === 'island') return '';
     const c = [`<button type="button" data-crumb="island">${UI.esc(w.name)}</button>`];
     const last = (t) => `<span aria-current="page">${t}</span>`;
     if (sel.type === 'newstage') c.push(last('שלב חדש'));
+    if (sel.type === 'newpart') { c.push(`<button type="button" data-crumb="stage">שלב ${sel.k + 1}</button>`); c.push(last('מסך חדש')); }
     if (sel.type === 'stage') c.push(last(`שלב ${sel.k + 1}`));
     if (sel.type === 'part') { c.push(`<button type="button" data-crumb="stage">שלב ${sel.k + 1}</button>`); c.push(last(`${partWord(sel.kind)} ${sel.i + 1}`)); }
     return `<nav class="w-crumbs" aria-label="מיקום">${c.join('<span class="w-crumbs__sep" aria-hidden="true">›</span>')}</nav>`;
@@ -1233,11 +1261,13 @@
     if (sel.type === 'stage' && !stages[sel.k]) sel = { type: 'island' };
     if (sel.type === 'part' && !(stages[sel.k] && stages[sel.k][sel.kind] && stages[sel.k][sel.kind][sel.i])) sel = { type: 'island' };
     if (sel.type === 'newstage' && newStageFor !== w.id) sel = { type: 'island' };
+    if (sel.type === 'newpart' && !stages[sel.k]) sel = { type: 'island' };
     if (w.review && sel.type !== 'island') sel = { type: 'island' };
     dupBtn.style.display = delBtn.style.display = sel.type === 'island' ? '' : 'none';
     let body;
     if (sel.type === 'island') {
-      body = `<h3 class="w-ed__sec">פרטי האי</h3>
+      body = `<div class="w-ed__top"><h2 class="w-ed__h" id="w-title-i"><span>${UI.esc(w.name)}</span>${dot(w.published ? 'pub' : 'written')}</h2><span class="w-ed__acts">${pubSwitch('w-pub-top', w.published, 'אי')}${w.page ? `<a class="w-lrow__open w-tipped" href="${w.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה באי כמו תלמיד (בלשונית חדשה)">${EYE_ICON}<span class="w-tip w-tip--l" aria-hidden="true">צפייה כמו תלמיד</span></a>` : ''}</span></div>
+          <h3 class="w-ed__sec">פרטי האי</h3>
           <div class="a-grid w-namepos">
             <label class="a-field"><span>השם (במפה ובתפריט)</span><input id="f-name" value="${UI.esc(w.name)}"></label>
             ${posField(w)}
@@ -1261,19 +1291,23 @@
       body = `<div class="w-ed__top">
             <h2 class="w-ed__h" id="w-title">${tagStage(k)}<span>${UI.esc(stName(st)) || `שלב ${k + 1}`}</span>${dot(stageStatus(st))}</h2>
             <span class="w-ed__acts">
-              <span class="w-toppub">${UI.switchHtml(`st-pub-${k}`, st.published, `פרסום שלב ${k + 1}`)}<span class="w-toppub__t${st.published ? ' is-on' : ''}">${st.published ? 'פורסם' : 'לא פורסם'}</span></span>
+              ${pubSwitch(`st-pub-${k}`, st.published, 'שלב')}
               <button class="w-lrow__del w-st__dup w-tipped" type="button" data-st-dup="${k}" aria-label="שכפול שלב ${k + 1}">${COPY_ICON}<span class="w-tip w-tip--l" aria-hidden="true">שכפול השלב</span></button>
               <button class="w-lrow__del w-tipped" type="button" data-st-del="${k}" aria-label="מחיקת שלב ${k + 1} – עובר לארכיון">${TRASH_ICON}<span class="w-tip w-tip--l" aria-hidden="true">מחיקה – השלב עובר לארכיון</span></button>
             </span>
           </div>
           ${msg ? `<p class="w-st__msg" role="status">${msg}</p>` : ''}
           <label class="a-field"><span>שם השלב</span><input data-stage-name="${k}" value="${UI.esc(stName(st))}" placeholder="למשל: סרגל ה-abc"></label>
+          <label class="a-field"><span>תיאור קצר (לא חובה)</span><textarea rows="2" data-stage-desc="${k}" placeholder="מה לומדים בשלב">${UI.esc(st.desc || '')}</textarea></label>
+          ${!w.published ? '<p class="a-help w-ed__hidden">האי לא מפורסם, ולכן גם השלב מוסתר מהתלמידים.</p>' : ''}
           <div class="a-field"><span>מה יש בשלב</span>
             <ul class="w-ed__items">${st.lessons.map((_, i) => item('lessons', i)).join('')}${st.practices.map((_, i) => item('practices', i)).join('')}</ul>
             <small class="a-help">כדי לערוך שיעור או תרגול – בוחרים אותו כאן או בעץ מימין. מוסיפים ב"+ שיעור / תרגול" בעץ.</small>
           </div>`;
     } else if (sel.type === 'part') {
       body = partEditor(stages[sel.k], sel.k, sel.kind, sel.i);
+    } else if (sel.type === 'newpart') {
+      body = newPartForm(sel.k);
     } else {
       body = `<div class="w-ed__top"><h2 class="w-ed__h" id="w-title">${tagStage(stages.length)}<span>שלב חדש</span></h2></div>
           <form class="w-newstage w-newstage--inline" id="w-newstage-inline" novalidate aria-labelledby="w-title">
@@ -1292,6 +1326,41 @@
   }
 
   // a lesson / practice in the editor: its title, name, template and its content
+  const SCREENS = [
+    ['lessons', 'הסבר', 'הסבר', 'הזברה מסבירה, עם חלקים מתחת (חיבור אותיות, דרכים לקרוא, חשוב לזכור…)'],
+    ['lessons', 'הסבר בלשוניות', 'הסבר בלשוניות', 'שלוש לשוניות: מגלים · מרכיבים · קוראים (כמו אותיות הניקוד)'],
+    ['lessons', 'שיר האותיות', 'שיר האותיות', 'סרטון שיר, והאותיות קופצות כשהן נשמעות'],
+    ['practices', 'אותיות', 'תרגול אותיות', 'רמות של אותיות, כרטיס עם תמונה לכל אות, ושיר האותיות לעזרה'],
+    ['practices', 'מילים', 'תרגול מילים', 'רמות של מילים להקלטה'],
+    ['practices', 'מילים עם הברות', 'תרגול מילים בהברות', 'מילים מחולקות להברות בצבעים'],
+    ['practices', 'משפטים', 'תרגול משפטים', 'רמות של משפטים, עם מילים קשות'],
+  ];
+  function newPartForm(k) {
+    return `<div class="w-ed__top"><h2 class="w-ed__h" id="w-title">${tagStage(k)}<span>מסך חדש בשלב</span></h2></div>
+        <form class="w-newpart" id="w-newpart" novalidate aria-labelledby="w-title">
+          <label class="a-field"><span>שם המסך (לא חובה)</span><input id="np-name" placeholder="למשל: זיהוי האותיות"></label>
+          <fieldset class="a-field w-screens"><legend>איזה מסך?</legend>
+            <div class="w-screens__grid">${SCREENS.map(([kind, tpl, title, desc], n) => `<label class="w-screen"><input type="radio" name="n-screen" value="${n}"${n === 0 ? ' checked' : ''}><span class="w-screen__dot" aria-hidden="true"></span><span class="w-screen__t"><b>${title}</b><small>${desc}</small></span>${kind === 'lessons' ? '<span class="w-tag w-tag--lesson">שיעור</span>' : '<span class="w-tag w-tag--practice">תרגול</span>'}</label>`).join('')}</div>
+          </fieldset>
+          <div class="w-new__foot"><button class="a-btn a-btn--primary" type="submit">הוספת המסך</button><button class="a-btn a-btn--ghost" type="button" data-newpart-cancel>ביטול</button></div>
+        </form>`;
+  }
+  edit.addEventListener('submit', (e) => {
+    if (e.target.id !== 'w-newpart') return;
+    e.preventDefault();
+    const w = picked();
+    if (!w || sel.type !== 'newpart') return;
+    const n = Number((edit.querySelector('input[name="n-screen"]:checked') || {}).value || 0);
+    const [kind, tpl] = SCREENS[n];
+    const st = editStages(w)[sel.k];
+    const name = ($('np-name').value || '').trim();
+    st[kind].push({ ...blankPart(name), template: tpl });
+    const k = sel.k;
+    sel = { type: 'part', k, kind, i: st[kind].length - 1 };
+    subOpen.add(`${w.id}:${k}`);
+    drawAll(); changed();
+    live.textContent = `${partWord(kind)} חדש נוסף לשלב ${k + 1}`;
+  });
   function partEditor(s, k, kind, i) {
     const it = s[kind][i];
     const word = partWord(kind);
@@ -1306,6 +1375,8 @@
         <div class="w-ed__top">
           <h2 class="w-ed__h" id="w-title">${tagPart(kind, i)}<span>${UI.esc(it.name) || word}</span>${dot(partStatus(s, it))}<span class="a-tag ${isWritten(it) ? 'a-tag--live' : 'a-tag--draft'} sr-only">${isWritten(it) ? 'נכתב' : 'חסר'}</span></h2>
           <span class="w-ed__acts">
+            ${pubSwitch('pt-pub', partOn(it), word)}
+            <button class="w-lrow__del w-tipped" type="button" data-row-dup="${key}" aria-label="שכפול ה${word}">${COPY_ICON}<span class="w-tip w-tip--l" aria-hidden="true">שכפול</span></button>
             ${it.page ? `<a class="w-lrow__open w-tipped" href="${it.page}?view=admin" target="_blank" rel="noopener" aria-label="צפייה ב${word} (בלשונית חדשה)">${EYE_ICON}<span class="w-tip w-tip--l" aria-hidden="true">צפייה כמו תלמיד</span></a>` : ''}
             ${canDelete ? `<button class="w-lrow__del w-tipped" type="button" data-row-del="${key}" aria-label="מחיקת ה${word} – עובר לארכיון">${TRASH_ICON}<span class="w-tip w-tip--l" aria-hidden="true">מחיקה – עובר לארכיון</span></button>` : ''}
           </span>
@@ -1314,6 +1385,7 @@
           <label class="a-field"><span>שם ה${word}</span><input data-st-name="${key}" value="${UI.esc(it.name)}" placeholder="שם ה${word} (לא חובה)"></label>
           <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
         </div>
+        ${!s.published || !picked().published ? `<p class="a-help w-ed__hidden">${!picked().published ? 'האי' : 'השלב'} לא מפורסם, ולכן גם ה${word} מוסתר מהתלמידים. הסטטוס שלו נשמר.</p>` : ''}
         ${it.code || it.page ? `<p class="w-ed__code">קוד המסך: <span dir="ltr">${UI.esc(it.code || it.page.replace('.html', ''))}</span></p>` : ''}
         ${content}
       </div>`;
@@ -1409,6 +1481,7 @@
   edit.addEventListener('click', (e) => {
     const cr = e.target.closest('[data-crumb]');
     if (cr) { sel = cr.dataset.crumb === 'stage' && sel.k != null ? { type: 'stage', k: sel.k } : { type: 'island' }; newStageFor = null; drawAll(); return; }
+    if (e.target.closest('[data-newpart-cancel]')) { sel = { type: 'stage', k: sel.k }; drawAll(); return; }
     const pp = e.target.closest('[data-pick-part]');
     if (pp) { const [k, kind, i] = pp.dataset.pickPart.split(':'); sel = { type: 'part', k: Number(k), kind, i: Number(i) }; subOpen.add(`${pickedId}:${k}`); drawAll(); return; }
     const en = e.target.closest('[data-empty-new]');
@@ -1467,6 +1540,20 @@
       revealOpen();
       return;
     }
+    const dupRow = e.target.closest('[data-row-dup]');
+    if (dupRow) {
+      const [k, kind, i] = dupRow.dataset.rowDup.split(':').map((x, n) => (n === 1 ? x : Number(x)));
+      const arr = editStages(w)[k][kind];
+      const c = JSON.parse(JSON.stringify(arr[i]));
+      delete c.page; delete c.code;
+      c.name = c.name ? `${c.name} (עותק)` : '';
+      arr.splice(i + 1, 0, c);
+      sel = { type: 'part', k, kind, i: i + 1 };
+      subOpen.add(`${w.id}:${k}`);
+      drawAll(); changed();
+      live.textContent = `נוצר עותק של ה${partWord(kind)}`;
+      return;
+    }
     const addRow = e.target.closest('[data-row-add]');
     if (addRow) {
       const [k, kind, i] = addRow.dataset.rowAdd.split(':');
@@ -1522,6 +1609,7 @@
     const w = picked();
     if (!w) return;
     const t = e.target;
+    if (t.id === 'pt-pub' && sel.type === 'part') { editStages(w)[sel.k][sel.kind][sel.i].published = t.checked; drawList(); drawEdit(); changed(); const b = $('pt-pub'); if (b) b.focus(); return; }
     if (t.id === 'w-pub-top') { w.published = t.checked; drawList(); drawEdit(); drawPreview(); changed(); const b = $('w-pub-top'); if (b) b.focus(); live.textContent = w.published ? 'האי פורסם' : 'האי לא מפורסם'; return; }
     if (t.id && (t.id.startsWith('st-pub-') || t.id.startsWith('tl-pub-'))) {
       const k = Number(t.id.slice(7));
@@ -1532,7 +1620,7 @@
       } else {
         editStages(w)[k].published = t.checked;
         stageMsg.delete(k);
-        drawEdit(); changed();
+        drawList(); drawEdit(); changed();
       }
       const b = $(t.id); if (b) b.focus();
       return;
@@ -1547,6 +1635,7 @@
   // typing updates the list, the preview and the save area at once
   edit.addEventListener('input', (e) => {
     const id = e.target.id;
+    if (e.target.dataset.stageDesc != null && mode === 'edit') { editStages(picked())[Number(e.target.dataset.stageDesc)].desc = e.target.value; changed(); return; }
     if (e.target.dataset.stageName != null && mode === 'edit') {
       const w = picked();
       const k = Number(e.target.dataset.stageName);
@@ -1983,6 +2072,17 @@
       const sibs = groupEls(g);
       const i = sibs.indexOf(el);
       let html = `<button type="button" role="menuitem" data-act="up"${i === 0 ? ' disabled' : ''}>הזזה למעלה</button><button type="button" role="menuitem" data-act="down"${i === sibs.length - 1 ? ' disabled' : ''}>הזזה למטה</button>`;
+      if (g.startsWith('stg:')) {
+        const wd = list.find((x) => x.id === g.split(':')[1]);
+        const st = wd && stagesOf(wd)[i];
+        if (st) html += `<p class="w-more__h"></p><button type="button" role="menuitem" data-act="spub">${st.published ? 'הסתרת שלב' : 'פרסום שלב'}</button><button type="button" role="menuitem" data-act="sdup">שכפול</button><button type="button" role="menuitem" data-act="sdel" class="w-more__danger">מחיקה</button>`;
+      }
+      if (g.startsWith('tpr:')) {
+        const [, wid, kk, knd] = g.split(':');
+        const wd = list.find((x) => x.id === wid);
+        const p = wd && stagesOf(wd)[Number(kk)][knd][i];
+        if (p) html += `<p class="w-more__h"></p><button type="button" role="menuitem" data-act="ppub">${partOn(p) ? 'הסתרה' : 'פרסום'}</button><button type="button" role="menuitem" data-act="pdup">שכפול</button><button type="button" role="menuitem" data-act="pdel" class="w-more__danger">מחיקה</button>`;
+      }
       if (g === 'isl') html += '<p class="w-more__h"></p><button type="button" role="menuitem" data-act="archive" class="w-more__danger">מחיקה – העברה לארכיון</button>';
       if (g.startsWith('prt') || g.startsWith('tpr')) {
         const gp = g.split(':');
@@ -2012,6 +2112,21 @@
     closeMore(false);
     const act = b.dataset.act;
     if (act === 'archive') { const w = list[i]; if (w) askArchive(w); return; }
+    if (act === 'spub' || act === 'sdup' || act === 'sdel') {
+      const wid = g.split(':')[1];
+      const wd = list.find((x) => x.id === wid);
+      if (act === 'spub') { toggleStage(wd, i); return; }
+      sel = { type: 'stage', k: i };
+      runOn(wid, act === 'sdup' ? { 'data-st-dup': i } : { 'data-st-del': i });
+      return;
+    }
+    if (act === 'ppub' || act === 'pdup' || act === 'pdel') {
+      const [, wid, kk, knd] = g.split(':');
+      const wd = list.find((x) => x.id === wid);
+      if (act === 'ppub') { togglePart(wd, Number(kk), knd, i); return; }
+      runOn(wid, act === 'pdup' ? { 'data-row-dup': `${kk}:${knd}:${i}` } : { 'data-row-del': `${kk}:${knd}:${i}` });
+      return;
+    }
     if (act === 'up' || act === 'down') { moveIn(g, i, i + (act === 'up' ? -1 : 1), viaKeys ? { focus: '[data-more]' } : {}); return; }
     const toK = Number(act.split(':')[1]);
     const gp = g.split(':');
