@@ -674,3 +674,6 @@ html::-webkit-scrollbar-thumb, .a-body *::-webkit-scrollbar-thumb { background: 
 /* every switch that is on: light green, like the "פורסם" tag */
 .a-switch input:checked + .a-switch__track { background: #3CC37E !important; }
 .a-switch input:checked:focus-visible + .a-switch__track { box-shadow: 0 0 0 3px rgba(60, 195, 126, .3); }
+/* switches that are on: a light, soft green */
+.a-switch input:checked + .a-switch__track { background: #74CF9D !important; }
+.a-switch input:checked:focus-visible + .a-switch__track { box-shadow: 0 0 0 3px rgba(116, 207, 157, .35); }

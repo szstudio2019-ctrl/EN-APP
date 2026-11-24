@@ -971,3 +971,16 @@ b.w-tn__name { font-weight: 700; }
 .w-one .w-st__msg { margin: 0 0 14px; }
 .w-item > .w-tree { flex-basis: 100%; }
 .w-tn__add { color: #E0345C !important; }
+
+/* the editor's name and template fields on one line */
+.w-ed > .a-grid > .a-field { margin-top: 0 !important; }
+
+/* the tree: a straight pink bar on the row's right edge – on hover, and on the item open in the editor (with a soft background) */
+.w-tn__row { border-right: 3px solid transparent; border-radius: 10px 0 0 10px; box-shadow: none !important; }
+.w-tn__row:hover { border-right-color: #D4537E; }
+.w-tn__row.is-sel { border-right-color: #D4537E; background: #F7F6FC; }
+/* "+ שיעור / תרגול" looks like "+ הוספת שלב", a tree row's height and text size */
+.w-tn__addli { padding: 4px 0 4px 6px; }
+.w-tn__add { width: 100%; height: 34px; display: flex; align-items: center; justify-content: center; gap: 6px; border: 1.5px dashed #E0345C; border-radius: 8px; background: #FFF5F7; font-size: 14px; }
+.w-tn__add:hover { background: #FDE7EC; }
+.w-tn__choose { width: 100%; justify-content: center; height: 34px; border: 1.5px dashed #E0345C; border-radius: 8px; background: #FFF5F7; }
