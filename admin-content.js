@@ -687,7 +687,7 @@
           ${url ? `<audio class="w-song__player" controls preload="metadata" src="${url}" data-song-audio="${key}"></audio>` : '<p class="a-muted">עוד אין קובץ שיר</p>'}
           <p class="a-help">לכל אות: הרגע בשיר שבו שרים אותה (בשניות). מנגנים את השיר ולוחצים על השעון ליד אות כשהיא נשמעת – והזמן נקבע לבד. ▶ מנגן מהרגע של האות.</p>
           <ol class="w-abcs">${s.letters.map((_, n) => songLetterRow(key, s, n)).join('')}</ol>
-          <button class="w-sub__add" type="button" data-sg-add="${key}">+ אות</button>
+          <button class="w-addrow w-addrow--in" type="button" data-sg-add="${key}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת אות</button>
         </section>`;
   }
   /* ---------- the "אותיות" practice template: the screen, the zebra's instruction, and the letters by level ---------- */
@@ -738,7 +738,7 @@
           <h5 class="w-sg__h"><span>3</span>התוכן של המסך · אותיות</h5>
           <p class="a-help">כל ${UI.esc(lv)} הוא שורה של אותיות, מופרדות ברווח, לפי הסדר שבו הילד קורא אותן. התמונה של כל כרטיס נבחרת לפי האות.</p>
           <ol class="w-levels">${p.levels.map((L, n) => `<li class="w-level"><b>${UI.esc(lv)} ${n + 1}</b><input dir="ltr" lang="en" data-pr-level="${key}:${n}" value="${UI.esc(L.items.join(' '))}" aria-label="האותיות של ${UI.esc(lv)} ${n + 1}"><span class="w-level__n">${L.items.length} אותיות</span><button class="w-abc__b w-abc__b--del" type="button" data-pr-level-del="${key}:${n}" aria-label="מחיקת ${UI.esc(lv)} ${n + 1}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button></li>`).join('')}</ol>
-          <button class="w-sub__add" type="button" data-pr-level-add="${key}">+ ${UI.esc(lv)}</button>
+          <button class="w-addrow w-addrow--in" type="button" data-pr-level-add="${key}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת ${UI.esc(lv)}</button>
         </section>`;
   }
   function wirePrac() {
@@ -800,7 +800,7 @@
         <div class="a-grid"><label class="a-field"><span>שם הלשונית</span><input data-tbt="${key}:${n}:name" value="${UI.esc(T.name)}"></label><label class="a-field"><span>הכותרת</span><input data-tbt="${key}:${n}:title" value="${UI.esc(T.title)}"></label></div>
         <div class="a-field"><span>הצלילים (בעברית, ומה הדפדפן משמיע)</span>
           <ol class="w-tabc__sounds">${T.sounds.map(([he, say], j) => `<li><input lang="he" data-tbs="${key}:${n}:${j}:0" value="${UI.esc(he)}" aria-label="הצליל בעברית"><input dir="ltr" lang="en" data-tbs="${key}:${n}:${j}:1" value="${UI.esc(say)}" aria-label="מה נשמע"><button class="w-abc__b w-abc__b--del" type="button" data-tbs-del="${key}:${n}:${j}" aria-label="מחיקת הצליל"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button></li>`).join('')}</ol>
-          <button class="w-sub__add" type="button" data-tbs-add="${key}:${n}">+ צליל</button>
+          <button class="w-addrow w-addrow--in" type="button" data-tbs-add="${key}:${n}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת צליל</button>
         </div>
         <label class="a-field"><span>הטקסט (כל שורה – פסקה)</span><textarea rows="4" data-tbt="${key}:${n}:text">${UI.esc(T.text)}</textarea><small class="a-help">**מודגש** · {pink:ורוד} · {green:ירוק}</small></label>
       </fieldset>`;
@@ -821,7 +821,7 @@
         <section class="w-sg w-song__box">
           <h5 class="w-sg__h"><span>3</span>התוכן של המסך · הלשוניות</h5>
           ${t.tabs.map(tab).join('')}
-          <button class="w-sub__add" type="button" data-tbt-add="${key}">+ לשונית</button>
+          <button class="w-addrow w-addrow--in" type="button" data-tbt-add="${key}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת לשונית</button>
         </section>`;
   }
   function wireTabs() {

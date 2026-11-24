@@ -894,3 +894,6 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-st__head > b small, .w-sub__item small { font-size: 12px; font-weight: 400; color: #8C8EA6; }
 .w-sub__item > span { display: grid; gap: 2px; }
 .w-tile__top b { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* "הוספת אות / טור / צליל / לשונית" look like "הוספת שלב": a dashed pink row across */
+.w-addrow--in { width: 100%; margin: 4px 0 0; }
