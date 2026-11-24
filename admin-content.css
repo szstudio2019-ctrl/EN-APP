@@ -832,3 +832,25 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-newstage--inline .w-new__foot { margin-top: 22px; }
 /* the card keeps the screen's height (only its inside scrolls), while the top row's tooltips still show above it */
 @media (min-width: 1025px) { .w-edit { min-height: 0; } .w-edit > .a-card { max-height: 100%; min-height: 0; } }
+
+/* a screen's content editor (song / letters practice): numbered parts, one under the other */
+.w-sg { display: grid; gap: 14px; margin: 0 0 18px; padding: 18px 18px 20px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--a-line); }
+.w-sg .a-field + .a-field, .w-sg .a-grid + .a-field, .w-sg .a-field + .a-grid, .w-sg .a-grid + .a-grid { margin-top: 0 !important; }
+.w-sg .a-grid { gap: 14px 16px; }
+.w-sg__h { display: flex; align-items: center; gap: 10px; margin: 0 0 2px; font-size: 16px; font-weight: 700; color: #2A2577; }
+.w-sg__h span { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; background: #FDEBF0; color: #E33563; font-size: 13px; font-weight: 700; }
+.w-sg textarea { min-height: 0; line-height: 1.6; resize: vertical; }
+.w-sg.w-song__box { border: 0; }
+.w-sg .w-song__file { flex-wrap: wrap; }
+.w-sg .w-song__file .a-help { flex-basis: 100%; margin: 0; }
+.w-sg .w-song__player { margin: 0; }
+.w-pr__audio { height: 36px; max-width: 320px; }
+/* the 26 letters of the song: two columns on a wide screen */
+@media (min-width: 1100px) { .w-sg .w-abcs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; } }
+/* the practice's levels: a row of letters each */
+.w-levels { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+@media (min-width: 1100px) { .w-levels { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; } }
+.w-level { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto 32px; align-items: center; gap: 10px; }
+.w-level b { font-size: 14px; font-weight: 600; color: #2A2577; white-space: nowrap; }
+.w-level input { min-height: 38px; padding: 4px 12px; border: 1.5px solid var(--a-line); border-radius: 10px; background: #fff; color: #2A2577; font-family: inherit; font-size: 16px; font-weight: 600; letter-spacing: .12em; }
+.w-level__n { font-size: 12px; color: #8C8EA6; white-space: nowrap; }

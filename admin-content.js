@@ -533,7 +533,32 @@
   const TEMPLATE_NAMES = ['הסבר', 'הסבר בלשוניות', 'שיר האותיות', 'אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
   const blankPart = (name) => ({ name: name || '', desc: '', template: '', page: '' });
   const blankStage = (name) => ({ published: false, lessons: [blankPart(name)], practices: [blankPart()] });
-  const stName = (st) => (st.lessons[0] || {}).name || st.name || '';
+  const stName = (st) => st.name || (st.lessons[0] || {}).name || '';
+  // what each existing lesson page holds: the stage's name, the lesson and the practice (from the client's "רק הקלטות" doc)
+  const ABC_SAYS = 'כדי להתחיל לקרוא, נצטרך לזהות את אותיות ה-abc.\nבשביל זה נשתמש בסרגל האותיות שלנו.\nאיך משתמשים בסרגל?\nמצאו את האות שאתם צריכים על סרגל האותיות.\nהַפְעִילוּ את שיר ה-abc, הָזִיזוּ את האצבע על סרגל האותיות לפי הקצב עד שתגיעו לאות הרצויה.\nאחר כך לפי שם האות נחשו איזה צליל היא מפיקה.\nתַּרְגְּלוּ עד שאתם מכירים את כל האותיות!';
+  const PAGE_CONTENT = {
+    'letters-lesson.html': {
+      stage: 'סרגל ה-abc',
+      lesson: { name: 'זיהוי האותיות', template: 'שיר האותיות', code: 'abc-1-song' },
+      practice: { name: 'זיהוי האותיות', template: 'אותיות', code: 'abc-1-practice', desc: 'נתרגל עכשיו זיהוי אותיות.\nזַהו את האותיות שמופיעות על המסך. לגבי כל אות, אמרו את שם האות.\nלפי שם האות, נחשו איזה צליל האות מפיקה.\nאם אינכם זוכרים, הַפְעִילוּ את סרגל האותיות.' },
+    },
+    'vowels-lesson.html': {
+      stage: 'אותיות ניקוד',
+      lesson: { name: 'מה זה אותיות ניקוד?', template: 'הסבר בלשוניות', desc: 'כדי שנוכל להתחיל לקרוא, אנחנו צריכים להבין קודם משהו חשוב לגבי ההבדל בין עברית לבין אנגלית.\nקראו את הצלילים הבאים בעברית:\nאיך ידעתם איך לקרוא כל צליל? נכון! לפי סימן הניקוד מתחת לאות!\nעכשיו בואו נסתכל על האות b באנגלית:\nהאות b נותנת לנו את הצליל בּ בעברית.\nאם נשים קָמָץ מתחת ל-b נקבל בָּ.\nאבל אתם יודעים מה הבעיה?\nשבאנגלית אין לנו את הסימנים האלו!\nבמקום סימן מתחת לאות, באנגלית יש אותיות שמגיעות אחרי האות ואומרות לנו איך לקרוא אותה.\nהאותיות האלו נקראות אותיות ניקוד.\nבמקום שהן יהיו מתחת לאות – הן מגיעות אחריה.' },
+      practice: null, // this stage has a lesson only
+    },
+  };
+  // fills what is still empty (never over something written in the admin)
+  function fillContent(st) {
+    const c = PAGE_CONTENT[(st.lessons[0] || {}).page];
+    if (!c) return st;
+    if (!st.name) st.name = c.stage;
+    const L = st.lessons[0];
+    Object.entries(c.lesson).forEach(([f, v]) => { if (!L[f]) L[f] = v; });
+    if (c.practice === null) { if (st.practices.length === 1 && !st.practices[0].page && !st.practices[0].name && !st.practices[0].desc) st.practices = []; }
+    else if (st.practices[0]) Object.entries(c.practice).forEach(([f, v]) => { if (!st.practices[0][f]) st.practices[0][f] = v; });
+    return st;
+  }
   function seedStage(w, k) {
     const page = (w.lessonPages || [])[k] || '';
     const s = blankStage((w.lessonNames || [])[k]);
@@ -541,13 +566,13 @@
     if (page) {
       s.published = true; // already open to the students
       s.lessons[0].page = page;
-      if (page === 'letters-lesson.html') { s.lessons[0].template = 'שיר האותיות'; s.lessons[0].code = 'abc-1-song'; }
       const p = practiceOf(page);
       if (p) s.practices[0].page = p;
     }
-    return s;
+    return fillContent(s);
   }
   function stagesOf(w) {
+    (w.stages || []).forEach(fillContent);
     const list = (w.stages || []).slice();
     for (let k = list.length; k < w.planned; k += 1) list.push(seedStage(w, k));
     return list;
@@ -590,17 +615,22 @@
   function songDefaults(it) {
     const first = it.page === 'letters-lesson.html';
     return {
-      title: first ? 'האי של זיהוי אותיות' : '',
-      red: first ? 'שיעור היכרות עם סרגל האותיות' : '',
-      tab: first ? 'שיר ה-abc · כל האותיות' : '',
+      title: first ? 'זיהוי האותיות' : '',
+      red: first ? 'שיעור: סרגל ה-abc' : '',
+      tab: first ? 'סרגל ה-abc' : '',
       button: '', coins: '', empty: false,
-      says: first ? 'שירו איתי את שיר ה-abc! צפו בסרטון – כל אות קופצת בזמן הנכון. לחצו על אות כדי לשמוע איך היא נשמעת.' : '',
-      reads: first ? 'שירו איתי את שיר ה-abc! צפו בסרטון. כל אות קופצת בזמן הנכון. לחצו על אות כדי לשמוע אותה.' : '',
+      says: first ? ABC_SAYS : '',
+      reads: first ? ABC_SAYS : '',
       file: first ? 'assets/abc-song.mp4' : '',
       letters: 'abcdefghijklmnopqrstuvwxyz'.split('').map((l, n) => ({ l, t: ABC_TIMES[n] })),
     };
   }
-  const songOf = (it) => it.song || songDefaults(it);
+  const OLD_SONG = { title: 'האי של זיהוי אותיות', red: 'שיעור היכרות עם סרגל האותיות', tab: 'שיר ה-abc · כל האותיות' };
+  function songOf(it) {
+    if (!it.song) return songDefaults(it);
+    if (it.song.title === OLD_SONG.title) { const d = songDefaults(it); ['title', 'red', 'tab', 'says', 'reads'].forEach((f) => { it.song[f] = d[f]; }); }
+    return it.song;
+  }
   // the song to change: from here on it is kept with the lesson
   function editSong(key) {
     const [k, kind, i] = key.split(':');
@@ -629,26 +659,112 @@
     const url = songUrls.get(urlKey(key)) || s.file;
     const text = (f, label, help) => `<label class="a-field"><span>${label}</span><input data-sg="${key}:${f}" value="${UI.esc(s[f])}">${help ? `<small class="a-help">${help}</small>` : ''}</label>`;
     const area = (f, label) => `<label class="a-field"><span>${label}</span><textarea data-sg="${key}:${f}">${UI.esc(s[f])}</textarea></label>`;
-    return `${text('title', 'כותרת')}
-        <div class="a-grid">${text('red', 'השורה האדומה מתחת לכותרת')}${text('tab', 'השורה השנייה בלשונית')}</div>
-        <div class="a-grid">${text('button', 'הכפתור בסוף המסך', 'ריק = הנוסח הרגיל')}${text('coins', 'מטבעות על סיום המסך', 'ריק = לפי הגדרות המטבעות')}</div>
-        <label class="w-song__empty"><input type="checkbox" data-sg-empty="${key}"${s.empty ? ' checked' : ''}><span><b>שלב ריק</b> – התלמיד רואה רק את הכותרת והכפתורים, בלי התוכן. מסמנים כשעוד אין תוכן למסך.</span></label>
-        ${area('says', 'מה הזברה אומרת (מעל השיר)')}
-        ${area('reads', 'מה הזברה מקריאה')}
-        <div class="a-field"><span>קובץ השיר</span>
+    return `<section class="w-sg">
+          <h5 class="w-sg__h"><span>1</span>מה רואים במסך</h5>
+          ${text('title', 'כותרת')}
+          <div class="a-grid">${text('red', 'השורה האדומה מתחת לכותרת')}${text('tab', 'השורה השנייה בלשונית')}</div>
+          <div class="a-grid">${text('button', 'הכפתור בסוף המסך', 'ריק = הנוסח הרגיל')}${text('coins', 'מטבעות על סיום המסך', 'ריק = לפי הגדרות המטבעות')}</div>
+          <label class="w-song__empty"><input type="checkbox" data-sg-empty="${key}"${s.empty ? ' checked' : ''}><span><b>שלב ריק</b> – התלמיד רואה רק את הכותרת והכפתורים, בלי התוכן. מסמנים כשעוד אין תוכן למסך.</span></label>
+        </section>
+        <section class="w-sg">
+          <h5 class="w-sg__h"><span>2</span>הזברה</h5>
+          <div class="a-grid w-sg__zebra">
+            <label class="a-field"><span>מה כתוב בבועה (מעל השיר)</span><textarea rows="8" data-sg="${key}:says">${UI.esc(s.says)}</textarea></label>
+            <label class="a-field"><span>מה הזברה מקריאה (ההקלטה)</span><textarea rows="8" data-sg="${key}:reads">${UI.esc(s.reads)}</textarea></label>
+          </div>
+        </section>
+        <section class="w-sg w-song__box">
+          <h5 class="w-sg__h"><span>3</span>השיר והאותיות</h5>
           <div class="w-song__file">
             <label class="w-abc__b" title="העלאת שיר" aria-label="העלאת קובץ שיר"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V6M8 10l4-4 4 4M5 18h14"/></svg><input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-sg-file="${key}"></label>
             <span dir="ltr">${UI.esc(s.fileName || (s.file || '').split('/').pop() || 'אין קובץ')}</span>
+            <small class="a-help">שיר חדש: אחרי ההעלאה בודקים את הזמנים של האותיות ושומרים.</small>
           </div>
-          <small class="a-help">שיר חדש: אחרי ההעלאה בודקים את הזמנים של האותיות (למטה) ושומרים.</small>
-        </div>
-        <div class="w-song__box">
-          <h4 class="w-st__title">התוכן של המסך · שיר האותיות</h4>
-          <p class="a-help">כל אות עם הרגע בשיר שבו שרים אותה (בשניות). מנגנים את השיר כאן, ולוחצים על השעון ליד אות כשהיא נשמעת, והזמן נקבע לבד. המשולש מנגן מהרגע של האות.</p>
           ${url ? `<audio class="w-song__player" controls preload="metadata" src="${url}" data-song-audio="${key}"></audio>` : '<p class="a-muted">עוד אין קובץ שיר</p>'}
+          <p class="a-help">לכל אות: הרגע בשיר שבו שרים אותה (בשניות). מנגנים את השיר ולוחצים על השעון ליד אות כשהיא נשמעת – והזמן נקבע לבד. ▶ מנגן מהרגע של האות.</p>
           <ol class="w-abcs">${s.letters.map((_, n) => songLetterRow(key, s, n)).join('')}</ol>
           <button class="w-sub__add" type="button" data-sg-add="${key}">+ אות</button>
-        </div>`;
+        </section>`;
+  }
+  /* ---------- the "אותיות" practice template: the screen, the zebra's instruction, and the letters by level ---------- */
+  const LETTERS_TEMPLATE = 'אותיות';
+  const ABC_COLUMNS = [['b','c','b','f','d'],['f','b','g','g','f'],['k','b','d','g','f'],['l','k','g','c','d'],['m','b','l','k','g'],['n','k','m','g','d'],['p','g','k','l','n'],['m','n','b','d','f'],['g','r','m','p','r'],['t','r','m','p','l'],['s','z','x','r','t'],['c','z','t','t','v'],['c','d','f','h','h'],['j','k','l','n','p'],['q','r','s','v','w'],['w','y','z','z','y']];
+  function pracDefaults(it) {
+    const first = it.page === 'letters-practice.html';
+    return {
+      title: first ? 'זיהוי האותיות' : '',
+      red: first ? 'תרגול: זיהוי אותיות' : '',
+      tab: first ? 'זיהוי אותיות' : '',
+      button: first ? 'לשלב הבא: אותיות הניקוד' : '',
+      coins: '', empty: false,
+      levelWord: first ? 'טור' : 'רמה', levelsTitle: first ? 'טורים' : '', levelsVisible: first ? 10 : '',
+      says: it.desc || '',
+      levels: first ? ABC_COLUMNS.map((c) => c.slice()) : [],
+    };
+  }
+  const asLevel = (l) => (Array.isArray(l) ? { name: '', note: '', items: l } : l);
+  function pracOf(it) {
+    const p = it.prac || pracDefaults(it);
+    p.levels = (p.levels || []).map(asLevel);
+    return p;
+  }
+  function editPrac(key) {
+    const [k, kind, i] = key.split(':');
+    const part = editStages(picked())[Number(k)][kind][Number(i)];
+    part.prac = pracOf(part);
+    return part.prac;
+  }
+  // the practice's content only, in the same look as the song: the screen's texts, what the zebra says, and the letters by level
+  function pracFields(key, it) {
+    const p = pracOf(it);
+    const text = (f, label, help) => `<label class="a-field"><span>${label}</span><input data-pr="${key}:${f}" value="${UI.esc(String(p[f] ?? ''))}">${help ? `<small class="a-help">${help}</small>` : ''}</label>`;
+    const lv = p.levelWord || 'רמה';
+    return `<section class="w-sg">
+          <h5 class="w-sg__h"><span>1</span>מה רואים במסך</h5>
+          ${text('title', 'כותרת')}
+          <div class="a-grid">${text('red', 'השורה האדומה מתחת לכותרת')}${text('tab', 'השורה השנייה בלשונית')}</div>
+          <div class="a-grid">${text('button', 'הכפתור בסוף המסך', 'ריק = הנוסח הרגיל')}${text('coins', 'מטבעות על סיום המסך', 'ריק = לפי הגדרות המטבעות')}</div>
+          <label class="w-song__empty"><input type="checkbox" data-pr-check="${key}:empty"${p.empty ? ' checked' : ''}><span><b>שלב ריק</b> – התלמיד רואה רק את הכותרת והכפתורים, בלי התוכן. מסמנים כשעוד אין תוכן למסך.</span></label>
+        </section>
+        <section class="w-sg">
+          <h5 class="w-sg__h"><span>2</span>הזברה</h5>
+          <label class="a-field"><span>מה הזברה אומרת בתרגול</span><textarea rows="5" data-pr="${key}:says">${UI.esc(p.says)}</textarea></label>
+        </section>
+        <section class="w-sg w-song__box">
+          <h5 class="w-sg__h"><span>3</span>התוכן של המסך · אותיות</h5>
+          <p class="a-help">כל ${UI.esc(lv)} הוא שורה של אותיות, מופרדות ברווח, לפי הסדר שבו הילד קורא אותן. התמונה של כל כרטיס נבחרת לפי האות.</p>
+          <ol class="w-levels">${p.levels.map((L, n) => `<li class="w-level"><b>${UI.esc(lv)} ${n + 1}</b><input dir="ltr" lang="en" data-pr-level="${key}:${n}" value="${UI.esc(L.items.join(' '))}" aria-label="האותיות של ${UI.esc(lv)} ${n + 1}"><span class="w-level__n">${L.items.length} אותיות</span><button class="w-abc__b w-abc__b--del" type="button" data-pr-level-del="${key}:${n}" aria-label="מחיקת ${UI.esc(lv)} ${n + 1}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button></li>`).join('')}</ol>
+          <button class="w-sub__add" type="button" data-pr-level-add="${key}">+ ${UI.esc(lv)}</button>
+        </section>`;
+  }
+  function wirePrac() {
+    edit.addEventListener('input', (e) => {
+      if (mode !== 'edit') return;
+      const t = e.target;
+      if (t.dataset.pr) {
+        const q = t.dataset.pr.split(':');
+        editPrac(q.slice(0, 3).join(':'))[q[3]] = t.value;
+        changed();
+      } else if (t.dataset.prLevel) {
+        const q = t.dataset.prLevel.split(':');
+        const row = t.value.trim().split(/[\s,]+/).filter(Boolean);
+        editPrac(q.slice(0, 3).join(':')).levels[Number(q[3])].items = row;
+        const n = t.parentElement.querySelector('.w-level__n'); if (n) n.textContent = `${row.length} אותיות`;
+        changed();
+      }
+    });
+    edit.addEventListener('change', (e) => {
+      if (mode !== 'edit') return;
+      const t = e.target;
+      if (t.dataset.prCheck) { const q = t.dataset.prCheck.split(':'); editPrac(q.slice(0, 3).join(':'))[q[3]] = t.checked; changed(); }
+    });
+    edit.addEventListener('click', (e) => {
+      if (mode !== 'edit') return;
+      const add = e.target.closest('[data-pr-level-add]');
+      if (add) { const key = add.dataset.prLevelAdd; const p = editPrac(key); p.levels.push({ name: '', note: '', items: [] }); drawEdit(); changed(); const f = edit.querySelector(`[data-pr-level="${key}:${p.levels.length - 1}"]`); if (f) f.focus(); return; }
+      const del = e.target.closest('[data-pr-level-del]');
+      if (del) { const q = del.dataset.prLevelDel.split(':'); editPrac(q.slice(0, 3).join(':')).levels.splice(Number(q[3]), 1); drawEdit(); changed(); }
+    });
   }
   function moveLetter(key, from, to) {
     if (to < 0) return;
@@ -806,7 +922,7 @@
           <div class="a-grid">
             <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
           </div>
-          ${it.template === SONG_TEMPLATE ? songFields(key, it) : `<label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>`}
+          ${it.template === SONG_TEMPLATE ? songFields(key, it) : kind === 'practices' && it.template === LETTERS_TEMPLATE ? pracFields(key, it) : `<label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>`}
         </div>
       </div>`;
   }
@@ -1360,6 +1476,7 @@
   }
 
   wireSong();
+  wirePrac();
   /* ---------- order: drag by the ⋮⋮ handle, the keyboard (space · arrows · space), or the ⋯ menu ----------
      groups: "isl" the islands · "stg:<id>" / "til:<id>" an island's stages (list / tiles) · "prt:<k>:<kind>" a stage's lessons or practices.
      A new order is kept at once (it doesn't wait for "שמירה"), with "ביטול" for 5 seconds. */
