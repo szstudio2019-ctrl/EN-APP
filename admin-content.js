@@ -2200,6 +2200,13 @@
   let moreCtx = null;
   const closeMore = (back) => { more.hidden = true; if (back && moreCtx && moreCtx.btn.isConnected) moreCtx.btn.focus(); moreCtx = null; };
   const TRASH_SM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg>';
+  const M_IC = {
+    up: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
+    down: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+    to: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H6M11 7l-5 5 5 5"/></svg>',
+    dup: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>',
+  };
+  const mi = (ic, text) => `<span class="m-ic">${ic}</span><span>${text}</span>`;
   // what the menu is about: an island, a stage, or a lesson / practice
   function itemOf(g, i) {
     if (g === 'isl') { const w = list[i]; return w && { type: 'island', w, on: w.published, name: w.name }; }
@@ -2223,9 +2230,9 @@
       <p class="m-note${moreCtx.warn ? ' is-warn' : ''}">${moreCtx.warn || note}</p>`;
     if (ask === 'hide') h += `<div class="m-confirm"><p>${x.type === 'island' ? `להסתיר גם את ${islStages.length} השלבים שבו?` : `להסתיר גם את ${items} הפריטים שבו?`}</p><div class="m-confirm__btns"><button type="button" data-act="hide-ok">הסתרה</button><button type="button" data-act="ask-cancel">ביטול</button></div></div>`;
     h += '<hr>';
-    h += `<button type="button" role="menuitem" data-act="up"${i === 0 ? ' disabled' : ''}>הזזה למעלה</button><button type="button" role="menuitem" data-act="down"${i === sibs - 1 ? ' disabled' : ''}>הזזה למטה</button>`;
-    if (x.type === 'part') { const stages = stagesOf(x.w); if (stages.length > 1) h += `<p class="w-more__h">העברה לשלב…</p>${stages.map((st, j) => (j === x.k ? '' : `<button type="button" role="menuitem" data-act="to:${j}">שלב ${j + 1}${stName(st) ? ` · ${UI.esc(stName(st))}` : ''}</button>`)).join('')}`; }
-    h += `<hr><button type="button" role="menuitem" data-act="dup">שכפול</button><button type="button" role="menuitem" class="m-del" data-act="del">${TRASH_SM}מחיקה</button>`;
+    h += `<button type="button" role="menuitem" class="m-it" data-act="up"${i === 0 ? ' disabled' : ''}>${mi(M_IC.up, 'הזזה למעלה')}</button><button type="button" role="menuitem" class="m-it" data-act="down"${i === sibs - 1 ? ' disabled' : ''}>${mi(M_IC.down, 'הזזה למטה')}</button>`;
+    if (x.type === 'part') { const stages = stagesOf(x.w); if (stages.length > 1) h += `<p class="w-more__h">העברה לשלב…</p>${stages.map((st, j) => (j === x.k ? '' : `<button type="button" role="menuitem" class="m-it" data-act="to:${j}">${mi(M_IC.to, `שלב ${j + 1}${stName(st) ? ` · ${UI.esc(stName(st))}` : ''}`)}</button>`)).join('')}`; }
+    h += `<hr><button type="button" role="menuitem" class="m-it" data-act="dup">${mi(M_IC.dup, 'שכפול')}</button><button type="button" role="menuitem" class="m-it m-del" data-act="del">${mi(TRASH_SM, 'מחיקה')}</button>`;
     if (ask === 'del') {
       const started = x.type === 'part' && x.it.page ? Admin.Users.all().filter((u) => u.active !== false).length : 0;
       const q = x.type === 'part' ? `להעביר את '${UI.esc(x.name)}' לארכיון?` : x.type === 'stage' ? `להעביר את שלב ${x.k + 1} ואת ${items} הפריטים שבו לארכיון?` : `להעביר את האי ואת כל ${islStages.length} השלבים ו-${islItems} הפריטים שבו לארכיון?`;
