@@ -877,3 +877,14 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tile__acts svg { width: 16px; height: 16px; }
 .w-tile--add .w-addrow { min-height: 0; height: 100%; }
 .w-tile--new .w-tile__main { padding-bottom: 12px; }
+
+/* the publish switch on a stage's tile (top left, beside the handle) */
+.w-tile__pub { position: absolute; top: 9px; left: 30px; z-index: 2; }
+.w-tile__pub .a-switch { min-height: 0; gap: 0; }
+.w-tile__pub .a-switch input { width: 34px; height: 20px; }
+.w-tile__pub .a-switch__track { width: 34px; height: 20px; border-radius: 10px; }
+.w-tile__pub .a-switch__track::after { top: 3px; right: 3px; width: 14px; height: 14px; }
+.w-tile__pub .a-switch input:checked + .a-switch__track::after { transform: translateX(-14px); }
+.w-tile__pub .a-switch > span:not(.a-switch__track) { display: none; }
+.w-tile__main { padding-left: 74px; }
+.w-tile--add .w-addrow { min-height: 86px; }

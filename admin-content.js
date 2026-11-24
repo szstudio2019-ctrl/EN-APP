@@ -1047,10 +1047,11 @@
     const tile = (st, k) => `<li class="w-tile${k === openStage ? ' is-open' : ''}" data-tile="${k}" data-sort-group="til:${w.id}">
         <button class="w-handle w-tile__grip" type="button" data-drag aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
         <button class="w-tile__main" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">
-          <span class="w-tile__top"><b>שלב ${k + 1}</b><span class="a-tag ${st.published ? 'a-tag--live' : 'a-tag--draft'}">${st.published ? 'פורסם' : 'טיוטה'}</span></span>
+          <span class="w-tile__top"><b>שלב ${k + 1}</b></span>
           <small>${UI.esc(stName(st)) || 'בלי שם'}</small>
           ${stageBars(st)}
         </button>
+        <span class="w-tile__pub" title="${st.published ? 'פורסם – התלמידים רואים אותו' : 'טיוטה – מוסתר מהתלמידים'}">${UI.switchHtml(`tl-pub-${k}`, st.published, `פרסום שלב ${k + 1}`)}</span>
         <span class="w-tile__acts">
           <button class="w-morebtn" type="button" data-more aria-label="אפשרויות לשלב ${k + 1}" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
           <button class="w-lrow__del w-tipped" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">${EDIT_ICON}<span class="w-tip w-tip--l" aria-hidden="true">עריכה</span></button>
@@ -1353,7 +1354,7 @@
     const w = picked();
     if (!w) return;
     const t = e.target;
-    if (t.id && t.id.startsWith('st-pub-')) {
+    if (t.id && (t.id.startsWith('st-pub-') || t.id.startsWith('tl-pub-'))) {
       const k = Number(t.id.slice(7));
       if (t.checked && !isReady(stagesOf(w)[k])) {
         t.checked = false; // a stage is published only when all of it is written
