@@ -325,3 +325,7 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-drop svg { width: 18px; height: 18px; }
 .scr-drop b { font-size: 13px; }
 .scr-drop small { font-size: 11.5px; }
+/* the parts' titles: a light bluish band (not pink) */
+.scr-sec > summary { background: #F1F0FA; }
+.scr-sec[open] > summary { border-bottom-color: #E2E0F2; }
+.scr-sec > summary:hover { background: #E9E7F7; }
