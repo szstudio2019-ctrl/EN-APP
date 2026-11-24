@@ -544,7 +544,7 @@
     },
     'vowels-lesson.html': {
       stage: 'אותיות ניקוד',
-      lesson: { name: 'מה זה אותיות ניקוד?', template: 'הסבר בלשוניות', desc: 'כדי שנוכל להתחיל לקרוא, אנחנו צריכים להבין קודם משהו חשוב לגבי ההבדל בין עברית לבין אנגלית.\nקראו את הצלילים הבאים בעברית:\nאיך ידעתם איך לקרוא כל צליל? נכון! לפי סימן הניקוד מתחת לאות!\nעכשיו בואו נסתכל על האות b באנגלית:\nהאות b נותנת לנו את הצליל בּ בעברית.\nאם נשים קָמָץ מתחת ל-b נקבל בָּ.\nאבל אתם יודעים מה הבעיה?\nשבאנגלית אין לנו את הסימנים האלו!\nבמקום סימן מתחת לאות, באנגלית יש אותיות שמגיעות אחרי האות ואומרות לנו איך לקרוא אותה.\nהאותיות האלו נקראות אותיות ניקוד.\nבמקום שהן יהיו מתחת לאות – הן מגיעות אחריה.' },
+      lesson: { name: 'מה זה אותיות ניקוד?', template: 'הסבר בלשוניות', code: 'abc-2-vowels', desc: 'כדי שנוכל להתחיל לקרוא, אנחנו צריכים להבין קודם משהו חשוב לגבי ההבדל בין עברית לבין אנגלית.\nקראו את הצלילים הבאים בעברית:\nאיך ידעתם איך לקרוא כל צליל? נכון! לפי סימן הניקוד מתחת לאות!\nעכשיו בואו נסתכל על האות b באנגלית:\nהאות b נותנת לנו את הצליל בּ בעברית.\nאם נשים קָמָץ מתחת ל-b נקבל בָּ.\nאבל אתם יודעים מה הבעיה?\nשבאנגלית אין לנו את הסימנים האלו!\nבמקום סימן מתחת לאות, באנגלית יש אותיות שמגיעות אחרי האות ואומרות לנו איך לקרוא אותה.\nהאותיות האלו נקראות אותיות ניקוד.\nבמקום שהן יהיו מתחת לאות – הן מגיעות אחריה.' },
       practice: null, // this stage has a lesson only
     },
   };
@@ -766,6 +766,84 @@
       if (del) { const q = del.dataset.prLevelDel.split(':'); editPrac(q.slice(0, 3).join(':')).levels.splice(Number(q[3]), 1); drawEdit(); changed(); }
     });
   }
+  /* ---------- the "הסבר בלשוניות" template: the screen, the zebra, and the three tabs' content ---------- */
+  const TABS_TEMPLATE = 'הסבר בלשוניות';
+  function tabsDefaults(it) {
+    const v = it.page === 'vowels-lesson.html';
+    return {
+      title: v ? 'זיהוי האותיות' : '', red: v ? 'שיעור – מה זה אותיות ניקוד?' : '', tab: v ? 'מה זה אותיות ניקוד?' : '',
+      button: v ? 'לאותיות של הרופאה' : '', coins: '', empty: false,
+      says: '', reads: it.desc || '',
+      tabs: v ? [
+        { name: 'מגלים', title: 'קראו את הצלילים הבאים בעברית:', sounds: [['בְּ', 'buh'], ['בָּ', 'bah'], ['בִּ', 'bee']], text: '💭 **איך ידעתם איך לקרוא כל צליל?**\nנכון! לפי {pink:סימן הניקוד} מתחת לאות!' },
+        { name: 'מרכיבים', title: 'עכשיו בואו נסתכל על האות b באנגלית:', sounds: [['בָּ', 'bah']], text: 'האות b = כמו **ב** בעברית\nעם שווא – הצליל **בְּ**\nעם קמץ מתחת = **בָּ**' },
+        { name: 'קוראים', title: '', sounds: [['בָּ', 'bah']], text: '**באנגלית אין לנו את הסימנים האלו!**\n**במקום זה אנחנו משתמשים באותיות!**\nהאותיות האלו נקראות {pink:אותיות ניקוד}\nבמקום שהן יהיו **מתחת** לאות – הן מגיעות {green:אחריה}' },
+      ] : [{ name: '', title: '', sounds: [], text: '' }],
+    };
+  }
+  const tabsOf = (it) => it.tabsc || tabsDefaults(it);
+  function editTabs(key) {
+    const [k, kind, i] = key.split(':');
+    const part = editStages(picked())[Number(k)][kind][Number(i)];
+    part.tabsc = tabsOf(part);
+    return part.tabsc;
+  }
+  function tabsFields(key, it) {
+    const t = tabsOf(it);
+    const text = (f, label, help) => `<label class="a-field"><span>${label}</span><input data-tb="${key}:${f}" value="${UI.esc(String(t[f] ?? ''))}">${help ? `<small class="a-help">${help}</small>` : ''}</label>`;
+    const tab = (T, n) => `<fieldset class="w-tabc">
+        <legend>לשונית ${n + 1}</legend>
+        <div class="a-grid"><label class="a-field"><span>שם הלשונית</span><input data-tbt="${key}:${n}:name" value="${UI.esc(T.name)}"></label><label class="a-field"><span>הכותרת</span><input data-tbt="${key}:${n}:title" value="${UI.esc(T.title)}"></label></div>
+        <div class="a-field"><span>הצלילים (בעברית, ומה הדפדפן משמיע)</span>
+          <ol class="w-tabc__sounds">${T.sounds.map(([he, say], j) => `<li><input lang="he" data-tbs="${key}:${n}:${j}:0" value="${UI.esc(he)}" aria-label="הצליל בעברית"><input dir="ltr" lang="en" data-tbs="${key}:${n}:${j}:1" value="${UI.esc(say)}" aria-label="מה נשמע"><button class="w-abc__b w-abc__b--del" type="button" data-tbs-del="${key}:${n}:${j}" aria-label="מחיקת הצליל"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M7 7l1 13h8l1-13M9 7V4h6v3"/></svg></button></li>`).join('')}</ol>
+          <button class="w-sub__add" type="button" data-tbs-add="${key}:${n}">+ צליל</button>
+        </div>
+        <label class="a-field"><span>הטקסט (כל שורה – פסקה)</span><textarea rows="4" data-tbt="${key}:${n}:text">${UI.esc(T.text)}</textarea><small class="a-help">**מודגש** · {pink:ורוד} · {green:ירוק}</small></label>
+      </fieldset>`;
+    return `<section class="w-sg">
+          <h5 class="w-sg__h"><span>1</span>מה רואים במסך</h5>
+          ${text('title', 'כותרת')}
+          <div class="a-grid">${text('red', 'השורה האדומה מתחת לכותרת')}${text('tab', 'השורה השנייה בלשונית')}</div>
+          <div class="a-grid">${text('button', 'הכפתור בסוף המסך', 'ריק = הנוסח הרגיל')}${text('coins', 'מטבעות על סיום המסך', 'ריק = לפי הגדרות המטבעות')}</div>
+          <label class="w-song__empty"><input type="checkbox" data-tb-check="${key}:empty"${t.empty ? ' checked' : ''}><span><b>שלב ריק</b> – התלמיד רואה רק את הכותרת והכפתורים, בלי התוכן. מסמנים כשעוד אין תוכן למסך.</span></label>
+        </section>
+        <section class="w-sg">
+          <h5 class="w-sg__h"><span>2</span>הזברה</h5>
+          <div class="a-grid w-sg__zebra">
+            <label class="a-field"><span>מה כתוב בבועה</span><textarea rows="8" data-tb="${key}:says">${UI.esc(t.says)}</textarea><small class="a-help">ריק = לא מוצגת בועה</small></label>
+            <label class="a-field"><span>מה הזברה מקריאה (ההקלטה)</span><textarea rows="8" data-tb="${key}:reads">${UI.esc(t.reads)}</textarea></label>
+          </div>
+        </section>
+        <section class="w-sg w-song__box">
+          <h5 class="w-sg__h"><span>3</span>התוכן של המסך · הלשוניות</h5>
+          ${t.tabs.map(tab).join('')}
+          <button class="w-sub__add" type="button" data-tbt-add="${key}">+ לשונית</button>
+        </section>`;
+  }
+  function wireTabs() {
+    const kk = (v) => { const q = v.split(':'); return [q.slice(0, 3).join(':'), ...q.slice(3)]; };
+    edit.addEventListener('input', (e) => {
+      if (mode !== 'edit') return;
+      const t = e.target;
+      let v;
+      if ((v = t.dataset.tb)) { const [key, f] = kk(v); editTabs(key)[f] = t.value; changed(); }
+      else if ((v = t.dataset.tbt)) { const [key, n, f] = kk(v); editTabs(key).tabs[Number(n)][f] = t.value; changed(); }
+      else if ((v = t.dataset.tbs)) { const [key, n, j, c] = kk(v); editTabs(key).tabs[Number(n)].sounds[Number(j)][Number(c)] = t.value; changed(); }
+    });
+    edit.addEventListener('change', (e) => {
+      if (mode !== 'edit' || !e.target.dataset.tbCheck) return;
+      const [key, f] = kk(e.target.dataset.tbCheck);
+      editTabs(key)[f] = e.target.checked; changed();
+    });
+    edit.addEventListener('click', (e) => {
+      if (mode !== 'edit') return;
+      const q = (name) => { const b = e.target.closest(`[data-${name}]`); return b ? b.getAttribute(`data-${name}`) : null; };
+      let v;
+      if ((v = q('tbs-add'))) { const [key, n] = kk(v); const T = editTabs(key).tabs[Number(n)]; T.sounds.push(['', '']); drawEdit(); changed(); const f = edit.querySelector(`[data-tbs="${key}:${n}:${T.sounds.length - 1}:0"]`); if (f) f.focus(); }
+      else if ((v = q('tbs-del'))) { const [key, n, j] = kk(v); editTabs(key).tabs[Number(n)].sounds.splice(Number(j), 1); drawEdit(); changed(); }
+      else if ((v = q('tbt-add'))) { const t = editTabs(v); t.tabs.push({ name: '', title: '', sounds: [], text: '' }); drawEdit(); changed(); }
+    });
+  }
   function moveLetter(key, from, to) {
     if (to < 0) return;
     const s = editSong(key);
@@ -922,7 +1000,7 @@
           <div class="a-grid">
             <label class="a-field"><span>תבנית</span><select id="tp-${id}" data-st-field="${key}:template"><option value="">לא נבחרה</option>${TEMPLATE_NAMES.map((t) => `<option value="${t}"${it.template === t ? ' selected' : ''}>תבנית ${t}</option>`).join('')}</select></label>
           </div>
-          ${it.template === SONG_TEMPLATE ? songFields(key, it) : kind === 'practices' && it.template === LETTERS_TEMPLATE ? pracFields(key, it) : `<label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>`}
+          ${it.template === SONG_TEMPLATE ? songFields(key, it) : kind === 'practices' && it.template === LETTERS_TEMPLATE ? pracFields(key, it) : kind === 'lessons' && it.template === TABS_TEMPLATE ? tabsFields(key, it) : `<label class="a-field"><span>תיאור ה${word}</span><textarea data-st-desc="${key}" placeholder="מה לומדים כאן">${UI.esc(it.desc)}</textarea></label>`}
         </div>
       </div>`;
   }
@@ -1477,6 +1555,7 @@
 
   wireSong();
   wirePrac();
+  wireTabs();
   /* ---------- order: drag by the ⋮⋮ handle, the keyboard (space · arrows · space), or the ⋯ menu ----------
      groups: "isl" the islands · "stg:<id>" / "til:<id>" an island's stages (list / tiles) · "prt:<k>:<kind>" a stage's lessons or practices.
      A new order is kept at once (it doesn't wait for "שמירה"), with "ביטול" for 5 seconds. */

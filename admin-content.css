@@ -854,3 +854,11 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-level b { font-size: 14px; font-weight: 600; color: #2A2577; white-space: nowrap; }
 .w-level input { min-height: 38px; padding: 4px 12px; border: 1.5px solid var(--a-line); border-radius: 10px; background: #fff; color: #2A2577; font-family: inherit; font-size: 16px; font-weight: 600; letter-spacing: .12em; }
 .w-level__n { font-size: 12px; color: #8C8EA6; white-space: nowrap; }
+
+/* the tabs' content: a box per tab */
+.w-tabc { display: grid; gap: 12px; margin: 0 0 12px; padding: 14px 16px 16px; border: 1px solid var(--a-line); border-radius: 12px; min-width: 0; }
+.w-tabc legend { padding: 0 6px; font-size: 14px; font-weight: 700; color: #E33563; }
+.w-tabc .a-field + .a-field, .w-tabc .a-grid + .a-field { margin-top: 0 !important; }
+.w-tabc__sounds { list-style: none; margin: 0 0 6px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.w-tabc__sounds li { display: flex; align-items: center; gap: 6px; }
+.w-tabc__sounds input { width: 76px; min-height: 38px; padding: 4px 10px; border: 1.5px solid var(--a-line); border-radius: 10px; background: #fff; color: #2A2577; font-family: inherit; font-size: 16px; font-weight: 600; text-align: center; }
