@@ -1276,8 +1276,9 @@
             <div class="w-new__foot"><button class="a-btn a-btn--primary" type="submit">יצירת השלב</button><button class="a-btn a-btn--ghost" type="button" data-newstage-cancel>ביטול</button></div>
           </form>`;
     }
-    edit.innerHTML = `<div class="a-card w-sections w-tabbed w-one" role="tabpanel">${topRow(w, crumbs(w))}${sel.type === 'island' ? `<h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>` : ''}<section>${body}</section></div>`;
+    edit.innerHTML = `<div class="a-card w-sections w-tabbed w-one" role="tabpanel">${topRow(w, crumbs(w))}${sel.type === 'island' ? `<h2 class="sr-only" id="w-title">עריכת ${UI.esc(w.name)}</h2>` : ''}<section>${body}</section><div class="w-foot"></div></div>`;
     placeActions();
+    const foot = edit.querySelector('.w-foot'); if (foot) foot.appendChild(bar.el);
     syncSaveNow();
     drawPreview();
   }
