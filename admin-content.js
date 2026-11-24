@@ -319,8 +319,9 @@
   }
   // a world opens to its tree (a review world: what it goes over)
   const subOpen = new Set();
-  // an island opens with all its stages open (their lessons and practices showing)
+  // an island opens with all its stages open (their lessons and practices showing); the other islands close
   function openAll(id) {
+    opened.clear(); // one island open at a time: the one opened before closes
     opened.add(id);
     const w = list.find((x) => x.id === id);
     if (w && !w.review) stagesOf(w).forEach((_, k) => subOpen.add(`${id}:${k}`));
@@ -1644,7 +1645,7 @@
   function openNewStage(id) {
     pickedId = id; mode = 'edit'; draft = null; step = 3; viewTab = 'edit';
     stagesFor = id; openStage = -1; stageMsg.clear(); newStageFor = id;
-    sel = { type: 'newstage' }; opened.add(id);
+    sel = { type: 'newstage' }; if (!opened.has(id)) openAll(id);
     drawAll();
     const f = $('n-name');
     if (f) { f.focus(); f.closest('form').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
