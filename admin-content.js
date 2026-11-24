@@ -328,12 +328,12 @@
       const key = `${w.id}:${k}`;
       const isOpen = subOpen.has(key);
       const name = stName(st);
-      const label = `שלב ${k + 1}${name ? ` · ${UI.esc(name)}` : ''}`;
+      const label = stTitle(st, k);
       const part = (kind, word) => st[kind].map((p, i) => `<li><button class="w-sub2__item" type="button" data-sub-lesson="${k}"><span>${word} ${i + 1}${p.name ? ` · ${UI.esc(p.name)}` : ''}</span><small>${isWritten(p) ? 'נכתב' : 'חסר'}</small></button></li>`).join('');
       return `<li data-sort-group="stg:${w.id}">
           <div class="w-subrow">
             <button class="w-handle" type="button" data-drag data-grip aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
-            <button class="w-sub__item${isReady(st) ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b>${stageBars(st)}</span></button>
+            <button class="w-sub__item${isReady(st) ? '' : ' is-empty'}" type="button" data-sub-lesson="${k}"><span><b>${label}</b><small>${stSub(st, k)}</small>${stageBars(st)}</span></button>
             <button class="w-morebtn" type="button" data-more aria-label="אפשרויות לשלב ${k + 1}" aria-haspopup="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
             <button class="w-sub__chev" type="button" data-sub-toggle="${k}" aria-expanded="${isOpen}" aria-label="פתיחת השיעורים והתרגולים של שלב ${k + 1}">${ARROW}</button>
           </div>
@@ -534,6 +534,9 @@
   const TEMPLATE_NAMES = ['הסבר', 'הסבר בלשוניות', 'שיר האותיות', 'אותיות', 'מילים', 'מילים עם הברות', 'משפטים', 'חזרות'];
   const blankPart = (name) => ({ name: name || '', desc: '', template: '', page: '' });
   const blankStage = (name) => ({ published: false, lessons: [blankPart(name)], practices: [blankPart()] });
+  // a stage's title is its name; its number and screens go in the small line under it
+  const stTitle = (st, k) => UI.esc(stName(st)) || `שלב ${k + 1}`;
+  const stSub = (st, k) => { const n = st.lessons.length + st.practices.length; return `שלב ${k + 1} · ${n} ${n === 1 ? "מסך" : "מסכים"}`; };
   const stName = (st) => st.name || (st.lessons[0] || {}).name || '';
   // what each existing lesson page holds: the stage's name, the lesson and the practice (from the client's "רק הקלטות" doc)
   const ABC_SAYS = 'כדי להתחיל לקרוא, נצטרך לזהות את אותיות ה-abc.\nבשביל זה נשתמש בסרגל האותיות שלנו.\nאיך משתמשים בסרגל?\nמצאו את האות שאתם צריכים על סרגל האותיות.\nהַפְעִילוּ את שיר ה-abc, הָזִיזוּ את האצבע על סרגל האותיות לפי הקצב עד שתגיעו לאות הרצויה.\nאחר כך לפי שם האות נחשו איזה צליל היא מפיקה.\nתַּרְגְּלוּ עד שאתם מכירים את כל האותיות!';
@@ -1012,7 +1015,7 @@
     const rows = (kind) => s[kind].map((_, i) => stageRow(s, k, kind, i)).join('');
     return `<li class="w-st" data-st="${k}">
         <div class="w-st__head" data-st-head="${k}">
-          <b>שלב ${k + 1}</b>
+          <b>${stTitle(s, k)}<small>${stSub(s, k)}</small></b>
           <span class="w-st__end">
             ${msg ? `<span class="w-st__msg" role="status">${msg}</span>` : ''}
             <span class="w-st__state${s.published ? ' is-live' : ''}">${s.published ? 'פורסם' : 'טיוטה'}</span>
@@ -1047,8 +1050,8 @@
     const tile = (st, k) => `<li class="w-tile${k === openStage ? ' is-open' : ''}" data-tile="${k}" data-sort-group="til:${w.id}">
         <button class="w-handle w-tile__grip" type="button" data-drag aria-label="גרירת שלב ${k + 1}. רווח להרמה, חצים להזזה, רווח להנחה">${UI.ICON.grip}</button>
         <button class="w-tile__main" type="button" data-st-edit="${k}" aria-label="עריכת שלב ${k + 1}">
-          <span class="w-tile__top"><b>שלב ${k + 1}</b></span>
-          <small>${UI.esc(stName(st)) || 'בלי שם'}</small>
+          <span class="w-tile__top"><b>${stTitle(st, k)}</b></span>
+          <small>${stSub(st, k)}</small>
           ${stageBars(st)}
         </button>
         <span class="w-tile__pub" title="${st.published ? 'פורסם – התלמידים רואים אותו' : 'טיוטה – מוסתר מהתלמידים'}">${UI.switchHtml(`tl-pub-${k}`, st.published, `פרסום שלב ${k + 1}`)}</span>
@@ -1061,7 +1064,7 @@
       </li>`;
     if (newStageFor && newStageFor !== w.id) newStageFor = null;
     const adding = newStageFor === w.id;
-    const newTile = adding ? `<li class="w-tile w-tile--new is-open"><span class="w-tile__main"><span class="w-tile__top"><b>שלב ${stages.length + 1}</b><span class="a-tag a-tag--draft">חדש</span></span><small>ממלאים את הפרטים למטה</small></span></li>` : '';
+    const newTile = adding ? `<li class="w-tile w-tile--new is-open"><span class="w-tile__main"><span class="w-tile__top"><b>שלב חדש</b><span class="a-tag a-tag--draft">חדש</span></span><small>שלב ${stages.length + 1} · ממלאים את הפרטים למטה</small></span></li>` : '';
     const form = adding ? `<form class="w-newstage w-newstage--inline" id="w-newstage-inline" novalidate aria-labelledby="w-ns-title">
           <h3 class="w-ns__title" id="w-ns-title">שלב חדש – שלב ${stages.length + 1}</h3>
           <label class="a-field"><span>שם השלב</span><input id="n-name" placeholder="למשל: האות של הרופאה" required></label>

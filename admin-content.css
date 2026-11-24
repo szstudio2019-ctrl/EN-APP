@@ -888,3 +888,9 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-tile__pub .a-switch > span:not(.a-switch__track) { display: none; }
 .w-tile__main { padding-left: 74px; }
 .w-tile--add .w-addrow { min-height: 86px; }
+
+/* a stage's name is its title; "שלב 1 · 2 מסכים" in a small line under it */
+.w-st__head > b { display: grid; gap: 2px; font-size: 16px; }
+.w-st__head > b small, .w-sub__item small { font-size: 12px; font-weight: 400; color: #8C8EA6; }
+.w-sub__item > span { display: grid; gap: 2px; }
+.w-tile__top b { font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
