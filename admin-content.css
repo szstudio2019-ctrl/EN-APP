@@ -830,3 +830,5 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-newstage--inline { margin: 4px 0 0; padding: 24px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 1px var(--a-line); }
 .w-ns__title { margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #E33563; }
 .w-newstage--inline .w-new__foot { margin-top: 22px; }
+/* the card keeps the screen's height (only its inside scrolls), while the top row's tooltips still show above it */
+@media (min-width: 1025px) { .w-edit { min-height: 0; } .w-edit > .a-card { max-height: 100%; min-height: 0; } }
