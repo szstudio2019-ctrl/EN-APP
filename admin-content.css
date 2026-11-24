@@ -823,3 +823,10 @@ button.w-sub__item:hover { background: rgba(255, 255, 255, .7); }
 .w-empty__opt .w-plus__ic svg { width: 28px; height: 28px; }
 .w-empty__opt b { font-size: 16px; }
 .w-empty__opt small { font-size: 13px; color: #6B6890; }
+
+/* a new stage: its own tile with the others, and the form under the tiles */
+.w-tile--new { background: #FFF5F7; box-shadow: inset 0 0 0 1.5px #E33563 !important; }
+.w-tile--new .w-tile__main { cursor: default; padding-bottom: 16px; }
+.w-newstage--inline { margin: 4px 0 0; padding: 24px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 1px var(--a-line); }
+.w-ns__title { margin: 0 0 16px; font-size: 18px; font-weight: 700; color: #E33563; }
+.w-newstage--inline .w-new__foot { margin-top: 22px; }

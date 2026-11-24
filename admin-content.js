@@ -356,7 +356,7 @@
       if (b) b.focus();
       return;
     }
-    if (e.target.closest('[data-add-lesson]')) { startNew('lesson', li.dataset.id); return; }
+    if (e.target.closest('[data-add-lesson]')) { openNewStage(li.dataset.id); return; }
     const subT = e.target.closest('[data-sub-toggle]');
     if (subT) {
       const key = `${li.dataset.id}:${subT.dataset.subToggle}`;
@@ -501,6 +501,7 @@
   let step = 0;
   let viewTab = 'edit';
   let openStage = -1;
+  let newStageFor = null; // a new stage is filled in under the tiles (the tiles stay)
   let stagesFor = null;
   const stageMsg = new Set();
   const viewTabs = () => `<div class="w-tabs" role="tablist" aria-label="עריכה וצפייה">
@@ -861,8 +862,19 @@
           <button class="w-lrow__del w-tipped" type="button" data-st-del="${k}" aria-label="מחיקת שלב ${k + 1} – עובר לארכיון">${TRASH_ICON}<span class="w-tip w-tip--l" aria-hidden="true">מחיקה – השלב עובר לארכיון</span></button>
         </span>
       </li>`;
-    return `<ul class="w-tiles">${stages.map(tile).join('')}<li class="w-tile w-tile--add"><button class="w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>
-        <ol class="w-stages w-stages--tiles">${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
+    if (newStageFor && newStageFor !== w.id) newStageFor = null;
+    const adding = newStageFor === w.id;
+    const newTile = adding ? `<li class="w-tile w-tile--new is-open"><span class="w-tile__main"><span class="w-tile__top"><b>שלב ${stages.length + 1}</b><span class="a-tag a-tag--draft">חדש</span></span><small>ממלאים את הפרטים למטה</small></span></li>` : '';
+    const form = adding ? `<form class="w-newstage w-newstage--inline" id="w-newstage-inline" novalidate aria-labelledby="w-ns-title">
+          <h3 class="w-ns__title" id="w-ns-title">שלב חדש – שלב ${stages.length + 1}</h3>
+          <label class="a-field"><span>שם השלב</span><input id="n-name" placeholder="למשל: האות של הרופאה" required></label>
+          <fieldset class="a-field w-tplset"><legend>מסך השיעור – לפי איזו תבנית?</legend>${radios('n-ltpl', LESSON_TPL, 'הסבר')}</fieldset>
+          <fieldset class="a-field w-tplset"><legend>התרגול – לפי איזו תבנית?</legend>${radios('n-ptpl', PRACTICE_TPL, 'אותיות')}</fieldset>
+          <p class="a-help w-newstage__note">השלב נוצר כטיוטה, עם המסכים שבחרת. אחר כך ממלאים את התוכן ומפרסמים. אפשר להוסיף מסכים גם אחר כך (+ מסך).</p>
+          <div class="w-new__foot"><button class="a-btn a-btn--primary" type="submit">יצירת השלב</button><button class="a-btn a-btn--ghost" type="button" data-newstage-cancel>ביטול</button></div>
+        </form>` : '';
+    return `<ul class="w-tiles">${stages.map(tile).join('')}${newTile}<li class="w-tile w-tile--add"${adding ? ' hidden' : ''}><button class="w-addrow" type="button" data-wtab-add><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button></li></ul>
+        ${form}<ol class="w-stages w-stages--tiles"${adding ? ' hidden' : ''}>${stages.map((s, k) => stageCard(s, k, k === stages.length - 1)).join('')}</ol>
         <button class="w-ladd w-addrow" type="button" data-wtab-add hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>הוספת שלב</button>`;
   }
   // one open at each level; only classes change, so the height animates
@@ -1053,7 +1065,8 @@
       live.textContent = 'השינויים נשמרו';
       return;
     }
-    if (e.target.closest('[data-wtab-add]')) { startNew('lesson', w.id); return; }
+    if (e.target.closest('[data-wtab-add]')) { openNewStage(w.id); return; }
+    if (e.target.closest('[data-newstage-cancel]')) { newStageFor = null; drawEdit(); const b = edit.querySelector('[data-wtab-add]'); if (b) b.focus(); return; }
     const delStage = e.target.closest('[data-st-del]');
     if (delStage) {
       const k = Number(delStage.dataset.stDel);
@@ -1110,6 +1123,7 @@
       return;
     }
     const stEdit = e.target.closest('[data-st-edit]');
+    if (stEdit && newStageFor) { newStageFor = null; openStage = Number(stEdit.dataset.stEdit); drawEdit(); revealOpen(); return; }
     if (stEdit) {
       const k = Number(stEdit.dataset.stEdit);
       openStage = openStage === k ? -1 : k;
@@ -1248,6 +1262,34 @@
     mode = 'edit';
     draft = null;
     drawAll();
+  });
+  function openNewStage(id) {
+    pickedId = id; mode = 'edit'; draft = null; step = 3; viewTab = 'edit';
+    stagesFor = id; openStage = -1; stageMsg.clear(); newStageFor = id;
+    drawAll();
+    const f = $('n-name');
+    if (f) { f.focus(); f.closest('form').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  }
+  edit.addEventListener('submit', (e) => {
+    if (e.target.id !== 'w-newstage-inline') return;
+    e.preventDefault();
+    const w = picked();
+    const name = ($('n-name').value || '').trim();
+    if (!w) return;
+    if (!name) { $('n-name').focus(); return; }
+    const pickV = (n) => (edit.querySelector(`input[name="${n}"]:checked`) || {}).value || 'none';
+    const lt = pickV('n-ltpl');
+    const pt = pickV('n-ptpl');
+    const stages = editStages(w);
+    stages.push({ published: false, name, lessons: lt === 'none' ? [] : [{ ...blankPart(name), template: lt }], practices: pt === 'none' ? [] : [{ ...blankPart(), template: pt }] });
+    w.lessonNames = pad(w.lessonNames || [], stages.length - 1);
+    w.lessonNames.push(name);
+    w.planned = stages.length;
+    newStageFor = null;
+    openStage = stages.length - 1;
+    drawAll(); changed();
+    revealOpen();
+    live.textContent = `השלב "${name}" נוצר כטיוטה`;
   });
   edit.addEventListener('submit', (e) => {
     if (e.target.id !== 'w-new-form') return;
