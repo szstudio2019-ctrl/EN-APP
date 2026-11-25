@@ -257,13 +257,9 @@
       const file = url
         ? `<div class="scr-file"><span class="scr-file__n" dir="ltr">${esc(s.fileName || url.split('/').pop())}</span><small>${dur ? fmtT(dur).replace(/\.\d$/, '') : ''}</small><label class="scr-link">החלפה<input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file></label><button type="button" class="scr-link" data-song-del>הסרה</button></div>`
         : `<label class="scr-drop" data-drop="song"><input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file>${ICON.up}<b>גררו קובץ שיר לכאן או לחצו לבחירה</b><small>mp3 / wav</small></label>`;
-      const player = url ? `<audio data-song-el src="${url}" preload="metadata"></audio>
-          <div class="scr-player">
-            ${btn('data-song-toggle', 'ניגון / עצירה', 'play', ' scr-ib--big')}
-            <span class="scr-player__t" data-song-time>0:00 / ${dur ? fmtT(dur).replace(/\.\d$/, '') : '–'}</span>
-            <span class="scr-quick">${mark && mark.key === key ? `<button type="button" class="a-btn a-btn--primary scr-now" data-mark-now>עכשיו! (רווח)</button><button type="button" class="scr-link" data-mark-stop>עצירה (Esc)</button>` : '<button type="button" class="a-btn" data-mark-start>סימון מהיר</button>'}</span>
-          </div>
-          <div class="scr-line-t" data-song-line><i data-song-prog></i>${marks}</div>` : '';
+      const isVid = /\.(mp4|webm|mov)$/i.test(s.fileName || url);
+      const player = url ? `${isVid ? `<video class="scr-video" data-song-el src="${url}" controls playsinline preload="metadata"></video>` : `<audio class="scr-audio" data-song-el src="${url}" controls preload="metadata"></audio>`}
+          <div class="scr-quick">${mark && mark.key === key ? `<button type="button" class="a-btn a-btn--primary scr-now" data-mark-now>עכשיו! (רווח)</button><button type="button" class="scr-link" data-mark-stop>עצירה (Esc)</button>` : '<button type="button" class="a-btn" data-mark-start>סימון מהיר</button>'}</div>` : '';
       const rows = s.letters.map((r, n) => `<li class="scr-lt${n === next ? ' is-next' : ''}" data-sort-group="xs:${key}">
           <button type="button" class="w-handle" data-drag aria-label="גרירה">${ICON.grip}</button>
           <input class="scr-lt__l" dir="ltr" maxlength="3" data-f="${key}|song.letters.${n}.l" value="${esc(r.l)}" aria-label="האות">
@@ -279,7 +275,7 @@
         </li>`).join('');
       return det(key, 'song', 'השיר', `${s.letters.filter((r) => r.t !== '' && r.t != null).length}/${s.letters.length} אותיות סומנו`, `
           <div class="scr-sub">קובץ השיר</div>${file}
-          ${player ? `<div class="scr-sub">נגן וציר זמן</div>${player}` : ''}
+          ${player ? `<div class="scr-sub">נגן</div>${player}` : ''}
           <div class="scr-sub">האותיות</div>
           ${url ? '<p class="a-help">מנגנים את השיר ולוחצים ⏱ כשהאות נשמעת, או משתמשים בסימון מהיר</p>' : '<p class="scr-note">קודם מעלים שיר, ואז מסמנים בו את האותיות</p>'}
           <ol class="scr-lts">${rows}</ol>
@@ -562,17 +558,17 @@
         const au = root.querySelector(`[data-scr="${key}"] [data-song-el]`);
         if (t.closest('[data-song-del]')) { ctx.urls.delete(`song:${key}`); const m = ensure(it); m.song.file = ''; m.song.fileName = ''; touched(key, true); return; }
         if (t.closest('[data-song-toggle]') && au) { if (au.paused) au.play(); else au.pause(); return; }
-        if ((v = q('data-song-stamp')) != null && au) { ensure(it).song.letters[Number(v)].t = Math.round(au.currentTime * 10) / 10; touched(key, true); return; }
+        if ((v = q('data-song-stamp')) != null && au) { ensure(it).song.letters[Number(v)].t = Math.round(au.currentTime * 10) / 10; keepPlaying(key, () => touched(key, true)); return; }
         if ((v = q('data-song-play')) != null && au) { const r = view(it).song.letters[Number(v)]; if (r.t === '' || r.t == null) return; au.currentTime = Number(r.t); au.play(); return; }
         if (t.closest('[data-song-abc]')) { const m = ensure(it); const have = new Set(m.song.letters.map((r) => (r.l || '').toLowerCase())); 'abcdefghijklmnopqrstuvwxyz'.split('').forEach((l) => { if (!have.has(l)) m.song.letters.push({ l, t: '' }); }); touched(key, true); return; }
-        if (t.closest('[data-mark-start]') && au) { mark = { key }; au.currentTime = 0; au.play(); ctx.redraw(); return; }
+        if (t.closest('[data-mark-start]') && au) { mark = { key }; au.currentTime = 0; au.play(); keepPlaying(key, () => ctx.redraw()); return; }
         if (t.closest('[data-mark-now]')) { stamp(key); return; }
         if (t.closest('[data-mark-stop]')) { stopMark(); return; }
         if (t.closest('[data-pv-eye]')) { const sc = root.querySelector(`[data-scr="${key}"]`); sc.classList.toggle('is-pv'); return; }
         if (t.closest('[data-pv-close]')) { t.closest('[data-scr]').classList.remove('is-pv'); }
       });
       // the song's player: time, progress, markers you can drag
-      root.addEventListener('loadedmetadata', (e) => { const a = e.target; if (!a.matches || !a.matches('[data-song-el]')) return; const key = keyOf(a); if (key && Number.isFinite(a.duration) && durations.get(key) !== a.duration) { durations.set(key, a.duration); ctx.redraw(); } }, true);
+      root.addEventListener('loadedmetadata', (e) => { const a = e.target; if (!a.matches || !a.matches('[data-song-el]')) return; const key = keyOf(a); if (key && Number.isFinite(a.duration) && durations.get(key) !== a.duration) { durations.set(key, a.duration); keepPlaying(key, () => ctx.redraw()); } }, true);
       root.addEventListener('timeupdate', (e) => {
         const a = e.target; if (!a.matches || !a.matches('[data-song-el]')) return;
         const box = a.closest('[data-scr]'); if (!box) return;
@@ -597,6 +593,14 @@
       root.addEventListener('pointerup', () => { if (!markDrag) return; const md = markDrag; markDrag = null; if (md.t != null) { ensure(part(md.key)).song.letters[md.n].t = md.t; touched(md.key, true); } });
       document.addEventListener('click', (e) => { if (pop && pop.el && !pop.el.contains(e.target) && !e.target.closest('[data-lcard],[data-slt-menu],[data-wpop],[data-lv-menu],[data-zlib],[data-add-letter-open],[data-add-letter]')) closePop(); });
     }
+    function keepPlaying(key, fn) {
+      const sel = `[data-scr="${key}"] [data-song-el]`;
+      const a = ctx.root.querySelector(sel);
+      const was = a ? { t: a.currentTime, on: !a.paused } : null;
+      fn();
+      const a2 = ctx.root.querySelector(sel);
+      if (a && a2 && a2 !== a) { a.pause(); const go = () => { a2.currentTime = was.t; if (was.on) a2.play(); }; if (a2.readyState >= 1) go(); else a2.addEventListener('loadedmetadata', go, { once: true }); }
+    }
     function stamp(key) {
       const it = part(key); const a = ctx.root.querySelector(`[data-scr="${key}"] [data-song-el]`);
       if (!a) return;
@@ -604,9 +608,7 @@
       const n = m.song.letters.findIndex((r) => r.t === '' || r.t == null);
       if (n < 0) { stopMark(); return; }
       m.song.letters[n].t = Math.round(a.currentTime * 10) / 10;
-      ctx.changed(); ctx.redraw();
-      const a2 = ctx.root.querySelector(`[data-scr="${key}"] [data-song-el]`);
-      if (a2 && a2 !== a) { a2.currentTime = a.currentTime; a2.play(); }
+      ctx.changed(); keepPlaying(key, () => ctx.redraw());
       if (m.song.letters.findIndex((r) => r.t === '' || r.t == null) < 0) stopMark();
     }
     function stopMark() { if (!mark) return; const a = ctx.root.querySelector(`[data-scr="${mark.key}"] [data-song-el]`); if (a) a.pause(); mark = null; ctx.redraw(); }
