@@ -284,7 +284,7 @@
           <div class="scr-sub">האותיות</div>
           ${url ? '<p class="a-help">מנגנים את השיר ולוחצים ⏱ כשהאות נשמעת, או משתמשים בסימון מהיר</p>' : '<p class="scr-note">קודם מעלים שיר, ואז מסמנים בו את האותיות</p>'}
           <ol class="scr-lts">${rows}</ol>
-          <div class="scr-adds">${addRow('data-arr-add="song.letters" data-arr-new=\'{"l":"","t":""}\'', 'אות')}${addRow('data-song-abc', 'כל האלפבית a–z')}</div>`, true);
+          <div class="scr-adds">${addRow('data-arr-add="song.letters" data-arr-new=\'{"l":"","t":""}\'', 'אות')}<button type="button" class="w-addrow scr-add scr-clear" data-song-clear>${ICON.trash}ניקוי הזמנים</button></div>`, true);
     }
 
     // a practice: the instruction (and for letters the song's help window)
@@ -566,6 +566,7 @@
         if (t.closest('[data-song-toggle]') && au) { if (au.paused) au.play(); else au.pause(); return; }
         if ((v = q('data-song-stamp')) != null && au) { ensure(it).song.letters[Number(v)].t = Math.round(au.currentTime * 10) / 10; keepPlaying(key, () => touched(key, true)); return; }
         if ((v = q('data-song-play')) != null && au) { const r = view(it).song.letters[Number(v)]; if (r.t === '' || r.t == null) return; au.currentTime = Number(r.t); au.play(); return; }
+        if (t.closest('[data-song-clear]')) { UI.confirm({ title: 'לנקות את כל הזמנים שסומנו?', note: 'האותיות נשארות, רק הזמנים נמחקים ואפשר לסמן מחדש', ok: 'ניקוי', cancel: 'ביטול' }, () => { ensure(it).song.letters.forEach((r) => { r.t = ''; }); touched(key, true); }); return; }
         if (t.closest('[data-song-abc]')) { const m = ensure(it); const have = new Set(m.song.letters.map((r) => (r.l || '').toLowerCase())); 'abcdefghijklmnopqrstuvwxyz'.split('').forEach((l) => { if (!have.has(l)) m.song.letters.push({ l, t: '' }); }); touched(key, true); return; }
         if (t.closest('[data-mark-start]') && au) { mark = { key }; au.currentTime = 0; au.play(); keepPlaying(key, () => ctx.redraw()); return; }
         if (t.closest('[data-mark-now]')) { stamp(key); return; }
