@@ -275,8 +275,8 @@
             <label class="scr-ib${ctx.urls.has(`word:${r.l}`) ? ' is-on' : ''}" title="העלאת קובץ שמע של האות" aria-label="העלאת קובץ שמע של ${esc(r.l)}">${ICON.cloud}<input class="sr-only" type="file" accept="audio/*" data-wfile="${esc(r.l)}"></label>
             ${btn(`data-item-rec="${esc(r.l)}"`, `הקלטת ${r.l}`, 'mic', ctx.urls.has(`word:${r.l}`) ? ' is-on' : '')}
           </span>
-          <img class="scr-lt__pic" src="${((view(it).levels || {}).pics || {})[r.l] ? ctx.urls.get(`pic:${r.l}`) || '' : `assets/cards/card-${esc((r.l || '').toLowerCase())}.webp`}" alt="" onerror="this.style.visibility='hidden'">
-          ${btn(`data-slt-menu="${n}"`, 'אפשרויות', 'dots', ' scr-lt__more')}
+          <label class="scr-lt__picbtn" title="החלפת התמונה" aria-label="החלפת התמונה של ${esc(r.l)}"><img class="scr-lt__pic" src="${((view(it).levels || {}).pics || {})[r.l] ? ctx.urls.get(`pic:${r.l}`) || '' : `assets/cards/card-${esc((r.l || '').toLowerCase())}.webp`}" alt="" onerror="this.style.visibility='hidden'"><input class="sr-only" type="file" accept="image/*" data-lpic="${esc(r.l)}"></label>
+          ${btn(`data-arr-del="song.letters|${n}"`, `מחיקת ${r.l}`, 'trash', ' scr-lt__del')}
         </li>`).join('');
       return det(key, 'song', 'השיר', `${s.letters.filter((r) => r.t !== '' && r.t != null).length}/${s.letters.length} אותיות סומנו`, `
           <div class="scr-sub">קובץ השיר</div>${file}

@@ -395,3 +395,17 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-bar__track > i { position: absolute; top: 0; right: 0; bottom: 0; width: 0; border-radius: 3px; background: #E33563; pointer-events: none; }
 .scr-bar__vol { flex: none; background: none !important; color: #2A2577; }
 .scr-bar__vol.is-off { opacity: .4; }
+
+/* the song's letters: roomier rows as light cards, a line between the two columns, bigger text, pink titles */
+.scr-sub { margin: 10px 0 -2px; font-size: 16px; font-weight: 700; color: #E33563; }
+.scr-sec__in > .a-help, .scr-sec__in > .scr-note { font-size: 14px; }
+.scr-lts { row-gap: 14px; column-gap: 48px; background: linear-gradient(#E2E0F2, #E2E0F2) center / 1px 100% no-repeat; }
+.scr-lt { gap: 10px; padding: 8px 10px; border: 1px solid #ECEAF6; border-radius: 12px; background: #fff; }
+.scr-lt:hover { border-color: #D9D6EE; }
+.scr-lt input { font-size: 16px; min-height: 42px; }
+.scr-lt__pic { width: 36px; height: 44px; display: block; }
+.scr-lt__picbtn { cursor: pointer; border-radius: 6px; line-height: 0; }
+.scr-lt__picbtn:hover { box-shadow: 0 0 0 2px #E33563; }
+.scr-lt__del { margin-right: auto; color: #C81E55; }
+.scr-lt__del:hover { background: #FDECF1; }
+@media (max-width: 1100px) { .scr-lts { background: none; } }
