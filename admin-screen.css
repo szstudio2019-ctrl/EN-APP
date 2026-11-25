@@ -414,3 +414,10 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-clear { color: #6B6890 !important; border-color: #D9D6EE !important; background: #fff !important; }
 .scr-clear:hover { color: #C81E55 !important; border-color: #F4C0D1 !important; background: #FDECF1 !important; }
 .scr-clear svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+/* the song: the player on the file's line, tighter spacing */
+.scr-file { gap: 12px; padding: 6px 8px 6px 12px; }
+.scr-file .scr-bar { flex: 1; max-width: none; margin: 0; padding: 4px 6px 4px 10px; background: #fff; }
+.scr-file .scr-bar__play { width: 32px; height: 32px; }
+.scr-sec__in > .scr-sub { margin: 4px 0 -4px; }
+.scr-sec__in > .scr-sub + .a-help { margin-top: 0; }

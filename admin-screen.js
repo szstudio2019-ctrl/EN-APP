@@ -254,17 +254,17 @@
       const dur = durations.get(key) || 0;
       const marks = dur ? s.letters.map((r, n) => (r.t === '' || r.t == null ? '' : `<button type="button" class="scr-mark${n % 2 ? ' is-low' : ''}" style="right:calc(14px + (100% - 28px) * ${Math.min(1, Number(r.t) / dur)})" data-mark="${n}" aria-label="${esc(r.l)} – ${fmtT(r.t)}" title="${esc(r.l)} · ${fmtT(r.t)}"><span>${esc(r.l)}</span></button>`)).join('') : '';
       const next = mark && mark.key === key ? s.letters.findIndex((r) => r.t === '' || r.t == null) : -1;
-      const file = url
-        ? `<div class="scr-file"><span class="scr-file__n" dir="ltr">${esc(s.fileName || url.split('/').pop())}</span><small>${dur ? fmtT(dur).replace(/\.\d$/, '') : ''}</small><label class="scr-link">החלפה<input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file></label><button type="button" class="scr-link" data-song-del>הסרה</button></div>`
-        : `<label class="scr-drop" data-drop="song"><input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file>${ICON.up}<b>גררו קובץ שיר לכאן או לחצו לבחירה</b><small>mp3 / wav</small></label>`;
       const player = url ? `<audio data-song-el src="${url}" preload="metadata"></audio>
           <div class="scr-bar">
             ${btn('data-song-toggle', 'ניגון / עצירה', 'play', ' scr-bar__play')}
             <span class="scr-bar__t" data-song-time dir="ltr">0:00 / ${dur ? fmtT(dur).replace(/\.\d$/, '').replace(/^0/, '') : '–'}</span>
             <div class="scr-bar__track" data-song-line><i data-song-prog></i></div>
             ${btn('data-song-mute', 'השתקה', 'speaker', ' scr-bar__vol')}
-          </div>
-          <div class="scr-quick">${mark && mark.key === key ? `<button type="button" class="a-btn a-btn--primary scr-now" data-mark-now>עכשיו! (רווח)</button><button type="button" class="scr-link" data-mark-stop>עצירה (Esc)</button>` : '<button type="button" class="a-btn" data-mark-start>סימון מהיר</button>'}</div>` : '';
+          </div>` : '';
+      const file = url
+        ? `<div class="scr-file"><span class="scr-file__n" dir="ltr">${esc(s.fileName || url.split('/').pop())}</span>${player}<label class="scr-link">החלפה<input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file></label><button type="button" class="scr-link" data-song-del>הסרה</button></div>`
+        : `<label class="scr-drop" data-drop="song"><input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file>${ICON.up}<b>גררו קובץ שיר לכאן או לחצו לבחירה</b><small>mp3 / wav</small></label>`;
+
       const rows = s.letters.map((r, n) => `<li class="scr-lt${n === next ? ' is-next' : ''}" data-sort-group="xs:${key}">
           <button type="button" class="w-handle" data-drag aria-label="גרירה">${ICON.grip}</button>
           <input class="scr-lt__l" dir="ltr" maxlength="3" data-f="${key}|song.letters.${n}.l" value="${esc(r.l)}" aria-label="האות">
@@ -280,9 +280,8 @@
         </li>`).join('');
       return det(key, 'song', 'השיר', `${s.letters.filter((r) => r.t !== '' && r.t != null).length}/${s.letters.length} אותיות סומנו`, `
           <div class="scr-sub">קובץ השיר</div>${file}
-          ${player ? `<div class="scr-sub">נגן</div>${player}` : ''}
           <div class="scr-sub">האותיות</div>
-          ${url ? '<p class="a-help">מנגנים את השיר ולוחצים ⏱ כשהאות נשמעת, או משתמשים בסימון מהיר</p>' : '<p class="scr-note">קודם מעלים שיר, ואז מסמנים בו את האותיות</p>'}
+          ${url ? '<p class="a-help">מנגנים את השיר ולוחצים ⏱ כשהאות נשמעת</p>' : '<p class="scr-note">קודם מעלים שיר, ואז מסמנים בו את האותיות</p>'}
           <ol class="scr-lts">${rows}</ol>
           <div class="scr-adds">${addRow('data-arr-add="song.letters" data-arr-new=\'{"l":"","t":""}\'', 'אות')}<button type="button" class="w-addrow scr-add scr-clear" data-song-clear>${ICON.trash}ניקוי הזמנים</button></div>`, true);
     }
