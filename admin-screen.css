@@ -375,3 +375,12 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-video { display: block; width: 100%; max-width: 560px; max-height: 320px; margin: 4px 0 10px; border-radius: 12px; background: #000; }
 .scr-audio { display: block; width: 100%; max-width: 560px; margin: 4px 0 10px; }
 .scr-song .scr-quick, .scr-sec__in > .scr-quick { margin: 0 0 6px; }
+
+/* a practice letter card: sound upload + recording under it */
+.scr-lcard__snd { display: flex; justify-content: center; gap: 6px; margin-top: 6px; }
+.scr-lcard__snd .scr-ib { width: 30px; height: 30px; border-radius: 9px; background: #F1F0FA; }
+.scr-lcard__snd .scr-ib svg { width: 16px; height: 16px; }
+.scr-lcard__snd .scr-ib.is-on { color: #1E9A5A; background: #E6F6EE; }
+.scr-lcard:not(.scr-lcard--add) { height: auto; }
+.scr-lcard:not(.scr-lcard--add) > .scr-lcard__main { height: 110px; }
+.scr-lcard--add { height: 110px; }
