@@ -257,8 +257,13 @@
       const file = url
         ? `<div class="scr-file"><span class="scr-file__n" dir="ltr">${esc(s.fileName || url.split('/').pop())}</span><small>${dur ? fmtT(dur).replace(/\.\d$/, '') : ''}</small><label class="scr-link">החלפה<input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file></label><button type="button" class="scr-link" data-song-del>הסרה</button></div>`
         : `<label class="scr-drop" data-drop="song"><input class="sr-only" type="file" accept="audio/*,video/mp4,video/webm" data-song-file>${ICON.up}<b>גררו קובץ שיר לכאן או לחצו לבחירה</b><small>mp3 / wav</small></label>`;
-      const isVid = /\.(mp4|webm|mov)$/i.test(s.fileName || url);
-      const player = url ? `${isVid ? `<video class="scr-video" data-song-el src="${url}" controls playsinline preload="metadata"></video>` : `<audio class="scr-audio" data-song-el src="${url}" controls preload="metadata"></audio>`}
+      const player = url ? `<audio data-song-el src="${url}" preload="metadata"></audio>
+          <div class="scr-bar">
+            ${btn('data-song-toggle', 'ניגון / עצירה', 'play', ' scr-bar__play')}
+            <span class="scr-bar__t" data-song-time dir="ltr">0:00 / ${dur ? fmtT(dur).replace(/\.\d$/, '').replace(/^0/, '') : '–'}</span>
+            <div class="scr-bar__track" data-song-line><i data-song-prog></i></div>
+            ${btn('data-song-mute', 'השתקה', 'speaker', ' scr-bar__vol')}
+          </div>
           <div class="scr-quick">${mark && mark.key === key ? `<button type="button" class="a-btn a-btn--primary scr-now" data-mark-now>עכשיו! (רווח)</button><button type="button" class="scr-link" data-mark-stop>עצירה (Esc)</button>` : '<button type="button" class="a-btn" data-mark-start>סימון מהיר</button>'}</div>` : '';
       const rows = s.letters.map((r, n) => `<li class="scr-lt${n === next ? ' is-next' : ''}" data-sort-group="xs:${key}">
           <button type="button" class="w-handle" data-drag aria-label="גרירה">${ICON.grip}</button>
@@ -557,6 +562,7 @@
         // the song
         const au = root.querySelector(`[data-scr="${key}"] [data-song-el]`);
         if (t.closest('[data-song-del]')) { ctx.urls.delete(`song:${key}`); const m = ensure(it); m.song.file = ''; m.song.fileName = ''; touched(key, true); return; }
+        if (t.closest('[data-song-mute]') && au) { au.muted = !au.muted; t.closest('[data-song-mute]').classList.toggle('is-off', au.muted); return; }
         if (t.closest('[data-song-toggle]') && au) { if (au.paused) au.play(); else au.pause(); return; }
         if ((v = q('data-song-stamp')) != null && au) { ensure(it).song.letters[Number(v)].t = Math.round(au.currentTime * 10) / 10; keepPlaying(key, () => touched(key, true)); return; }
         if ((v = q('data-song-play')) != null && au) { const r = view(it).song.letters[Number(v)]; if (r.t === '' || r.t == null) return; au.currentTime = Number(r.t); au.play(); return; }
@@ -574,8 +580,8 @@
         const box = a.closest('[data-scr]'); if (!box) return;
         const tEl = box.querySelector('[data-song-time]'); const p = box.querySelector('[data-song-prog]');
         const d = a.duration || 0;
-        if (tEl) tEl.textContent = `${fmtT(a.currentTime).replace(/\.\d$/, '')} / ${d ? fmtT(d).replace(/\.\d$/, '') : '–'}`;
-        if (p && d) p.style.width = `calc(14px + (100% - 28px) * ${a.currentTime / d})`;
+        if (tEl) tEl.textContent = `${fmtT(a.currentTime).replace(/\.\d$/, '').replace(/^0/, '')} / ${d ? fmtT(d).replace(/\.\d$/, '').replace(/^0/, '') : '–'}`;
+        if (p && d) p.style.width = `${(a.currentTime / d) * 100}%`;
         const tg = box.querySelector('[data-song-toggle]'); if (tg) tg.innerHTML = a.paused ? ICON.play : ICON.pause;
       }, true);
       ['play', 'pause'].forEach((ev) => root.addEventListener(ev, (e) => { const a = e.target; if (!a.matches || !a.matches('[data-song-el]')) return; const tg = a.closest('[data-scr]').querySelector('[data-song-toggle]'); if (tg) tg.innerHTML = a.paused ? ICON.play : ICON.pause; }, true));
@@ -585,7 +591,7 @@
         if (!line) return;
         const key = keyOf(line); const a = line.closest('[data-scr]').querySelector('[data-song-el]'); const d = durations.get(key);
         if (!a || !d) return;
-        const at = (x) => { const r = line.getBoundingClientRect(); return Math.max(0, Math.min(1, (r.right - 14 - x) / (r.width - 28))) * d; };
+        const at = (x) => { const r = line.getBoundingClientRect(); return Math.max(0, Math.min(1, (r.right - x) / r.width)) * d; };
         if (mk) { e.preventDefault(); markDrag = { key, n: Number(mk.dataset.mark), el: mk, at }; mk.setPointerCapture(e.pointerId); }
         else a.currentTime = at(e.clientX);
       });

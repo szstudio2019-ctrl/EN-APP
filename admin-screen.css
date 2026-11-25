@@ -384,3 +384,14 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-lcard:not(.scr-lcard--add) { height: auto; }
 .scr-lcard:not(.scr-lcard--add) > .scr-lcard__main { height: 110px; }
 .scr-lcard--add { height: 110px; }
+
+/* the song's player: a slim bar in the site's colours */
+.scr-bar { display: flex; align-items: center; gap: 12px; max-width: 640px; margin: 4px 0 10px; padding: 6px 8px 6px 14px; border-radius: 999px; background: #F1F0FA; }
+.scr-bar__play { width: 36px; height: 36px; border-radius: 50%; background: #E33563 !important; color: #fff !important; flex: none; }
+.scr-bar__play svg { width: 16px; height: 16px; }
+.scr-bar__t { flex: none; font-size: 13px; color: #2A2577; font-variant-numeric: tabular-nums; }
+.scr-bar__track { position: relative; flex: 1; height: 6px; border-radius: 3px; background: #D9D6EE; cursor: pointer; }
+.scr-bar__track::after { content: ''; position: absolute; inset: -8px 0; }
+.scr-bar__track > i { position: absolute; top: 0; right: 0; bottom: 0; width: 0; border-radius: 3px; background: #E33563; pointer-events: none; }
+.scr-bar__vol { flex: none; background: none !important; color: #2A2577; }
+.scr-bar__vol.is-off { opacity: .4; }
