@@ -444,3 +444,13 @@ summary > .scr-sec__sum + .scr-sec__chev { margin-right: 4px; }
 .scr-steps { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
 .scr-step, .scr-step.is-cur, .scr-step--add { flex: none; width: 48px; }
 .scr-step + .scr-step::before { margin-left: 16px; width: calc(100% - 32px); }
+
+/* no frame inside a frame: tabs, levels, additions and the chosen step sit flat inside
+   their section, divided by a thin line */
+.scr-card details, .scr-tab, .scr-lv details { border-radius: 0; background: none; box-shadow: none; }
+.scr-card summary, .scr-tab > summary, .scr-lv summary { padding: 8px 0; }
+.scr-card__in { padding: 4px 0 14px; }
+.scr-cards, .scr-lvs { gap: 0; }
+.scr-tab + .scr-tab { margin-top: 0; }
+.scr-tab + .scr-tab, .scr-cards > li + li, .scr-lvs > li + li { border-top: 1px solid var(--a-line); }
+.scr-stepbox { border: 0; border-radius: 0; padding: 4px 0 0; background: none; }
