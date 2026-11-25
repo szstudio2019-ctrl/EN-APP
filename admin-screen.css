@@ -421,3 +421,7 @@ details[open] > summary .scr-sec__chev { transform: rotate(-45deg); }
 .scr-file .scr-bar__play { width: 32px; height: 32px; }
 .scr-sec__in > .scr-sub { margin: 4px 0 -4px; }
 .scr-sec__in > .scr-sub + .a-help { margin-top: 0; }
+
+/* the chevron always at the far end of a section title, with or without a summary */
+summary > .scr-sec__chev { margin-right: auto; }
+summary > .scr-sec__sum + .scr-sec__chev { margin-right: 4px; }
