@@ -11,10 +11,6 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="world.css">
-  <!-- the background mirrored (left ↔ right); the pins mirrored with it -->
-  <style>.world__bg { scale: -1 1; }
-    /* the island further left, clear of the corals */
-    body.world-page:not(.is-loading) .world__island { translate: -100px 0; }</style>
 </head>
 <body class="world-page">
   <!-- אי הצלילים המיוחדים: island page built on the doctor page's template (WORLD settings below) -->
@@ -32,14 +28,11 @@
     </div>
   </div>
 
-  <div class="viewport world">
+  <div class="viewport world world--wide">
     <main class="stage" id="stage">
       <!-- Background scene with the big lessons island. Exported from Figma
            ("רקע אותיות רופא 1"); until the file exists the clouds show instead. -->
       <img class="world__bg" id="world-bg" alt="" aria-hidden="true">
-      <!-- the background moving under the sea (a loop, with its own sound); the still picture stays under it -->
-      <video class="world__bg world__bg--video" id="world-bg-video" src="assets/world-sounds-bg.webm" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
-      <!-- the treble clef glows (a soft light that comes and goes – it never grows); same frame as the background -->
 
       <!-- Header -->
       <header class="topbar">
@@ -254,16 +247,17 @@
     window.WORLD = {
       title: 'אי הצלילים המיוחדים',
       // the island name on the scene, before the first pin (same game-title style as the doctor island)
-      heading: { lines: ['אי הצלילים', 'המיוחדים'], x: 1330, y: 376 },
+      heading: { lines: ['אי הצלילים', 'המיוחדים'], x: 640, y: 330 },
       lessonsRange: '35-38',
       coins: 350,
       progress: 0,
-      background: 'assets/world-sounds-bg.webp',
+      background: 'assets/world-sounds-bg-seahorse.webp',
+      sceneHalf: 540, // the scene is drawn whole at 16:9 (1920x1080 from the stage top)
       island: { still: 'island-sounds-music', box: [8, 26, 540, 392] },
       lessons: [
-        { n: 1, x: 691, y: 925, status: 'current', href: 'sounds1-lesson.html' },
-        { n: 2, x: 888, y: 850, status: 'locked', href: 'sounds2-lesson.html' },
-        { n: 3, x: 1179, y: 797, status: 'locked', href: 'sounds3-lesson.html' },
+        { n: 1, x: 700, y: 900, status: 'current', href: 'sounds1-lesson.html' },
+        { n: 2, x: 850, y: 760, status: 'locked', href: 'sounds2-lesson.html' },
+        { n: 3, x: 960, y: 600, status: 'locked', href: 'sounds3-lesson.html' },
       ],
     };
   </script>
@@ -275,33 +269,5 @@
   <script src="drawer.js"></script>
   <script src="mobile.js"></script>
   <script src="world.js"></script>
-  <script>
-    // The sea's video: it loops (also when the file has no length written in it);
-    // its sound is this island's background sound, in place of the site music.
-    // The music button in the header turns it on and off; it starts with the
-    // first tap or key (the browser's rule) and rests while the tab is hidden.
-    (function () {
-      const v = document.getElementById('world-bg-video');
-      if (!v) return;
-      const wanted = () => {
-        const b = document.querySelector('.music-btn');
-        if (b) return b.getAttribute('aria-pressed') !== 'false';
-        try { return localStorage.getItem('en-app:music') !== 'off'; } catch (err) { return true; }
-      };
-      let started = false;
-      const apply = () => {
-        if (window.SiteSound) window.SiteSound.stopMusic();
-        v.muted = !(started && wanted());
-        if (v.paused && !document.hidden) v.play().catch(() => {});
-      };
-      v.addEventListener('ended', () => { v.currentTime = 0; v.play().catch(() => {}); });
-      const first = () => { started = true; apply(); window.removeEventListener('pointerdown', first, true); window.removeEventListener('keydown', first, true); };
-      window.addEventListener('pointerdown', first, true);
-      window.addEventListener('keydown', first, true);
-      // the header's music button (any copy of it, also the phone menu's)
-      document.addEventListener('click', (e) => { if (e.target.closest('.music-btn')) setTimeout(apply, 0); }, true);
-      document.addEventListener('visibilitychange', () => { if (document.hidden) v.pause(); else apply(); });
-    })();
-  </script>
 </body>
 </html>
