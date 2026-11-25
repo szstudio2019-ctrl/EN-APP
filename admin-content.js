@@ -542,7 +542,7 @@
   const BG = {
     'letters.html': 'assets/world-letters-bg-hd.webp', 'doctor.html': 'assets/doctor-world-bg-hd.webp', 'smiles.html': 'assets/world-smiles-bg.webp',
     'single.html': 'assets/world-single-bg.webp', 'blending.html': 'assets/world-blending-bg.webp', 'whistling.html': 'assets/world-whistling-bg.webp',
-    'magic.html': 'assets/world-magic-bg.webp', 'sounds.html': 'assets/world-sounds-bg-seahorse.webp', 'review.html': 'assets/world-review-bg-hd.webp',
+    'magic.html': 'assets/world-magic-bg.webp', 'sounds.html': 'assets/world-sounds-bg-seahorse-hd.webp', 'review.html': 'assets/world-review-bg-hd.webp',
   };
   const bgOf = (w) => w.bgData || BG[w.page] || '';
   function bgField(w) {
