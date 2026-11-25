@@ -340,7 +340,7 @@
       }).join('');
       if (type === 'letter') {
         const cur = Math.max(0, Math.min(stepOf.get(key) || 0, L.list.length - 1));
-        const steps = L.list.map((lv, n) => `<button type="button" class="scr-step${n === cur ? ' is-cur' : ''}${lv.items.length ? '' : ' is-empty'}" data-lv-go="${n}" aria-label="${esc(word)} ${n + 1}" aria-pressed="${n === cur}"><span>${n + 1}</span></button>`).join('');
+        const steps = L.list.map((lv, n) => `<button type="button" class="scr-step${n === cur ? ' is-cur' : ''}${lv.items.length ? '' : ' is-empty'}" data-lv-go="${n}" aria-label="${esc(word)} ${n + 1}" aria-pressed="${n === cur}"><i class="scr-step__dot">${n === cur ? n + 1 : ''}</i><span class="scr-step__n">${n + 1}</span></button>`).join('');
         const lv = L.list[cur];
         let panel = '<p class="scr-note">אין עדיין שלבים. מוסיפים שלב ראשון</p>';
         if (lv) {
@@ -354,7 +354,7 @@
         }
         return det(key, 'levels', 'השלבים', `${L.list.length} שלבים`, `
           <p class="a-help">כמו באתר: כל מספר הוא שלב. לוחצים על מספר כדי לערוך את האותיות שלו, ועל כרטיס כדי לשנות את האות או את התמונה</p>
-          <div class="scr-steps">${steps}<button type="button" class="scr-step scr-step--add" data-lv-add aria-label="הוספת שלב" title="הוספת שלב">${ICON.plus}</button></div>
+          <div class="scr-steps">${steps}<button type="button" class="scr-step scr-step--add" data-lv-add aria-label="הוספת שלב" title="הוספת שלב"><i class="scr-step__dot">${ICON.plus}</i><span class="scr-step__n">הוספה</span></button></div>
           ${panel}`, true);
       }
       return det(key, 'levels', 'הרמות', `${L.list.length} ${word === 'רמה' ? 'רמות' : word}`, `
